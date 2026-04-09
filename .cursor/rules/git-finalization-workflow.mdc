@@ -1,0 +1,22 @@
+---
+description: Git finalization workflow for completed features
+alwaysApply: true
+---
+
+# Git Finalization Workflow
+
+After completing a feature or major change in this project:
+
+1. Ensure the repository is initialized if needed:
+   - Run:
+     `cd ~/kvit-app && git init && echo "node_modules\n.env.local\n.next" > .gitignore && git remote add origin https://github.com/ZacHolik/kvit.git && git add . && git commit -m "feat: initial commit" && git push -u origin main`
+   - Only do this if the repo is not initialized yet.
+
+2. For normal completed work, use:
+   - `cd ~/kvit-app && git add . && git commit -m "feat: $(date +%Y-%m-%d) - [short description]" && git push origin main`
+
+3. Safety constraints:
+   - Do not commit or push unless the user explicitly requests commit/push in the current task.
+   - Never alter git config.
+   - Avoid committing secrets or env files; keep `.env.local` ignored.
+   - If commit/push is requested, follow this workflow and report results clearly.
