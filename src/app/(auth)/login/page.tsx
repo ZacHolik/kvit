@@ -6,6 +6,18 @@ import { FormEvent, useState } from 'react';
 
 import { createClient } from '@/lib/supabase/client';
 
+function translateAuthError(message: string) {
+  if (message.includes('Email not confirmed')) {
+    return 'Email nije potvrđen. Provjeri svoju inbox ili spam folder.';
+  }
+
+  if (message.includes('Invalid login credentials')) {
+    return 'Pogrešan email ili lozinka.';
+  }
+
+  return 'Došlo je do greške pri prijavi. Pokušaj ponovno za nekoliko trenutaka.';
+}
+
 export default function LoginPage() {
   const router = useRouter();
   const supabase = createClient();
@@ -27,7 +39,7 @@ export default function LoginPage() {
     setIsLoading(false);
 
     if (signInError) {
-      setError(signInError.message);
+      setError(translateAuthError(signInError.message));
       return;
     }
 

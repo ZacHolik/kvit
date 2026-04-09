@@ -71,37 +71,64 @@ export default function OnboardingPage() {
     setIsLoading(true);
 
     const {
-      data: { user },
-      error: userError,
-    } = await supabase.auth.getUser();
+      data: { session },
+      error: sessionError,
+    } = await supabase.auth.getSession();
+    const user = session?.user;
 
-    if (userError || !user) {
+    if (sessionError || !user) {
+      console.error('Onboarding: missing auth session before profile upsert.', {
+        sessionError,
+      });
       setIsLoading(false);
-      setError('Sesija je istekla. Prijavi se ponovno.');
-      router.push('/login');
+      router.push('/confirm-email');
       return;
     }
 
-    const { error: upsertError } = await supabase.from('profiles').upsert({
+    const payload = {
       id: user.id,
       naziv_obrta: formData.nazivObrta.trim(),
       oib: formData.oib.trim(),
       adresa: formData.adresa.trim(),
       je_jedina_djelatnost: formData.jeJedinaDjelatnost,
-      godisnji_primici_prosle_godine: Number(
-        formData.godisnjiPrimiciProsleGodine,
-      ),
-    });
+      godisnji_primici_prosle_godine: Number(formData.godisnjiPrimiciProsleGodine),
+    };
+
+    const { error: upsertError } = await supabase
+      .from('profiles')
+      .upsert(payload, { onConflict: 'id' });
 
     setIsLoading(false);
 
     if (upsertError) {
+      console.error('Onboarding profile upsert failed.', {
+        error: upsertError,
+        payload,
+        userId: user.id,
+      });
       setError(upsertError.message);
       return;
     }
 
+    const { data: savedProfile, error: verifyError } = await supabase
+      .from('profiles')
+      .select('id')
+      .eq('id', user.id)
+      .maybeSingle();
+
+    if (verifyError || !savedProfile) {
+      console.error('Onboarding profile verification failed after upsert.', {
+        error: verifyError,
+        userId: user.id,
+      });
+      setError(
+        'Spremanje profila nije uspjelo. Pokušaj ponovno ili kontaktiraj podršku.',
+      );
+      return;
+    }
+
     // TODO: Next step can include onboarding completeness tracking table if needed.
-    router.push('/');
+    router.push(`/confirm-email?email=${encodeURIComponent(user.email ?? '')}`);
     router.refresh();
   };
 

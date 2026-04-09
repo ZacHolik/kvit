@@ -36,8 +36,7 @@ export default function RegisterPage() {
       return;
     }
 
-    // TODO: If email confirmation is enabled, add dedicated "check your email" page.
-    router.push('/onboarding');
+    router.push(`/onboarding?email=${encodeURIComponent(email)}`);
     router.refresh();
   };
 
