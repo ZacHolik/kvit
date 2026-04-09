@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import type { Viewport } from 'next';
 import { DM_Sans, Syne } from 'next/font/google';
 
 import './globals.css';
@@ -16,6 +17,20 @@ const dmSans = DM_Sans({
 export const metadata: Metadata = {
   title: 'Kvit',
   description: 'SaaS za hrvatske pausalne obrtnike',
+  manifest: '/manifest.json',
+  appleWebApp: {
+    capable: true,
+    title: 'Kvit',
+    statusBarStyle: 'default',
+  },
+  icons: {
+    icon: '/favicon.ico',
+    apple: '/favicon.ico',
+  },
+};
+
+export const viewport: Viewport = {
+  themeColor: '#0d9488',
 };
 
 export default function RootLayout({
