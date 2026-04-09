@@ -94,7 +94,7 @@ export default function NoviRacunPage() {
       <div className='mx-auto flex w-full max-w-3xl flex-col gap-6'>
         <header className='rounded-2xl border border-[#1f2a28] bg-[#111716] p-5 sm:p-6'>
           <p className='font-body text-sm text-[#94a3a0]'>Kreiranje dokumenta</p>
-          <h1 className='font-heading mt-2 text-2xl sm:text-3xl'>Novi racun</h1>
+          <h1 className='font-heading mt-2 text-2xl sm:text-3xl'>Novi račun</h1>
         </header>
 
         <form
@@ -104,7 +104,7 @@ export default function NoviRacunPage() {
           <section className='grid gap-4 sm:grid-cols-2'>
             <label className='block'>
               <span className='font-body mb-2 block text-sm text-[#b9c7c4]'>
-                Broj racuna
+                Broj računa
               </span>
               <input
                 required
@@ -141,7 +141,7 @@ export default function NoviRacunPage() {
           <section className='grid gap-4 sm:grid-cols-3'>
             <label className='block'>
               <span className='font-body mb-2 block text-sm text-[#b9c7c4]'>
-                Nacin placanja
+                Način plaćanja
               </span>
               <select
                 value={formState.nacinPlacanja}
@@ -153,7 +153,7 @@ export default function NoviRacunPage() {
                 }
                 className='font-body w-full rounded-xl border border-[#2a3734] bg-[#0b0f0e] px-4 py-3 outline-none transition focus:border-[#0d9488]'
               >
-                <option value='ziro'>Ziro</option>
+                <option value='ziro'>Žiro</option>
                 <option value='gotovina'>Gotovina</option>
                 <option value='kartica'>Kartica</option>
               </select>
@@ -173,13 +173,13 @@ export default function NoviRacunPage() {
                 className='font-body w-full rounded-xl border border-[#2a3734] bg-[#0b0f0e] px-4 py-3 outline-none transition focus:border-[#0d9488]'
               >
                 <option value='izdano'>Izdano</option>
-                <option value='placeno'>Placeno</option>
+                <option value='placeno'>Plaćeno</option>
                 <option value='stornirano'>Stornirano</option>
               </select>
             </label>
             <label className='block'>
               <span className='font-body mb-2 block text-sm text-[#b9c7c4]'>
-                Datum placanja
+                Datum plaćanja
               </span>
               <input
                 type='date'
@@ -280,7 +280,7 @@ export default function NoviRacunPage() {
             </label>
             <label className='block'>
               <span className='font-body mb-2 block text-sm text-[#b9c7c4]'>
-                Kolicina
+                Količina
               </span>
               <input
                 required
@@ -299,7 +299,7 @@ export default function NoviRacunPage() {
             </label>
             <label className='block'>
               <span className='font-body mb-2 block text-sm text-[#b9c7c4]'>
-                Jedinicna cijena
+                Jedinična cijena
               </span>
               <input
                 required
@@ -352,7 +352,7 @@ export default function NoviRacunPage() {
               disabled={isLoading}
               className='font-body rounded-xl bg-[#0d9488] px-5 py-3 font-semibold text-white transition hover:bg-[#14b8a6] disabled:cursor-not-allowed disabled:opacity-60'
             >
-              {isLoading ? 'Spremam...' : 'Spremi racun'}
+              {isLoading ? 'Spremam...' : 'Spremi račun'}
             </button>
             <Link
               href='/racuni'

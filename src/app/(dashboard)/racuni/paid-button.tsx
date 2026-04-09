@@ -29,7 +29,7 @@ export function MarkAsPaidButton({ racunId }: { racunId: string }) {
       disabled={isLoading}
       className='font-body rounded-lg bg-[#0d9488] px-3 py-2 text-xs font-semibold text-white transition hover:bg-[#14b8a6] disabled:cursor-not-allowed disabled:opacity-60'
     >
-      {isLoading ? 'Spremam...' : 'Oznaci placeno'}
+      {isLoading ? 'Spremam...' : 'Označi plaćeno'}
     </button>
   );
 }

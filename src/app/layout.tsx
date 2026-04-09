@@ -5,18 +5,18 @@ import { DM_Sans, Syne } from 'next/font/google';
 import './globals.css';
 
 const syne = Syne({
-  subsets: ['latin'],
+  subsets: ['latin', 'latin-ext'],
   variable: '--font-syne',
 });
 
 const dmSans = DM_Sans({
-  subsets: ['latin'],
+  subsets: ['latin', 'latin-ext'],
   variable: '--font-dm-sans',
 });
 
 export const metadata: Metadata = {
   title: 'Kvit',
-  description: 'SaaS za hrvatske pausalne obrtnike',
+  description: 'SaaS za hrvatske paušalne obrtnike',
   manifest: '/manifest.json',
   appleWebApp: {
     capable: true,

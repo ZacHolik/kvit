@@ -37,14 +37,14 @@ export default async function RacuniPage() {
       <div className='mx-auto flex w-full max-w-6xl flex-col gap-6'>
         <header className='flex flex-col gap-4 rounded-2xl border border-[#1f2a28] bg-[#111716] p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6'>
           <div>
-            <p className='font-body text-sm text-[#94a3a0]'>Evidencija racuna</p>
-            <h1 className='font-heading mt-2 text-2xl sm:text-3xl'>Racuni</h1>
+            <p className='font-body text-sm text-[#94a3a0]'>Evidencija računa</p>
+            <h1 className='font-heading mt-2 text-2xl sm:text-3xl'>Računi</h1>
           </div>
           <Link
             href='/racuni/novi'
             className='font-body rounded-xl bg-[#0d9488] px-5 py-3 font-semibold text-white transition hover:bg-[#14b8a6]'
           >
-            Novi racun
+            Novi račun
           </Link>
         </header>
 

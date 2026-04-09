@@ -4,6 +4,7 @@ import { redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
 
 const PAUSAL_LIMIT = 60000;
+export const dynamic = 'force-dynamic';
 
 function getNextDeadline(referenceDate = new Date()) {
   const year = referenceDate.getFullYear();
@@ -14,7 +15,7 @@ function getNextDeadline(referenceDate = new Date()) {
     return {
       title: 'Doprinosi',
       date: contributionDeadline,
-      description: 'Mjesecna uplata doprinosa do 15. u mjesecu.',
+      description: 'Mjesečna uplata doprinosa do 15. u mjesecu.',
     };
   }
 
@@ -32,7 +33,7 @@ function getNextDeadline(referenceDate = new Date()) {
   return {
     title: 'Kvartalni porez',
     date: nextQuarterly,
-    description: 'Provjeri i podmiri pausalni porez za kvartal.',
+    description: 'Provjeri i podmiri paušalni porez za kvartal.',
   };
 }
 
@@ -100,15 +101,14 @@ export default async function DashboardPage() {
   const monthlyInvoiceCount = monthlyInvoices?.length ?? 0;
   const progressPercent = Math.min((yearlyIncome / PAUSAL_LIMIT) * 100, 100);
   const deadline = getNextDeadline(now);
+  const nazivObrta = profile?.naziv_obrta?.trim() || 'Moj obrt';
 
   return (
     <main className='min-h-screen bg-[#0b0f0e] px-4 py-8 text-[#e2e8e7] sm:px-6 lg:px-8'>
       <div className='mx-auto flex w-full max-w-5xl flex-col gap-6'>
         <header className='rounded-2xl border border-[#1f2a28] bg-[#111716] p-5 sm:p-6'>
           <p className='font-body text-sm text-[#94a3a0]'>Kvit dashboard</p>
-          <h1 className='font-heading mt-2 text-2xl sm:text-3xl'>
-            {profile?.naziv_obrta ?? 'Tvoj obrt'}
-          </h1>
+          <h1 className='font-heading mt-2 text-2xl sm:text-3xl'>{nazivObrta}</h1>
         </header>
 
         <section className='rounded-2xl border border-[#1f2a28] bg-[#111716] p-5 sm:p-6'>
@@ -125,13 +125,13 @@ export default async function DashboardPage() {
             />
           </div>
           <p className='font-body mt-3 text-sm text-[#94a3a0]'>
-            Iskoristeno {progressPercent.toFixed(1)}% godisnjeg pausalnog limita.
+            Iskorišteno {progressPercent.toFixed(1)}% godišnjeg paušalnog limita.
           </p>
         </section>
 
         <section className='grid gap-4 md:grid-cols-3'>
           <article className='rounded-2xl border border-[#1f2a28] bg-[#111716] p-5'>
-            <p className='font-body text-sm text-[#94a3a0]'>Sljedeci rok</p>
+            <p className='font-body text-sm text-[#94a3a0]'>Sljedeći rok</p>
             <h3 className='font-heading mt-2 text-lg'>{deadline.title}</h3>
             <p className='font-body mt-2 text-xl text-[#0d9488]'>
               {formatDate(deadline.date)}
@@ -142,7 +142,7 @@ export default async function DashboardPage() {
           </article>
 
           <article className='rounded-2xl border border-[#1f2a28] bg-[#111716] p-5'>
-            <p className='font-body text-sm text-[#94a3a0]'>Racuni ovaj mjesec</p>
+            <p className='font-body text-sm text-[#94a3a0]'>Računi ovaj mjesec</p>
             <p className='font-heading mt-3 text-3xl'>{monthlyInvoiceCount}</p>
           </article>
 
@@ -159,14 +159,14 @@ export default async function DashboardPage() {
             <div>
               <h2 className='font-heading text-xl'>Brze akcije</h2>
               <p className='font-body mt-1 text-sm text-[#94a3a0]'>
-                Kreiraj novi racun i nastavi voditi poslovanje bez kasnjenja.
+                Kreiraj novi račun i nastavi voditi poslovanje bez kašnjenja.
               </p>
             </div>
             <Link
               href='/racuni/novi'
               className='font-body rounded-xl bg-[#0d9488] px-5 py-3 font-semibold text-white transition hover:bg-[#14b8a6]'
             >
-              Novi racun
+              Novi račun
             </Link>
           </div>
         </section>
