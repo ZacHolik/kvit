@@ -1,39 +1,12 @@
-import path from 'path';
-
-import {
-  Document,
-  Font,
-  Page,
-  StyleSheet,
-  Text,
-  View,
-} from '@react-pdf/renderer';
+import { Document, Page, StyleSheet, Text, View } from '@react-pdf/renderer';
 
 import { formatDatumHr } from '@/lib/format-hr';
 
-/**
- * Roboto s punim slovnikom (TTF) za č, š, ž, ć, đ.
- * Jedan `src` po težini: react-pdf bira jedan font po fontWeight, pa zasebni
- * latin + latin-ext woff2 URL-ovi ne mogu zajedno pokriti HR dijakritike.
- * (Gstatic v30 woff2 iz uputa je latin subset bez latin-ext.)
- */
-const robotoFontsDir = path.join(process.cwd(), 'public', 'fonts');
+import { PDF_FONT_FAMILY, registerRobotoPdfFont } from './register-roboto';
 
-Font.register({
-  family: 'Roboto',
-  fonts: [
-    {
-      src: path.join(robotoFontsDir, 'Roboto-Regular.ttf'),
-      fontWeight: 'normal',
-    },
-    {
-      src: path.join(robotoFontsDir, 'Roboto-Bold.ttf'),
-      fontWeight: 'bold',
-    },
-  ],
-});
+registerRobotoPdfFont();
 
-const FF = 'Roboto';
+const FF = PDF_FONT_FAMILY;
 
 /**
  * HR-style display: "1/1/2026" (redni/broj u godini/godina) → "1-2026".

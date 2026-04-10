@@ -89,14 +89,15 @@ export default async function KprPage() {
           </div>
           <div className='flex flex-wrap gap-2'>
             <Link
-              href='/api/kpr/pdf'
+              href={`/api/kpr/pdf?year=${new Date().getFullYear()}`}
               target='_blank'
               className='font-body rounded-xl border border-[#2a3734] px-4 py-2 text-sm text-[#d5dfdd] transition hover:border-[#0d9488]'
             >
               PDF izvoz
             </Link>
             <Link
-              href='/api/kpr/xlsx'
+              href={`/api/kpr/xlsx?year=${new Date().getFullYear()}`}
+              target='_blank'
               className='font-body rounded-xl bg-[#0d9488] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[#14b8a6]'
             >
               XLSX izvoz

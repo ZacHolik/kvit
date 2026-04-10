@@ -1,33 +1,80 @@
 import { Document, Page, StyleSheet, Text, View } from '@react-pdf/renderer';
 
+import { formatDatumHr, formatIznosEurHr } from '@/lib/format-hr';
+
+import { PDF_FONT_FAMILY, registerRobotoPdfFont } from './register-roboto';
+
+registerRobotoPdfFont();
+
+const FF = PDF_FONT_FAMILY;
+
 const styles = StyleSheet.create({
   page: {
-    fontSize: 10,
-    padding: 24,
-    fontFamily: 'Helvetica',
+    fontSize: 9,
+    paddingTop: 36,
+    paddingHorizontal: 32,
+    paddingBottom: 36,
+    fontFamily: FF,
+    color: '#111',
   },
-  title: {
-    fontSize: 16,
-    marginBottom: 12,
+  issuerName: {
+    fontFamily: FF,
+    fontSize: 10,
+    fontWeight: 'bold',
+    marginBottom: 3,
+  },
+  issuerLine: {
+    fontFamily: FF,
+    fontSize: 8,
+    color: '#333',
+    marginBottom: 2,
+  },
+  divider: {
+    borderBottomWidth: 1,
+    borderBottomColor: '#000',
+    marginTop: 10,
+    marginBottom: 10,
+  },
+  docTitle: {
+    fontFamily: FF,
+    fontSize: 13,
+    fontWeight: 'bold',
+    marginBottom: 10,
   },
   headerRow: {
     flexDirection: 'row',
     borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
+    borderBottomColor: '#000',
     paddingBottom: 4,
-    marginBottom: 6,
+    marginBottom: 4,
   },
   row: {
     flexDirection: 'row',
     borderBottomWidth: 0.5,
-    borderBottomColor: '#eee',
-    paddingVertical: 4,
+    borderBottomColor: '#ccc',
+    paddingVertical: 3,
   },
-  colDate: { width: '16%' },
-  colDoc: { width: '22%' },
-  colDesc: { width: '30%' },
-  colNum: { width: '16%', textAlign: 'right' },
+  colDate: { width: '14%', fontFamily: FF, fontSize: 8, paddingRight: 4 },
+  colDoc: { width: '18%', fontFamily: FF, fontSize: 8, paddingRight: 4 },
+  colDesc: { width: '32%', fontFamily: FF, fontSize: 8, paddingRight: 4 },
+  colNum: {
+    width: '12%',
+    fontFamily: FF,
+    fontSize: 8,
+    textAlign: 'right',
+  },
+  th: {
+    fontFamily: FF,
+    fontSize: 8,
+    fontWeight: 'bold',
+  },
 });
+
+export type KprProfilPdf = {
+  nazivObrta: string;
+  oib: string;
+  adresa: string | null;
+};
 
 type KprItem = {
   datum: string;
@@ -38,35 +85,51 @@ type KprItem = {
   ukupno: number;
 };
 
+function dash(v: string | null | undefined): string {
+  const t = v?.trim();
+  return t ? t : '—';
+}
+
 export function KprDocument({
-  title,
+  profil,
+  godina,
   items,
 }: {
-  title: string;
+  profil: KprProfilPdf;
+  godina: number;
   items: KprItem[];
 }) {
   return (
     <Document>
       <Page size='A4' style={styles.page}>
-        <Text style={styles.title}>{title}</Text>
+        {/* Zaglavlje — profil iz Supabase */}
+        <Text style={styles.issuerName}>{dash(profil.nazivObrta)}</Text>
+        <Text style={styles.issuerLine}>OIB: {dash(profil.oib)}</Text>
+        <Text style={styles.issuerLine}>{dash(profil.adresa)}</Text>
+
+        <View style={styles.divider} />
+
+        <Text style={styles.docTitle}>Knjiga prometa - {godina}.</Text>
 
         <View style={styles.headerRow}>
-          <Text style={styles.colDate}>Datum</Text>
-          <Text style={styles.colDoc}>Temeljnica</Text>
-          <Text style={styles.colDesc}>Opis</Text>
-          <Text style={styles.colNum}>Got.</Text>
-          <Text style={styles.colNum}>Bezgot.</Text>
-          <Text style={styles.colNum}>Ukupno</Text>
+          <Text style={[styles.colDate, styles.th]}>Datum</Text>
+          <Text style={[styles.colDoc, styles.th]}>Temeljnica</Text>
+          <Text style={[styles.colDesc, styles.th]}>Opis</Text>
+          <Text style={[styles.colNum, styles.th]}>Gotovina</Text>
+          <Text style={[styles.colNum, styles.th]}>Bezgotovinsko</Text>
+          <Text style={[styles.colNum, styles.th]}>Ukupno</Text>
         </View>
 
         {items.map((item, index) => (
           <View style={styles.row} key={`${item.brojTemeljnice}-${index}`}>
-            <Text style={styles.colDate}>{item.datum}</Text>
+            <Text style={styles.colDate}>{formatDatumHr(item.datum)}</Text>
             <Text style={styles.colDoc}>{item.brojTemeljnice}</Text>
             <Text style={styles.colDesc}>{item.opis}</Text>
-            <Text style={styles.colNum}>{item.gotovina.toFixed(2)}</Text>
-            <Text style={styles.colNum}>{item.bezgotovinsko.toFixed(2)}</Text>
-            <Text style={styles.colNum}>{item.ukupno.toFixed(2)}</Text>
+            <Text style={styles.colNum}>{formatIznosEurHr(item.gotovina)}</Text>
+            <Text style={styles.colNum}>
+              {formatIznosEurHr(item.bezgotovinsko)}
+            </Text>
+            <Text style={styles.colNum}>{formatIznosEurHr(item.ukupno)}</Text>
           </View>
         ))}
       </Page>
