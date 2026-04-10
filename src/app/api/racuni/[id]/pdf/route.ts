@@ -1,7 +1,10 @@
 import { renderToStream } from '@react-pdf/renderer';
 import { NextResponse } from 'next/server';
 
-import { InvoiceDocument } from '@/lib/pdf/invoice-document';
+import {
+  formatBrojRacunaZaPdf,
+  InvoiceDocument,
+} from '@/lib/pdf/invoice-document';
 import { createClient } from '@/lib/supabase/server';
 
 export async function GET(
@@ -17,14 +20,21 @@ export async function GET(
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
-  const { data: racun, error } = await supabase
-    .from('racuni')
-    .select(
-      'id, broj_racuna, datum, datum_placanja, nacin_placanja, status, ukupni_iznos, napomena, kupci(naziv, oib, adresa)',
-    )
-    .eq('id', params.id)
-    .eq('user_id', user.id)
-    .single();
+  const [{ data: racun, error }, { data: profil }] = await Promise.all([
+    supabase
+      .from('racuni')
+      .select(
+        'id, broj_racuna, datum, datum_placanja, nacin_placanja, status, ukupni_iznos, napomena, kupci(naziv, oib, adresa, email)',
+      )
+      .eq('id', params.id)
+      .eq('user_id', user.id)
+      .single(),
+    supabase
+      .from('profiles')
+      .select('naziv_obrta, oib, adresa')
+      .eq('id', user.id)
+      .maybeSingle(),
+  ]);
 
   if (error || !racun) {
     return NextResponse.json({ error: 'Racun nije pronaden.' }, { status: 404 });
@@ -35,14 +45,35 @@ export async function GET(
     .select('opis, kolicina, jedinicna_cijena, ukupno')
     .eq('racun_id', racun.id);
 
+  const kupac = racun.kupci as {
+    naziv?: string | null;
+    oib?: string | null;
+    adresa?: string | null;
+    email?: string | null;
+  } | null;
+
+  const brojZaDatoteku = formatBrojRacunaZaPdf(racun.broj_racuna).replaceAll(
+    '/',
+    '-',
+  );
+
   const invoicePdf = InvoiceDocument({
     brojRacuna: racun.broj_racuna,
     datum: racun.datum,
+    datumPlacanja: racun.datum_placanja,
     status: racun.status,
     nacinPlacanja: racun.nacin_placanja,
     ukupniIznos: Number(racun.ukupni_iznos),
     napomena: racun.napomena,
-    kupacNaziv: (racun.kupci as { naziv?: string } | null)?.naziv ?? '-',
+    kupacNaziv: kupac?.naziv ?? '',
+    kupacOib: kupac?.oib ?? null,
+    kupacAdresa: kupac?.adresa ?? null,
+    kupacEmail: kupac?.email ?? null,
+    profil: {
+      nazivObrta: profil?.naziv_obrta ?? '',
+      oib: profil?.oib ?? '',
+      adresa: profil?.adresa ?? null,
+    },
     stavke: (stavke ?? []).map((stavka) => ({
       opis: stavka.opis,
       kolicina: Number(stavka.kolicina),
@@ -55,7 +86,7 @@ export async function GET(
   return new NextResponse(stream as unknown as BodyInit, {
     headers: {
       'Content-Type': 'application/pdf',
-      'Content-Disposition': `inline; filename="racun-${racun.broj_racuna}.pdf"`,
+      'Content-Disposition': `inline; filename="racun-${brojZaDatoteku}.pdf"`,
     },
   });
 }
