@@ -1,4 +1,37 @@
-import { Document, Page, StyleSheet, Text, View } from '@react-pdf/renderer';
+import path from 'path';
+
+import {
+  Document,
+  Font,
+  Page,
+  StyleSheet,
+  Text,
+  View,
+} from '@react-pdf/renderer';
+
+/**
+ * Roboto s punim slovnikom (TTF) za č, š, ž, ć, đ.
+ * Jedan `src` po težini: react-pdf bira jedan font po fontWeight, pa zasebni
+ * latin + latin-ext woff2 URL-ovi ne mogu zajedno pokriti HR dijakritike.
+ * (Gstatic v30 woff2 iz uputa je latin subset bez latin-ext.)
+ */
+const robotoFontsDir = path.join(process.cwd(), 'public', 'fonts');
+
+Font.register({
+  family: 'Roboto',
+  fonts: [
+    {
+      src: path.join(robotoFontsDir, 'Roboto-Regular.ttf'),
+      fontWeight: 'normal',
+    },
+    {
+      src: path.join(robotoFontsDir, 'Roboto-Bold.ttf'),
+      fontWeight: 'bold',
+    },
+  ],
+});
+
+const FF = 'Roboto';
 
 /** ISO date (YYYY-MM-DD) → Croatian DD.MM.YYYY. */
 export function formatDatumHr(iso: string | null | undefined): string {
@@ -31,7 +64,7 @@ const styles = StyleSheet.create({
     paddingTop: 40,
     paddingHorizontal: 40,
     paddingBottom: 36,
-    fontFamily: 'Helvetica',
+    fontFamily: FF,
     color: '#111',
     flexDirection: 'column',
   },
@@ -44,11 +77,13 @@ const styles = StyleSheet.create({
     maxWidth: '52%',
   },
   issuerName: {
+    fontFamily: FF,
     fontSize: 11,
     fontWeight: 'bold',
     marginBottom: 4,
   },
   issuerLine: {
+    fontFamily: FF,
     fontSize: 9,
     color: '#333',
     marginBottom: 2,
@@ -58,11 +93,13 @@ const styles = StyleSheet.create({
     maxWidth: '45%',
   },
   docTitle: {
+    fontFamily: FF,
     fontSize: 15,
     fontWeight: 'bold',
     marginBottom: 6,
   },
   metaLine: {
+    fontFamily: FF,
     fontSize: 9,
     marginBottom: 2,
     textAlign: 'right',
@@ -74,11 +111,13 @@ const styles = StyleSheet.create({
     marginBottom: 14,
   },
   sectionTitle: {
+    fontFamily: FF,
     fontSize: 10,
     fontWeight: 'bold',
     marginBottom: 6,
   },
   buyerLine: {
+    fontFamily: FF,
     fontSize: 9,
     marginBottom: 3,
   },
@@ -88,6 +127,7 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
   },
   metaItem: {
+    fontFamily: FF,
     width: '50%',
     fontSize: 9,
     marginBottom: 4,
@@ -107,26 +147,31 @@ const styles = StyleSheet.create({
     borderBottomColor: '#ccc',
   },
   colOpis: {
+    fontFamily: FF,
     width: '40%',
     paddingRight: 8,
     fontSize: 9,
   },
   colKol: {
+    fontFamily: FF,
     width: '12%',
     fontSize: 9,
     textAlign: 'right',
   },
   colJed: {
+    fontFamily: FF,
     width: '24%',
     fontSize: 9,
     textAlign: 'right',
   },
   colUkupno: {
+    fontFamily: FF,
     width: '24%',
     fontSize: 9,
     textAlign: 'right',
   },
   th: {
+    fontFamily: FF,
     fontSize: 9,
     fontWeight: 'bold',
   },
@@ -140,23 +185,27 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   totalLabel: {
+    fontFamily: FF,
     fontSize: 11,
     fontWeight: 'bold',
     marginRight: 16,
   },
   totalValue: {
+    fontFamily: FF,
     fontSize: 11,
     fontWeight: 'bold',
     minWidth: 72,
     textAlign: 'right',
   },
   napomena: {
+    fontFamily: FF,
     marginTop: 12,
     fontSize: 9,
     color: '#333',
     lineHeight: 1.35,
   },
   footer: {
+    fontFamily: FF,
     marginTop: 'auto',
     paddingTop: 12,
     borderTopWidth: 0.5,
@@ -286,7 +335,9 @@ export function InvoiceDocument({
           <View style={styles.tableRow} key={`${stavka.opis}-${index}`}>
             <Text style={styles.colOpis}>{stavka.opis}</Text>
             <Text style={styles.colKol}>{stavka.kolicina}</Text>
-            <Text style={styles.colJed}>{stavka.jedinicnaCijena.toFixed(2)} EUR</Text>
+            <Text style={styles.colJed}>
+              {stavka.jedinicnaCijena.toFixed(2)} EUR
+            </Text>
             <Text style={styles.colUkupno}>{stavka.ukupno.toFixed(2)} EUR</Text>
           </View>
         ))}
@@ -301,12 +352,10 @@ export function InvoiceDocument({
         ) : null}
 
         {/* PDV — fiksni footer */}
-        <View style={styles.footer}>
-          <Text>
-            Sukladno članku 90. Zakona o porezu na dodanu vrijednost,{'\n'}
-            izdavatelj računa nije u sustavu PDV-a te PDV nije obračunat.
-          </Text>
-        </View>
+        <Text style={styles.footer}>
+          Sukladno članku 90. Zakona o porezu na dodanu vrijednost,{'\n'}
+          izdavatelj računa nije u sustavu PDV-a te PDV nije obračunat.
+        </Text>
       </Page>
     </Document>
   );
