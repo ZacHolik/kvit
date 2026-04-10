@@ -4,6 +4,8 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { FormEvent, useMemo, useState } from 'react';
 
+import { formatIznosEurHr } from '@/lib/format-hr';
+
 type FormState = {
   brojRacuna: string;
   datum: string;
@@ -42,7 +44,8 @@ export default function NoviRacunPage() {
 
   const ukupno = useMemo(() => {
     return (
-      (Number(formState.stavkaKolicina) || 0) * (Number(formState.stavkaCijena) || 0)
+      (Number(formState.stavkaKolicina) || 0) *
+      (Number(formState.stavkaCijena) || 0)
     );
   }, [formState.stavkaCijena, formState.stavkaKolicina]);
 
@@ -93,7 +96,9 @@ export default function NoviRacunPage() {
     <main className='min-h-screen bg-[#0b0f0e] px-4 py-8 text-[#e2e8e7] sm:px-6 lg:px-8'>
       <div className='mx-auto flex w-full max-w-3xl flex-col gap-6'>
         <header className='rounded-2xl border border-[#1f2a28] bg-[#111716] p-5 sm:p-6'>
-          <p className='font-body text-sm text-[#94a3a0]'>Kreiranje dokumenta</p>
+          <p className='font-body text-sm text-[#94a3a0]'>
+            Kreiranje dokumenta
+          </p>
           <h1 className='font-heading mt-2 text-2xl sm:text-3xl'>Novi račun</h1>
         </header>
 
@@ -148,7 +153,8 @@ export default function NoviRacunPage() {
                 onChange={(event) =>
                   setFormState((previous) => ({
                     ...previous,
-                    nacinPlacanja: event.target.value as FormState['nacinPlacanja'],
+                    nacinPlacanja: event.target
+                      .value as FormState['nacinPlacanja'],
                   }))
                 }
                 className='font-body w-full rounded-xl border border-[#2a3734] bg-[#0b0f0e] px-4 py-3 outline-none transition focus:border-[#0d9488]'
@@ -318,7 +324,7 @@ export default function NoviRacunPage() {
             </label>
             <div className='flex items-end'>
               <p className='font-body w-full rounded-xl border border-[#2a3734] bg-[#0b0f0e] px-4 py-3 text-sm text-[#d5dfdd]'>
-                Ukupno: {ukupno.toFixed(2)} EUR
+                Ukupno: {formatIznosEurHr(ukupno)}
               </p>
             </div>
           </section>

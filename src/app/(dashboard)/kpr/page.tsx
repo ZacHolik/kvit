@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 
+import { formatDatumHr, formatIznosEurHr } from '@/lib/format-hr';
 import { createClient } from '@/lib/supabase/server';
 
 type PaidInvoice = {
@@ -25,13 +26,17 @@ export default async function KprPage() {
   const [{ data: paidInvoices }, { data: existingKpr }] = await Promise.all([
     supabase
       .from('racuni')
-      .select('id, broj_racuna, datum, datum_placanja, nacin_placanja, ukupni_iznos')
+      .select(
+        'id, broj_racuna, datum, datum_placanja, nacin_placanja, ukupni_iznos',
+      )
       .eq('user_id', user.id)
       .eq('status', 'placeno'),
     supabase.from('kpr_unosi').select('racun_id').eq('user_id', user.id),
   ]);
 
-  const existingRacunIds = new Set((existingKpr ?? []).map((item) => item.racun_id));
+  const existingRacunIds = new Set(
+    (existingKpr ?? []).map((item) => item.racun_id),
+  );
   const missingEntries = ((paidInvoices ?? []) as PaidInvoice[]).filter(
     (invoice) => !existingRacunIds.has(invoice.id),
   );
@@ -103,18 +108,20 @@ export default async function KprPage() {
           <article className='rounded-2xl border border-[#1f2a28] bg-[#111716] p-5'>
             <p className='font-body text-sm text-[#94a3a0]'>Gotovina</p>
             <p className='font-heading mt-2 text-2xl'>
-              {totals.gotovina.toFixed(2)} EUR
+              {formatIznosEurHr(totals.gotovina)}
             </p>
           </article>
           <article className='rounded-2xl border border-[#1f2a28] bg-[#111716] p-5'>
             <p className='font-body text-sm text-[#94a3a0]'>Bezgotovinsko</p>
             <p className='font-heading mt-2 text-2xl'>
-              {totals.bezgotovinsko.toFixed(2)} EUR
+              {formatIznosEurHr(totals.bezgotovinsko)}
             </p>
           </article>
           <article className='rounded-2xl border border-[#1f2a28] bg-[#111716] p-5'>
             <p className='font-body text-sm text-[#94a3a0]'>Ukupno</p>
-            <p className='font-heading mt-2 text-2xl'>{totals.ukupno.toFixed(2)} EUR</p>
+            <p className='font-heading mt-2 text-2xl'>
+              {formatIznosEurHr(totals.ukupno)}
+            </p>
           </article>
         </section>
 
@@ -133,16 +140,18 @@ export default async function KprPage() {
             <tbody className='divide-y divide-[#24312f]'>
               {(kprUnosi ?? []).map((item) => (
                 <tr key={item.id} className='text-sm'>
-                  <td className='px-4 py-4'>{item.datum}</td>
+                  <td className='px-4 py-4'>{formatDatumHr(item.datum)}</td>
                   <td className='px-4 py-4'>{item.broj_temeljnice ?? '-'}</td>
                   <td className='px-4 py-4'>{item.opis ?? '-'}</td>
                   <td className='px-4 py-4'>
-                    {Number(item.iznos_gotovina ?? 0).toFixed(2)} EUR
+                    {formatIznosEurHr(Number(item.iznos_gotovina ?? 0))}
                   </td>
                   <td className='px-4 py-4'>
-                    {Number(item.iznos_bezgotovinsko ?? 0).toFixed(2)} EUR
+                    {formatIznosEurHr(Number(item.iznos_bezgotovinsko ?? 0))}
                   </td>
-                  <td className='px-4 py-4'>{Number(item.ukupno ?? 0).toFixed(2)} EUR</td>
+                  <td className='px-4 py-4'>
+                    {formatIznosEurHr(Number(item.ukupno ?? 0))}
+                  </td>
                 </tr>
               ))}
             </tbody>

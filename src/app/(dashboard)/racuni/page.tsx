@@ -1,6 +1,11 @@
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 
+import {
+  formatDatumHr,
+  formatIznosEurHr,
+  formatRacunStatusHr,
+} from '@/lib/format-hr';
 import { createClient } from '@/lib/supabase/server';
 
 import { MarkAsPaidButton } from './paid-button';
@@ -37,7 +42,9 @@ export default async function RacuniPage() {
       <div className='mx-auto flex w-full max-w-6xl flex-col gap-6'>
         <header className='flex flex-col gap-4 rounded-2xl border border-[#1f2a28] bg-[#111716] p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6'>
           <div>
-            <p className='font-body text-sm text-[#94a3a0]'>Evidencija računa</p>
+            <p className='font-body text-sm text-[#94a3a0]'>
+              Evidencija računa
+            </p>
             <h1 className='font-heading mt-2 text-2xl sm:text-3xl'>Računi</h1>
           </div>
           <Link
@@ -65,12 +72,12 @@ export default async function RacuniPage() {
                 <tr key={racun.id} className='text-sm'>
                   <td className='px-4 py-4'>{racun.broj_racuna}</td>
                   <td className='px-4 py-4'>{racun.kupci?.naziv ?? '-'}</td>
-                  <td className='px-4 py-4'>{racun.datum}</td>
+                  <td className='px-4 py-4'>{formatDatumHr(racun.datum)}</td>
                   <td className='px-4 py-4'>
-                    {Number(racun.ukupni_iznos).toFixed(2)} EUR
+                    {formatIznosEurHr(Number(racun.ukupni_iznos))}
                   </td>
-                  <td className='px-4 py-4 uppercase tracking-wide text-[#b9c7c4]'>
-                    {racun.status}
+                  <td className='px-4 py-4 text-[#b9c7c4]'>
+                    {formatRacunStatusHr(racun.status)}
                   </td>
                   <td className='px-4 py-4'>
                     <div className='flex flex-wrap items-center gap-2'>

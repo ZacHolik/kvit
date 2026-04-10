@@ -9,6 +9,8 @@ import {
   View,
 } from '@react-pdf/renderer';
 
+import { formatDatumHr } from '@/lib/format-hr';
+
 /**
  * Roboto s punim slovnikom (TTF) za č, š, ž, ć, đ.
  * Jedan `src` po težini: react-pdf bira jedan font po fontWeight, pa zasebni
@@ -32,18 +34,6 @@ Font.register({
 });
 
 const FF = 'Roboto';
-
-/** ISO date (YYYY-MM-DD) → Croatian DD.MM.YYYY. */
-export function formatDatumHr(iso: string | null | undefined): string {
-  if (!iso || typeof iso !== 'string') {
-    return '—';
-  }
-  const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(iso.trim());
-  if (!m) {
-    return iso;
-  }
-  return `${m[3]}.${m[2]}.${m[1]}.`;
-}
 
 /**
  * HR-style display: "1/1/2026" (redni/broj u godini/godina) → "1-2026".
