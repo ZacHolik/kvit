@@ -1,19 +1,34 @@
 import { Document, Page, StyleSheet, Text, View } from '@react-pdf/renderer';
 
+import { formatIznosEurHr } from '@/lib/format-hr';
+
+import { PDF_FONT_FAMILY, registerRobotoPdfFont } from './register-roboto';
+
+registerRobotoPdfFont();
+
+const FF = PDF_FONT_FAMILY;
+
+/** Bez rastavljanja riječi (izbjegava krive prijelome tipa „Obrtnička“ → „Obrtni ka“). */
+function noHyphenation(word: string): string[] {
+  return [word];
+}
+
 const styles = StyleSheet.create({
   page: {
     fontSize: 9,
     padding: 28,
-    fontFamily: 'Helvetica',
+    fontFamily: FF,
     color: '#111',
   },
   formTitle: {
+    fontFamily: FF,
     fontSize: 11,
     textAlign: 'center',
     marginBottom: 4,
     fontWeight: 'bold',
   },
   formSubtitle: {
+    fontFamily: FF,
     fontSize: 8,
     textAlign: 'center',
     marginBottom: 14,
@@ -25,6 +40,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   sectionHeader: {
+    fontFamily: FF,
     backgroundColor: '#e8e8e8',
     padding: 4,
     borderBottomWidth: 1,
@@ -34,26 +50,32 @@ const styles = StyleSheet.create({
   },
   row: {
     flexDirection: 'row',
+    alignItems: 'flex-start',
     borderBottomWidth: 0.5,
     borderBottomColor: '#ccc',
     minHeight: 22,
   },
   rowLast: {
     flexDirection: 'row',
+    alignItems: 'flex-start',
+    borderBottomWidth: 0,
     minHeight: 22,
   },
   labelCell: {
+    fontFamily: FF,
     width: '62%',
     padding: 5,
     borderRightWidth: 0.5,
     borderRightColor: '#ccc',
   },
   valueCell: {
+    fontFamily: FF,
     width: '38%',
     padding: 5,
     textAlign: 'right',
   },
   note: {
+    fontFamily: FF,
     fontSize: 7,
     marginTop: 12,
     color: '#444',
@@ -86,6 +108,9 @@ export function PoSdDocument({
   porezKvartalno,
   porezGodisnje,
 }: PoSdPdfPayload) {
+  const godinaPoreza = godina + 1;
+  const sectionCTitle = `C — Procjena poreza za ${godinaPoreza}. na osnovu primitaka ${godina}.`;
+
   return (
     <Document>
       <Page size='A4' style={styles.page}>
@@ -93,7 +118,8 @@ export function PoSdDocument({
           PO-SD — Pregled primitaka i paušalnog poreza (informativno)
         </Text>
         <Text style={styles.formSubtitle}>
-          Podaci iz KPR-a za kalendarsku godinu {godina}. Službenu prijavu podnosi se u ePoreznoj.
+          Podaci iz KPR-a za kalendarsku godinu {godina}. Službenu prijavu
+          podnosi se u ePoreznoj.
         </Text>
 
         <View style={styles.section}>
@@ -108,7 +134,12 @@ export function PoSdDocument({
           </View>
           <View style={styles.rowLast}>
             <Text style={styles.labelCell}>Sjedište / adresa</Text>
-            <Text style={styles.valueCell}>{adresa || '—'}</Text>
+            <Text
+              style={styles.valueCell}
+              hyphenationCallback={noHyphenation}
+            >
+              {adresa?.trim() ? adresa.trim() : '—'}
+            </Text>
           </View>
         </View>
 
@@ -118,42 +149,53 @@ export function PoSdDocument({
           </Text>
           <View style={styles.row}>
             <Text style={styles.labelCell}>Gotovinski primitci (zbroj KPR)</Text>
-            <Text style={styles.valueCell}>{gotovina.toFixed(2)} EUR</Text>
+            <Text style={styles.valueCell}>
+              {formatIznosEurHr(gotovina)}
+            </Text>
           </View>
           <View style={styles.row}>
-            <Text style={styles.labelCell}>Bezgotovinski primitci (zbroj KPR)</Text>
-            <Text style={styles.valueCell}>{bezgotovinsko.toFixed(2)} EUR</Text>
+            <Text style={styles.labelCell}>
+              Bezgotovinski primitci (zbroj KPR)
+            </Text>
+            <Text style={styles.valueCell}>
+              {formatIznosEurHr(bezgotovinsko)}
+            </Text>
           </View>
           <View style={styles.rowLast}>
             <Text style={styles.labelCell}>UKUPNO godišnjih primitaka</Text>
             <Text style={[styles.valueCell, { fontWeight: 'bold' }]}>
-              {ukupnoPrimici.toFixed(2)} EUR
+              {formatIznosEurHr(ukupnoPrimici)}
             </Text>
           </View>
         </View>
 
         <View style={styles.section}>
-          <Text style={styles.sectionHeader}>
-            C — Paušalni porez 2026. (procjena prema razredu primitaka)
-          </Text>
+          <Text style={styles.sectionHeader}>{sectionCTitle}</Text>
           <View style={styles.row}>
             <Text style={styles.labelCell}>Razred (godišnji primitci)</Text>
             <Text style={styles.valueCell}>{razredLabel}</Text>
           </View>
           <View style={styles.row}>
             <Text style={styles.labelCell}>Porez po kvartalu (procjena)</Text>
-            <Text style={styles.valueCell}>{porezKvartalno.toFixed(2)} EUR</Text>
+            <Text style={styles.valueCell}>
+              {formatIznosEurHr(porezKvartalno)}
+            </Text>
           </View>
           <View style={styles.rowLast}>
-            <Text style={styles.labelCell}>Porez godišnje (4 × kvartal, procjena)</Text>
-            <Text style={styles.valueCell}>{porezGodisnje.toFixed(2)} EUR</Text>
+            <Text style={styles.labelCell}>
+              Porez godišnje (4 × kvartal, procjena)
+            </Text>
+            <Text style={styles.valueCell}>
+              {formatIznosEurHr(porezGodisnje)}
+            </Text>
           </View>
         </View>
 
         <Text style={styles.note}>
-          Ova isprava je informativna i ne zamjenjuje službeni obrazac PO-SD u sustavu ePorezna.
-          Prirez na dohodak ovisi o opcini prebivališta — nije uključen. Za sezonski rad,
-          mirovanje obrta ili posebne olakšice koristi službene kalkulatore u ePoreznoj.
+          Ova isprava je informativna i ne zamjenjuje službeni obrazac PO-SD u
+          sustavu ePorezna. Prirez na dohodak ovisi o opcini prebivališta — nije
+          uključen. Za sezonski rad, mirovanje obrta ili posebne olakšice koristi
+          službene kalkulatore u ePoreznoj.
         </Text>
       </Page>
     </Document>

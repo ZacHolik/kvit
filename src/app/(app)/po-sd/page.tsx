@@ -3,21 +3,8 @@ import { redirect } from 'next/navigation';
 
 import { formatIznosEurHr } from '@/lib/format-hr';
 import { getPausalRazred2026 } from '@/lib/pausal-tax';
-import { zbrojiKprZaGodinu } from '@/lib/po-sd-data';
+import { normalizePoSdGodina, zbrojiKprZaGodinu } from '@/lib/po-sd-data';
 import { createClient } from '@/lib/supabase/server';
-
-function normalizeGodina(raw: string | undefined): number {
-  const trenutna = new Date().getFullYear();
-  const defaultGodina = trenutna - 1;
-  if (!raw) {
-    return defaultGodina;
-  }
-  const parsed = Number.parseInt(raw, 10);
-  if (Number.isNaN(parsed) || parsed < 2000 || parsed > 2100) {
-    return defaultGodina;
-  }
-  return parsed;
-}
 
 export default async function PoSdPage({
   searchParams,
@@ -33,7 +20,7 @@ export default async function PoSdPage({
     redirect('/login');
   }
 
-  const godina = normalizeGodina(searchParams.year);
+  const godina = normalizePoSdGodina(searchParams.year);
 
   const [{ data: profil }, zbroj] = await Promise.all([
     supabase
@@ -140,7 +127,7 @@ export default async function PoSdPage({
 
         <section className='rounded-2xl border border-[#1f2a28] bg-[#111716] p-5 sm:p-6'>
           <h2 className='font-heading text-lg text-[#e2e8e7]'>
-            Paušalni porez — razredi 2026.
+            Procjena poreza za {godina + 1}. na osnovu primitaka {godina}.
           </h2>
           {razred ? (
             <dl className='font-body mt-4 space-y-3 text-sm'>

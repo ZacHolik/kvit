@@ -3,7 +3,7 @@ import { NextResponse } from 'next/server';
 
 import { getPausalRazred2026 } from '@/lib/pausal-tax';
 import { PoSdDocument } from '@/lib/pdf/po-sd-document';
-import { zbrojiKprZaGodinu } from '@/lib/po-sd-data';
+import { normalizePoSdGodina, zbrojiKprZaGodinu } from '@/lib/po-sd-data';
 import { createClient } from '@/lib/supabase/server';
 
 export async function GET(request: Request) {
@@ -17,12 +17,7 @@ export async function GET(request: Request) {
   }
 
   const { searchParams } = new URL(request.url);
-  const godinaRaw = searchParams.get('year');
-  const godina = godinaRaw ? Number.parseInt(godinaRaw, 10) : new Date().getFullYear() - 1;
-
-  if (Number.isNaN(godina) || godina < 2000 || godina > 2100) {
-    return NextResponse.json({ error: 'Neispravna godina.' }, { status: 400 });
-  }
+  const godina = normalizePoSdGodina(searchParams.get('year'));
 
   const [{ data: profil }, zbroj] = await Promise.all([
     supabase

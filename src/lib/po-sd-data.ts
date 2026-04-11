@@ -1,5 +1,19 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
 
+/** KPR godina za PO-SD (URL ?year=) — ista logika na stranici i u PDF ruti. */
+export function normalizePoSdGodina(raw: string | null | undefined): number {
+  const trenutna = new Date().getFullYear();
+  const defaultGodina = trenutna - 1;
+  if (raw == null || raw === '') {
+    return defaultGodina;
+  }
+  const parsed = Number.parseInt(raw, 10);
+  if (Number.isNaN(parsed) || parsed < 2000 || parsed > 2100) {
+    return defaultGodina;
+  }
+  return parsed;
+}
+
 export type KprGodisnjiZbroj = {
   gotovina: number;
   bezgotovinsko: number;
