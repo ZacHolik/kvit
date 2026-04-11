@@ -15,8 +15,9 @@ const dmSans = DM_Sans({
 });
 
 export const metadata: Metadata = {
-  title: 'Kvit',
-  description: 'SaaS za hrvatske paušalne obrtnike',
+  title: 'Kvit – Paušalni obrt bez glavobolje',
+  description:
+    'Jedina aplikacija koja te vodi korak po korak kroz sve obveze paušalnog obrta. Bez papirologije, bez stresa, bez kazni.',
   manifest: '/manifest.json',
   appleWebApp: {
     capable: true,
