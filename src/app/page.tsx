@@ -123,6 +123,22 @@ export default function LandingPage() {
   return (
     <>
       <style dangerouslySetInnerHTML={{ __html: KVIT_LANDING_CSS }} />
+      {/* Hero: prevent horizontal clip / overflow on small screens */}
+      <style
+        dangerouslySetInnerHTML={{
+          __html: `
+#kvit-landing .hero{overflow-x:hidden}
+#kvit-landing .hero-left{min-width:0}
+@media(max-width:640px){
+  #kvit-landing .hero h1{
+    font-size:clamp(1.85rem,8.5vw,2.75rem);
+    word-break:break-word;
+    overflow-wrap:anywhere;
+  }
+}
+`,
+        }}
+      />
       <div id='kvit-landing'>
         <nav>
           <div className='logo'>
@@ -185,9 +201,6 @@ export default function LandingPage() {
               <a href='#kako-radi' className='btn-ghost'>
                 Kako radi
               </a>
-              <Link href='/login' className='btn-ghost'>
-                Imam račun
-              </Link>
             </div>
             <p className='hero-note'>
               Aplikacija je u fazi lansiranja. Prvih 50 prijava – 3 mjeseca
