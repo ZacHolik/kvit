@@ -1,7 +1,35 @@
 import { createServerClient } from '@supabase/ssr';
 import { NextResponse, type NextRequest } from 'next/server';
 
-const PUBLIC_ROUTES = ['/login', '/register', '/onboarding', '/confirm-email'];
+const AUTH_PUBLIC_PREFIXES = [
+  '/login',
+  '/register',
+  '/onboarding',
+  '/confirm-email',
+] as const;
+
+/**
+ * Session required for all routes except: `/` (landing), auth flows below,
+ * `/api/*` (handlers enforce auth), and PWA manifest. App UI lives under
+ * `/dashboard`, `/racuni`, `/kpr`, `/po-sd`, `/asistent`.
+ */
+function isPublicPath(pathname: string) {
+  if (pathname === '/') {
+    return true;
+  }
+  if (pathname === '/manifest.json') {
+    return true;
+  }
+  if (pathname === '/sw.js' || /^\/workbox-[\w.-]+\.js$/.test(pathname)) {
+    return true;
+  }
+  if (pathname.startsWith('/api/')) {
+    return true;
+  }
+  return AUTH_PUBLIC_PREFIXES.some(
+    (route) => pathname === route || pathname.startsWith(`${route}/`),
+  );
+}
 
 export async function middleware(request: NextRequest) {
   let response = NextResponse.next({
@@ -42,11 +70,8 @@ export async function middleware(request: NextRequest) {
   } = await supabase.auth.getUser();
 
   const pathname = request.nextUrl.pathname;
-  const isPublicRoute = PUBLIC_ROUTES.some(
-    (route) => pathname === route || pathname.startsWith(`${route}/`),
-  );
 
-  if (!user && !isPublicRoute) {
+  if (!user && !isPublicPath(pathname)) {
     const url = request.nextUrl.clone();
     url.pathname = '/login';
     return NextResponse.redirect(url);

@@ -7,7 +7,7 @@ import { useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
 
 const NAV_LINKS = [
-  { href: '/', label: 'Dashboard' },
+  { href: '/dashboard', label: 'Dashboard' },
   { href: '/racuni', label: 'Računi' },
   { href: '/kpr', label: 'KPR' },
   { href: '/po-sd', label: 'PO-SD' },
@@ -15,8 +15,8 @@ const NAV_LINKS = [
 ] as const;
 
 function navLinkActive(pathname: string, href: string) {
-  if (href === '/') {
-    return pathname === '/';
+  if (href === '/dashboard') {
+    return pathname === '/dashboard';
   }
   return pathname === href || pathname.startsWith(`${href}/`);
 }
@@ -77,7 +77,7 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
           <HamburgerIcon open={menuOpen} />
         </button>
         <Link
-          href='/'
+          href='/dashboard'
           className='font-heading text-lg text-[#e2e8e7]'
           onClick={closeMenu}
         >
@@ -102,7 +102,10 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
           }`}
         >
           <div className='hidden border-b border-[#1f2a28] p-6 md:block'>
-            <Link href='/' className='font-heading text-xl text-[#e2e8e7]'>
+            <Link
+              href='/dashboard'
+              className='font-heading text-xl text-[#e2e8e7]'
+            >
               Kvit
             </Link>
           </div>
