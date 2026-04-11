@@ -123,19 +123,47 @@ export default function LandingPage() {
   return (
     <>
       <style dangerouslySetInnerHTML={{ __html: KVIT_LANDING_CSS }} />
-      {/* Hero + nav: small-screen overflow and tighter nav CTA padding */}
+      {/* Hero + nav: small-screen tweaks; nav-login outline button; mobile CTA */}
       <style
         dangerouslySetInnerHTML={{
           __html: `
 #kvit-landing .hero{overflow-x:hidden}
 #kvit-landing .hero-left{min-width:0}
+#kvit-landing .nav-login{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  box-sizing:border-box;
+  border:1px solid var(--teal);
+  background:transparent;
+  color:var(--text);
+  padding:0.55rem 0.9rem;
+  border-radius:8px;
+  font-size:0.9rem;
+  font-weight:500;
+  line-height:1.2;
+  text-decoration:none;
+  white-space:nowrap;
+  transition:color 0.2s,border-color 0.2s,background 0.2s;
+}
+#kvit-landing .nav-login:hover{
+  color:var(--teal3);
+  border-color:var(--teal2);
+  background:rgba(13,148,136,0.08);
+}
 @media(max-width:640px){
   #kvit-landing .hero h1{
     font-size:clamp(1.85rem,8.5vw,2.75rem);
     word-break:break-word;
     overflow-wrap:anywhere;
   }
-  #kvit-landing .nav-cta{padding:0.55rem 1rem}
+  #kvit-landing .nav-cta{
+    font-size:0.78rem;
+    padding:0.5rem 0.85rem;
+  }
+  #kvit-landing .nav-login{
+    font-size:0.78rem;
+  }
 }
 `,
         }}
