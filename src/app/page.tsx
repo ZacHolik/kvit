@@ -123,7 +123,7 @@ export default function LandingPage() {
   return (
     <>
       <style dangerouslySetInnerHTML={{ __html: KVIT_LANDING_CSS }} />
-      {/* Hero: prevent horizontal clip / overflow on small screens */}
+      {/* Hero + nav: small-screen overflow and tighter nav CTA padding */}
       <style
         dangerouslySetInnerHTML={{
           __html: `
@@ -135,6 +135,7 @@ export default function LandingPage() {
     word-break:break-word;
     overflow-wrap:anywhere;
   }
+  #kvit-landing .nav-cta{padding:0.55rem 1rem}
 }
 `,
         }}
