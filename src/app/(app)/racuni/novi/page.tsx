@@ -2,9 +2,10 @@
 
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { FormEvent, useMemo, useState } from 'react';
+import { FormEvent, useEffect, useMemo, useState } from 'react';
 
 import { formatIznosEurHr } from '@/lib/format-hr';
+import { createClient } from '@/lib/supabase/client';
 
 type FormState = {
   brojRacuna: string;
@@ -24,6 +25,7 @@ type FormState = {
 
 export default function NoviRacunPage() {
   const router = useRouter();
+  const supabase = useMemo(() => createClient(), []);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [formState, setFormState] = useState<FormState>({
@@ -48,6 +50,45 @@ export default function NoviRacunPage() {
       (Number(formState.stavkaCijena) || 0)
     );
   }, [formState.stavkaCijena, formState.stavkaKolicina]);
+
+  // Sljedeći broj računa za paušal (broj-godina), ako polje još nije ručno popunjeno.
+  useEffect(() => {
+    let cancelled = false;
+
+    async function suggestBrojRacuna() {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (!user || cancelled) {
+        return;
+      }
+
+      const { count, error } = await supabase
+        .from('racuni')
+        .select('id', { count: 'exact', head: true })
+        .eq('user_id', user.id);
+
+      if (cancelled) {
+        return;
+      }
+
+      const brojPostojecih = error ? 0 : (count ?? 0);
+      const godina = new Date().getFullYear();
+      const prijedlog = `${brojPostojecih + 1}-${godina}`;
+
+      setFormState((previous) =>
+        previous.brojRacuna.trim() !== ''
+          ? previous
+          : { ...previous, brojRacuna: prijedlog },
+      );
+    }
+
+    void suggestBrojRacuna();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [supabase]);
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -121,8 +162,11 @@ export default function NoviRacunPage() {
                   }))
                 }
                 className='font-body w-full rounded-xl border border-[#2a3734] bg-[#0b0f0e] px-4 py-3 outline-none transition focus:border-[#0d9488]'
-                placeholder='1/1/2026'
+                placeholder='1-2026'
               />
+              <span className='font-body mt-1 block text-xs text-[#64756f]'>
+                Format: redni-broj/godina (npr. 1-2026, 2-2026...)
+              </span>
             </label>
             <label className='block'>
               <span className='font-body mb-2 block text-sm text-[#b9c7c4]'>
