@@ -3,7 +3,11 @@ import { redirect } from 'next/navigation';
 
 import { formatIznosEurHr } from '@/lib/format-hr';
 import { getPausalRazred2026 } from '@/lib/pausal-tax';
-import { normalizePoSdGodina, zbrojiKprZaGodinu } from '@/lib/po-sd-data';
+import {
+  applyPoSdOnboardingPrimici,
+  normalizePoSdGodina,
+  zbrojiKprZaGodinu,
+} from '@/lib/po-sd-data';
 import { createClient } from '@/lib/supabase/server';
 
 export default async function PoSdPage({
@@ -22,14 +26,20 @@ export default async function PoSdPage({
 
   const godina = normalizePoSdGodina(searchParams.year);
 
-  const [{ data: profil }, zbroj] = await Promise.all([
+  const [{ data: profil }, kprZbroj] = await Promise.all([
     supabase
       .from('profiles')
-      .select('naziv_obrta, oib, adresa')
+      .select('naziv_obrta, oib, adresa, godisnji_primici_prosle_godine')
       .eq('id', user.id)
       .maybeSingle(),
     zbrojiKprZaGodinu(supabase, user.id, godina),
   ]);
+
+  const { zbroj, izvorOnboardinga } = applyPoSdOnboardingPrimici(
+    godina,
+    kprZbroj,
+    profil?.godisnji_primici_prosle_godine,
+  );
 
   const razred = getPausalRazred2026(zbroj.ukupno);
   const godineOpcije = Array.from({ length: 7 }, (_, i) => {
@@ -123,6 +133,11 @@ export default async function PoSdPage({
               </dd>
             </div>
           </dl>
+          {izvorOnboardinga ? (
+            <p className='font-body mt-3 text-xs text-[#94a3a0]'>
+              Podatak iz onboardinga (ručni unos)
+            </p>
+          ) : null}
         </section>
 
         <section className='rounded-2xl border border-[#1f2a28] bg-[#111716] p-5 sm:p-6'>

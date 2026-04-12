@@ -3,7 +3,11 @@ import { NextResponse } from 'next/server';
 
 import { getPausalRazred2026 } from '@/lib/pausal-tax';
 import { PoSdDocument } from '@/lib/pdf/po-sd-document';
-import { normalizePoSdGodina, zbrojiKprZaGodinu } from '@/lib/po-sd-data';
+import {
+  applyPoSdOnboardingPrimici,
+  normalizePoSdGodina,
+  zbrojiKprZaGodinu,
+} from '@/lib/po-sd-data';
 import { createClient } from '@/lib/supabase/server';
 
 export async function GET(request: Request) {
@@ -19,14 +23,20 @@ export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const godina = normalizePoSdGodina(searchParams.get('year'));
 
-  const [{ data: profil }, zbroj] = await Promise.all([
+  const [{ data: profil }, kprZbroj] = await Promise.all([
     supabase
       .from('profiles')
-      .select('naziv_obrta, oib, adresa')
+      .select('naziv_obrta, oib, adresa, godisnji_primici_prosle_godine')
       .eq('id', user.id)
       .maybeSingle(),
     zbrojiKprZaGodinu(supabase, user.id, godina),
   ]);
+
+  const { zbroj, izvorOnboardinga } = applyPoSdOnboardingPrimici(
+    godina,
+    kprZbroj,
+    profil?.godisnji_primici_prosle_godine,
+  );
 
   const razred = getPausalRazred2026(zbroj.ukupno);
   const doc = PoSdDocument({
@@ -37,6 +47,7 @@ export async function GET(request: Request) {
     gotovina: zbroj.gotovina,
     bezgotovinsko: zbroj.bezgotovinsko,
     ukupnoPrimici: zbroj.ukupno,
+    primiciIzvorOnboardinga: izvorOnboardinga,
     razredLabel: razred?.label ?? '—',
     porezKvartalno: razred?.porezKvartalnoEur ?? 0,
     porezGodisnje: razred?.porezGodisnjeEur ?? 0,

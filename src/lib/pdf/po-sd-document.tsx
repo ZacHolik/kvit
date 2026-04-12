@@ -81,6 +81,13 @@ const styles = StyleSheet.create({
     color: '#444',
     lineHeight: 1.4,
   },
+  sectionBOnboardingNote: {
+    fontFamily: FF,
+    fontSize: 7,
+    paddingHorizontal: 5,
+    paddingBottom: 5,
+    color: '#555',
+  },
 });
 
 export type PoSdPdfPayload = {
@@ -94,6 +101,7 @@ export type PoSdPdfPayload = {
   razredLabel: string;
   porezKvartalno: number;
   porezGodisnje: number;
+  primiciIzvorOnboardinga?: boolean;
 };
 
 export function PoSdDocument({
@@ -107,6 +115,7 @@ export function PoSdDocument({
   razredLabel,
   porezKvartalno,
   porezGodisnje,
+  primiciIzvorOnboardinga = false,
 }: PoSdPdfPayload) {
   const godinaPoreza = godina + 1;
   const sectionCTitle = `C — Procjena poreza za ${godinaPoreza}. na osnovu primitaka ${godina}.`;
@@ -167,6 +176,11 @@ export function PoSdDocument({
               {formatIznosEurHr(ukupnoPrimici)}
             </Text>
           </View>
+          {primiciIzvorOnboardinga ? (
+            <Text style={styles.sectionBOnboardingNote}>
+              Podatak iz onboardinga (ručni unos)
+            </Text>
+          ) : null}
         </View>
 
         <View style={styles.section}>

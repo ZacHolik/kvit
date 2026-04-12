@@ -20,6 +20,34 @@ export type KprGodisnjiZbroj = {
   ukupno: number;
 };
 
+export type PoSdPrimiciResolved = {
+  zbroj: KprGodisnjiZbroj;
+  izvorOnboardinga: boolean;
+};
+
+/**
+ * Za prošlu kalendarsku godinu, ako KPR još nema unosa, koristi ručni zbroj
+ * iz onboardinga (`profiles.godisnji_primici_prosle_godine`).
+ */
+export function applyPoSdOnboardingPrimici(
+  godina: number,
+  kprZbroj: KprGodisnjiZbroj,
+  godisnjiPrimiciProsleGodine: number | null | undefined,
+): PoSdPrimiciResolved {
+  const proslogodisnja = new Date().getFullYear() - 1;
+  if (godina !== proslogodisnja || kprZbroj.ukupno !== 0) {
+    return { zbroj: kprZbroj, izvorOnboardinga: false };
+  }
+  const v = Number(godisnjiPrimiciProsleGodine ?? 0);
+  if (!Number.isFinite(v) || v <= 0) {
+    return { zbroj: kprZbroj, izvorOnboardinga: false };
+  }
+  return {
+    zbroj: { gotovina: 0, bezgotovinsko: v, ukupno: v },
+    izvorOnboardinga: true,
+  };
+}
+
 export async function zbrojiKprZaGodinu(
   supabase: SupabaseClient,
   userId: string,
