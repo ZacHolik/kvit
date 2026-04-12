@@ -1,6 +1,94 @@
 'use client';
 
 import { FormEvent, useMemo, useRef, useState } from 'react';
+import type { Components } from 'react-markdown';
+import ReactMarkdown from 'react-markdown';
+
+const ASSISTANT_MD_COMPONENTS: Components = {
+  p: ({ children }) => (
+    <p className='mb-2 last:mb-0 leading-relaxed'>{children}</p>
+  ),
+  strong: ({ children }) => (
+    <strong className='font-semibold text-[#e2e8e7]'>{children}</strong>
+  ),
+  em: ({ children }) => <em className='italic text-[#d5dfdd]'>{children}</em>,
+  ul: ({ children }) => (
+    <ul className='my-2 list-disc space-y-1 pl-5 marker:text-[#64756f]'>
+      {children}
+    </ul>
+  ),
+  ol: ({ children }) => (
+    <ol className='my-2 list-decimal space-y-1 pl-5 marker:text-[#64756f]'>
+      {children}
+    </ol>
+  ),
+  li: ({ children }) => <li className='leading-relaxed'>{children}</li>,
+  h1: ({ children }) => (
+    <h3 className='mb-2 mt-3 font-heading text-base font-bold text-[#e2e8e7] first:mt-0'>
+      {children}
+    </h3>
+  ),
+  h2: ({ children }) => (
+    <h3 className='mb-2 mt-3 font-heading text-base font-bold text-[#e2e8e7] first:mt-0'>
+      {children}
+    </h3>
+  ),
+  h3: ({ children }) => (
+    <h4 className='mb-1 mt-2 font-heading text-sm font-semibold text-[#e2e8e7] first:mt-0'>
+      {children}
+    </h4>
+  ),
+  a: ({ href, children }) => (
+    <a
+      href={href}
+      target='_blank'
+      rel='noopener noreferrer'
+      className='text-[#5eead4] underline decoration-[#5eead4]/50 underline-offset-2 hover:text-[#99f6e4]'
+    >
+      {children}
+    </a>
+  ),
+  code: ({ className, children, ...props }) => {
+    const isBlock = /\blanguage-/.test(className ?? '');
+    if (isBlock) {
+      return (
+        <code
+          className='block font-mono text-xs leading-relaxed text-[#d5dfdd]'
+          {...props}
+        >
+          {children}
+        </code>
+      );
+    }
+    return (
+      <code
+        className='rounded bg-[#253330] px-1.5 py-0.5 font-mono text-[0.85em] text-[#a7f3d0]'
+        {...props}
+      >
+        {children}
+      </code>
+    );
+  },
+  pre: ({ children }) => (
+    <pre className='my-2 overflow-x-auto whitespace-pre-wrap break-words rounded-lg border border-[#253330] bg-[#050807] p-3'>
+      {children}
+    </pre>
+  ),
+  blockquote: ({ children }) => (
+    <blockquote className='my-2 border-l-2 border-[#0d9488]/60 pl-3 text-[#b9c7c4]'>
+      {children}
+    </blockquote>
+  ),
+  hr: () => <hr className='my-3 border-[#253330]' />,
+};
+
+function AssistantMessageContent({ content }: { content: string }) {
+  return (
+    <div className='assistant-markdown text-[#d5dfdd]'>
+      <ReactMarkdown components={ASSISTANT_MD_COMPONENTS}>{content}</ReactMarkdown>
+    </div>
+  );
+}
 
 type ChatMessage = {
   role: 'user' | 'assistant';
@@ -151,7 +239,13 @@ export default function AsistentPage() {
                     : 'bg-[#0b0f0e] text-[#d5dfdd] border border-[#253330]'
                 }`}
               >
-                {message.content || (isLoading ? 'Pišem odgovor...' : '')}
+                {message.role === 'user' ? (
+                  <span className='whitespace-pre-wrap'>{message.content}</span>
+                ) : message.content ? (
+                  <AssistantMessageContent content={message.content} />
+                ) : isLoading ? (
+                  'Pišem odgovor...'
+                ) : null}
               </article>
             ))}
           </div>
