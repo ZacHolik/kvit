@@ -33,6 +33,22 @@ function isPublicPath(pathname: string) {
 }
 
 export async function middleware(request: NextRequest) {
+  const url = request.nextUrl.clone();
+  const pathname = url.pathname;
+
+  /**
+   * Supabase email potvrda često redirecta na Site URL root (?code=…&state=…)
+   * umjesto na /auth/callback — proslijedi u naš handler + default next.
+   */
+  if (url.searchParams.has('code') && pathname === '/') {
+    const dest = request.nextUrl.clone();
+    dest.pathname = '/auth/callback';
+    if (!dest.searchParams.get('next')) {
+      dest.searchParams.set('next', '/confirm-email?verified=1');
+    }
+    return NextResponse.redirect(dest);
+  }
+
   let response = NextResponse.next({
     request: {
       headers: request.headers,
@@ -70,12 +86,10 @@ export async function middleware(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser();
 
-  const pathname = request.nextUrl.pathname;
-
   if (!user && !isPublicPath(pathname)) {
-    const url = request.nextUrl.clone();
-    url.pathname = '/login';
-    return NextResponse.redirect(url);
+    const loginUrl = request.nextUrl.clone();
+    loginUrl.pathname = '/login';
+    return NextResponse.redirect(loginUrl);
   }
 
   return response;
