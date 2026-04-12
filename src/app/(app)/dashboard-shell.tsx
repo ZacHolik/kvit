@@ -12,12 +12,10 @@ const MAIN_NAV = [
   { href: '/kpr', label: 'KPR', icon: '📋' },
   { href: '/po-sd', label: 'PO-SD', icon: '📑' },
   { href: '/asistent', label: 'AI Asistent', icon: '🤖' },
+  { href: '/vodici', label: 'Vodiči', icon: '📚' },
 ] as const;
 
-const COMING_SOON_NAV = [
-  { id: 'vodici', label: 'Vodiči', icon: '📚' },
-  { id: 'alati', label: 'Alati', icon: '🛠️' },
-] as const;
+const COMING_SOON_NAV = [{ id: 'alati', label: 'Alati', icon: '🛠️' }] as const;
 
 function navLinkActive(pathname: string, href: string) {
   if (href === '/dashboard') {
