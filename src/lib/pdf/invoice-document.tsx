@@ -1,6 +1,6 @@
 import { Document, Page, StyleSheet, Text, View } from '@react-pdf/renderer';
 
-import { formatDatumHr } from '@/lib/format-hr';
+import { formatDatumHr, formatIznosEurHr } from '@/lib/format-hr';
 
 import { PDF_FONT_FAMILY, registerRobotoPdfFont } from './register-roboto';
 
@@ -183,6 +183,8 @@ export type InvoiceProfilPdf = {
   nazivObrta: string;
   oib: string;
   adresa: string | null;
+  /** Bez razmaka; prikaz samo ako nije prazno. */
+  iban: string | null;
 };
 
 export type InvoicePdfData = {
@@ -248,6 +250,7 @@ export function InvoiceDocument({
   stavke,
 }: InvoicePdfData) {
   const brojZaPrikaz = formatBrojRacunaZaPdf(brojRacuna);
+  const ibanZaPrikaz = profil.iban?.replace(/\s/g, '').trim();
 
   return (
     <Document>
@@ -258,6 +261,9 @@ export function InvoiceDocument({
             <Text style={styles.issuerName}>{dash(profil.nazivObrta)}</Text>
             <Text style={styles.issuerLine}>OIB: {dash(profil.oib)}</Text>
             <Text style={styles.issuerLine}>{dash(profil.adresa)}</Text>
+            {ibanZaPrikaz ? (
+              <Text style={styles.issuerLine}>IBAN: {ibanZaPrikaz}</Text>
+            ) : null}
           </View>
           <View style={styles.invoiceMeta}>
             <Text style={styles.docTitle}>Račun</Text>
@@ -299,15 +305,19 @@ export function InvoiceDocument({
             <Text style={styles.colOpis}>{stavka.opis}</Text>
             <Text style={styles.colKol}>{stavka.kolicina}</Text>
             <Text style={styles.colJed}>
-              {stavka.jedinicnaCijena.toFixed(2)} EUR
+              {formatIznosEurHr(stavka.jedinicnaCijena)}
             </Text>
-            <Text style={styles.colUkupno}>{stavka.ukupno.toFixed(2)} EUR</Text>
+            <Text style={styles.colUkupno}>
+              {formatIznosEurHr(stavka.ukupno)}
+            </Text>
           </View>
         ))}
 
         <View style={styles.totalWrap}>
           <Text style={styles.totalLabel}>UKUPNO</Text>
-          <Text style={styles.totalValue}>{ukupniIznos.toFixed(2)} EUR</Text>
+          <Text style={styles.totalValue}>
+            {formatIznosEurHr(ukupniIznos)}
+          </Text>
         </View>
 
         {napomena ? (

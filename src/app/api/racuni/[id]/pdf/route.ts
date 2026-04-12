@@ -31,7 +31,7 @@ export async function GET(
       .single(),
     supabase
       .from('profiles')
-      .select('naziv_obrta, oib, adresa')
+      .select('naziv_obrta, oib, adresa, iban')
       .eq('id', user.id)
       .maybeSingle(),
   ]);
@@ -73,6 +73,7 @@ export async function GET(
       nazivObrta: profil?.naziv_obrta ?? '',
       oib: profil?.oib ?? '',
       adresa: profil?.adresa ?? null,
+      iban: profil?.iban ?? null,
     },
     stavke: (stavke ?? []).map((stavka) => ({
       opis: stavka.opis,

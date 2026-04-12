@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 
+import { opisAutomatskogKprUnosaZaRacun } from '@/lib/kpr-export';
 import { createClient } from '@/lib/supabase/server';
 
 type StatusPayload = {
@@ -62,7 +63,7 @@ export async function PATCH(
         racun_id: invoice.id,
         datum: body.datumPlacanja || invoice.datum,
         broj_temeljnice: invoice.broj_racuna,
-        opis: `Automatski unos za racun ${invoice.broj_racuna}`,
+        opis: opisAutomatskogKprUnosaZaRacun(invoice.broj_racuna),
         iznos_gotovina: isCash ? Number(invoice.ukupni_iznos) : 0,
         iznos_bezgotovinsko: isCash ? 0 : Number(invoice.ukupni_iznos),
         ukupno: Number(invoice.ukupni_iznos),

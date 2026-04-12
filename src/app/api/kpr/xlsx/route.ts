@@ -2,7 +2,11 @@ import { NextResponse } from 'next/server';
 import * as XLSX from 'xlsx';
 
 import { formatDatumHr, formatIznosEurHr } from '@/lib/format-hr';
-import { getKprExportYear, kprDatumRangeZaGodinu } from '@/lib/kpr-export';
+import {
+  getKprExportYear,
+  kprDatumRangeZaGodinu,
+  normalizeKprOpisZaEksport,
+} from '@/lib/kpr-export';
 import { createClient } from '@/lib/supabase/server';
 
 export async function GET(request: Request) {
@@ -51,7 +55,7 @@ export async function GET(request: Request) {
   const dataRows = (kprUnosi ?? []).map((item) => [
     formatDatumHr(item.datum),
     item.broj_temeljnice ?? '',
-    item.opis ?? '',
+    normalizeKprOpisZaEksport(item.opis),
     formatIznosEurHr(Number(item.iznos_gotovina ?? 0)),
     formatIznosEurHr(Number(item.iznos_bezgotovinsko ?? 0)),
     formatIznosEurHr(Number(item.ukupno ?? 0)),

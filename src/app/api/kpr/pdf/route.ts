@@ -1,7 +1,11 @@
 import { renderToStream } from '@react-pdf/renderer';
 import { NextResponse } from 'next/server';
 
-import { getKprExportYear, kprDatumRangeZaGodinu } from '@/lib/kpr-export';
+import {
+  getKprExportYear,
+  kprDatumRangeZaGodinu,
+  normalizeKprOpisZaEksport,
+} from '@/lib/kpr-export';
 import { KprDocument } from '@/lib/pdf/kpr-document';
 import { createClient } from '@/lib/supabase/server';
 
@@ -46,7 +50,7 @@ export async function GET(request: Request) {
     items: (kprUnosi ?? []).map((item) => ({
       datum: item.datum,
       brojTemeljnice: item.broj_temeljnice ?? '-',
-      opis: item.opis ?? '-',
+      opis: normalizeKprOpisZaEksport(item.opis) || '-',
       gotovina: Number(item.iznos_gotovina ?? 0),
       bezgotovinsko: Number(item.iznos_bezgotovinsko ?? 0),
       ukupno: Number(item.ukupno ?? 0),

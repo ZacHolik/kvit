@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { redirect } from 'next/navigation';
 
 import { formatDatumHr, formatIznosEurHr } from '@/lib/format-hr';
+import { opisAutomatskogKprUnosaZaRacun } from '@/lib/kpr-export';
 import { createClient } from '@/lib/supabase/server';
 
 type PaidInvoice = {
@@ -50,7 +51,7 @@ export default async function KprPage() {
         racun_id: invoice.id,
         datum: invoice.datum_placanja || invoice.datum,
         broj_temeljnice: invoice.broj_racuna,
-        opis: `Automatski unos za racun ${invoice.broj_racuna}`,
+        opis: opisAutomatskogKprUnosaZaRacun(invoice.broj_racuna),
         iznos_gotovina: isCash ? amount : 0,
         iznos_bezgotovinsko: isCash ? 0 : amount,
         ukupno: amount,

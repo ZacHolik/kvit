@@ -8,6 +8,8 @@ import { createClient } from '@/lib/supabase/client';
 type OnboardingData = {
   nazivObrta: string;
   oib: string;
+  /** Opcionalno; HR + broj računa, bez razmaka ili s razmacima. */
+  iban: string;
   adresa: string;
   jeJedinaDjelatnost: boolean;
   godisnjiPrimiciProsleGodine: string;
@@ -24,6 +26,7 @@ export default function OnboardingPage() {
   const [formData, setFormData] = useState<OnboardingData>({
     nazivObrta: '',
     oib: '',
+    iban: '',
     adresa: '',
     jeJedinaDjelatnost: true,
     godisnjiPrimiciProsleGodine: '0',
@@ -85,10 +88,12 @@ export default function OnboardingPage() {
       return;
     }
 
+    const ibanNorm = formData.iban.replace(/\s/g, '').trim();
     const payload = {
       id: user.id,
       naziv_obrta: formData.nazivObrta.trim(),
       oib: formData.oib.trim(),
+      iban: ibanNorm.length > 0 ? ibanNorm : null,
       adresa: formData.adresa.trim(),
       je_jedina_djelatnost: formData.jeJedinaDjelatnost,
       godisnji_primici_prosle_godine: Number(formData.godisnjiPrimiciProsleGodine),
@@ -172,25 +177,48 @@ export default function OnboardingPage() {
           ) : null}
 
           {step === 2 ? (
-            <label className='block'>
-              <span className='font-body mb-2 block text-sm text-[#b9c7c4]'>
-                OIB (11 znamenki)
-              </span>
-              <input
-                required
-                maxLength={11}
-                type='text'
-                value={formData.oib}
-                onChange={(event) =>
-                  setFormData((previous) => ({
-                    ...previous,
-                    oib: event.target.value.replace(/\D/g, ''),
-                  }))
-                }
-                className='font-body w-full rounded-xl border border-[#2a3734] bg-[#0b0f0e] px-4 py-3 text-[#e2e8e7] outline-none transition focus:border-[#0d9488]'
-                placeholder='12345678901'
-              />
-            </label>
+            <div className='space-y-5'>
+              <label className='block'>
+                <span className='font-body mb-2 block text-sm text-[#b9c7c4]'>
+                  OIB (11 znamenki)
+                </span>
+                <input
+                  required
+                  maxLength={11}
+                  type='text'
+                  value={formData.oib}
+                  onChange={(event) =>
+                    setFormData((previous) => ({
+                      ...previous,
+                      oib: event.target.value.replace(/\D/g, ''),
+                    }))
+                  }
+                  className='font-body w-full rounded-xl border border-[#2a3734] bg-[#0b0f0e] px-4 py-3 text-[#e2e8e7] outline-none transition focus:border-[#0d9488]'
+                  placeholder='12345678901'
+                />
+              </label>
+              <label className='block'>
+                <span className='font-body mb-2 block text-sm text-[#b9c7c4]'>
+                  IBAN (opcionalno)
+                </span>
+                <input
+                  type='text'
+                  maxLength={42}
+                  value={formData.iban}
+                  onChange={(event) =>
+                    setFormData((previous) => ({
+                      ...previous,
+                      iban: event.target.value.toUpperCase(),
+                    }))
+                  }
+                  className='font-body w-full rounded-xl border border-[#2a3734] bg-[#0b0f0e] px-4 py-3 text-[#e2e8e7] outline-none transition focus:border-[#0d9488]'
+                  placeholder='HR3624840081107269'
+                />
+                <span className='font-body mt-1 block text-xs text-[#64756f]'>
+                  Prikazuje se na PDF računu ako je unesen.
+                </span>
+              </label>
+            </div>
           ) : null}
 
           {step === 3 ? (
