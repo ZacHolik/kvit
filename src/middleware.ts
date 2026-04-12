@@ -6,6 +6,7 @@ const AUTH_PUBLIC_PREFIXES = [
   '/register',
   '/onboarding',
   '/confirm-email',
+  '/auth/callback',
 ] as const;
 
 /**

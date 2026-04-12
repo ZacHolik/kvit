@@ -1,19 +1,29 @@
 'use client';
 
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import { FormEvent, useState } from 'react';
 
 import { createClient } from '@/lib/supabase/client';
 
+function buildEmailRedirectTo(): string {
+  if (typeof window === 'undefined') {
+    return '';
+  }
+  const origin =
+    process.env.NEXT_PUBLIC_APP_URL?.replace(/\/$/, '') ||
+    window.location.origin;
+  const next = encodeURIComponent('/confirm-email?verified=1');
+  return `${origin}/auth/callback?next=${next}`;
+}
+
 export default function RegisterPage() {
-  const router = useRouter();
   const supabase = createClient();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [registeredEmail, setRegisteredEmail] = useState<string | null>(null);
 
   const handleRegister = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -28,6 +38,9 @@ export default function RegisterPage() {
     const { error: signUpError } = await supabase.auth.signUp({
       email,
       password,
+      options: {
+        emailRedirectTo: buildEmailRedirectTo(),
+      },
     });
     setIsLoading(false);
 
@@ -36,9 +49,51 @@ export default function RegisterPage() {
       return;
     }
 
-    router.push(`/onboarding?email=${encodeURIComponent(email)}`);
-    router.refresh();
+    setRegisteredEmail(email.trim());
   };
+
+  if (registeredEmail) {
+    return (
+      <main className='flex min-h-screen items-center justify-center bg-[#0b0f0e] px-4 py-10'>
+        <section className='w-full max-w-md rounded-2xl border border-[#1f2a28] bg-[#111716] p-6 shadow-xl shadow-black/25 sm:p-8'>
+          <p className='font-body text-sm text-[#94a3a0]'>Još jedan korak</p>
+          <h1 className='font-heading mt-2 text-2xl text-[#e2e8e7] sm:text-3xl'>
+            Provjeri email!
+          </h1>
+          <p className='font-body mt-6 text-base leading-relaxed text-[#d5dfdd]'>
+            Poslali smo ti link za potvrdu na{' '}
+            <span className='font-semibold break-all text-[#0d9488]'>
+              {registeredEmail}
+            </span>
+            .
+          </p>
+          <p className='font-body mt-4 text-sm text-[#94a3a0]'>
+            Ne vidiš poruku? Provjeri spam ili Promocije.
+          </p>
+          <div className='mt-8 flex flex-col gap-3 sm:flex-row'>
+            <Link
+              href='/login'
+              className='font-body inline-flex justify-center rounded-xl bg-[#0d9488] px-5 py-3 text-center font-semibold text-white transition hover:bg-[#14b8a6]'
+            >
+              Na prijavu
+            </Link>
+            <button
+              type='button'
+              className='font-body inline-flex justify-center rounded-xl border border-[#2a3734] px-5 py-3 text-center text-[#d5dfdd] transition hover:border-[#0d9488]'
+              onClick={() => {
+                setRegisteredEmail(null);
+                setEmail('');
+                setPassword('');
+                setConfirmPassword('');
+              }}
+            >
+              Drugi email
+            </button>
+          </div>
+        </section>
+      </main>
+    );
+  }
 
   return (
     <main className='flex min-h-screen items-center justify-center bg-[#0b0f0e] px-4 py-10'>
@@ -104,7 +159,7 @@ export default function RegisterPage() {
             disabled={isLoading}
             className='font-body mt-2 w-full rounded-xl bg-[#0d9488] px-4 py-3 font-semibold text-white transition hover:bg-[#14b8a6] disabled:cursor-not-allowed disabled:opacity-70'
           >
-            {isLoading ? 'Kreiram račun...' : 'Nastavi na onboarding'}
+            {isLoading ? 'Kreiram račun...' : 'Registriraj se'}
           </button>
         </form>
 
