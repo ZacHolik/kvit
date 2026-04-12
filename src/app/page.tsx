@@ -222,6 +222,9 @@ export default function LandingPage() {
           </div>
           <ul className='nav-links'>
             <li>
+              <Link href='/vodici'>Vodiči</Link>
+            </li>
+            <li>
               <a href='#prednosti'>Prednosti</a>
             </li>
             <li>

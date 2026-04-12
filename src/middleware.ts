@@ -32,6 +32,9 @@ function isPublicPath(pathname: string) {
   if (pathname === '/') {
     return true;
   }
+  if (pathname === '/vodici' || pathname.startsWith('/vodici/')) {
+    return true;
+  }
   if (pathname === '/manifest.json') {
     return true;
   }

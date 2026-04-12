@@ -27,6 +27,36 @@ h6 {
   font-family: var(--font-syne), sans-serif;
 }
 
+@layer components {
+  .guide-prose h2 {
+    @apply font-heading mt-10 scroll-mt-24 text-2xl font-bold text-[#e2e8e7];
+  }
+
+  .guide-prose h3 {
+    @apply font-heading mt-8 scroll-mt-24 text-xl font-semibold text-[#e2e8e7];
+  }
+
+  .guide-prose p {
+    @apply mt-4 text-base leading-relaxed text-[#d5dfdd];
+  }
+
+  .guide-prose ul {
+    @apply mt-4 list-disc space-y-2 pl-6 text-[#d5dfdd];
+  }
+
+  .guide-prose ol {
+    @apply mt-4 list-decimal space-y-2 pl-6 text-[#d5dfdd];
+  }
+
+  .guide-prose a {
+    @apply text-[#0d9488] underline-offset-2 hover:underline;
+  }
+
+  .guide-prose strong {
+    @apply font-semibold text-[#e2e8e7];
+  }
+}
+
 @layer utilities {
   .text-balance {
     text-wrap: balance;
