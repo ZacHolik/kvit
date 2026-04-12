@@ -14,6 +14,20 @@ const AUTH_PUBLIC_PREFIXES = [
  * `/api/*` (handlers enforce auth), and PWA manifest. App UI lives under
  * `/dashboard`, `/racuni`, `/kpr`, `/po-sd`, `/asistent`.
  */
+/** Rute aplikacije koje zahtijevaju dovršen onboarding (naziv obrta u profilu). */
+function requiresCompletedProfile(pathname: string) {
+  const roots = [
+    '/dashboard',
+    '/racuni',
+    '/kpr',
+    '/po-sd',
+    '/asistent',
+  ] as const;
+  return roots.some(
+    (p) => pathname === p || pathname.startsWith(`${p}/`),
+  );
+}
+
 function isPublicPath(pathname: string) {
   if (pathname === '/') {
     return true;
@@ -90,6 +104,21 @@ export async function middleware(request: NextRequest) {
     const loginUrl = request.nextUrl.clone();
     loginUrl.pathname = '/login';
     return NextResponse.redirect(loginUrl);
+  }
+
+  if (user && requiresCompletedProfile(pathname)) {
+    const { data: profil } = await supabase
+      .from('profiles')
+      .select('naziv_obrta')
+      .eq('id', user.id)
+      .maybeSingle();
+
+    if (!profil?.naziv_obrta?.trim()) {
+      const onboardingUrl = request.nextUrl.clone();
+      onboardingUrl.pathname = '/onboarding';
+      onboardingUrl.search = '';
+      return NextResponse.redirect(onboardingUrl);
+    }
   }
 
   return response;

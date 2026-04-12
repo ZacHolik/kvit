@@ -31,10 +31,11 @@ export default function LoginPage() {
     setError('');
     setIsLoading(true);
 
-    const { error: signInError } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
+    const { data: signInData, error: signInError } =
+      await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
 
     setIsLoading(false);
 
@@ -43,7 +44,21 @@ export default function LoginPage() {
       return;
     }
 
-    router.push('/dashboard');
+    const userId = signInData.user?.id;
+    if (!userId) {
+      router.push('/onboarding');
+      router.refresh();
+      return;
+    }
+
+    const { data: profil } = await supabase
+      .from('profiles')
+      .select('naziv_obrta')
+      .eq('id', userId)
+      .maybeSingle();
+
+    const hasObrt = Boolean(profil?.naziv_obrta?.trim());
+    router.push(hasObrt ? '/dashboard' : '/onboarding');
     router.refresh();
   };
 
