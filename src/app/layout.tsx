@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import type { Viewport } from 'next';
 import { DM_Sans, Syne } from 'next/font/google';
+import { Analytics } from '@vercel/analytics/next';
 
 import './globals.css';
 
@@ -43,6 +44,7 @@ export default function RootLayout({
     <html lang='hr'>
       <body className={`${syne.variable} ${dmSans.variable} antialiased`}>
         {children}
+        <Analytics />
       </body>
     </html>
   );
