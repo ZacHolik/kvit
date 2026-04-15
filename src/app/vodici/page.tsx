@@ -49,6 +49,7 @@ export default function VodiciIndexPage() {
     <>
       <Script
         id='vodici-navigation-jsonld'
+        key='vodici-navigation-jsonld'
         type='application/ld+json'
         strategy='afterInteractive'
         dangerouslySetInnerHTML={{

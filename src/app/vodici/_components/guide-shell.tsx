@@ -126,18 +126,21 @@ export function GuideShell({
     <>
       <Script
         id={`vodici-${slug}-breadcrumb-jsonld`}
+        key={`vodici-${slug}-breadcrumb-jsonld`}
         type='application/ld+json'
         strategy='afterInteractive'
         dangerouslySetInnerHTML={{ __html: jsonLdSafe(breadcrumbLd) }}
       />
       <Script
         id={`vodici-${slug}-article-jsonld`}
+        key={`vodici-${slug}-article-jsonld`}
         type='application/ld+json'
         strategy='afterInteractive'
         dangerouslySetInnerHTML={{ __html: jsonLdSafe(articleLd) }}
       />
       <Script
         id={`vodici-${slug}-faq-jsonld`}
+        key={`vodici-${slug}-faq-jsonld`}
         type='application/ld+json'
         strategy='afterInteractive'
         dangerouslySetInnerHTML={{ __html: jsonLdSafe(faqLd) }}
@@ -145,6 +148,7 @@ export function GuideShell({
       {howToLd ? (
         <Script
           id={`vodici-${slug}-howto-jsonld`}
+          key={`vodici-${slug}-howto-jsonld`}
           type='application/ld+json'
           strategy='afterInteractive'
           dangerouslySetInnerHTML={{ __html: jsonLdSafe(howToLd) }}
