@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Script from 'next/script';
 
 import { getSiteUrl } from '@/lib/vodici-config';
 
@@ -123,21 +124,29 @@ export function GuideShell({
 
   return (
     <>
-      <script
+      <Script
+        id={`vodici-${slug}-breadcrumb-jsonld`}
         type='application/ld+json'
+        strategy='afterInteractive'
         dangerouslySetInnerHTML={{ __html: jsonLdSafe(breadcrumbLd) }}
       />
-      <script
+      <Script
+        id={`vodici-${slug}-article-jsonld`}
         type='application/ld+json'
+        strategy='afterInteractive'
         dangerouslySetInnerHTML={{ __html: jsonLdSafe(articleLd) }}
       />
-      <script
+      <Script
+        id={`vodici-${slug}-faq-jsonld`}
         type='application/ld+json'
+        strategy='afterInteractive'
         dangerouslySetInnerHTML={{ __html: jsonLdSafe(faqLd) }}
       />
       {howToLd ? (
-        <script
+        <Script
+          id={`vodici-${slug}-howto-jsonld`}
           type='application/ld+json'
+          strategy='afterInteractive'
           dangerouslySetInnerHTML={{ __html: jsonLdSafe(howToLd) }}
         />
       ) : null}

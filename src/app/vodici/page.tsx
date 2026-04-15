@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import Script from 'next/script';
 
 import {
   getSiteUrl,
@@ -46,8 +47,10 @@ export default function VodiciIndexPage() {
 
   return (
     <>
-      <script
+      <Script
+        id='vodici-navigation-jsonld'
         type='application/ld+json'
+        strategy='afterInteractive'
         dangerouslySetInnerHTML={{
           __html: JSON.stringify(navLd).replace(/</g, '\\u003c'),
         }}
