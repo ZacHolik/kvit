@@ -49,5 +49,35 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: 'monthly',
       priority: 0.8,
     },
+    {
+      url: `${base}/alati/interni-akt`,
+      lastModified,
+      changeFrequency: 'monthly',
+      priority: 0.8,
+    },
+    {
+      url: `${base}/alati/placanje-doprinosa`,
+      lastModified,
+      changeFrequency: 'monthly',
+      priority: 0.78,
+    },
+    {
+      url: `${base}/alati/rok-podsjetnici`,
+      lastModified,
+      changeFrequency: 'monthly',
+      priority: 0.75,
+    },
+    {
+      url: `${base}/alati/izjava-poslovni-prostor`,
+      lastModified,
+      changeFrequency: 'monthly',
+      priority: 0.72,
+    },
+    {
+      url: `${base}/alati/izjava-pozajmnica`,
+      lastModified,
+      changeFrequency: 'monthly',
+      priority: 0.72,
+    },
   ];
 }

@@ -10,7 +10,7 @@ import { jsonLdSafe } from '../_components/json-ld';
 
 import { PausalTaxCalculator } from './pausal-tax-calculator';
 
-const TITLE = 'Kalkulator paušalnog poreza 2026.';
+const TITLE = 'Kalkulator paušalnog poreza 2026 — razredi i obveze';
 const DESC =
   'Izračunaj paušalni porez za 2026. godinu. Unesi godišnji prihod i odmah vidi porezni razred, kvartalnu i godišnju obvezu.';
 
@@ -105,7 +105,7 @@ export default function KalkulatorPorezaPage() {
         />
 
         <header className='mb-8 border-b border-[#1f2a28] pb-8'>
-          <p className='font-body text-sm font-medium text-[#0d9488]'>Alat · 2026.</p>
+          <p className='font-body text-sm font-medium text-[#0d9488]'>Alat · FREEMIUM · 2026.</p>
           <h1 className='font-heading mt-3 text-3xl font-bold leading-tight text-[#e2e8e7] sm:text-4xl'>
             {TITLE}
           </h1>

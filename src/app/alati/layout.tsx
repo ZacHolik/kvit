@@ -8,7 +8,7 @@ export const metadata: Metadata = {
     template: '%s | Kvit',
   },
   description:
-    'Besplatni online alati za paušalne obrtnike: kalkulator poreza, PDV prag, checklista obveza.',
+    'Alati za paušalne obrtnike: kalkulator paušalnog poreza 2026, PDV prag, interni akt, checklista, plaćanje doprinosa, rokovi; PRO izjave i podsjetnici.',
 };
 
 export default function AlatiLayout({ children }: { children: React.ReactNode }) {

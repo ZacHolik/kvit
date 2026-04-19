@@ -8,29 +8,29 @@ import { AlatiBreadcrumb } from '../_components/alati-breadcrumb';
 import { CtaRegister } from '../_components/cta-register';
 import { jsonLdSafe } from '../_components/json-ld';
 
-import { ObligationsChecklist } from './obligations-checklist';
+import { PlacanjeDoprinosaTool } from './placanje-doprinosa-tool';
 
-const TITLE = 'Checklista obveza paušalnog obrtnika 2026.';
+const TITLE = 'Plaćanje doprinosa — uplatnica i 2D barkod (demo)';
 const DESC =
-  'Checklista obveza paušalnog obrtnika: dnevne preporuke, mjesečne, kvartalne i godišnje. Gost: samo pregled. Nakon prijave: označavanje. PRO: email podsjetnici.';
+  'Unesi OIB, općinu i razred: prikažemo uplatne podatke i PDF417 barkod (HUB-3, ilustrativni primatelj). Gost: jedna generacija. PRO: email podsjetnik 14. u mjesecu.';
 
 export const metadata: Metadata = {
   title: TITLE,
   description: DESC,
-  keywords: ['obveze paušalnog obrtnika checklista', 'paušalni obrt obveze', 'checklista'],
+  keywords: ['plaćanje doprinosa', 'uplatnica doprinosa', '2D barkod uplatnica'],
   openGraph: {
     title: `${TITLE} | Kvit`,
     description: DESC,
-    url: `${getSiteUrl()}/alati/checklista`,
+    url: `${getSiteUrl()}/alati/placanje-doprinosa`,
     siteName: 'Kvit',
     locale: 'hr_HR',
     type: 'website',
   },
 };
 
-export default function ChecklistaPage() {
+export default function PlacanjeDoprinosaPage() {
   const base = getSiteUrl();
-  const pageUrl = `${base}/alati/checklista`;
+  const pageUrl = `${base}/alati/placanje-doprinosa`;
 
   const breadcrumbLd = {
     '@context': 'https://schema.org',
@@ -38,68 +38,48 @@ export default function ChecklistaPage() {
     itemListElement: [
       { '@type': 'ListItem', position: 1, name: 'Kvit', item: base },
       { '@type': 'ListItem', position: 2, name: 'Alati', item: `${base}/alati` },
-      { '@type': 'ListItem', position: 3, name: 'Checklista', item: pageUrl },
+      { '@type': 'ListItem', position: 3, name: 'Plaćanje doprinosa', item: pageUrl },
     ],
   };
 
   return (
     <>
       <Script
-        id='alati-checklista-breadcrumb-jsonld'
+        id='alati-doprinosi-breadcrumb-jsonld'
         type='application/ld+json'
         strategy='afterInteractive'
         dangerouslySetInnerHTML={{ __html: jsonLdSafe(breadcrumbLd) }}
       />
-
       <article className='mx-auto max-w-3xl px-4 py-10 sm:px-6 lg:px-8'>
         <AlatiBreadcrumb
           items={[
             { label: 'Kvit', href: '/' },
             { label: 'Alati', href: '/alati' },
-            { label: 'Checklista' },
+            { label: 'Plaćanje doprinosa' },
           ]}
         />
-
         <header className='mb-8 border-b border-[#1f2a28] pb-8'>
-          <p className='font-body text-sm font-medium text-[#0d9488]'>Alat · FREEMIUM · 2026.</p>
+          <p className='font-body text-sm font-medium text-[#0d9488]'>Alat · FREEMIUM</p>
           <h1 className='font-heading mt-3 text-3xl font-bold leading-tight text-[#e2e8e7] sm:text-4xl'>
             {TITLE}
           </h1>
           <p className='font-body mt-4 text-lg text-[#b9c7c4]'>{DESC}</p>
         </header>
-
-        <ObligationsChecklist />
-
+        <PlacanjeDoprinosaTool />
         <section className='mt-10 font-body text-sm text-[#94a3a0]'>
-          <h2 className='font-heading text-base font-semibold text-[#e2e8e7]'>
-            Povezani vodiči
-          </h2>
+          <h2 className='font-heading text-base font-semibold text-[#e2e8e7]'>Povezano</h2>
           <ul className='mt-3 list-disc space-y-2 pl-5'>
             <li>
               <Link href='/vodici/doprinosi' className='text-[#0d9488] hover:underline'>
-                Doprinosi
-              </Link>
-            </li>
-            <li>
-              <Link href='/vodici/po-sd-obrazac' className='text-[#0d9488] hover:underline'>
-                PO-SD obrazac
-              </Link>
-            </li>
-            <li>
-              <Link
-                href='/vodici/kpr-knjiga-prometa'
-                className='text-[#0d9488] hover:underline'
-              >
-                KPR — knjiga prometa
+                Vodič: doprinosi
               </Link>
             </li>
           </ul>
         </section>
-
         <CtaRegister
-          title='Kvit automatski prati rokove i šalje ti podsjetnike da ništa ne zaboraviš.'
-          body='Kombiniraj ovu listu s aplikacijom — podsjetnici stižu kad treba.'
-          buttonLabel='Registriraj se besplatno →'
+          title='Registriraj se da spremiš profil i ponavljaš generiranje bez ograničenja.'
+          body='Uz PRO dolazi i podsjetnik za doprinose.'
+          buttonLabel='Registriraj se →'
         />
       </article>
     </>

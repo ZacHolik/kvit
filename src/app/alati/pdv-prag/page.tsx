@@ -17,7 +17,12 @@ const DESC =
 export const metadata: Metadata = {
   title: TITLE,
   description: DESC,
-  keywords: ['PDV prag paušalni obrt', 'PDV prag', 'paušalni obrt'],
+  keywords: [
+    'PDV prag kalkulator',
+    'PDV prag paušalni obrt',
+    'PDV prag',
+    'paušalni obrt',
+  ],
   openGraph: {
     title: `${TITLE} | Kvit`,
     description: DESC,
@@ -61,7 +66,7 @@ export default function PdvPragPage() {
         />
 
         <header className='mb-8 border-b border-[#1f2a28] pb-8'>
-          <p className='font-body text-sm font-medium text-[#0d9488]'>Alat · 2026.</p>
+          <p className='font-body text-sm font-medium text-[#0d9488]'>Alat · FREEMIUM · 2026.</p>
           <h1 className='font-heading mt-3 text-3xl font-bold leading-tight text-[#e2e8e7] sm:text-4xl'>
             {TITLE}
           </h1>
