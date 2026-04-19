@@ -13,9 +13,8 @@ const MAIN_NAV = [
   { href: '/po-sd', label: 'PO-SD', icon: '📑' },
   { href: '/asistent', label: 'AI Asistent', icon: '🤖' },
   { href: '/vodici', label: 'Vodiči', icon: '📚' },
+  { href: '/alati', label: 'Alati', icon: '🛠️' },
 ] as const;
-
-const COMING_SOON_NAV = [{ id: 'alati', label: 'Alati', icon: '🛠️' }] as const;
 
 function navLinkActive(pathname: string, href: string) {
   if (href === '/dashboard') {
@@ -57,14 +56,6 @@ function NavDivider() {
   return <div className='my-2 h-px shrink-0 bg-[#1f2a28]' role='separator' />;
 }
 
-function UskoroBadge() {
-  return (
-    <span className='font-body shrink-0 rounded-md bg-[#0d9488]/15 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-[#5eead4]'>
-      Uskoro
-    </span>
-  );
-}
-
 function MainNavLinks({
   pathname,
   onNavigate,
@@ -101,34 +92,6 @@ function MainNavLinks({
           </Link>
         );
       })}
-    </>
-  );
-}
-
-function ComingSoonNavRows({ variant }: { variant: 'drawer' | 'sidebar' }) {
-  const row =
-    variant === 'drawer'
-      ? 'font-body flex cursor-not-allowed items-center justify-between gap-2 rounded-lg px-3 py-2.5 text-sm text-[#64706e]'
-      : 'font-body flex cursor-not-allowed items-center justify-between gap-2 rounded-lg px-3 py-2.5 text-sm text-[#64706e]';
-
-  return (
-    <>
-      {COMING_SOON_NAV.map(({ id, label, icon }) => (
-        <div
-          key={id}
-          className={row}
-          aria-disabled='true'
-          title='Uskoro'
-        >
-          <span className='flex min-w-0 items-center gap-3'>
-            <span className='w-6 shrink-0 text-center text-base opacity-70' aria-hidden>
-              {icon}
-            </span>
-            <span>{label}</span>
-          </span>
-          <UskoroBadge />
-        </div>
-      ))}
     </>
   );
 }
@@ -213,8 +176,6 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
             variant='drawer'
           />
           <NavDivider />
-          <ComingSoonNavRows variant='drawer' />
-          <NavDivider />
           <button
             type='button'
             onClick={() => {
@@ -235,10 +196,7 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
         {/* Desktop sidebar */}
         <aside className='hidden w-64 shrink-0 flex-col border-r border-[#1f2a28] bg-[#111916] md:flex'>
           <div className='border-b border-[#1f2a28] p-6'>
-            <Link
-              href='/dashboard'
-              className='font-heading text-xl text-[#e2e8e7]'
-            >
+            <Link href='/dashboard' className='font-heading text-xl text-[#e2e8e7]'>
               Kvit<span className='text-[#0d9488]'>.</span>
             </Link>
           </div>
@@ -248,8 +206,6 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
             aria-label='Glavna navigacija'
           >
             <MainNavLinks pathname={pathname} variant='sidebar' />
-            <NavDivider />
-            <ComingSoonNavRows variant='sidebar' />
           </nav>
 
           <div className='border-t border-[#1f2a28] p-4'>

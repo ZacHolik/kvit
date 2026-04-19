@@ -25,5 +25,29 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: 'monthly' as const,
       priority: 0.8,
     })),
+    {
+      url: `${base}/alati`,
+      lastModified,
+      changeFrequency: 'monthly',
+      priority: 0.85,
+    },
+    {
+      url: `${base}/alati/kalkulator-poreza`,
+      lastModified,
+      changeFrequency: 'monthly',
+      priority: 0.8,
+    },
+    {
+      url: `${base}/alati/pdv-prag`,
+      lastModified,
+      changeFrequency: 'monthly',
+      priority: 0.8,
+    },
+    {
+      url: `${base}/alati/checklista`,
+      lastModified,
+      changeFrequency: 'monthly',
+      priority: 0.8,
+    },
   ];
 }

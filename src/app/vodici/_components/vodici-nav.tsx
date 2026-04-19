@@ -12,20 +12,14 @@ export function VodiciNav() {
         </Link>
         <ul className='flex flex-wrap items-center gap-4 text-sm text-[#b9c7c4]'>
           <li>
-            <Link
-              href='/vodici'
-              className='transition hover:text-[#0d9488]'
-            >
+            <Link href='/vodici' className='transition hover:text-[#0d9488]'>
               Vodiči
             </Link>
           </li>
           <li>
-            <a
-              href='/#prednosti'
-              className='transition hover:text-[#0d9488]'
-            >
-              Prednosti
-            </a>
+            <Link href='/alati' className='transition hover:text-[#0d9488]'>
+              Alati
+            </Link>
           </li>
           <li>
             <a href='/#cijene' className='transition hover:text-[#0d9488]'>
