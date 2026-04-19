@@ -71,6 +71,9 @@ export default function PauzalniObrtVodicPage() {
       faq={faq}
       related={[
         { href: vodiciHref('otvaranje-obrta'), title: 'Kako otvoriti paušalni obrt' },
+        { href: vodiciHref('pausalni-obrt-vs-doo'), title: 'Paušalni obrt vs d.o.o.' },
+        { href: vodiciHref('prikriveni-radni-odnos'), title: 'Prikriveni radni odnos' },
+        { href: vodiciHref('pausalni-obrt-za-it-freelancere'), title: 'Paušalni obrt za IT freelancere' },
         { href: vodiciHref('fiskalizacija-20'), title: 'Fiskalizacija 2.0 za paušaliste' },
         { href: vodiciHref('po-sd-obrazac'), title: 'PO-SD obrazac – kako ispuniti' },
       ]}
@@ -136,6 +139,8 @@ export default function PauzalniObrtVodicPage() {
         punim knjigovodstvom i često niži ukupni fiskalni tlak za male primitke.
         Paušalni model privlači freelancere, manje servise, kreativce i obrtnike koji
         ne žele zapošljavati velik tim ili ulaziti u složene PDV strukture dok su mali.
+        Za digitalne usluge pogledaj i{' '}
+        <Link href={vodiciHref('pausalni-obrt-za-it-freelancere')}>paušalni obrt za IT freelancere</Link>.
       </p>
       <p>
         Ograničenja uključuju gornju granicu primitaka (60.000 € za PDV), zabrane
@@ -154,6 +159,9 @@ export default function PauzalniObrtVodicPage() {
         djelatnosti: neka slobodna zanimanja i specifični obrti padaju izvan modela.
         Prije odluke provjeri je li tvoja šifra djelatnosti kompatibilna s paušalom i
         postoje li dodatne obveze (npr. turistička članarina za neke djelatnosti).
+        Primjeri po djelatnostima:{' '}
+        <Link href={vodiciHref('pausalni-obrt-za-kozmeticare')}>paušalni obrt za kozmetičare</Link>,{' '}
+        <Link href={vodiciHref('pausalni-obrt-za-fotografe')}>paušalni obrt za fotografe</Link>.
       </p>
       <p>
         Postupak registracije danas je uglavnom digitalan — vodič{' '}
@@ -201,7 +209,10 @@ export default function PauzalniObrtVodicPage() {
         je često jeftiniji za start, ali d.o.o. može biti privlačniji kad rasteš,
         zapošljavaš ili želiš ograničiti osobnu odgovornost. Odluka ovisi o primitcima,
         planu širenja i savjetu stručnjaka — ovaj vodič ne zamjenjuje individualni
-        savjet.
+        savjet. Detaljnu usporedbu i signale za prijelaz imaš u vodiču{' '}
+        <Link href={vodiciHref('pausalni-obrt-vs-doo')}>paušalni obrt vs d.o.o.</Link>, a
+        ako jedan klijent dominira prihodima, pročitaj i tekst o{' '}
+        <Link href={vodiciHref('prikriveni-radni-odnos')}>prikrivenom radnom odnosu</Link>.
       </p>
 
       <h2 id='kada-prestati'>Kada prestati biti paušalist?</h2>

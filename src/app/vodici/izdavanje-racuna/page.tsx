@@ -71,6 +71,8 @@ export default function IzdavanjeRacunaPage() {
       faq={faq}
       related={[
         { href: vodiciHref('fiskalizacija-20'), title: 'Fiskalizacija 2.0' },
+        { href: vodiciHref('pausalni-obrt-za-it-freelancere'), title: 'Paušalni obrt za IT freelancere' },
+        { href: vodiciHref('pausalni-obrt-za-fotografe'), title: 'Paušalni obrt za fotografe' },
         { href: vodiciHref('kpr-knjiga-prometa'), title: 'KPR knjiga prometa' },
         { href: vodiciHref('po-sd-obrazac'), title: 'PO-SD obrazac' },
       ]}

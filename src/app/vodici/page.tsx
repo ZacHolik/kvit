@@ -74,7 +74,9 @@ export default function VodiciIndexPage() {
           </p>
         </header>
 
-        {(['osnove', 'porezi', 'fiskalizacija'] as const).map((cat) => (
+        {(
+          ['osnove', 'djelatnosti', 'porezi', 'fiskalizacija'] as const
+        ).map((cat) => (
           <section key={cat} className='mt-14'>
             <h2 className='font-heading text-2xl font-bold text-[#e2e8e7]'>
               {VODICI_CATEGORY_LABELS[cat]}

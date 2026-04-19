@@ -72,6 +72,7 @@ export default function KprKnjigaPrometaPage() {
       related={[
         { href: vodiciHref('po-sd-obrazac'), title: 'PO-SD obrazac' },
         { href: vodiciHref('izdavanje-racuna'), title: 'Izdavanje računa' },
+        { href: vodiciHref('pausalni-obrt-za-it-freelancere'), title: 'Paušalni obrt za IT freelancere' },
         { href: vodiciHref('doprinosi'), title: 'Doprinosi' },
       ]}
       howTo={{
@@ -176,8 +177,10 @@ export default function KprKnjigaPrometaPage() {
         Za početak poslovanja pročitaj{' '}
         <Link href={vodiciHref('otvaranje-obrta')}>kako otvoriti paušalni obrt</Link> i
         širi okvir <Link href={vodiciHref('pausalni-obrt-vodic')}>paušalni obrt 2026.</Link>{' '}
-        U aplikaciji pitaj <Link href='/asistent'>AI asistenta</Link> za konkretne
-        korake u Kvitu.
+        Ako primaš devize od stranih klijenata, vidi i{' '}
+        <Link href={vodiciHref('pausalni-obrt-za-it-freelancere')}>paušalni obrt za IT freelancere</Link>{' '}
+        (isti princip evidencije primitaka). U aplikaciji pitaj{' '}
+        <Link href='/asistent'>AI asistenta</Link> za konkretne korake u Kvitu.
       </p>
     </GuideShell>
   );

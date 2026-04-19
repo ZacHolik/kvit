@@ -5,6 +5,7 @@ import { getSiteUrl, VODICI_ENTRIES, vodiciHref } from '@/lib/vodici-config';
 
 const RELATED_OTVARANJE = [
   'pausalni-obrt-vodic',
+  'pausalni-obrt-vs-doo',
   'izdavanje-racuna',
   'kpr-knjiga-prometa',
 ] as const;
@@ -120,6 +121,9 @@ export default function OtvaranjeObrtaPage() {
         <Link href={vodiciHref('po-sd-obrazac')}>PO-SD</Link> i širi okvir{' '}
         <Link href={vodiciHref('pausalni-obrt-vodic')}>paušalni obrt 2026.</Link> Na
         kraju ćeš znati što napraviti u prvom tjednu da izbjegneš kašnjenje s obvezama.
+        Ako si u beauty ili foto segmentu, vidi i{' '}
+        <Link href={vodiciHref('pausalni-obrt-za-kozmeticare')}>paušalni obrt za kozmetičare</Link> te{' '}
+        <Link href={vodiciHref('pausalni-obrt-za-fotografe')}>paušalni obrt za fotografe</Link>.
       </p>
 
       <h2 id='uvjeti'>Uvjeti i priprema</h2>

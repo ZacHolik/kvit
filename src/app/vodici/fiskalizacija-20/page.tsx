@@ -70,6 +70,9 @@ export default function Fiskalizacija20Page() {
       faq={faq}
       related={[
         { href: vodiciHref('izdavanje-racuna'), title: 'Izdavanje računa u paušalu' },
+        { href: vodiciHref('pausalni-obrt-za-it-freelancere'), title: 'Paušalni obrt za IT freelancere' },
+        { href: vodiciHref('pausalni-obrt-za-kozmeticare'), title: 'Paušalni obrt za kozmetičare' },
+        { href: vodiciHref('pausalni-obrt-za-fotografe'), title: 'Paušalni obrt za fotografe' },
         { href: vodiciHref('otvaranje-obrta'), title: 'Kako otvoriti paušalni obrt' },
         { href: vodiciHref('pausalni-obrt-vodic'), title: 'Paušalni obrt 2026.' },
       ]}

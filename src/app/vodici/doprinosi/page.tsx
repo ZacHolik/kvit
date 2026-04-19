@@ -72,6 +72,8 @@ export default function DoprinosiPage() {
       related={[
         { href: vodiciHref('po-sd-obrazac'), title: 'PO-SD obrazac' },
         { href: vodiciHref('pausalni-obrt-vodic'), title: 'Paušalni obrt 2026.' },
+        { href: vodiciHref('pausalni-obrt-za-it-freelancere'), title: 'Paušalni obrt za IT freelancere' },
+        { href: vodiciHref('prikriveni-radni-odnos'), title: 'Prikriveni radni odnos' },
         { href: vodiciHref('otvaranje-obrta'), title: 'Otvaranje obrta' },
       ]}
       howTo={{
