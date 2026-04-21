@@ -146,6 +146,17 @@ export const VODICI_ENTRIES: VodiciEntry[] = [
     category: 'osnove',
     primaryKeyword: 'KPR knjiga prometa paušalisti',
   },
+  {
+    slug: 'alati-za-pausalne-obrtnike',
+    title:
+      'Alati za paušalne obrtnike 2026. — zašto izolirani alati nisu dovoljni',
+    shortTitle: 'Alati za paušalne obrtnike',
+    description:
+      'Kalkulator, uplatnica, checklista i PO-SD generator kao izolirani alati ne rade umjesto tebe. Kako Kvit povezuje sve u jedan sustav.',
+    readingMinutes: 9,
+    category: 'osnove',
+    primaryKeyword: 'alati za paušalne obrtnike',
+  },
 
   // =========================================================================
   // PO DJELATNOSTIMA (IT vodič ovdje — posebno za freelancere / platforme)
