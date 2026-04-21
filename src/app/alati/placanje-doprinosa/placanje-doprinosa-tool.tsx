@@ -27,7 +27,7 @@ export function PlacanjeDoprinosaTool() {
 
   const [oib, setOib] = useState('');
   const [opcina, setOpcina] = useState('');
-  const [razred, setRazred] = useState('0');
+  const [razred, setRazred] = useState('1');
   const [platiteljLinija2, setPlatiteljLinija2] = useState('');
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [guestLocked, setGuestLocked] = useState(false);
@@ -185,7 +185,7 @@ export function PlacanjeDoprinosaTool() {
             onChange={(e) => setRazred(e.target.value)}
             className='mt-2 min-h-[52px] w-full rounded-xl border border-[#2a3734] bg-[#0b0f0e] px-4 py-3 text-lg text-[#e2e8e7] outline-none focus:border-[#0d9488] focus:ring-2 focus:ring-[#0d9488]/30'
           >
-            {['0', '1', '2', '3', '4'].map((r) => (
+            {['1', '2', '3', '4', '5', '6', '7'].map((r) => (
               <option key={r} value={r}>
                 Razred {r}
               </option>

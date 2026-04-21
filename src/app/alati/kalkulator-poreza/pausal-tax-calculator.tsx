@@ -192,6 +192,7 @@ export function PausalTaxCalculator() {
             <tr className='border-b border-[#1f2a28] text-xs uppercase tracking-wide text-[#64706e]'>
               <th className='px-3 py-3 font-medium'>Razred</th>
               <th className='px-3 py-3 font-medium'>Prihod (€)</th>
+              <th className='px-3 py-3 font-medium'>Mjesečno</th>
               <th className='px-3 py-3 font-medium'>Kvartal</th>
               <th className='px-3 py-3 font-medium'>Godišnje</th>
             </tr>
@@ -215,6 +216,7 @@ export function PausalTaxCalculator() {
                   <td className='px-3 py-3 text-[#b9c7c4]'>
                     {b.min.toLocaleString('hr-HR')} – {b.max.toLocaleString('hr-HR')}
                   </td>
+                  <td className='px-3 py-3 text-[#e2e8e7]'>{eur.format(b.monthly)}</td>
                   <td className='px-3 py-3 text-[#e2e8e7]'>{eur.format(b.quarterly)}</td>
                   <td className='px-3 py-3 text-[#e2e8e7]'>{eur.format(b.annual)}</td>
                 </tr>
@@ -227,7 +229,7 @@ export function PausalTaxCalculator() {
       <div className='rounded-2xl border border-[#0d9488]/35 bg-[#111716] p-5 sm:p-6'>
         <h2 className='font-heading text-lg font-semibold text-[#e2e8e7]'>Rezultat</h2>
         {bracket ? (
-          <dl className='mt-4 grid gap-3 sm:grid-cols-2'>
+          <dl className='mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3'>
             <div className='rounded-xl border border-[#1f2a28] bg-[#0b0f0e] p-4'>
               <dt className='text-xs font-medium uppercase tracking-wide text-[#64706e]'>
                 Porezni razred
@@ -242,6 +244,14 @@ export function PausalTaxCalculator() {
               </dt>
               <dd className='mt-1 font-heading text-2xl font-bold text-[#e2e8e7]'>
                 {pct.format(effectiveRate)}
+              </dd>
+            </div>
+            <div className='rounded-xl border border-[#1f2a28] bg-[#0b0f0e] p-4'>
+              <dt className='text-xs font-medium uppercase tracking-wide text-[#64706e]'>
+                Porez mjesečno
+              </dt>
+              <dd className='mt-1 font-body text-xl font-semibold text-[#e2e8e7]'>
+                {eur.format(bracket.monthly)}
               </dd>
             </div>
             <div className='rounded-xl border border-[#1f2a28] bg-[#0b0f0e] p-4'>
