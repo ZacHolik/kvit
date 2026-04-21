@@ -48,6 +48,7 @@ export function GuideShell({
   const breadcrumbLd = {
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
+    '@id': `${pageUrl}#breadcrumb`,
     itemListElement: [
       {
         '@type': 'ListItem',
@@ -73,6 +74,7 @@ export function GuideShell({
   const articleLd = {
     '@context': 'https://schema.org',
     '@type': 'Article',
+    '@id': `${pageUrl}#article`,
     headline: title,
     description: metaDescription,
     datePublished: published,
@@ -97,6 +99,7 @@ export function GuideShell({
   const faqLd = {
     '@context': 'https://schema.org',
     '@type': 'FAQPage',
+    '@id': `${pageUrl}#faq`,
     mainEntity: faq.map((item) => ({
       '@type': 'Question',
       name: item.question,
@@ -175,8 +178,14 @@ export function GuideShell({
         </nav>
 
         <header className='mb-10 border-b border-[#1f2a28] pb-8'>
-          <p className='font-body text-sm font-medium text-[#0d9488]'>
-            Vodič · oko {readingMinutes} min čitanja
+          <p className='font-body flex flex-wrap items-center gap-2 text-sm font-medium text-[#0d9488]'>
+            <span>Vodič · oko {readingMinutes} min čitanja</span>
+            <span
+              className='rounded-full border border-[#0d9488]/40 bg-[#0d9488]/10 px-2.5 py-0.5 text-xs font-semibold tracking-wide text-[#5eead4]'
+              title='Sadržaj je usklađen s pravilima i iznosima za kalendarsku godinu 2026.'
+            >
+              Ažurirano za 2026.
+            </span>
           </p>
           <h1 className='font-heading mt-3 text-3xl font-bold leading-tight text-[#e2e8e7] sm:text-4xl'>
             {title}
