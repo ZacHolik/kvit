@@ -19,7 +19,7 @@ export function CtaRegister({
       <p className='mt-2 text-sm leading-relaxed text-[#94a3a0]'>{body}</p>
       <Link
         href={href}
-        className='mt-5 inline-flex rounded-lg bg-[#0d9488] px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-[#14b8a6]'
+        className='btn-cta-primary mt-5 px-5 py-2.5 text-sm'
       >
         {buttonLabel}
       </Link>

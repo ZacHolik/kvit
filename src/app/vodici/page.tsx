@@ -130,10 +130,7 @@ export default function VodiciIndexPage() {
             Automatski KPR, PDF računi i PO-SD — manje papira, više vremena za
             posao.
           </p>
-          <Link
-            href='/register'
-            className='mt-5 inline-flex rounded-lg bg-[#0d9488] px-6 py-3 font-semibold text-white transition hover:bg-[#14b8a6]'
-          >
+          <Link href='/register' className='btn-cta-primary mt-5 px-6 py-3 text-base'>
             Registriraj se
           </Link>
         </div>

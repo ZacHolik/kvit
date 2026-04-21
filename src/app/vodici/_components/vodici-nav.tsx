@@ -34,10 +34,7 @@ export function VodiciNav() {
           >
             Imam račun
           </Link>
-          <Link
-            href='/register'
-            className='rounded-lg bg-[#0d9488] px-3 py-2 text-sm font-semibold text-white transition hover:bg-[#14b8a6]'
-          >
+          <Link href='/register' className='btn-cta-primary px-3 py-2 text-sm'>
             Isprobaj besplatno
           </Link>
         </div>

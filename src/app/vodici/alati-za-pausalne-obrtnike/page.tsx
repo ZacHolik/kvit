@@ -369,7 +369,7 @@ export default function AlatiZaPausalneObrtnikePage() {
       <div className='my-6 flex flex-col gap-3 sm:flex-row sm:items-center'>
         <Link
           href='/register'
-          className='inline-flex items-center justify-center rounded-lg bg-[#0d9488] px-5 py-3 font-semibold text-white transition hover:bg-[#14b8a6]'
+          className='btn-cta-primary px-5 py-3 text-base'
         >
           Registriraj se besplatno →
         </Link>
