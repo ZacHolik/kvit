@@ -35,7 +35,7 @@ export function VodiciNav() {
             Imam račun
           </Link>
           <Link href='/register' className='btn-cta-primary px-3 py-2 text-sm'>
-            Isprobaj besplatno
+            Registriraj se besplatno
           </Link>
         </div>
       </nav>
