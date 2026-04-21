@@ -32,7 +32,7 @@ const faq = [
   {
     question: 'Moram li plaćati doprinose dok obrt miruje?',
     answer:
-      'Dok si obrtnik u statusu koji podliježe doprinosima, država i dalje vidi obvezu osim ako postoji poseban režim ili rješenje koje to mijenja. U tipičnom samostalom paušalu Fiskalopedija navodi mjesečne doprinose do 15. u mjesecu — zato mirovanje moraš planirati zajedno s HZMO-om i obrtnim registrom, ne “u glavi”.',
+      'Dok si obrtnik u statusu koji podliježe doprinosima, država i dalje vidi obvezu osim ako postoji poseban režim ili rješenje koje to mijenja. U tipičnom samostalnom paušalu mjesečni doprinosi idu do 15. u mjesecu — zato mirovanje moraš planirati zajedno s HZMO-om i obrtnim registrom, ne “u glavi”.',
   },
   {
     question: 'Kako prijaviti mirovanje obrta?',
@@ -80,17 +80,12 @@ export default function SezonskiObrtPage() {
         Pojam <strong>sezonski paušalni obrt mirovanje</strong> spaja dvije stvari:
         neravnomjerni primitci (ljeto puno, zima ništa) i formalni status obrta koji ne
         smiješ “pustiti niz vodu” jer državni sustavi i dalje očekuju prijave. Osnovni
-        ritam paušala opisuje Fiskalopedija: račun → KPR isti dan, doprinosi do 15. u
-        mjesecu, kvartalni porez, godišnji PO-SD do 15. siječnja (
-        <a
-          href='https://fiskalopedija.hr/baza-znanja/pausalni-obrt'
-          className='text-[#0d9488] hover:underline'
-          rel='noopener noreferrer'
-          target='_blank'
-        >
-          izvor
-        </a>
-        ). Sezonalnost mijenja samo to koliko često diraš KPR, ne i postojanje obveza dok
+        Osnovni ritam paušala: račun → KPR isti dan, doprinosi do 15. u mjesecu, kvartalni
+        porez, godišnji PO-SD do 15. siječnja — vidi{' '}
+        <Link href={vodiciHref('pausalni-obrt-vodic')} className='text-[#0d9488] hover:underline'>
+          paušalni obrt 2026.
+        </Link>
+        . Sezonalnost mijenja samo to koliko često diraš KPR, ne i postojanje obveza dok
         si aktivan obrtnik.
       </p>
 
@@ -108,22 +103,22 @@ export default function SezonskiObrtPage() {
         Praktičan put je digitalan: e-Obrtnica i službena dokumentacija obrtnog registra.
         Prije slanja provjeri ima li otvorenih računa, najavljenih poslova ili najma
         opreme koji te vežu uz “aktivnost”. Ako si u turizmu, paralelno provjeri i TZ1
-        obvezu jer Fiskalopedija za turističku članarinu objašnjava da se obveza veže uz
-        registriranu djelatnost i postojanje prometa (
+        obvezu jer se turistička članarina veže uz registriranu djelatnost i postojanje
+        prometa — provjeri TZ1 upute na{' '}
         <a
-          href='https://fiskalopedija.hr/baza-znanja/turisticka-clanarina-tz1-obrazac'
+          href='https://www.gov.hr'
           className='text-[#0d9488] hover:underline'
           rel='noopener noreferrer'
           target='_blank'
         >
-          TZ1 vodič
-        </a>
-        ).
+          gov.hr
+        </a>{' '}
+        i kod nadležne turističke zajednice.
       </p>
 
       <h2 id='doprinosi'>Doprinosi u neaktivnim mjesecima</h2>
       <p>
-        Fiskalopedija za samostalni paušal navodi mjesečni iznos <strong>290,98 €</strong>{' '}
+        Za samostalni paušal u praksi se najčešće navodi mjesečni iznos <strong>290,98 €</strong>{' '}
         doprinosa do 15. u mjesecu. To znači da sezonalnost sama po sebi ne ukida
         mjesečnu obvezu dok si u statusu aktivnog obrta bez posebnog režima. Mirovanje,
         ako je formalno prihvaćeno, mijenja tu sliku — stoga je ključno imati datum
@@ -162,16 +157,16 @@ export default function SezonskiObrtPage() {
       <h2 id='turizam'>Turistička djelatnost</h2>
       <p>
         Ugostitelji i prateće djelatnosti često brzo priđu limitu od{' '}
-        <strong>60.000 €</strong> godišnjih primitaka koji Fiskalopedija ističe kao
-        maksimum za ostajanje paušalistom (uz ostale uvjete). Zato sezonski rad nije samo
+        <strong>60.000 €</strong> godišnjih primitaka — prag za ulazak u sustav PDV-a i
+        često signal za promjenu paušalnog okvira (uz ostale uvjete). Zato sezonski rad nije samo
         pitanje ljeta na otoku, nego i poreznog plana: ako rasteš, pripremaš prijelaz u
         drugi režim ili d.o.o. — vidi{' '}
         <Link href={vodiciHref('pausalni-obrt-za-ugostitelje')}>ugostiteljski vodič</Link>{' '}
         i <Link href={vodiciHref('pausalni-obrt-vs-doo')}>usporedbu s d.o.o.</Link>.
       </p>
       <p>
-        Turistička članarina (TZ1) ulazi u godišnji plan jer se, prema Fiskalopediji,
-        osnovica u paušalnom obrtu veže na ukupan primitak kad postoji barem jedan račun
+        Turistička članarina (TZ1) ulazi u godišnji plan jer se osnovica u paušalnom obrtu
+        veže na ukupan primitak kad postoji barem jedan račun
         koji podliježe obvezi. Sezonski obrt često znači da si “šutio” cijelu zimu, pa u
         lipnju kreneš s prvim računima — i tada TZ1 logika i dalje gleda godinu kao
         cjelinu. Zato je pametno već u ožujku imati predložak tablice primitaka po

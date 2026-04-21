@@ -8,7 +8,7 @@ import { GuideShell } from '../_components/guide-shell';
 const SLUG = 'kpr-online-generator';
 
 const META_DESC =
-  'KPR online paušalni obrt: što se upisuje, gotovina vs bezgotovina, greške i veza s PO-SD-om — prema praksi iz Fiskalopedije.';
+  'KPR online paušalni obrt: što se upisuje, gotovina vs bezgotovina, greške i veza s PO-SD-om — praktičan pregled za paušaliste.';
 
 export const metadata: Metadata = {
   title: 'KPR online paušalni obrt',
@@ -27,7 +27,7 @@ const faq = [
   {
     question: 'Što se upisuje u KPR?',
     answer:
-      'Knjiga prometa računa bilježi primitke — uplate na žiro, gotovina i kartične uplate koje su vezane uz izdane račune, prema objašnjenju na Fiskalopediji.',
+      'Knjiga prometa računa bilježi primitke — uplate na žiro, gotovina i kartične uplate koje su vezane uz izdane račune.',
   },
   {
     question: 'Mogu li voditi KPR u Excelu?',
@@ -37,7 +37,7 @@ const faq = [
   {
     question: 'Kada moram upisati račun u KPR?',
     answer:
-      'Fiskalopedija navodi da se računi upisuju na kraju dana. Praksa “sve na kraju mjeseca” povećava rizik pogreške i stresa u siječnju.',
+      'Uobičajena je preporuka upisivati račune na kraju dana. Praksa “sve na kraju mjeseca” povećava rizik pogreške i stresa u siječnju.',
   },
   {
     question: 'Koje su najčešće greške u KPR-u?',
@@ -78,27 +78,21 @@ export default function KprOnlineGeneratorPage() {
       <p>
         Pojam <strong>KPR online paušalni obrt</strong> danas znači: umjesto ručnog
         prepisivanja u PDF ili papir, koristiš aplikaciju koja iz izdanih računa gradi
-        knjigu prometa. Fiskalopedija objašnjava da je KPR popis primitaka — uplate na
-        žiro, gotovina, kartice — za svaki izdani račun (
-        <a
-          href='https://fiskalopedija.hr/baza-znanja/pausalni-obrt'
-          className='text-[#0d9488] hover:underline'
-          rel='noopener noreferrer'
-          target='_blank'
-        >
-          izvor
-        </a>
-        ). To je isti podatak koji na kraju godine ide u PO-SD do{' '}
-        <strong>15. siječnja</strong> (
-        <a
-          href='https://fiskalopedija.hr/baza-znanja/po-sd-obrazac'
-          className='text-[#0d9488] hover:underline'
-          rel='noopener noreferrer'
-          target='_blank'
-        >
-          PO-SD na Fiskalopediji
-        </a>
-        ).
+        knjigu prometa. KPR je popis primitaka — uplate na žiro, gotovina, kartice — za
+        svaki izdani račun; više u{' '}
+        <Link href={vodiciHref('kpr-knjiga-prometa')} className='text-[#0d9488] hover:underline'>
+          vodiču o KPR-u
+        </Link>{' '}
+        i u{' '}
+        <Link href={vodiciHref('pausalni-obrt-vodic')} className='text-[#0d9488] hover:underline'>
+          paušalnom obrtu 2026.
+        </Link>
+        . To je isti podatak koji na kraju godine ide u PO-SD do <strong>15. siječnja</strong>{' '}
+        — vidi{' '}
+        <Link href={vodiciHref('po-sd-obrazac')} className='text-[#0d9488] hover:underline'>
+          PO-SD obrazac
+        </Link>
+        .
       </p>
 
       <h2 id='sto'>Što ide u KPR</h2>
@@ -119,7 +113,7 @@ export default function KprOnlineGeneratorPage() {
 
       <h2 id='kad'>Kada upisati</h2>
       <p>
-        Fiskalopedija naglašava unos na kraju dana. To sprječava gomilanje i zaborav
+        Unos na kraju dana sprječava gomilanje i zaborav
         pojedinih računa kad mjesečni broj transakcija poraste. Ako putuješ ili radiš na
         terenu, mobilni unos odmah nakon izdavanja računa je najmanje bolan način.
       </p>
@@ -150,14 +144,9 @@ export default function KprOnlineGeneratorPage() {
       <p>
         Kvit automatski puni KPR iz izdanih računa i omogućuje rad u pregledniku ili
         aplikaciji. Direktan link na KPR sučelje:{' '}
-        <a
-          href='https://app.kvit.online/kpr'
-          className='text-[#0d9488] hover:underline'
-          rel='noopener noreferrer'
-          target='_blank'
-        >
-          app.kvit.online/kpr
-        </a>
+        <Link href='/kpr' className='text-[#0d9488] hover:underline'>
+          KPR u Kvitu (/kpr)
+        </Link>
         . Prije korištenja se{' '}
         <Link href='/register'>registriraj</Link> i poveži obrt. Za teoriju pročitaj još{' '}
         <Link href={vodiciHref('kpr-knjiga-prometa')}>KPR vodič</Link>.

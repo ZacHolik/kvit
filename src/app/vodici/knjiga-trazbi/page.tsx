@@ -32,7 +32,7 @@ const faq = [
   {
     question: 'Razlikuje li se od KPR-a?',
     answer:
-      'Da. KPR za paušaliste bilježi naplaćene primitke (gotovina / bezgotovina) prema praksi koju opisuje Fiskalopedija. Knjiga tražbina prati stanje potraživanja i ne zamjenjuje KPR.',
+      'Da. KPR za paušaliste bilježi naplaćene primitke (gotovina / bezgotovina). Knjiga tražbina prati stanje potraživanja i ne zamjenjuje KPR.',
   },
   {
     question: 'Moram li je voditi kao paušalist?',
@@ -77,7 +77,9 @@ export default function KnjigaTrazbiPage() {
       <p>
         <strong>Knjiga tražbina paušalni obrt</strong> često zvuči kao još jedna knjiga
         pored KPR-a. U praksi je to točnije evidencija <em>tko ti još duguje novac</em>,
-        dok je KPR (prema opisu na Fiskalopediji) popis <em>naplaćenih</em> primitaka koji
+        dok je KPR (vidi{' '}
+        <Link href={vodiciHref('kpr-knjiga-prometa')}>vodič o KPR-u</Link>) popis{' '}
+        <em>naplaćenih</em> primitaka koji
         ulaze u porezni i statistički krug paušaliste. Razumijevanje te razlike štedi od
         grešaka na PO-SD-u, jer se tamo prijavljuju primitci koji su stvarno prošli kroz
         račun obrta, ne “onoliko koliko sam mislio da će platiti”.
@@ -94,7 +96,7 @@ export default function KnjigaTrazbiPage() {
 
       <h2 id='kpr'>Razlika prema KPR-u</h2>
       <p>
-        Fiskalopedija objašnjava da se u KPR upisuju primitci — uplate na žiro, gotovina,
+        U KPR se upisuju primitci — uplate na žiro, gotovina,
         kartice — vezano uz izdane račune. Ako račun još nije plaćen, nema primitka u tom
         smislu. Knjiga tražbina drži “pending” stanje: račun je izdan, usluga odrađena ili
         roba predana, ali novac još nije stigao. Kad uplata legne, tada radiš unos u KPR
@@ -135,7 +137,8 @@ export default function KnjigaTrazbiPage() {
 
       <h2 id='po-sd'>Veza s PO-SD-om</h2>
       <p>
-        PO-SD sumira naplaćene primitke u godini, prema uputama s Fiskalopedije. Ako si
+        PO-SD sumira naplaćene primitke u godini, prema poljima obrasca i uputama Porezne.
+        Ako si
         u knjizi tražbina “bogat” neplaćenim računima, tvoj KPR (i stoga PO-SD) neće
         odražavati tu želju — što je dobro za porez, ali loše za cashflow. Zato
         konsultanti i agencijski klijenti često traže avans ili milestone uplate: smanjuje

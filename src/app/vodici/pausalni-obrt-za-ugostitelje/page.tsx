@@ -32,12 +32,12 @@ const faq = [
   {
     question: 'Moram li imati fiskalnu blagajnu?',
     answer:
-      'Prema Fiskalopediji, prema građanima (B2C) trebaš izdavati fiskalizirane račune. To znači program koji ispunjava zahtjeve fiskalizacije 2.0 — vidi vodič o fiskalizaciji.',
+      'Prema građanima (B2C) trebaš izdavati fiskalizirane račune. To znači program koji ispunjava zahtjeve fiskalizacije 2.0 — vidi vodič o fiskalizaciji.',
   },
   {
     question: 'Što je turistička članarina?',
     answer:
-      'To je obveza prema turističkoj zajednici za određene djelatnosti koje imaju koristi od turizma. Fiskalopedija navodi da je osnovica u paušalnom obrtu ukupan primitak ako postoji barem jedan račun koji podliježe, te skupine djelatnosti s postotcima (npr. skupina s djelatnošću 56 plaća 0,14212% na godišnje primitke).',
+      'To je obveza prema turističkoj zajednici za određene djelatnosti koje imaju koristi od turizma. Osnovica u paušalnom obrtu obično je ukupan primitak ako postoji barem jedan račun koji podliježe; postotak ovisi o skupini djelatnosti (npr. skupina s djelatnošću 56 često se navodi s 0,14212% na godišnje primitke — provjeri aktualnu tarifu).',
   },
   {
     question: 'Kako voditi obrt sezonski?',
@@ -78,17 +78,11 @@ export default function PauzalniObrtZaUgostiteljePage() {
       <p>
         <strong>Paušalni obrt za ugostitelje</strong> zvuči jednostavno dok ne vidiš red
         ispred šanka u srpnju. I pored gužve, porezni okvir ostaje isti: doprinosi do 15.
-        u mjesecu (290,98 € u samostalnom modelu prema Fiskalopediji), kvartalni paušalni
-        porez, KPR, PO-SD do 15. siječnja i limit <strong>60.000 €</strong> godišnjih
-        primitaka (
-        <a
-          href='https://fiskalopedija.hr/baza-znanja/pausalni-obrt'
-          className='text-[#0d9488] hover:underline'
-          rel='noopener noreferrer'
-          target='_blank'
-        >
-          izvor
-        </a>
+        u mjesecu (290,98 € u samostalnom modelu), kvartalni paušalni porez, KPR, PO-SD do
+        15. siječnja i limit <strong>60.000 €</strong> godišnjih primitaka (
+        <Link href={vodiciHref('pausalni-obrt-vodic')} className='text-[#0d9488] hover:underline'>
+          paušalni obrt — vodič
+        </Link>
         ). Specifično za ugostitelje su fiskalizacija prema građanima i turistička
         članarina.
       </p>
@@ -104,7 +98,7 @@ export default function PauzalniObrtZaUgostiteljePage() {
 
       <h2 id='fiskalizacija'>Fiskalizacija i gotovina</h2>
       <p>
-        Fiskalopedija ističe da prema građanima trebaš izdavati fiskalizirane račune.
+        Prema građanima trebaš izdavati fiskalizirane račune.
         Zato POS sustav ili mobilna aplikacija nisu “dodatak luksuzu” nego dio radnog
         mjesta. Za cjelinu rokova i tehnologije pročitaj{' '}
         <Link href={vodiciHref('fiskalizacija-20')}>fiskalizacija 2.0</Link> i{' '}
@@ -113,21 +107,21 @@ export default function PauzalniObrtZaUgostiteljePage() {
 
       <h2 id='tz'>Turistička članarina</h2>
       <p>
-        Prema Fiskalopedijinom vodiču za TZ1, članarina se plaća ako imaš registriranu
-        djelatnost koja podliježe — uključujući ugostiteljske grupe poput djelatnosti
-        pripreme i usluživanja hrane i pića (šifra 56 u prvoj skupini s stopom{' '}
-        <strong>0,14212%</strong> na godišnje primitke). Rok za predaju TZ1 obrasca je{' '}
+        Članarina se plaća ako imaš registriranu djelatnost koja podliježe — uključujući
+        ugostiteljske grupe poput djelatnosti pripreme i usluživanja hrane i pića (šifra
+        56 u prvoj skupini s često citiranom stopom <strong>0,14212%</strong> na godišnje
+        primitke — provjeri aktualnu tarifu). Rok za predaju TZ1 obrasca je{' '}
         <strong>do 15. siječnja</strong>. Ako nemaš prometa po obvezujućoj djelatnosti,
-        i dalje se često predaje prazan obrazac — točno pravilo vidi u članku{' '}
+        i dalje se često predaje prazan obrazac — točno pravilo i obrasce provjeri na{' '}
         <a
-          href='https://fiskalopedija.hr/baza-znanja/turisticka-clanarina-tz1-obrazac'
+          href='https://www.gov.hr'
           className='text-[#0d9488] hover:underline'
           rel='noopener noreferrer'
           target='_blank'
         >
-          Turistička članarina — TZ1
-        </a>
-        .
+          službenim stranicama države (gov.hr)
+        </a>{' '}
+        i u uputama nadležnog ministarstva / turističke zajednice.
       </p>
 
       <h2 id='sezona'>Sezonsko poslovanje</h2>
@@ -140,7 +134,7 @@ export default function PauzalniObrtZaUgostiteljePage() {
 
       <h2 id='limit'>Limit 60.000 €</h2>
       <p>
-        Fiskalopedija naglašava da uz primitke do 60.000 € možeš ostati paušalist (uz
+        Uz primitke do 60.000 € možeš ostati paušalist (uz
         ostale uvjete). Ugostitelji često brzo priđu tom broju jer je prosječna košarica
         mala, ali volumen velik. Kad se približiš, planiraj PDV status i eventualni prijelaz
         u knjige ili d.o.o. — ne čekaj zadnji tjedan godine.
@@ -157,7 +151,7 @@ export default function PauzalniObrtZaUgostiteljePage() {
       </p>
       <p>
         HOK članstvo je još jedna stavka koja se pojavljuje kad obrt živi duže od dvije
-        godine — Fiskalopedija to eksplicitno spominje uz ostale obveze paušalnog obrta.
+        godine — to se često navodi uz ostale obveze paušalnog obrta.
         Ugostitelj koji raste često prijeđe tu crtu prije nego što osjeti, jer se prve
         godine “lete” oko otvaranja lokacije. Stavi HOK u isti godišnji kalendar kao TZ1
         i PO-SD kako ne bi bio iznenađenje.

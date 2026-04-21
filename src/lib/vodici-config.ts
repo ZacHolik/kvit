@@ -30,7 +30,8 @@ export const VODICI_CATEGORY_LABELS: Record<VodiciCategoryId, string> = {
 
 /**
  * Redoslijed unutar kategorije = redoslijed kartica na /vodici.
- * Izvori brojki i rokova za tekstove: https://fiskalopedija.hr/baza-znanja
+ * Brojke i rokovi u tekstovima usklađeni su sa službenim izvorima (Porezna uprava, NN)
+ * i s Kvit vodičima / alatima — bez vanjskih edukativnih portala.
  */
 export const VODICI_ENTRIES: VodiciEntry[] = [
   // =========================================================================

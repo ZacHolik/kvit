@@ -107,14 +107,9 @@ export default function ZatvaranjeObrtaPage() {
         Paušalni model i dalje ostavlja trag u Poreznoj, HZMO-u i obrtnom registru dok
         formalno ne završiš lanac prijava. Brojčane obveze (doprinosi, kvartalni porez)
         do zadnjeg dana poslovanja prati isti okvir kao u vodiču{' '}
-        <a
-          href='https://fiskalopedija.hr/baza-znanja/pausalni-obrt'
-          className='text-[#0d9488] hover:underline'
-          rel='noopener noreferrer'
-          target='_blank'
-        >
-          Paušalni obrt na Fiskalopediji
-        </a>
+        <Link href={vodiciHref('pausalni-obrt-vodic')} className='text-[#0d9488] hover:underline'>
+          paušalni obrt 2026.
+        </Link>
         : mjesečni doprinosi do 15. u mjesecu i kvartalni porez do kraja 3./6./9./12.
         mjeseca. Ovaj članak povezuje te obveze s logistikom zatvaranja.
       </p>
@@ -167,8 +162,8 @@ export default function ZatvaranjeObrtaPage() {
       <p>
         ePorezna PKK prikazuje što je otvoreno. Ako vidiš dug prema porezu na dohodak ili
         prema doprinosima, podmiruješ prije nego što zatvaraš račun obrta — inače
-        slijediš kamate i pisma. Fiskalopedija u kontekstu paušalnog obrta podsjeća da se
-        čak i bez primitaka u pojedinim mjesecima dio obveza i dalje može javiti — zato
+        slijediš kamate i pisma. I bez primitaka u pojedinim mjesecima dio obveza se i
+        dalje može javiti — zato
         zatvaranje ne tretiraj kao “nula prometa, nula brige” bez provjere.
       </p>
 
@@ -187,8 +182,8 @@ export default function ZatvaranjeObrtaPage() {
         PO-SD prijavljuje primitke i uplaćeni paušalni porez za kalendarsku godinu. Ako
         si zatvorio obrt nakon nekoliko mjeseci, i dalje očekuj obvezu predaje do{' '}
         <strong>15. siječnja</strong> za tu godinu, uz prilagodbu podataka koje nosi
-        nepotpuno razdoblje. U komentarima na Fiskalopediji za PO-SD ističu da u paušalu
-        bez primitaka dio obveza i dalje postoji — zato savjet “sve na nulu” nije univerzalan
+        nepotpuno razdoblje. U paušalu bez primitaka dio obveza i dalje može postojati —
+        zato savjet “sve na nulu” nije univerzalan
         bez provjere. Za detalje o poljima otvori{' '}
         <Link href={vodiciHref('po-sd-obrazac')}>vodič o PO-SD-u</Link>.
       </p>

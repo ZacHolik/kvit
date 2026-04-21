@@ -27,7 +27,7 @@ const faq = [
   {
     question: 'Zašto koristiti povezan sustav umjesto besplatnih alata?',
     answer:
-      'Izolirani alati (Fiskalopedija, Plavi ured i slični) rade svoj dio, ali ti si most: prepisuješ iznose između kalkulatora, uplatnica i checklista. Kvit to automatizira — kad izdaš račun, KPR, PDV prag kalkulator i razred poreza se ažuriraju istog trena.',
+      'Izolirani alati s interneta rade svoj dio, ali ti si most: prepisuješ iznose između kalkulatora, uplatnica i checklista. Kvit to automatizira — kad izdaš račun, KPR, PDV prag kalkulator i razred poreza se ažuriraju istog trena.',
   },
   {
     question: 'Mogu li koristiti Kvit alate bez prijave?',
@@ -42,7 +42,7 @@ const faq = [
   {
     question: 'Pomaže li Kvit s PDV pragom od 60.000 €?',
     answer:
-      'Da. Dashboard u svakom trenutku pokazuje koliko si iskoristio od limita od 60.000 € primitaka (što Fiskalopedija navodi kao ključnu granicu za paušaliste). Kad dosegneš 80%, dobiješ upozorenje da pravovremeno reagiraš — prelazak praga mijenja tvoj PDV status.',
+      'Da. Dashboard u svakom trenutku pokazuje koliko si iskoristio od limita od 60.000 € primitaka (ključna granica za ulazak u sustav PDV-a za paušaliste). Kad dosegneš 80%, dobiješ upozorenje da pravovremeno reagiraš — prelazak praga mijenja tvoj PDV status.',
   },
   {
     question: 'Treba li mi kreditna kartica za registraciju?',
@@ -86,20 +86,25 @@ export default function AlatiZaPausalneObrtnikePage() {
       <p>
         Brojke i rokove koje spominjemo (limit od <strong>60.000 €</strong>{' '}
         primitaka za PDV prag, kvartalne iznose poreza, doprinose{' '}
-        <strong>290,98 €</strong> mjesečno) preuzimamo iz materijala koje{' '}
-        <a
-          href='https://fiskalopedija.hr/baza-znanja'
-          className='text-[#0d9488] hover:underline'
-          rel='noopener noreferrer'
-          target='_blank'
-        >
-          Fiskalopedija drži usklađenima za 2026.
-        </a>
+        <strong>290,98 €</strong> mjesečno) usklađeni su s našim vodičima i alatima za
+        2026.:{' '}
+        <Link href={vodiciHref('pausalni-obrt-vodic')} className='text-[#0d9488] hover:underline'>
+          paušalni obrt 2026.
+        </Link>
+        ,{' '}
+        <Link href={vodiciHref('doprinosi')} className='text-[#0d9488] hover:underline'>
+          doprinosi
+        </Link>{' '}
+        i{' '}
+        <Link href='/alati/kalkulator-poreza' className='text-[#0d9488] hover:underline'>
+          kalkulator paušalnog poreza
+        </Link>
+        .
       </p>
 
       <h2 id='drugi-alati'>Što drugi nude — izolirani alati</h2>
       <p>
-        Ostali alati (Fiskalopedija, Plavi ured i slični) nude korisne stvari, ali
+        Ostali izolirani alati na webu nude korisne stvari, ali
         svaki za sebe. Ti si veza između njih — ručno, svaki put:
       </p>
       <ul>

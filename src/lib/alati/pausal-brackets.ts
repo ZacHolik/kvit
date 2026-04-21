@@ -9,7 +9,7 @@ export type PausalBracket = {
 
 /**
  * Paušalni porez na dohodak — razredi 1–7, službeni iznosi za 2026.
- * Izvor: fiskalopedija.hr/pausalni-obrt-razredi
+ * Službeni iznosi za 2026. (usklađeno s propisima i uputama Porezne uprave).
  */
 export const PAUSAL_BRACKETS: PausalBracket[] = [
   { razred: 1, min: 0, max: 11_300, monthly: 16.95, quarterly: 50.85, annual: 203.4 },

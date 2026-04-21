@@ -8,7 +8,7 @@ import { GuideShell } from '../_components/guide-shell';
 const SLUG = 'pdv-id';
 
 const META_DESC =
-  'PDV ID broj paušalni obrt: što je, kada treba za EU usluge i robu, kako podnijeti P-PDV na ePoreznoj — prema Fiskalopediji.';
+  'PDV ID broj paušalni obrt: što je, kada treba za EU usluge i robu, kako podnijeti P-PDV na ePoreznoj — sažetak uz službene izvore.';
 
 export const metadata: Metadata = {
   title: 'PDV ID broj paušalni obrt',
@@ -27,12 +27,12 @@ const faq = [
   {
     question: 'Što je PDV ID broj?',
     answer:
-      'To je tvoj OIB s prefiksom HR koji dodjeljuje Porezna uprava na zahtjev. Fiskalopedija naglašava: PDV ID ne znači da ulaziš u sustav PDV-a niti da moraš obračunavati PDV na izlazne račune.',
+      'To je tvoj OIB s prefiksom HR koji dodjeljuje Porezna uprava na zahtjev. PDV ID ne znači da ulaziš u sustav PDV-a niti da moraš obračunavati PDV na izlazne račune.',
   },
   {
     question: 'Trebam li PDV ID ako radim za Upwork?',
     answer:
-      'Ako primaš usluge od EU tvrtki ili isporučuješ EU klijentima unutar EU, trebaš PDV ID za ispravno izdavanje i zaprimanje računa. Za čisto izvanEU poslovanje Fiskalopedija navodi da PDV ID nije potreban.',
+      'Ako primaš usluge od EU tvrtki ili isporučuješ EU klijentima unutar EU, trebaš PDV ID za ispravno izdavanje i zaprimanje računa. Za čisto izvanEU poslovanje PDV ID obično nije potreban.',
   },
   {
     question: 'Kako zatražiti PDV ID na ePoreznoj?',
@@ -42,12 +42,12 @@ const faq = [
   {
     question: 'Znači li PDV ID da moram obračunavati PDV?',
     answer:
-      'Ne automatski. PDV ID omogućuje ispravnu komunikaciju s EU partnerima u sustavu PDV-a, ali prema Fiskalopediji nisi zbog toga automatski u sustavu PDV-a koji zahtijeva obračun PDV-a na svoje račune.',
+      'Ne automatski. PDV ID omogućuje ispravnu komunikaciju s EU partnerima u sustavu PDV-a, ali nisi zbog toga automatski u sustavu PDV-a koji zahtijeva obračun PDV-a na svoje račune.',
   },
   {
     question: 'Što se dogodi ako nisam zatražio PDV ID?',
     answer:
-      'Možeš imati problem s valjanim EU računima i reverse charge mehanizmima. Fiskalopedija preporučuje provjeru PDV brojeva partnera u VIES bazi prije suradnje.',
+      'Možeš imati problem s valjanim EU računima i reverse charge mehanizmima. Preporučuje se provjera PDV brojeva partnera u VIES bazi prije suradnje.',
   },
 ];
 
@@ -77,29 +77,32 @@ export default function PdvIdPage() {
     >
       <p>
         Ključna fraza <strong>PDV ID broj paušalni obrt</strong> zbunjuje jer zvuči kao
-        “ulazak u PDV”. Službeno objašnjenje na Fiskalopediji kaže: PDV ID je OIB s
-        prefiksom HR koji dodjeljuje Porezna na zahtjev, a{' '}
-        <strong>ne znači</strong> da postaješ PDV obveznik koji mora PDV stavljati na
-        vlastite račune (
+        “ulazak u PDV”. U praksi: PDV ID je OIB s prefiksom HR koji dodjeljuje Porezna na
+        zahtjev, a <strong>ne znači</strong> da postaješ PDV obveznik koji mora PDV
+        stavljati na vlastite račune. Detalje i postupak provjeri na{' '}
         <a
-          href='https://fiskalopedija.hr/baza-znanja/pdv-id-broj'
+          href='https://www.porezna-uprava.hr'
           className='text-[#0d9488] hover:underline'
           rel='noopener noreferrer'
           target='_blank'
         >
-          izvor
-        </a>
-        ). To je kritična razlika za freelancere koji rade za njemačku ili irsku tvrtku,
-        ali i dalje žele ostati u paušalnom obrtu dok su ispod limita od 60.000 €
-        primitaka koji Fiskalopedija ističe kao granicu paušalnog statusa.
+          stranicama Porezne uprave
+        </a>{' '}
+        i u uputama za obrazac P-PDV na ePoreznoj. To je kritična razlika za freelancere
+        koji rade za njemačku ili irsku tvrtku, ali i dalje žele ostati u paušalnom obrtu
+        dok su ispod limita od 60.000 € primitaka — vidi i{' '}
+        <Link href={vodiciHref('pausalni-obrt-vodic')} className='text-[#0d9488] hover:underline'>
+          paušalni obrt 2026.
+        </Link>
+        .
       </p>
 
       <h2 id='sto'>Što je PDV ID (i što nije)</h2>
       <p>
         PDV ID je identifikator u unutarnjem tržištu EU-a. Omogućuje da tvoji partneri
         ispravno evidentiraju transakcije u svojim PDV povratima i da ti zaprimiš
-        eRačune bez administrativnog čvora. Fiskalopedija posebno ističe da identifikator
-        trebaš ako prodaješ ili kupuješ kod EU tvrtki — bez obzira jesi li paušal, obrt s
+        eRačune bez administrativnog čvora. Identifikator trebaš ako prodaješ ili kupuješ
+        kod EU tvrtki — bez obzira jesi li paušal, obrt s
         knjigama, j.d.o.o. ili d.o.o.
       </p>
 
@@ -107,7 +110,7 @@ export default function PdvIdPage() {
       <p>
         Za usluge unutar EU prag od 10.000 € koji se često spominje kod isporuke robe nije
         isti scenario kao kod digitalnih usluga — zato freelanceri često čuju “moraš PDV
-        ID odmah”. Fiskalopedija u uvodu kaže da uz EU partnere trebaš imati PDV ID. To
+        ID odmah”. Uz EU partnere u praksi trebaš imati PDV ID. To
         se ne mijenja time što si paušalist: EU sustav traži identifikaciju sudionika.
       </p>
 
@@ -117,21 +120,22 @@ export default function PdvIdPage() {
         važno čitati i Zakon o PDV-u i individualne slučajeve. Ovaj vodič ne zamjenjuje
         poreznog savjetnika; služi kao most prema službenim člancima. Ako kupuješ
         pretplate (Adobe, Google Ads) koje dolaze kao EU transakcije, često ćeš u praksi
-        čuti zahtjev za PDV ID od platforme — u komentarima na Fiskalopediji spominju i
-        Shopify kao primjer gdje trži PDV ID za njihove izlazne račune prema tebi, bez
-        da automatski mijenja tvoju maloprodaju fizičkim osobama.
+        čuti zahtjev za PDV ID od platforme — neke e-trgovine i SaaS platforme traže PDV
+        ID za izlazne račune prema tebi, bez da automatski mijenjaju tvoju maloprodaju
+        fizičkim osobama.
       </p>
 
       <h2 id='primjeri'>Primjeri: platforme i pretplate</h2>
       <p>
         Upwork, Fiverr, Adobe, Google, hosting u EU — svi mogu tražiti identifikator radi
         vlastite usklađenosti. To nije “kazna”, nego tehnički podatak. Paušalac i dalje
-        vodi KPR po naplaćenim primitcima i pripremu PO-SD prema uputama s Fiskalopedije.
+        vodi KPR po naplaćenim primitcima i pripremu PO-SD prema uputama u našem{' '}
+        <Link href={vodiciHref('po-sd-obrazac')}>vodiču o PO-SD-u</Link>.
       </p>
 
       <h2 id='postupak'>Kako zatražiti na ePoreznoj</h2>
       <p>
-        Fiskalopedija opisuje korake: prijava na ePoreznu, obrazac P-PDV, prvi korak s
+        Postupak ukratko: prijava na ePoreznu, obrazac P-PDV, prvi korak s
         osnovnim podacima i datumom početka, drugi korak gdje{' '}
         <strong>ne smiješ</strong> aktivirati opciju upisa u registar PDV obveznika, nego
         odabireš dodjelu PDV ID-a tuzemnome poreznom obvezniku, razlog “porezni obveznik
@@ -143,20 +147,29 @@ export default function PdvIdPage() {
       <h2 id='posljedice'>Ako zakašnjiš</h2>
       <p>
         Kašnjenje s identifikacijom može zakomplicirati reverse charge i valjanost
-        računa dobavljača. Zato mnogi podnesu zahtjev čim potpišu prvi EU ugovor. Fiskalopedija
-        preporučuje i VIES provjeru brojeva partnera.
+        računa dobavljača. Zato mnogi podnesu zahtjev čim potpišu prvi EU ugovor. Za
+        valjanost partnerovog PDV broja koristi{' '}
+        <a
+          href='https://ec.europa.eu/taxation_customs/vies/'
+          className='text-[#0d9488] hover:underline'
+          rel='noopener noreferrer'
+          target='_blank'
+        >
+          VIES
+        </a>
+        .
       </p>
 
       <h2 id='pdv-sustav'>PDV ID vs ulazak u PDV sustav</h2>
       <p>
         Ulazak u PDV sustav znači obračun PDV-a na vlastite račune, razdoblja i dodatne
         liste — to je druga težinska kategorija od “samo PDV ID”. Limit od 60.000 €
-        primitaka i dalje je signal za prekid paušalnog statusa prema Fiskalopediji. Kad
+        primitaka i dalje je signal za prekid paušalnog statusa. Kad
         se približiš tom broju, paralelno planiraš i PDV status, ne samo ID.
       </p>
       <p>
-        Fiskalopedija preporučuje provjeru valjanosti PDV brojeva partnera u VIES bazi
-        prije suradnje. To je korisno kad EU klijent pošalje “čudan” OIB format ili kad
+        Preporučuje se provjera valjanosti PDV brojeva partnera u VIES bazi prije suradnje.
+        To je korisno kad EU klijent pošalje “čudan” OIB format ili kad
         sumnjaš da je tvrtka u međuvremenu ukinuta. Isti alat pomaže i tebi: kad dobiješ
         vlastiti PDV ID, možeš ga testirati prije nego što ga pošalješ dobavljaču.
       </p>
@@ -164,8 +177,9 @@ export default function PdvIdPage() {
         Reverse charge scenarij (npr. kad primaš uslugu iz EU) tehnički zahtijeva ispravan
         ID i knjiženje kod partnera. Paušalac i dalje ne vodi PDV knjige kao klasičan
         obveznik, ali to ne znači da možeš ignorirati dokumentaciju: ulazni eRačun treba
-        znati zaprimiti, što Fiskalopedija spominje u kontekstu Mikro eRačuna i programa za
-        izdavanje računa.
+        znati zaprimiti — vidi{' '}
+        <Link href={vodiciHref('fiskalizacija-20')}>fiskalizacija 2.0</Link> i program za
+        izdavanje računa koji koristiš.
       </p>
       <p>
         Za individualna pitanja koristi <Link href='/asistent'>Kvit asistenta</Link> u

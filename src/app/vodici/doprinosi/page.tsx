@@ -145,8 +145,9 @@ export default function DoprinosiPage() {
       <p>
         Svaka uplatnica traži točan IBAN primatelja, model, poziv na broj i opis. Pogrešan
         model često znači da sredstva &quot;vise&quot; dok ih ručno ne prebaceš. Zato
-        većina modernih obrta koristi predpopunjene naloge iz aplikacije ili Fiskalopedijinog
-        asistenta. Za porezni kontekst usporedi i{' '}
+        većina modernih obrta koristi predpopunjene naloge iz aplikacije — npr.{' '}
+        <Link href='/alati/placanje-doprinosa'>Plaćanje doprinosa</Link> u Kvitu. Za
+        porezni kontekst usporedi i{' '}
         <Link href={vodiciHref('pausalni-obrt-vodic')}>paušalni obrt 2026.</Link>
       </p>
 

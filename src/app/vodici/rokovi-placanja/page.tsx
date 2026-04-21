@@ -27,17 +27,17 @@ const faq = [
   {
     question: 'Kada se plaćaju doprinosi za paušalni obrt?',
     answer:
-      'U standardnom modelu samostalnog paušalnog obrta doprinosi se plaćaju do 15. u mjesecu za prethodni mjesec. Iznos koji se u praksi najčešće navodi je 290,98 € mjesečno (119,58 + 39,86 + 131,54 €) prema Fiskalopediji.',
+      'U standardnom modelu samostalnog paušalnog obrta doprinosi se plaćaju do 15. u mjesecu za prethodni mjesec. Iznos koji se u praksi najčešće navodi je 290,98 € mjesečno (119,58 + 39,86 + 131,54 €).',
   },
   {
     question: 'Kada se plaća paušalni porez na dohodak?',
     answer:
-      'Porez na dohodak u paušalnom obrtu plaća se na kraju svakog tromjesečja: do 31. ožujka, 30. lipnja, 30. rujna i 31. prosinca. Iznos ovisi o razredu primitaka u prethodnoj godini — vidi tablicu u vodiču i na Fiskalopediji.',
+      'Porez na dohodak u paušalnom obrtu plaća se na kraju svakog tromjesečja: do 31. ožujka, 30. lipnja, 30. rujna i 31. prosinca. Iznos ovisi o razredu primitaka u prethodnoj godini — vidi tablicu u vodiču i kalkulator na Kvitu.',
   },
   {
     question: 'Do kada se predaje PO-SD?',
     answer:
-      'PO-SD se predaje do 15. siječnja za prethodnu godinu, što ističu i Fiskalopedija i Porezna u praksi predaje ePoreznom.',
+      'PO-SD se predaje do 15. siječnja za prethodnu godinu; u praksi se najčešće predaje putem ePorezne.',
   },
   {
     question: 'Što je HOK doprinos i kada se plaća?',
@@ -78,35 +78,20 @@ export default function RokoviPlacanjaPage() {
     >
       <p>
         Tražiš <strong>rokovi plaćanja paušalni obrt 2026</strong> na jednom mjestu.
-        Donji sažetak služi kao radni list: brojke za porez i doprinose preuzimamo iz
-        materijala koji Fiskalopedija drži usklađenima s godinom 2026. (
-        <a
-          href='https://fiskalopedija.hr/baza-znanja/pausalni-obrt'
-          className='text-[#0d9488] hover:underline'
-          rel='noopener noreferrer'
-          target='_blank'
-        >
-          Paušalni obrt — vodič
-        </a>
+        Donji sažetak služi kao radni list; brojke i raspored usklađeni su s našim
+        vodičima i alatima za 2026.:{' '}
+        <Link href={vodiciHref('pausalni-obrt-vodic')} className='text-[#0d9488] hover:underline'>
+          paušalni obrt 2026.
+        </Link>
         ,{' '}
-        <a
-          href='https://fiskalopedija.hr/baza-znanja/porez-na-dohodak-pausalni-obrt'
-          className='text-[#0d9488] hover:underline'
-          rel='noopener noreferrer'
-          target='_blank'
-        >
-          porez na dohodak u paušalnom obrtu
-        </a>
-        ,{' '}
-        <a
-          href='https://fiskalopedija.hr/baza-znanja/placanja-doprinosa-pausalni-obrt'
-          className='text-[#0d9488] hover:underline'
-          rel='noopener noreferrer'
-          target='_blank'
-        >
+        <Link href='/alati/kalkulator-poreza' className='text-[#0d9488] hover:underline'>
+          kalkulator paušalnog poreza
+        </Link>{' '}
+        i{' '}
+        <Link href={vodiciHref('doprinosi')} className='text-[#0d9488] hover:underline'>
           plaćanje doprinosa
-        </a>
-        ).
+        </Link>
+        .
       </p>
 
       <h2 id='cheat'>Cheat sheet — datumi u jednoj tablici</h2>
@@ -143,7 +128,7 @@ export default function RokoviPlacanjaPage() {
             <tr>
               <td className='px-3 py-2'>HOK članstvo</td>
               <td className='px-3 py-2'>Godišnje / prema komori</td>
-              <td className='px-3 py-2'>Obavezno ako si obrtnik više od 2 godine (Fiskalopedija)</td>
+              <td className='px-3 py-2'>Obavezno ako si obrtnik više od 2 godine (prema praksi komore)</td>
             </tr>
           </tbody>
         </table>
@@ -151,8 +136,8 @@ export default function RokoviPlacanjaPage() {
 
       <h2 id='doprinosi'>Doprinosi (samostalni)</h2>
       <p>
-        Fiksni mjesečni doprinosi za tipičan paušalni obrt u 2026. godini, prema istom
-        izvoru, zbroje se na <strong>290,98 €</strong> (1. stup 119,58 €, 2. stup 39,86 €,
+        Fiksni mjesečni doprinosi za tipičan paušalni obrt u 2026. godini zbroje se na{' '}
+        <strong>290,98 €</strong> (1. stup 119,58 €, 2. stup 39,86 €,
         zdravstveno 131,54 €). Rok je <strong>do 15. u mjesecu za prethodni mjesec</strong>.
         To znači da si u siječnju odgovoran za prosinac, u veljači za siječanj i tako
         redom. Vikendi i blagdani mogu pomaknuti praktičan zadnji dan — zato mnogi
@@ -161,21 +146,24 @@ export default function RokoviPlacanjaPage() {
 
       <h2 id='porez'>Paušalni porez (kvartalno)</h2>
       <p>
-        Prema stranici o porezu na dohodak u paušalnom obrtu, porez se plaća na kraju
-        svakog tromjesečja: prvi put do <strong>31. ožujka</strong>, zatim do{' '}
-        <strong>30. lipnja</strong>, <strong>30. rujna</strong> i{' '}
-        <strong>31. prosinca</strong>. Iznos za jedan kvartal ovisi o razredu koji proizlazi
-        iz ukupnih primitaka u prethodnoj godini. Tablica koju Fiskalopedija prikazuje za
-        2026. (tromjesečni / godišnji) počinje s 50,85 € kvartalno za primitke do 11.300 €
-        i ide do 270,00 € kvartalno za raspon 50.000,01–60.000,00 €. Taj raspored koristi
-        i Kvitov interni kalkulator razreda — bitno je da tvoj zbroj KPR-a odgovara
+        Paušalni porez na dohodak plaća se na kraju svakog tromjesečja: prvi put do{' '}
+        <strong>31. ožujka</strong>, zatim do <strong>30. lipnja</strong>,{' '}
+        <strong>30. rujna</strong> i <strong>31. prosinca</strong>. Iznos za jedan kvartal
+        ovisi o razredu koji proizlazi iz ukupnih primitaka u prethodnoj godini. Tablica
+        razreda za 2026. (tromjesečni / godišnji) počinje s 50,85 € kvartalno za primitke
+        do 11.300 € i ide do 270,00 € kvartalno za raspon 50.000,01–60.000,00 €. Isti
+        raspored koristi i{' '}
+        <Link href='/alati/kalkulator-poreza' className='text-[#0d9488] hover:underline'>
+          Kvitov kalkulator paušalnog poreza
+        </Link>{' '}
+        — bitno je da tvoj zbroj KPR-a odgovara
         stvarno naplaćenom.
       </p>
 
       <h2 id='po-sd'>PO-SD obrazac</h2>
       <p>
-        PO-SD je godišnji izvještaj o primitcima i plaćenom porezu. Fiskalopedija navodi
-        predaju <strong>do 15. siječnja</strong> za prethodnu godinu. Obrazac razdvaja
+        PO-SD je godišnji izvještaj o primitcima i plaćenom porezu. Predaja je{' '}
+        <strong>do 15. siječnja</strong> za prethodnu godinu. Obrazac razdvaja
         gotovinske i bezgotovinske primitke — zato je redovan unos u{' '}
         <Link href={vodiciHref('kpr-knjiga-prometa')}>KPR</Link> ključan. Detaljan vodič
         imaš na <Link href={vodiciHref('po-sd-obrazac')}>PO-SD stranici</Link>.
@@ -183,18 +171,17 @@ export default function RokoviPlacanjaPage() {
 
       <h2 id='hok'>HOK i ostale godišnje stavke</h2>
       <p>
-        U opisu paušalnog obrta Fiskalopedija eksplicitno spominje da su obrtnici koji
-        posluju duže od <strong>dvije godine</strong> dužni plaćati obavezno članstvo u
-        obrtničkoj komori (HOK). To nije isti kalendarski dan kao doprinosi — stavi ga kao
-        zasebnu stavku u godišnjem planu troškova. Ako si u turizmu ili povezanim
-        djelatnostima, paralelno pratiš i TZ1 (također do 15. siječnja prema Fiskalopediji).
+        Obrtnici koji posluju duže od <strong>dvije godine</strong> često imaju obvezu
+        obaveznog članstva u obrtničkoj komori (HOK). To nije isti kalendarski dan kao
+        doprinosi — stavi ga kao zasebnu stavku u godišnjem planu troškova. Ako si u
+        turizmu ili povezanim djelatnostima, paralelno pratiš i TZ1 (također do 15.
+        siječnja kada vrijedi obveza).
       </p>
 
       <h2 id='zaposlenje'>Samostalni vs uz zaposlenje</h2>
       <p>
         Kad si uz obrt zaposlen kod drugog poslodavca, doprinosi za obrt idu drugačije:
-        godišnje, prema rješenju, u roku od 15 dana od primitka — to je opisano u vodiču
-        o plaćanju doprinosa na Fiskalopediji i u našem članku{' '}
+        godišnje, prema rješenju, u roku od 15 dana od primitka — vidi naš članak{' '}
         <Link href={vodiciHref('doprinosi-uz-posao')}>doprinosi uz posao</Link>. Ne
         mijenja se kvartalni porez na dohodak iz paušalnog obrta po istom principu datuma
         kao gore, ali si dužan znati koji modus živiš kako ne bi slučajno “preskočio”
@@ -203,12 +190,12 @@ export default function RokoviPlacanjaPage() {
 
       <h2 id='propust'>Što ako propustiš rok</h2>
       <p>
-        Najbolja strategija: uplata čim primijetiš propust + dokumentacija. Fiskalopedija
-        u odgovoru čitatelju spominje male kamate za kratko kašnjenje kod doprinosa, ali
-        to nije garancija u svim slučajevima. Za porez i obrasce uvijek provjeri stanje
-        na ePoreznoj. Ako ti je obrt u rastu, paralelno prati i blizinu limita od{' '}
-        <strong>60.000 €</strong> primitaka godišnje jer prelazak mijenja PDV status —
-        to je istaknuto u istom izvoru kao ključna granica za paušaliste.
+        Najbolja strategija: uplata čim primijetiš propust + dokumentacija. Kratko
+        kašnjenje kod doprinosa obično znači manje kamate, ali to nije garancija u svim
+        slučajevima. Za porez i obrasce uvijek provjeri stanje na ePoreznoj. Ako ti je
+        obrt u rastu, paralelno prati i blizinu limita od <strong>60.000 €</strong>{' '}
+        primitaka godišnje jer prelazak mijenja PDV status — to je ključna granica za
+        paušaliste.
       </p>
 
       <h2 id='alati'>Podsjetnici i checkliste</h2>

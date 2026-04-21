@@ -32,7 +32,7 @@ const faq = [
   {
     question: 'Što je PDV ID i trebam li ga?',
     answer:
-      'PDV ID je OIB s prefiksom HR koji dodjeljuje Porezna na zahtjev. Prema Fiskalopediji, nije isto što i ulazak u sustav PDV-a. Za usluge unutar EU obično ga trebaš odmah, bez obzira na prag od 10.000 € koji se odnosi na isporuke robe.',
+      'PDV ID je OIB s prefiksom HR koji dodjeljuje Porezna na zahtjev. Nije isto što i ulazak u sustav PDV-a. Za usluge unutar EU obično ga trebaš odmah, bez obzira na prag od 10.000 € koji se odnosi na isporuke robe.',
   },
   {
     question: 'Kako se zaštititi od prikrivenog radnog odnosa?',
@@ -47,7 +47,7 @@ const faq = [
   {
     question: 'Koji je maksimum primitaka za konzultanta paušalista?',
     answer:
-      'Opći limit za paušalni obrt koji Fiskalopedija ističe je 60.000 € godišnjih primitaka. Prelazak praga mijenja PDV status i često znači izlazak iz paušalnog modela — planiraj prije nego što brojke iznenade.',
+      'Opći limit za paušalni obrt za ulazak u sustav PDV-a je 60.000 € godišnjih primitaka. Prelazak praga mijenja PDV status i često znači izlazak iz paušalnog modela — planiraj prije nego što brojke iznenade.',
   },
 ];
 
@@ -80,16 +80,10 @@ export default function PauzalniObrtZaKonzultantePage() {
         klijentima, platformama i stalnom promjenom alata. Porezni okvir i dalje je
         isti kao za svaki paušalni obrt: mjesečni doprinosi do 15. u mjesecu (npr. 290,98 €
         u samostalnom modelu), kvartalni paušalni porez prema razredu primitaka, KPR,
-        PO-SD do 15. siječnja i limit <strong>60.000 €</strong> primitaka koji Fiskalopedija
-        ističe kao ključnu granicu (
-        <a
-          href='https://fiskalopedija.hr/baza-znanja/pausalni-obrt'
-          className='text-[#0d9488] hover:underline'
-          rel='noopener noreferrer'
-          target='_blank'
-        >
-          izvor
-        </a>
+        PO-SD do 15. siječnja i limit <strong>60.000 €</strong> primitaka (
+        <Link href={vodiciHref('pausalni-obrt-vodic')} className='text-[#0d9488] hover:underline'>
+          paušalni obrt — kompletan vodič
+        </Link>
         ). Specifičnost konzultanata je poslovni model, ne forma obrta.
       </p>
 
@@ -124,19 +118,19 @@ export default function PauzalniObrtZaKonzultantePage() {
 
       <h2 id='pdv-id'>PDV ID za EU</h2>
       <p>
-        Fiskalopedija jasno kaže: ako posluješ s tvrtkama iz EU (prodaja usluge ili kupnja
-        od dobavljača), trebaš PDV identifikacijski broj — bez obzira jesi li u sustavu
-        PDV-a. PDV ID je OIB s prefiksom HR, dodjeljuje ga Porezna na zahtjev, i{' '}
-        <strong>ne znači</strong> da automatski postaješ PDV obveznik koji zaračunava PDV
-        na račune. Postupak na ePoreznoj ide kroz obrazac P-PDV s posebnim odabirom
-        opcije za dodjelu PDV ID-a — detaljno je raspisano na stranici{' '}
+        Ako posluješ s tvrtkama iz EU (prodaja usluge ili kupnja od dobavljača), trebaš
+        PDV identifikacijski broj — bez obzira jesi li u sustavu PDV-a. PDV ID je OIB s
+        prefiksom HR, dodjeljuje ga Porezna na zahtjev, i <strong>ne znači</strong> da
+        automatski postaješ PDV obveznik koji zaračunava PDV na račune. Postupak na
+        ePoreznoj ide kroz obrazac P-PDV s posebnim odabirom opcije za dodjelu PDV ID-a;
+        službeni opis provjeri na{' '}
         <a
-          href='https://fiskalopedija.hr/baza-znanja/pdv-id-broj'
+          href='https://www.porezna-uprava.hr'
           className='text-[#0d9488] hover:underline'
           rel='noopener noreferrer'
           target='_blank'
         >
-          PDV ID na Fiskalopediji
+          Poreznoj upravi
         </a>
         . Za sažetak na Kvitu otvori <Link href={vodiciHref('pdv-id')}>PDV ID vodič</Link>.
       </p>
@@ -145,7 +139,8 @@ export default function PauzalniObrtZaKonzultantePage() {
       <p>
         Ugovor o djelu i obrt nisu isti pravni okvir. Obrt ti daje kontinuitet branda,
         žiro račun i jednostavnije skaliranje prema više klijenata, ali nosi i fiksne
-        mjesečne obveze koje Fiskalopedija opisuje kao oko 300 € kada nemaš primitaka —
+        mjesečne obveze koje u samostalnom paušalu često znače oko 300 € kada nemaš primitaka
+        —
         zato planiraš cashflow kao consultant, ne samo kao “honorar”.
       </p>
 

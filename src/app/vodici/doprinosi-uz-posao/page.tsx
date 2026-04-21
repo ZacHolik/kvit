@@ -8,7 +8,7 @@ import { GuideShell } from '../_components/guide-shell';
 const SLUG = 'doprinosi-uz-posao';
 
 const META_DESC =
-  'Doprinosi paušalni obrt uz posao 2026.: godišnje rješenje Porezne, rok 15 dana od primitka rješenja, tablica iznosa po razredu primitaka — prema Fiskalopediji.';
+  'Doprinosi paušalni obrt uz posao 2026.: godišnje rješenje Porezne, rok 15 dana od primitka rješenja, tablica iznosa po razredu primitaka — sažetak uz službene izvore.';
 
 export const metadata: Metadata = {
   title: 'Doprinosi paušalni obrt uz posao',
@@ -32,7 +32,7 @@ const faq = [
   {
     question: 'Kada stižu rješenje Porezne za godišnji doprinos?',
     answer:
-      'Prema praksi koju opisuje Fiskalopedija, rješenje za godišnje doprinose uz zaposlenje često stiže na početku sljedeće godine za prethodnu godinu poslovanja. Ako obrt otvoriš unutar godine, doprinose također plaćaš po rješenju za tu nepotpunu godinu.',
+      'U praksi rješenje za godišnje doprinose uz zaposlenje često stiže na početku sljedeće godine za prethodnu godinu poslovanja. Ako obrt otvoriš unutar godine, doprinose također plaćaš po rješenju za tu nepotpunu godinu.',
   },
   {
     question: 'Koliko iznosi godišnji doprinos uz zaposlenje?',
@@ -42,7 +42,7 @@ const faq = [
   {
     question: 'Što se dogodi ako ne platim na vrijeme?',
     answer:
-      'Kašnjenje može donijeti zatezne kamate. U zajednici na Fiskalopediji navode da par dana kašnjenja obično znači male kamate, ali je pravilo uvijek pravovremena uplata i arhiviranje potvrde.',
+      'Kašnjenje može donijeti zatezne kamate. Kratko kašnjenje obično znači manje kamate, ali je pravilo uvijek pravovremena uplata i arhiviranje potvrde.',
   },
   {
     question: 'Mogu li imati paušalni obrt i puno radno vrijeme?',
@@ -100,24 +100,14 @@ export default function DoprinosiUzPosaoPage() {
     >
       <p>
         Ključna riječ <strong>doprinosi paušalni obrt uz posao</strong> danas znači: ne
-        kopiraj mjesečni model kolege koji radi samo kroz obrt. Izvori poput{' '}
-        <a
-          href='https://fiskalopedija.hr/baza-znanja/placanja-doprinosa-pausalni-obrt'
-          className='text-[#0d9488] hover:underline'
-          rel='noopener noreferrer'
-          target='_blank'
-        >
-          Fiskalopedije — plaćanje doprinosa u paušalnom obrtu
-        </a>{' '}
-        i stranice{' '}
-        <a
-          href='https://fiskalopedija.hr/baza-znanja/pausalni-obrt'
-          className='text-[#0d9488] hover:underline'
-          rel='noopener noreferrer'
-          target='_blank'
-        >
-          Paušalni obrt za početnike
-        </a>{' '}
+        kopiraj mjesečni model kolege koji radi samo kroz obrt. Naši vodiči{' '}
+        <Link href={vodiciHref('doprinosi')} className='text-[#0d9488] hover:underline'>
+          doprinosi za paušalni obrt
+        </Link>{' '}
+        i{' '}
+        <Link href={vodiciHref('pausalni-obrt-vodic')} className='text-[#0d9488] hover:underline'>
+          paušalni obrt 2026.
+        </Link>{' '}
         razdvajaju dva svijeta: samostalni paušalist koji do 15. u mjesecu plaća fiksne
         mjesečne doprinose, i obrtnik koji je već pokriven mirovinskim i zdravstvenim
         dijelom kroz plaću. U drugom scenariju država želi izbjeći dvostruko
@@ -130,7 +120,7 @@ export default function DoprinosiUzPosaoPage() {
         <strong>290,98 €</strong> mjesečno do 15. u mjesecu za prethodni mjesec, od
         čega <strong>119,58 €</strong> ide na prvi stup mirovinskog,{' '}
         <strong>39,86 €</strong> na drugi stup i <strong>131,54 €</strong> na
-        zdravstveno — to su brojke koje Fiskalopedija izričito navodi za 2026. Kad uz to
+        zdravstveno — to su brojke koje se u praksi najčešće navode za 2026. Kad uz to
         imaš i radni odnos, dio tih obveza već &quot;ulazi&quot; kroz obračun plaće.
         Paušalni obrt i dalje ima vlastitu osnovicu, ali se način plaćanja mijenja: umjesto
         dvanaest jednakih rata, dolazi <strong>jedna godišnja obveza</strong> prema
@@ -147,12 +137,12 @@ export default function DoprinosiUzPosaoPage() {
 
       <h2 id='rjesenje'>Godišnje rješenje i rok uplate</h2>
       <p>
-        Fiskalopedija navodi da se uz zaposlenje kod drugog poslodavca doprinosi za
-        paušalni obrt plaćaju <strong>jednom godišnje</strong> i da je rok{' '}
+        Uobičajeno je da se uz zaposlenje kod drugog poslodavca doprinosi za paušalni
+        obrt plaćaju <strong>jednom godišnje</strong> i da je rok{' '}
         <strong>15 dana od primitka rješenja</strong> Porezne uprave. Na samom rješenju
         piše koliko točno trebaš uplatiti. Ako si obrt otvorio unutar kalendarske godine
-        i nisi cijelu godinu poslovao kao paušalist, isti izvor kaže da se i tada
-        doprinose plaća <strong>po rješenju</strong>, koje stiže na početku sljedeće
+        i nisi cijelu godinu poslovao kao paušalist, i tada se doprinose plaćaju{' '}
+        <strong>po rješenju</strong>, koje stiže na početku sljedeće
         godine za prethodnu godinu. To je bitno za ljude koji krenu paralelno s
         poslom i žele legalno fakturirati već u prvom mjesecu, ali nemaju punih dvanaest
         mjeseci obrta.
@@ -168,14 +158,14 @@ export default function DoprinosiUzPosaoPage() {
 
       <h2 id='iznosi'>Tablica iznosa za 2026. (uz posao)</h2>
       <p>
-        Sljedeća tablica doslovno slijedi rangove koje publikuje Fiskalopedija za
-        obrt uz zaposlenje (godišnje, po primitcima u prethodnoj godini). Brojevi su u
-        eurima, zaokruženi kao u izvoru:
+        Sljedeća tablica prikazuje uobičajene godišnje iznose doprinosa za obrt uz
+        zaposlenje (po rasponu primitaka obrta u prethodnoj godini). Brojevi su u eurima;
+        prije uplate uvijek uskladi s rješenjem Porezne i aktualnim službenim tablicama:
       </p>
       <div className='my-6 overflow-x-auto rounded-xl border border-[#1f2a28] bg-[#111716] text-sm'>
         <table className='min-w-full border-collapse text-left'>
           <caption className='border-b border-[#1f2a28] px-4 py-3 text-left text-xs text-[#94a3a0]'>
-            Godišnji doprinosi uz zaposlenje (Fiskalopedija, 2026.)
+            Godišnji doprinosi uz zaposlenje (2026., informativno)
           </caption>
           <thead>
             <tr className='border-b border-[#1f2a28] text-[#94a3a0]'>
@@ -232,8 +222,8 @@ export default function DoprinosiUzPosaoPage() {
         </table>
       </div>
       <p>
-        Osnovice u zakonskoj pozadini možeš provjeriti u članku koji Fiskalopedija
-        linka kao službeni: Naredba o iznosima osnovica za obračun doprinosa za 2026. (
+        Osnovice u zakonskoj pozadini provjeri u službenom tekstu: Naredba o iznosima
+        osnovica za obračun doprinosa za 2026. (
         <a
           href='https://narodne-novine.nn.hr/clanci/sluzbeni/2025_12_150_2237.html'
           className='text-[#0d9488] hover:underline'
@@ -248,8 +238,8 @@ export default function DoprinosiUzPosaoPage() {
 
       <h2 id='kasnjenje'>Što ako zakasniš</h2>
       <p>
-        Fiskalopedija u komentarima ističe da par dana kašnjenja tipično znači male
-        zatezne kamate, ali to nije poziv na opuštanje: pravilo je platiti u roku iz
+        Kratko kašnjenje tipično znači manje zatezne kamate, ali to nije poziv na
+        opuštanje: pravilo je platiti u roku iz
         rješenja. Ako zakažeš, uplati što prije, sačuvaj dokaz i provjeri stanje na
         ePoreznoj (PKK). Za samostalne paušaliste paralelno vrijedi disciplina do 15. u
         mjesecu — zato mnogi koriste zajednički podsjetnik za sve obveze.
