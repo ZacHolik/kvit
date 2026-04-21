@@ -249,16 +249,6 @@ export const VODICI_ENTRIES: VodiciEntry[] = [
     primaryKeyword: 'fiskalizacija 2.0 paušalisti',
   },
   {
-    slug: 'usporedba-programa-fiskalizacija',
-    title: 'Koji program za fiskalizaciju 2026. – usporedba',
-    shortTitle: 'Usporedba programa za fiskalizaciju',
-    description:
-      'Usporedba programa za fiskalizaciju: Kvit, Marketino, FiskAI, Solo — cijena, funkcije i AI asistent.',
-    readingMinutes: 10,
-    category: 'fiskalizacija',
-    primaryKeyword: 'program za fiskalizaciju paušalni obrt 2026',
-  },
-  {
     slug: 'kpr-online-generator',
     title: 'KPR online – kako voditi knjige prometa digitalno',
     shortTitle: 'KPR online generator',
