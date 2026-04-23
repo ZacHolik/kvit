@@ -291,6 +291,16 @@ export const VODICI_ENTRIES: VodiciEntry[] = [
     primaryKeyword: 'fiskalizacija 2.0 paušalisti',
   },
   {
+    slug: 'fina-certifikat-fiskalizacija',
+    title: 'FINA certifikat za fiskalizaciju — kako nabaviti i koliko košta',
+    shortTitle: 'FINA certifikat fiskalizacija',
+    description:
+      'Certilia vs FINA PKI, što trebaš za nabavu, cijene i obnova, tko ne treba certifikat i što nakon instalacije (ZKI, JIR).',
+    readingMinutes: 8,
+    category: 'fiskalizacija',
+    primaryKeyword: 'FINA certifikat fiskalizacija paušalni obrt',
+  },
+  {
     slug: 'kpr-online-generator',
     title: 'KPR online – kako voditi knjige prometa digitalno',
     shortTitle: 'KPR online generator',
