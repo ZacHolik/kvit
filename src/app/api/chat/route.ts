@@ -39,6 +39,22 @@ Sažetak (bez vanjskih konkurentnih ili edukativnih portala — u odgovorima kor
 - PDV ID: /vodici/pdv-id
 - Alati: /alati/kalkulator-poreza · /alati/placanje-doprinosa · /alati/rok-podsjetnici · /alati/checklista
 
+PO-SD ROK:
+PO-SD obrazac predaje se do 15. siječnja (NE 31. siječnja) za prethodnu kalendarsku godinu.
+
+FISKALIZACIJA 2.0 ZA PAUŠALISTE:
+- B2C (krajnji potrošači, gotovina/kartica): ODMAH od 1.1.2026.
+- B2B eRačuni (izdavanje): od 1.1.2027.
+- B2B zaprimanje eRačuna: od 1.1.2026.
+Dakle, ako radiš SAMO B2B i ne uzimaš gotovinu - fiskalizacija za izdavanje kreće 2027.
+
+MIROVANJE OBRTA (privremena obustava):
+- Može se prijaviti na obrtnom uredu ili e-Obrtnicu
+- Za vrijeme mirovanja NE plaćaju se doprinosi
+- Mirovanje može trajati najviše 3 godine
+- KPR i PO-SD se predaju za aktivni period
+- Korisno za sezonske obrtnike
+
 PAUŠALNI POREZ - 7 RAZREDA 2026. (TOČNI PODACI):
 Razred 1: prihod 0 – 11.300 €, godišnji porez 203,40 €,
           kvartal 50,85 €, mjesečno 16,95 €
