@@ -58,6 +58,16 @@ export const VODICI_ENTRIES: VodiciEntry[] = [
     primaryKeyword: 'kako otvoriti paušalni obrt',
   },
   {
+    slug: 'rpo-obrazac',
+    title: 'RPO obrazac – kako ispuniti i predati online 2026.',
+    shortTitle: 'RPO obrazac',
+    description:
+      'Što je RPO obrazac, tko ga mora predati, rokovi i kako ga predati putem ePorezne korak po korak.',
+    readingMinutes: 11,
+    category: 'osnove',
+    primaryKeyword: 'RPO obrazac paušalni obrt',
+  },
+  {
     slug: 'doprinosi-uz-posao',
     title: 'Doprinosi paušalni obrt uz posao 2026.',
     shortTitle: 'Doprinosi uz zaposlenje',
@@ -237,6 +247,26 @@ export const VODICI_ENTRIES: VodiciEntry[] = [
     primaryKeyword: 'doprinosi paušalni obrt iznos',
   },
   {
+    slug: 'porez-na-dohodak',
+    title: 'Porez na dohodak u paušalnom obrtu 2026.',
+    shortTitle: 'Porez na dohodak',
+    description:
+      'Kako se obračunava paušalni porez na dohodak, 7 poreznih razreda, kvartalni rokovi i kako platiti.',
+    readingMinutes: 12,
+    category: 'porezi',
+    primaryKeyword: 'porez na dohodak paušalni obrt 2026',
+  },
+  {
+    slug: 'turisticka-clanarina',
+    title: 'Turistička članarina – tko plaća i koliko 2026.',
+    shortTitle: 'Turistička članarina',
+    description:
+      'Koji paušalni obrtnici moraju plaćati turističku članarinu, iznosi za 2026. i kako ispuniti TZ1 obrazac.',
+    readingMinutes: 11,
+    category: 'porezi',
+    primaryKeyword: 'turistička članarina paušalni obrt',
+  },
+  {
     slug: 'pdv-id',
     title: 'PDV ID broj za paušalce – kada ti treba',
     shortTitle: 'PDV ID broj',
@@ -269,6 +299,16 @@ export const VODICI_ENTRIES: VodiciEntry[] = [
     readingMinutes: 9,
     category: 'fiskalizacija',
     primaryKeyword: 'KPR online paušalni obrt',
+  },
+  {
+    slug: 'izdavanje-racuna-vodic',
+    title: 'Vodič za izdavanje računa – paušalni obrt 2026.',
+    shortTitle: 'Vodič za izdavanje računa',
+    description:
+      'Kompletan vodič za izdavanje računa: interni akt, numeracija, obvezni elementi, fiskalizacija i čuvanje.',
+    readingMinutes: 12,
+    category: 'fiskalizacija',
+    primaryKeyword: 'izdavanje računa paušalni obrt vodič',
   },
 ];
 
