@@ -1,9 +1,12 @@
 'use client';
 
 import Link from 'next/link';
-import { FormEvent, useState } from 'react';
+import { FormEvent, useEffect, useRef, useState } from 'react';
 
-import { createClient } from '@/lib/supabase/client';
+const turnstileSiteKey =
+  typeof process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY === 'string'
+    ? process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY.trim()
+    : '';
 
 function buildEmailRedirectTo(): string {
   if (typeof window === 'undefined') {
@@ -17,13 +20,47 @@ function buildEmailRedirectTo(): string {
 }
 
 export default function RegisterPage() {
-  const supabase = createClient();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  /** Honeypot — ostaje prazno; botovi ga često popune. */
+  const [kvitHpConfirm, setKvitHpConfirm] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [registeredEmail, setRegisteredEmail] = useState<string | null>(null);
+  const [turnstileToken, setTurnstileToken] = useState('');
+  const turnstileContainerRef = useRef<HTMLDivElement | null>(null);
+  const turnstileWidgetIdRef = useRef<string | null>(null);
+
+  useEffect(() => {
+    if (!turnstileSiteKey || !turnstileContainerRef.current) {
+      return;
+    }
+    const container = turnstileContainerRef.current;
+    const script = document.createElement('script');
+    script.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js';
+    script.async = true;
+    script.defer = true;
+    script.onload = () => {
+      if (!window.turnstile || !container) {
+        return;
+      }
+      turnstileWidgetIdRef.current = window.turnstile.render(container, {
+        sitekey: turnstileSiteKey,
+        callback: (token: string) => setTurnstileToken(token),
+        'expired-callback': () => setTurnstileToken(''),
+        'error-callback': () => setTurnstileToken(''),
+      });
+    };
+    document.body.appendChild(script);
+    return () => {
+      if (window.turnstile && turnstileWidgetIdRef.current) {
+        window.turnstile.remove(turnstileWidgetIdRef.current);
+        turnstileWidgetIdRef.current = null;
+      }
+      script.remove();
+    };
+  }, []);
 
   const handleRegister = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -34,21 +71,56 @@ export default function RegisterPage() {
       return;
     }
 
-    setIsLoading(true);
-    const { error: signUpError } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        emailRedirectTo: buildEmailRedirectTo(),
-      },
-    });
-    setIsLoading(false);
-
-    if (signUpError) {
-      setError(signUpError.message);
+    if (turnstileSiteKey && !turnstileToken.trim()) {
+      setError('Potvrdi da nisi robot (Turnstile).');
       return;
     }
 
+    setIsLoading(true);
+    let response: Response;
+    try {
+      response = await fetch('/api/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: email.trim(),
+          password,
+          emailRedirectTo: buildEmailRedirectTo(),
+          kvit_hp_confirm: kvitHpConfirm,
+          turnstileToken: turnstileSiteKey ? turnstileToken : undefined,
+        }),
+      });
+    } catch {
+      setIsLoading(false);
+      setError('Mrežna greška. Pokušaj ponovno.');
+      return;
+    }
+
+    const payload = (await response.json().catch(() => ({}))) as {
+      error?: string;
+      ok?: boolean;
+    };
+
+    setIsLoading(false);
+
+    if (!response.ok) {
+      setError(
+        payload.error ||
+          (response.status === 429
+            ? 'Previše pokušaja. Pokušaj kasnije.'
+            : 'Registracija nije uspjela.'),
+      );
+      if (window.turnstile && turnstileWidgetIdRef.current) {
+        window.turnstile.reset(turnstileWidgetIdRef.current);
+      }
+      setTurnstileToken('');
+      return;
+    }
+
+    if (window.turnstile && turnstileWidgetIdRef.current) {
+      window.turnstile.reset(turnstileWidgetIdRef.current);
+    }
+    setTurnstileToken('');
     setRegisteredEmail(email.trim());
   };
 
@@ -85,6 +157,7 @@ export default function RegisterPage() {
                 setEmail('');
                 setPassword('');
                 setConfirmPassword('');
+                setKvitHpConfirm('');
               }}
             >
               Drugi email
@@ -104,6 +177,27 @@ export default function RegisterPage() {
         </h1>
 
         <form className='mt-8 space-y-4' onSubmit={handleRegister}>
+          {/*
+            Honeypot: skriveno polje koje ljudi ne vide; botovi ga često popune.
+            Ne uklanjati — zaštita od jednostavnih skripti.
+          */}
+          <div
+            className='absolute -left-[9999px] h-px w-px overflow-hidden opacity-0'
+            aria-hidden='true'
+          >
+            <label className='font-body text-xs text-[#64748b]'>
+              Tvrtka (ne ispunjavati)
+              <input
+                type='text'
+                tabIndex={-1}
+                autoComplete='off'
+                value={kvitHpConfirm}
+                onChange={(event) => setKvitHpConfirm(event.target.value)}
+                className='mt-1 block'
+              />
+            </label>
+          </div>
+
           <label className='block'>
             <span className='font-body mb-2 block text-sm text-[#b9c7c4]'>
               Email
@@ -147,6 +241,16 @@ export default function RegisterPage() {
               placeholder='Ponovi lozinku'
             />
           </label>
+
+          {/*
+            Cloudflare Turnstile (opcionalno): postavi NEXT_PUBLIC_TURNSTILE_SITE_KEY
+            i TURNSTILE_SECRET_KEY u .env — inače se widget ne prikazuje.
+          */}
+          {turnstileSiteKey ? (
+            <div className='flex justify-center pt-1'>
+              <div ref={turnstileContainerRef} />
+            </div>
+          ) : null}
 
           {error ? (
             <p className='font-body rounded-lg border border-red-500/30 bg-red-500/10 p-3 text-sm text-red-200'>
