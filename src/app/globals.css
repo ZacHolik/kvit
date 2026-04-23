@@ -8,7 +8,7 @@
   --surface: #111716;
   --surface-border: #1f2a28;
   --teal-accent: #0d9488;
-  --teal-accent-hover: #14b8a6;
+  --teal-accent-hover: #14b8a8;
 }
 
 body {
@@ -48,8 +48,15 @@ h6 {
     @apply mt-4 list-decimal space-y-2 pl-6 text-[#d5dfdd];
   }
 
-  .guide-prose a {
+  /* Inline body links only — ne primjenjuj na gumbe (inline-flex), inače
+     text-[#0d9488] pregazi text-white na teal pozadini (slab kontrast). */
+  .guide-prose a:not(.inline-flex) {
     @apply text-[#0d9488] underline-offset-2 hover:underline;
+  }
+
+  /** Primarni CTA (vodiči / alati): puni kontrast, bez overlaya. */
+  .btn-cta-primary {
+    @apply inline-flex items-center justify-center rounded-lg border-0 bg-[#0d9488] font-semibold !text-[#ffffff] no-underline opacity-100 transition-colors hover:bg-[#14b8a8] hover:!text-[#ffffff] hover:no-underline;
   }
 
   .guide-prose strong {

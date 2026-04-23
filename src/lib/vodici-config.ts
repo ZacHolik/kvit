@@ -28,7 +28,15 @@ export const VODICI_CATEGORY_LABELS: Record<VodiciCategoryId, string> = {
   fiskalizacija: 'Fiskalizacija',
 };
 
+/**
+ * Redoslijed unutar kategorije = redoslijed kartica na /vodici.
+ * Brojke i rokovi u tekstovima usklađeni su sa službenim izvorima (Porezna uprava, NN)
+ * i s Kvit vodičima / alatima — bez vanjskih edukativnih portala.
+ */
 export const VODICI_ENTRIES: VodiciEntry[] = [
+  // =========================================================================
+  // OSNOVE
+  // =========================================================================
   {
     slug: 'pausalni-obrt-vodic',
     title: 'Paušalni obrt 2026. – kompletan vodič',
@@ -40,24 +48,64 @@ export const VODICI_ENTRIES: VodiciEntry[] = [
     primaryKeyword: 'paušalni obrt 2026',
   },
   {
-    slug: 'pausalni-obrt-za-it-freelancere',
-    title: 'Paušalni obrt za IT freelancere – kompletan vodič 2026.',
-    shortTitle: 'Paušalni obrt za IT freelancere',
+    slug: 'otvaranje-obrta',
+    title: 'Kako otvoriti paušalni obrt 2026. – korak po korak',
+    shortTitle: 'Otvaranje obrta',
     description:
-      'Sve što IT freelancer treba znati o paušalnom obrtu: ugovori, limiti, fiskalizacija, kada prijeći na d.o.o.',
+      'Kako otvoriti paušalni obrt: dokumenti, e-Obrtnica, troškovi i što napraviti odmah nakon registracije.',
     readingMinutes: 13,
     category: 'osnove',
-    primaryKeyword: 'paušalni obrt za IT freelancere',
+    primaryKeyword: 'kako otvoriti paušalni obrt',
   },
   {
-    slug: 'prikriveni-radni-odnos',
-    title: 'Prikriveni radni odnos – što je, kako ga izbjeći i rizici',
-    shortTitle: 'Prikriveni radni odnos',
+    slug: 'doprinosi-uz-posao',
+    title: 'Doprinosi paušalni obrt uz posao 2026.',
+    shortTitle: 'Doprinosi uz zaposlenje',
     description:
-      'Što je prikriveni radni odnos, kako ga Porezna prepoznaje i kako IT freelanceri mogu smanjiti rizik.',
-    readingMinutes: 12,
+      'Kako se plaćaju doprinosi ako uz paušalni obrt imaš i zaposlenje. Točni iznosi 2026., godišnje rješenje i rokovi.',
+    readingMinutes: 9,
     category: 'osnove',
-    primaryKeyword: 'prikriveni radni odnos paušalac',
+    primaryKeyword: 'doprinosi paušalni obrt uz posao',
+  },
+  {
+    slug: 'rokovi-placanja',
+    title: 'Rokovi plaćanja paušalni obrt 2026. – svi rokovi',
+    shortTitle: 'Rokovi plaćanja',
+    description:
+      'Kompletan cheat sheet svih rokova za paušalne obrtnike: doprinosi, porez, PO-SD, HOK.',
+    readingMinutes: 9,
+    category: 'osnove',
+    primaryKeyword: 'rokovi plaćanja paušalni obrt 2026',
+  },
+  {
+    slug: 'zatvaranje-obrta',
+    title: 'Kako zatvoriti paušalni obrt 2026. – korak po korak',
+    shortTitle: 'Zatvaranje obrta',
+    description:
+      'Postupak zatvaranja paušalnog obrta: dokumenti, redoslijed koraka, rokovi i obveze koje ostaju.',
+    readingMinutes: 10,
+    category: 'osnove',
+    primaryKeyword: 'zatvaranje paušalnog obrta',
+  },
+  {
+    slug: 'sezonski-obrt',
+    title: 'Sezonski paušalni obrt – mirovanje i doprinosi',
+    shortTitle: 'Sezonski obrt i mirovanje',
+    description:
+      'Sve o mirovanju paušalnog obrta: kako prijaviti, doprinosi za neaktivne mjesece, KPR i PO-SD.',
+    readingMinutes: 9,
+    category: 'osnove',
+    primaryKeyword: 'sezonski paušalni obrt mirovanje',
+  },
+  {
+    slug: 'knjiga-trazbi',
+    title: 'Knjiga tražbina paušalni obrt – moraš li je voditi',
+    shortTitle: 'Knjiga tražbina',
+    description:
+      'Što je knjiga tražbina, razlika prema KPR-u i tko je obvezan voditi evidenciju nenaplaćenih računa.',
+    readingMinutes: 8,
+    category: 'osnove',
+    primaryKeyword: 'knjiga tražbina paušalni obrt',
   },
   {
     slug: 'pausalni-obrt-vs-doo',
@@ -70,14 +118,14 @@ export const VODICI_ENTRIES: VodiciEntry[] = [
     primaryKeyword: 'paušalni obrt vs d.o.o.',
   },
   {
-    slug: 'otvaranje-obrta',
-    title: 'Kako otvoriti paušalni obrt 2026. – korak po korak',
-    shortTitle: 'Otvaranje obrta',
+    slug: 'prikriveni-radni-odnos',
+    title: 'Prikriveni radni odnos – što je, kako ga izbjeći i rizici',
+    shortTitle: 'Prikriveni radni odnos',
     description:
-      'Kako otvoriti paušalni obrt: dokumenti, e-Obrtnica, troškovi i što napraviti odmah nakon registracije.',
-    readingMinutes: 13,
+      'Što je prikriveni radni odnos, kako ga Porezna prepoznaje i kako IT freelanceri mogu smanjiti rizik.',
+    readingMinutes: 12,
     category: 'osnove',
-    primaryKeyword: 'kako otvoriti paušalni obrt',
+    primaryKeyword: 'prikriveni radni odnos paušalac',
   },
   {
     slug: 'izdavanje-racuna',
@@ -100,6 +148,41 @@ export const VODICI_ENTRIES: VodiciEntry[] = [
     primaryKeyword: 'KPR knjiga prometa paušalisti',
   },
   {
+    slug: 'alati-za-pausalne-obrtnike',
+    title:
+      'Alati za paušalne obrtnike 2026. — zašto izolirani alati nisu dovoljni',
+    shortTitle: 'Alati za paušalne obrtnike',
+    description:
+      'Kalkulator, uplatnica, checklista i PO-SD generator kao izolirani alati ne rade umjesto tebe. Kako Kvit povezuje sve u jedan sustav.',
+    readingMinutes: 9,
+    category: 'osnove',
+    primaryKeyword: 'alati za paušalne obrtnike',
+  },
+
+  // =========================================================================
+  // PO DJELATNOSTIMA (IT vodič ovdje — posebno za freelancere / platforme)
+  // =========================================================================
+  {
+    slug: 'pausalni-obrt-za-it-freelancere',
+    title: 'Paušalni obrt za IT freelancere – kompletan vodič 2026.',
+    shortTitle: 'Paušalni obrt za IT freelancere',
+    description:
+      'Sve što IT freelancer treba znati o paušalnom obrtu: ugovori, limiti, fiskalizacija, kada prijeći na d.o.o.',
+    readingMinutes: 13,
+    category: 'djelatnosti',
+    primaryKeyword: 'paušalni obrt za IT freelancere',
+  },
+  {
+    slug: 'pausalni-obrt-za-konzultante',
+    title: 'Paušalni obrt za konzultante i dizajnere 2026.',
+    shortTitle: 'Paušalni obrt za konzultante',
+    description:
+      'IT konzultanti, UX/UI dizajneri i arhitekti: paušalni obrt, prikriveni radni odnos i inozemni klijenti.',
+    readingMinutes: 12,
+    category: 'djelatnosti',
+    primaryKeyword: 'paušalni obrt za konzultante',
+  },
+  {
     slug: 'pausalni-obrt-za-kozmeticare',
     title: 'Paušalni obrt za kozmetičare – vodič 2026.',
     shortTitle: 'Paušalni obrt za kozmetičare',
@@ -119,6 +202,20 @@ export const VODICI_ENTRIES: VodiciEntry[] = [
     category: 'djelatnosti',
     primaryKeyword: 'paušalni obrt za fotografe',
   },
+  {
+    slug: 'pausalni-obrt-za-ugostitelje',
+    title: 'Paušalni obrt za ugostitelje 2026.',
+    shortTitle: 'Paušalni obrt za ugostitelje',
+    description:
+      'Ugostitelji i paušalni obrt: fiskalizacija, turistička članarina, sezonsko poslovanje i limit 60.000 €.',
+    readingMinutes: 11,
+    category: 'djelatnosti',
+    primaryKeyword: 'paušalni obrt za ugostitelje',
+  },
+
+  // =========================================================================
+  // POREZI
+  // =========================================================================
   {
     slug: 'po-sd-obrazac',
     title: 'PO-SD obrazac 2026. – kako ispuniti i predati',
@@ -140,6 +237,20 @@ export const VODICI_ENTRIES: VodiciEntry[] = [
     primaryKeyword: 'doprinosi paušalni obrt iznos',
   },
   {
+    slug: 'pdv-id',
+    title: 'PDV ID broj za paušalce – kada ti treba',
+    shortTitle: 'PDV ID broj',
+    description:
+      'PDV ID nije ulazak u PDV sustav. Kada ga paušalist mora zatražiti i kako — konkretni primjeri.',
+    readingMinutes: 10,
+    category: 'porezi',
+    primaryKeyword: 'PDV ID broj paušalni obrt',
+  },
+
+  // =========================================================================
+  // FISKALIZACIJA
+  // =========================================================================
+  {
     slug: 'fiskalizacija-20',
     title: 'Fiskalizacija 2.0 za paušaliste – vodič 2026.',
     shortTitle: 'Fiskalizacija 2.0',
@@ -148,6 +259,16 @@ export const VODICI_ENTRIES: VodiciEntry[] = [
     readingMinutes: 12,
     category: 'fiskalizacija',
     primaryKeyword: 'fiskalizacija 2.0 paušalisti',
+  },
+  {
+    slug: 'kpr-online-generator',
+    title: 'KPR online – kako voditi knjige prometa digitalno',
+    shortTitle: 'KPR online generator',
+    description:
+      'Kako voditi KPR knjige prometa online: što se upisuje, greške koje paušalci rade i veza s PO-SD.',
+    readingMinutes: 9,
+    category: 'fiskalizacija',
+    primaryKeyword: 'KPR online paušalni obrt',
   },
 ];
 

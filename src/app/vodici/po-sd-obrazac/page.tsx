@@ -153,8 +153,8 @@ export default function PoSdObrazacPage() {
         izvodima.
       </p>
       <p>
-        Ako koristiš online kalkulator ili predložak s Fiskalopedije ili sličnih
-        izvora, dobro je presjeći ručno ključne zbrojeve. Automatizacija pomaže, ali
+        Ako koristiš online kalkulator ili predložak s interneta, dobro je presjeći
+        ručno ključne zbrojeve. Automatizacija pomaže, ali
         odgovornost za točnost ostaje na tebi kao poreznom obvezniku.
       </p>
 

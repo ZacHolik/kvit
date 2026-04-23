@@ -199,10 +199,7 @@ export default function AlatiIndexPage() {
             Automatski prati razrede, rokove i PDV prag — manje brige oko papira.
           </p>
           <div className='mt-5 flex flex-wrap justify-center gap-3'>
-            <Link
-              href='/register'
-              className='inline-flex rounded-lg bg-[#0d9488] px-6 py-3 font-semibold text-white transition hover:bg-[#14b8a6]'
-            >
+            <Link href='/register' className='btn-cta-primary px-6 py-3 text-base'>
               Registriraj se
             </Link>
             <a

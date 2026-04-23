@@ -1,6 +1,13 @@
 import { createServerClient } from '@supabase/ssr';
 import { NextResponse, type NextRequest } from 'next/server';
 
+import { getClientIpFromRequest } from '@/lib/client-ip';
+import {
+  REGISTRATION_ATTEMPTS_PER_HOUR,
+  countRegistrationAttemptsInWindow,
+} from '@/lib/registration-rate-limit';
+import { createServiceRoleClient } from '@/lib/supabase/service-role';
+
 const AUTH_PUBLIC_PREFIXES = [
   '/login',
   '/register',
@@ -67,6 +74,24 @@ export async function middleware(request: NextRequest) {
       dest.searchParams.set('next', '/confirm-email?verified=1');
     }
     return NextResponse.redirect(dest);
+  }
+
+  /** Max 3 POST /api/auth/register per IP per hour (Supabase table; see migration). */
+  if (pathname === '/api/auth/register' && request.method === 'POST') {
+    const admin = createServiceRoleClient();
+    if (admin) {
+      const ip = getClientIpFromRequest(request);
+      const count = await countRegistrationAttemptsInWindow(admin, ip);
+      if (count !== null && count >= REGISTRATION_ATTEMPTS_PER_HOUR) {
+        return NextResponse.json(
+          {
+            error:
+              'Previše pokušaja registracije s ove mreže. Pokušaj ponovno za sat vremena.',
+          },
+          { status: 429 },
+        );
+      }
+    }
   }
 
   let response = NextResponse.next({
