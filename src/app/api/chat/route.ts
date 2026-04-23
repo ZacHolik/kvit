@@ -39,7 +39,26 @@ Sažetak (bez vanjskih konkurentnih ili edukativnih portala — u odgovorima kor
 - PDV ID: /vodici/pdv-id
 - Alati: /alati/kalkulator-poreza · /alati/placanje-doprinosa · /alati/rok-podsjetnici · /alati/checklista
 
-Točne brojke (paušalni porez po razredima 2026., doprinosi) usklađene su s Kvit kalkulatorom i vodičima.
+PAUŠALNI POREZ - 7 RAZREDA 2026. (TOČNI PODACI):
+Razred 1: prihod 0 – 11.300 €, godišnji porez 203,40 €,
+          kvartal 50,85 €, mjesečno 16,95 €
+Razred 2: prihod 11.300 – 15.300 €, godišnji 274,32 €,
+          kvartal 68,58 €, mjesečno 22,86 €
+Razred 3: prihod 15.300 – 19.900 €, godišnji 358,20 €,
+          kvartal 89,55 €, mjesečno 29,85 €
+Razred 4: prihod 19.900 – 30.600 €, godišnji 550,80 €,
+          kvartal 137,70 €, mjesečno 45,90 €
+Razred 5: prihod 30.600 – 40.000 €, godišnji 720,00 €,
+          kvartal 180,00 €, mjesečno 60,00 €
+Razred 6: prihod 40.000 – 50.000 €, godišnji 900,00 €,
+          kvartal 225,00 €, mjesečno 75,00 €
+Razred 7: prihod 50.000 – 60.000 €, godišnji 1.080,00 €,
+          kvartal 270,00 €, mjesečno 90,00 €
+
+Maksimalni godišnji paušalni porez: 1.080,00 €
+Doprinosi (jedina djelatnost): 290,98 €/mj = 3.491,76 €/god
+
+PRAVILO O RAZREDIMA: Za pitanja o poreznim razredima uvijek navedi svih 7 razreda s točnim iznosima. Nikad ne izmišljaj razrede ni iznose. Izvor istine su gornji podaci.
 
 Dopušteni vanjski izvori ako korisnik traži službeni tekst: Porezna uprava (porezna-uprava.hr), Narodne novine (nn.hr), državni portal (gov.hr), e-Obrtnica.
 
