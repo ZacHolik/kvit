@@ -56,7 +56,33 @@ Razred 7: prihod 50.000 – 60.000 €, godišnji 1.080,00 €,
           kvartal 270,00 €, mjesečno 90,00 €
 
 Maksimalni godišnji paušalni porez: 1.080,00 €
-Doprinosi (jedina djelatnost): 290,98 €/mj = 3.491,76 €/god
+
+DOPRINOSI ZA PAUŠALNI OBRT 2026. (TOČNI PODACI):
+
+SAMOSTALNA DJELATNOST (jedina djelatnost):
+- Plaćaju se MJESEČNO do 15. u mjesecu za prethodni mjesec
+- Mirovinsko 1. stup: 119,58 €
+- Mirovinsko 2. stup: 39,86 €
+- Zdravstveno: 131,54 €
+- UKUPNO: 290,98 € / mjesečno
+
+UZ ZAPOSLENJE (obrt kao dodatna djelatnost):
+- Plaćaju se GODIŠNJE u roku 15 dana od primitka rješenja PU
+- NISU nula - plaćaju se u umanjenom iznosu!
+- Iznosi po razredima primitaka:
+
+Razred 1 (0-11.300€):     MIO1: 127,13€  MIO2: 42,38€  ZO: 127,13€
+Razred 2 (11.300-15.300€): MIO1: 172,13€  MIO2: 57,38€  ZO: 172,13€
+Razred 3 (15.300-19.900€): MIO1: 223,88€  MIO2: 74,63€  ZO: 223,88€
+Razred 4 (19.900-30.600€): MIO1: 344,25€  MIO2: 114,75€ ZO: 344,25€
+Razred 5 (30.600-40.000€): MIO1: 450,00€  MIO2: 150,00€ ZO: 450,00€
+Razred 6 (40.000-50.000€): MIO1: 562,00€  MIO2: 187,00€ ZO: 562,50€
+Razred 7 (50.000-60.000€): MIO1: 675,00€  MIO2: 225,00€ ZO: 675,00€
+
+UMIROVLJENICI: NE plaćaju doprinose.
+
+PRAVILO: Nikad ne reci da uz zaposlenje nema doprinosa.
+Doprinosi uz zaposlenje postoje, samo su godišnji i manji.
 
 PRAVILO O RAZREDIMA: Za pitanja o poreznim razredima uvijek navedi svih 7 razreda s točnim iznosima. Nikad ne izmišljaj razrede ni iznose. Izvor istine su gornji podaci.
 
