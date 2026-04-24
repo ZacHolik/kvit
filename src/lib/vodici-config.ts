@@ -1,8 +1,25 @@
-/** Javna baza URL-a za SEO (og:url, sitemap, JSON-LD). */
+/** Canonical marketing origin (sitemap, robots, OG, JSON-LD) — uvijek apex domena. */
+export const CANONICAL_SITE_ORIGIN = 'https://kvit.online';
+
+/**
+ * Javna baza URL-a za SEO (og:url, sitemap, JSON-LD, robots).
+ * Deploy na app.kvit.online ne smije ući u sitemap — normaliziramo na kvit.online.
+ */
 export function getSiteUrl(): string {
-  return (
-    process.env.NEXT_PUBLIC_APP_URL?.replace(/\/$/, '') || 'https://kvit.online'
-  );
+  const raw = process.env.NEXT_PUBLIC_APP_URL?.replace(/\/$/, '') || '';
+  if (!raw) {
+    return CANONICAL_SITE_ORIGIN;
+  }
+  try {
+    const url = new URL(raw);
+    if (url.hostname === 'app.kvit.online') {
+      return CANONICAL_SITE_ORIGIN;
+    }
+  } catch {
+    // ako env nije valjan URL, fallback
+    return CANONICAL_SITE_ORIGIN;
+  }
+  return raw;
 }
 
 export type VodiciCategoryId =

@@ -1,9 +1,9 @@
 import type { MetadataRoute } from 'next';
 
-import { getSiteUrl } from '@/lib/vodici-config';
+import { CANONICAL_SITE_ORIGIN } from '@/lib/vodici-config';
 
 export default function robots(): MetadataRoute.Robots {
-  const base = getSiteUrl();
+  const base = CANONICAL_SITE_ORIGIN;
 
   return {
     rules: [
