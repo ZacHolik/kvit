@@ -81,6 +81,10 @@ export async function PATCH(
       nacin_placanja: 'ziro',
       ukupni_iznos: Number(ponuda.ukupno),
       status: 'izdano',
+      tip_racuna: ponuda.kupac_oib ? 'R1' : 'R2',
+      barkod_enabled: true,
+      recurring: false,
+      recurring_interval: null,
       napomena: ponuda.napomena,
     })
     .select('id, broj_racuna')

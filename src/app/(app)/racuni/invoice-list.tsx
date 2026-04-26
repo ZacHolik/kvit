@@ -10,6 +10,7 @@ import {
 
 import { EmailInvoiceButton } from './email-button';
 import { MarkAsPaidButton } from './paid-button';
+import { StornoInvoiceButton } from './storno-button';
 
 export type InvoiceRow = {
   id: string;
@@ -124,8 +125,13 @@ export function InvoiceList({ invoices, nazivObrta }: InvoiceListProps) {
                   ? `Poslano na ${racun.email_poslano_na} ${sentAt}`
                   : undefined;
 
+              const isStornirano = racun.status === 'stornirano';
+              const rowClass = isStornirano
+                ? 'text-sm text-red-200 line-through decoration-red-400/80'
+                : 'text-sm';
+
               return (
-                <tr key={racun.id} className='text-sm'>
+                <tr key={racun.id} className={rowClass}>
                   <td className='px-4 py-4'>{racun.broj_racuna}</td>
                   <td className='px-4 py-4'>{racun.kupci?.naziv ?? '-'}</td>
                   <td className='px-4 py-4'>{formatDatumHr(racun.datum)}</td>
@@ -162,8 +168,14 @@ export function InvoiceList({ invoices, nazivObrta }: InvoiceListProps) {
                       >
                         PDF
                       </a>
-                      {racun.status !== 'placeno' ? (
+                      {racun.status === 'izdano' ? (
                         <MarkAsPaidButton racunId={racun.id} />
+                      ) : null}
+                      {racun.status === 'izdano' ? (
+                        <StornoInvoiceButton
+                          racunId={racun.id}
+                          brojRacuna={racun.broj_racuna}
+                        />
                       ) : null}
                       <EmailInvoiceButton
                         racunId={racun.id}

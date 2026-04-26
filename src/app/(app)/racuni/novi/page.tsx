@@ -13,7 +13,10 @@ type FormState = {
   datumPlacanja: string;
   nacinPlacanja: 'ziro' | 'gotovina' | 'kartica';
   status: 'izdano' | 'placeno' | 'stornirano';
+  tipRacuna: 'R1' | 'R2' | 'bez_oznake';
   dodajBarkodPlacanja: boolean;
+  recurring: boolean;
+  recurringInterval: 'mjesecno' | 'kvartalno' | 'godisnje';
   napomena: string;
   kupacNaziv: string;
   kupacOib: string;
@@ -81,7 +84,10 @@ export default function NoviRacunPage() {
     datumPlacanja: '',
     nacinPlacanja: 'ziro',
     status: 'izdano',
+    tipRacuna: 'R1',
     dodajBarkodPlacanja: true,
+    recurring: false,
+    recurringInterval: 'mjesecno',
     napomena: '',
     kupacNaziv: '',
     kupacOib: '',
@@ -316,6 +322,11 @@ export default function NoviRacunPage() {
       return false;
     }
 
+    if (formState.tipRacuna === 'R1' && formState.kupacOib.trim().length === 0) {
+      setError('R1 račun zahtijeva OIB kupca.');
+      return false;
+    }
+
     setIsLoading(true);
 
     const response = await fetch('/api/racuni', {
@@ -329,10 +340,15 @@ export default function NoviRacunPage() {
         datumPlacanja: formState.datumPlacanja || undefined,
         nacinPlacanja: formState.nacinPlacanja,
         status: formState.status,
+        tipRacuna: formState.tipRacuna,
         dodajBarkodPlacanja:
           formState.nacinPlacanja === 'ziro'
             ? formState.dodajBarkodPlacanja
             : false,
+        recurring: formState.recurring,
+        recurringInterval: formState.recurring
+          ? formState.recurringInterval
+          : undefined,
         napomena: formState.napomena,
         kupac: {
           naziv: formState.kupacNaziv,
@@ -419,6 +435,30 @@ export default function NoviRacunPage() {
           <section className='grid gap-4 sm:grid-cols-3'>
             <label className='block'>
               <span className='font-body mb-2 block text-sm text-[#b9c7c4]'>
+                Tip računa
+              </span>
+              <select
+                value={formState.tipRacuna}
+                onChange={(event) =>
+                  setFormState((previous) => ({
+                    ...previous,
+                    tipRacuna: event.target.value as FormState['tipRacuna'],
+                  }))
+                }
+                className='font-body w-full rounded-xl border border-[#2a3734] bg-[#0b0f0e] px-4 py-3 outline-none transition focus:border-[#0d9488]'
+              >
+                <option value='R1'>R1 - firme (B2B)</option>
+                <option value='R2'>R2 - građani (B2C)</option>
+                <option value='bez_oznake'>Bez oznake</option>
+              </select>
+              {formState.tipRacuna === 'R1' ? (
+                <span className='font-body mt-1 block text-xs text-[#64756f]'>
+                  R1 račun zahtijeva OIB kupca.
+                </span>
+              ) : null}
+            </label>
+            <label className='block'>
+              <span className='font-body mb-2 block text-sm text-[#b9c7c4]'>
                 Način plaćanja
               </span>
               <select
@@ -479,6 +519,9 @@ export default function NoviRacunPage() {
                 <option value='stornirano'>Stornirano</option>
               </select>
             </label>
+          </section>
+
+          <section className='grid gap-4 sm:grid-cols-2'>
             <label className='block'>
               <span className='font-body mb-2 block text-sm text-[#b9c7c4]'>
                 Datum plaćanja
@@ -495,6 +538,44 @@ export default function NoviRacunPage() {
                 className='font-body w-full rounded-xl border border-[#2a3734] bg-[#0b0f0e] px-4 py-3 outline-none transition focus:border-[#0d9488]'
               />
             </label>
+            <div className='rounded-xl border border-[#2a3734] bg-[#0b0f0e] px-4 py-3'>
+              <label className='font-body flex items-center gap-3 text-sm text-[#d5dfdd]'>
+                <input
+                  type='checkbox'
+                  checked={formState.recurring}
+                  onChange={(event) =>
+                    setFormState((previous) => ({
+                      ...previous,
+                      recurring: event.target.checked,
+                    }))
+                  }
+                  className='h-4 w-4 accent-[#0d9488]'
+                />
+                Ponavljajući račun
+              </label>
+              {formState.recurring ? (
+                <label className='mt-3 block'>
+                  <span className='font-body mb-2 block text-xs text-[#94a3a0]'>
+                    Ponovi svaki
+                  </span>
+                  <select
+                    value={formState.recurringInterval}
+                    onChange={(event) =>
+                      setFormState((previous) => ({
+                        ...previous,
+                        recurringInterval: event.target
+                          .value as FormState['recurringInterval'],
+                      }))
+                    }
+                    className='font-body w-full rounded-xl border border-[#2a3734] bg-[#111716] px-4 py-3 outline-none transition focus:border-[#0d9488]'
+                  >
+                    <option value='mjesecno'>Mjesečno</option>
+                    <option value='kvartalno'>Kvartalno</option>
+                    <option value='godisnje'>Godišnje</option>
+                  </select>
+                </label>
+              ) : null}
+            </div>
           </section>
 
           <section className='grid gap-4 sm:grid-cols-2'>
@@ -795,6 +876,9 @@ export default function NoviRacunPage() {
                   </div>
                   <div className='text-left sm:text-right'>
                     <p className='text-xl font-bold'>Račun</p>
+                    {formState.tipRacuna !== 'bez_oznake' ? (
+                      <p className='text-sm font-semibold'>{formState.tipRacuna}</p>
+                    ) : null}
                     <p className='text-sm'>Broj: {formState.brojRacuna || '—'}</p>
                     <p className='text-sm'>Datum: {formState.datum || '—'}</p>
                   </div>

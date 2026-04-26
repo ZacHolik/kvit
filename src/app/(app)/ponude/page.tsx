@@ -1,27 +1,9 @@
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 
-import { formatDatumHr, formatIznosEurHr } from '@/lib/format-hr';
 import { createClient } from '@/lib/supabase/server';
 
-import { ConvertOfferButton } from './convert-button';
-
-type PonudaRow = {
-  id: string;
-  broj_ponude: string;
-  datum: string;
-  datum_valjanosti: string | null;
-  kupac_naziv: string;
-  status: 'poslana' | 'prihvacena' | 'odbijena' | 'istekla';
-  ukupno: number;
-};
-
-const STATUS_LABELS: Record<PonudaRow['status'], string> = {
-  poslana: 'Poslana',
-  prihvacena: 'Prihvaćena',
-  odbijena: 'Odbijena',
-  istekla: 'Istekla',
-};
+import { OfferList, type PonudaRow } from './offer-list';
 
 export default async function PonudePage() {
   const supabase = createClient();
@@ -55,52 +37,7 @@ export default async function PonudePage() {
           </Link>
         </header>
 
-        <section className='overflow-x-auto rounded-2xl border border-[#1f2a28] bg-[#111716]'>
-          <table className='min-w-full divide-y divide-[#24312f]'>
-            <thead>
-              <tr className='text-left text-sm text-[#94a3a0]'>
-                <th className='px-4 py-3 font-medium'>Broj</th>
-                <th className='px-4 py-3 font-medium'>Kupac</th>
-                <th className='px-4 py-3 font-medium'>Datum</th>
-                <th className='px-4 py-3 font-medium'>Vrijedi do</th>
-                <th className='px-4 py-3 font-medium'>Iznos</th>
-                <th className='px-4 py-3 font-medium'>Status</th>
-                <th className='px-4 py-3 font-medium'>Akcije</th>
-              </tr>
-            </thead>
-            <tbody className='divide-y divide-[#24312f]'>
-              {((ponude ?? []) as PonudaRow[]).map((ponuda) => (
-                <tr key={ponuda.id} className='text-sm'>
-                  <td className='px-4 py-4'>{ponuda.broj_ponude}</td>
-                  <td className='px-4 py-4'>{ponuda.kupac_naziv}</td>
-                  <td className='px-4 py-4'>{formatDatumHr(ponuda.datum)}</td>
-                  <td className='px-4 py-4'>
-                    {ponuda.datum_valjanosti
-                      ? formatDatumHr(ponuda.datum_valjanosti)
-                      : '-'}
-                  </td>
-                  <td className='px-4 py-4'>{formatIznosEurHr(Number(ponuda.ukupno))}</td>
-                  <td className='px-4 py-4 text-[#b9c7c4]'>
-                    {STATUS_LABELS[ponuda.status] ?? ponuda.status}
-                  </td>
-                  <td className='px-4 py-4'>
-                    <div className='flex flex-wrap gap-2'>
-                      <a
-                        href={`/api/ponude/${ponuda.id}/pdf`}
-                        target='_blank'
-                        rel='noreferrer'
-                        className='rounded-lg border border-[#2a3734] px-3 py-2 text-xs text-[#d5dfdd] transition hover:border-[#0d9488]'
-                      >
-                        PDF
-                      </a>
-                      <ConvertOfferButton ponudaId={ponuda.id} />
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </section>
+        <OfferList offers={(ponude ?? []) as PonudaRow[]} />
       </div>
     </main>
   );

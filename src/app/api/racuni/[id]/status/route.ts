@@ -8,6 +8,10 @@ type StatusPayload = {
   datumPlacanja?: string;
 };
 
+function opisStornoKprUnosaZaRacun(brojRacuna: string) {
+  return `Storno računa ${brojRacuna}`;
+}
+
 export async function PATCH(
   request: Request,
   { params }: { params: { id: string } },
@@ -69,6 +73,21 @@ export async function PATCH(
         ukupno: Number(invoice.ukupni_iznos),
       });
     }
+  }
+
+  if (body.status === 'stornirano' && invoice.status !== 'stornirano') {
+    const isCash = invoice.nacin_placanja === 'gotovina';
+    const amount = Number(invoice.ukupni_iznos) * -1;
+    await supabase.from('kpr_unosi').insert({
+      user_id: user.id,
+      racun_id: invoice.id,
+      datum: new Date().toISOString().slice(0, 10),
+      broj_temeljnice: `STORNO ${invoice.broj_racuna}`,
+      opis: opisStornoKprUnosaZaRacun(invoice.broj_racuna),
+      iznos_gotovina: isCash ? amount : 0,
+      iznos_bezgotovinsko: isCash ? 0 : amount,
+      ukupno: amount,
+    });
   }
 
   return NextResponse.json({ success: true });

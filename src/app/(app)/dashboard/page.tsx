@@ -57,7 +57,7 @@ export default async function DashboardPage() {
     .toISOString()
     .slice(0, 10);
 
-  const [{ data: profile }, { data: yearlyKpr }, { data: monthlyInvoices }] =
+  const [{ data: profile }, { data: yearlyKpr }, { data: invoices }] =
     await Promise.all([
       supabase
         .from('profiles')
@@ -71,9 +71,8 @@ export default async function DashboardPage() {
         .gte('datum', yearStart),
       supabase
         .from('racuni')
-        .select('id, ukupni_iznos')
-        .eq('user_id', user.id)
-        .gte('datum', monthStart),
+        .select('id, datum, datum_placanja, status, ukupni_iznos, kupci(naziv)')
+        .eq('user_id', user.id),
     ]);
 
   // TODO: If KPR entries are missing (older data), consider fallback aggregation from paid invoices.
@@ -81,11 +80,49 @@ export default async function DashboardPage() {
     (sum, item) => sum + Number(item.ukupno ?? 0),
     0,
   );
-  const monthlyIncome = (monthlyInvoices ?? []).reduce(
+  const invoiceRows = ((invoices ?? []) as Array<{
+    id: string;
+    datum: string;
+    datum_placanja: string | null;
+    status: string;
+    ukupni_iznos: number | string | null;
+    kupci: { naziv: string | null } | Array<{ naziv: string | null }> | null;
+  }>).map((invoice) => ({
+    ...invoice,
+    kupci: Array.isArray(invoice.kupci)
+      ? (invoice.kupci[0] ?? null)
+      : invoice.kupci,
+  }));
+
+  const monthlyInvoices = invoiceRows.filter((invoice) => invoice.datum >= monthStart);
+  const paidInvoices = invoiceRows.filter((invoice) => invoice.status === 'placeno');
+  const monthlyPaidIncome = paidInvoices
+    .filter((invoice) => (invoice.datum_placanja ?? invoice.datum) >= monthStart)
+    .reduce((sum, item) => sum + Number(item.ukupni_iznos ?? 0), 0);
+  const yearlyPaidIncome = paidInvoices
+    .filter((invoice) => (invoice.datum_placanja ?? invoice.datum) >= yearStart)
+    .reduce((sum, item) => sum + Number(item.ukupni_iznos ?? 0), 0);
+  const unpaidInvoices = invoiceRows.filter((invoice) => invoice.status === 'izdano');
+  const unpaidCount = unpaidInvoices.length;
+  const unpaidTotal = unpaidInvoices.reduce(
     (sum, item) => sum + Number(item.ukupni_iznos ?? 0),
     0,
   );
-  const monthlyInvoiceCount = monthlyInvoices?.length ?? 0;
+  const topCustomers = Object.values(
+    invoiceRows
+      .filter((invoice) => invoice.status !== 'stornirano')
+      .reduce<Record<string, { naziv: string; total: number }>>((acc, invoice) => {
+        const naziv = invoice.kupci?.naziv?.trim() || 'Nepoznati kupac';
+        acc[naziv] = {
+          naziv,
+          total: (acc[naziv]?.total ?? 0) + Number(invoice.ukupni_iznos ?? 0),
+        };
+        return acc;
+      }, {}),
+  )
+    .sort((a, b) => b.total - a.total)
+    .slice(0, 3);
+  const monthlyInvoiceCount = monthlyInvoices.length;
   const progressPercent = Math.min((yearlyIncome / PAUSAL_LIMIT) * 100, 100);
   const deadline = getNextDeadline(now);
   const nazivObrta = profile?.naziv_obrta?.trim() || 'Moj obrt';
@@ -144,7 +181,69 @@ export default async function DashboardPage() {
               Primici ovaj mjesec
             </p>
             <p className='font-heading mt-3 text-3xl'>
-              {formatIznosEurHr(monthlyIncome)}
+              {formatIznosEurHr(
+                monthlyInvoices.reduce(
+                  (sum, item) => sum + Number(item.ukupni_iznos ?? 0),
+                  0,
+                ),
+              )}
+            </p>
+          </article>
+        </section>
+
+        <section className='grid gap-4 md:grid-cols-2'>
+          <article className='rounded-2xl border border-[#1f2a28] bg-[#111716] p-5'>
+            <p className='font-body text-sm text-[#94a3a0]'>
+              Prihodi ovaj mjesec
+            </p>
+            <p className='font-heading mt-3 text-3xl'>
+              {formatIznosEurHr(monthlyPaidIncome)}
+            </p>
+            <p className='font-body mt-2 text-sm text-[#94a3a0]'>
+              Samo računi sa statusom Plaćeno.
+            </p>
+          </article>
+
+          <article className='rounded-2xl border border-[#1f2a28] bg-[#111716] p-5'>
+            <p className='font-body text-sm text-[#94a3a0]'>
+              Prihodi ova godina
+            </p>
+            <p className='font-heading mt-3 text-3xl'>
+              {formatIznosEurHr(yearlyPaidIncome)}
+            </p>
+            <p className='font-body mt-2 text-sm text-[#94a3a0]'>
+              Zbroj plaćenih računa u tekućoj godini.
+            </p>
+          </article>
+
+          <article className='rounded-2xl border border-[#1f2a28] bg-[#111716] p-5'>
+            <p className='font-body text-sm text-[#94a3a0]'>Top 3 kupca</p>
+            <div className='mt-3 space-y-2'>
+              {topCustomers.length > 0 ? (
+                topCustomers.map((customer, index) => (
+                  <div
+                    key={customer.naziv}
+                    className='flex items-center justify-between gap-3 text-sm'
+                  >
+                    <span className='text-[#d5dfdd]'>
+                      {index + 1}. {customer.naziv}
+                    </span>
+                    <span className='font-semibold text-[#5eead4]'>
+                      {formatIznosEurHr(customer.total)}
+                    </span>
+                  </div>
+                ))
+              ) : (
+                <p className='font-body text-sm text-[#94a3a0]'>Još nema kupaca.</p>
+              )}
+            </div>
+          </article>
+
+          <article className='rounded-2xl border border-[#1f2a28] bg-[#111716] p-5'>
+            <p className='font-body text-sm text-[#94a3a0]'>Neplaćeni računi</p>
+            <p className='font-heading mt-3 text-3xl'>{unpaidCount}</p>
+            <p className='font-body mt-2 text-sm text-[#b9c7c4]'>
+              Ukupno: {formatIznosEurHr(unpaidTotal)}
             </p>
           </article>
         </section>

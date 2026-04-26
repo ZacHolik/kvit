@@ -26,7 +26,7 @@ export async function GET(
     supabase
       .from('racuni')
       .select(
-        'id, broj_racuna, datum, datum_placanja, nacin_placanja, status, ukupni_iznos, napomena, dodaj_barkod_placanja, kupci(naziv, oib, adresa, email)',
+        'id, broj_racuna, datum, datum_placanja, nacin_placanja, status, tip_racuna, ukupni_iznos, napomena, barkod_enabled, kupci(naziv, oib, adresa, email)',
       )
       .eq('id', params.id)
       .eq('user_id', user.id)
@@ -60,7 +60,7 @@ export async function GET(
   );
   const iban = profil?.iban?.replace(/\s/g, '').trim() ?? '';
   const shouldRenderBarcode =
-    racun.dodaj_barkod_placanja === true &&
+    racun.barkod_enabled === true &&
     racun.nacin_placanja === 'ziro' &&
     iban.length > 0;
   const reference = `HR00 ${formatBrojRacunaZaPdf(racun.broj_racuna)}`;
@@ -89,6 +89,7 @@ export async function GET(
     datumPlacanja: racun.datum_placanja,
     status: racun.status,
     nacinPlacanja: racun.nacin_placanja,
+    tipRacuna: racun.tip_racuna,
     ukupniIznos: Number(racun.ukupni_iznos),
     napomena: racun.napomena,
     kupacNaziv: kupac?.naziv ?? '',

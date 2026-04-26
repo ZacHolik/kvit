@@ -9,8 +9,11 @@ type InvoicePayload = {
   datumPlacanja?: string;
   nacinPlacanja: 'ziro' | 'gotovina' | 'kartica';
   status: 'izdano' | 'placeno' | 'stornirano';
+  tipRacuna?: 'R1' | 'R2' | 'bez_oznake';
   napomena?: string;
   dodajBarkodPlacanja?: boolean;
+  recurring?: boolean;
+  recurringInterval?: 'mjesecno' | 'kvartalno' | 'godisnje';
   kupac: {
     naziv: string;
     oib?: string;
@@ -117,6 +120,30 @@ export async function POST(request: Request) {
   if (!kupacNaziv) {
     return NextResponse.json({ error: 'Naziv kupca je obavezan.' }, { status: 400 });
   }
+  const tipRacuna = body.tipRacuna ?? 'R1';
+  if (!['R1', 'R2', 'bez_oznake'].includes(tipRacuna)) {
+    return NextResponse.json({ error: 'Tip računa nije ispravan.' }, { status: 400 });
+  }
+  if (tipRacuna === 'R1' && !body.kupac.oib?.trim()) {
+    return NextResponse.json(
+      { error: 'R1 račun zahtijeva OIB kupca.' },
+      { status: 400 },
+    );
+  }
+  const recurring = body.recurring === true;
+  const recurringInterval: InvoicePayload['recurringInterval'] | null = recurring
+    ? (body.recurringInterval ?? 'mjesecno')
+    : null;
+  if (
+    recurring &&
+    (!recurringInterval ||
+      !['mjesecno', 'kvartalno', 'godisnje'].includes(recurringInterval))
+  ) {
+    return NextResponse.json(
+      { error: 'Interval ponavljanja nije ispravan.' },
+      { status: 400 },
+    );
+  }
 
   const ukupno = items.reduce((sum, item) => sum + item.ukupno, 0);
 
@@ -167,7 +194,12 @@ export async function POST(request: Request) {
       nacin_placanja: body.nacinPlacanja,
       ukupni_iznos: ukupno,
       status: body.status,
+      tip_racuna: tipRacuna,
       napomena: body.napomena || null,
+      recurring,
+      recurring_interval: recurringInterval,
+      barkod_enabled:
+        body.nacinPlacanja === 'ziro' ? body.dodajBarkodPlacanja !== false : false,
       dodaj_barkod_placanja:
         body.nacinPlacanja === 'ziro' ? body.dodajBarkodPlacanja !== false : false,
     })

@@ -67,6 +67,17 @@ const styles = StyleSheet.create({
     marginBottom: 2,
     textAlign: 'right',
   },
+  invoiceTypeBadge: {
+    fontFamily: FF,
+    alignSelf: 'flex-end',
+    borderWidth: 0.5,
+    borderColor: '#000',
+    paddingHorizontal: 7,
+    paddingVertical: 3,
+    marginBottom: 6,
+    fontSize: 9,
+    fontWeight: 'bold',
+  },
   divider: {
     borderBottomWidth: 1,
     borderBottomColor: '#000',
@@ -212,6 +223,7 @@ export type InvoicePdfData = {
   datumPlacanja: string | null;
   status: string;
   nacinPlacanja: string | null;
+  tipRacuna?: string | null;
   ukupniIznos: number;
   napomena: string | null;
   kupacNaziv: string;
@@ -269,6 +281,7 @@ export function InvoiceDocument({
   datumPlacanja,
   status,
   nacinPlacanja,
+  tipRacuna,
   ukupniIznos,
   napomena,
   kupacNaziv,
@@ -298,6 +311,9 @@ export function InvoiceDocument({
           </View>
           <View style={styles.invoiceMeta}>
             <Text style={styles.docTitle}>{documentTitle}</Text>
+            {tipRacuna && tipRacuna !== 'bez_oznake' ? (
+              <Text style={styles.invoiceTypeBadge}>{tipRacuna}</Text>
+            ) : null}
             <Text style={styles.metaLine}>Broj: {brojZaPrikaz}</Text>
             <Text style={styles.metaLine}>Datum: {formatDatumHr(datum)}</Text>
           </View>
