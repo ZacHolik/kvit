@@ -48,6 +48,12 @@ function isPublicPath(pathname: string) {
   if (pathname === '/manifest.json') {
     return true;
   }
+  if (pathname === '/sitemap.xml') {
+    return true;
+  }
+  if (pathname === '/robots.txt') {
+    return true;
+  }
   if (pathname === '/sw.js' || /^\/workbox-[\w.-]+\.js$/.test(pathname)) {
     return true;
   }
