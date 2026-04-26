@@ -226,15 +226,33 @@ export default function NoviRacunPage() {
 
   async function searchArticles(itemId: string, query: string) {
     const q = query.trim();
-    if (!currentUserId || q.length === 0) {
+    if (q.length < 2) {
       setArticleSuggestions((previous) => ({ ...previous, [itemId]: [] }));
+      return;
+    }
+
+    const localMatches = savedArticles
+      .filter((article) =>
+        article.naziv.toLocaleLowerCase().includes(q.toLocaleLowerCase()),
+      )
+      .slice(0, 8);
+    setArticleSuggestions((previous) => ({
+      ...previous,
+      [itemId]: localMatches,
+    }));
+
+    const userId =
+      currentUserId ||
+      (await supabase.auth.getUser()).data.user?.id ||
+      null;
+    if (!userId) {
       return;
     }
 
     const { data, error: searchError } = await supabase
       .from('artikli')
       .select('id, naziv, jedinicna_cijena')
-      .eq('user_id', currentUserId)
+      .eq('user_id', userId)
       .ilike('naziv', `%${q}%`)
       .order('naziv', { ascending: true })
       .limit(8);
@@ -251,6 +269,13 @@ export default function NoviRacunPage() {
       ...previous,
       [itemId]: searchError ? [] : ((data ?? []) as SavedArticle[]),
     }));
+  }
+
+  function handleItemOpisChange(itemId: string, nextValue: string) {
+    updateItem(itemId, { opis: nextValue });
+    applyArticleByName(itemId, nextValue);
+    setActiveArticleItemId(itemId);
+    void searchArticles(itemId, nextValue);
   }
 
   function selectArticle(itemId: string, article: SavedArticle) {
@@ -555,11 +580,13 @@ export default function NoviRacunPage() {
                         void searchArticles(item.id, item.opis);
                       }}
                       onChange={(event) => {
-                        const nextValue = event.target.value;
-                        updateItem(item.id, { opis: nextValue });
-                        applyArticleByName(item.id, nextValue);
-                        setActiveArticleItemId(item.id);
-                        void searchArticles(item.id, nextValue);
+                        handleItemOpisChange(item.id, event.target.value);
+                      }}
+                      onInput={(event) => {
+                        handleItemOpisChange(
+                          item.id,
+                          event.currentTarget.value,
+                        );
                       }}
                       onBlur={() => {
                         window.setTimeout(() => {
