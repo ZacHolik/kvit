@@ -1,4 +1,4 @@
-import { Document, Page, StyleSheet, Text, View } from '@react-pdf/renderer';
+import { Document, Page, Rect, StyleSheet, Svg, Text, View } from '@react-pdf/renderer';
 
 import { formatDatumHr, formatIznosEurHr } from '@/lib/format-hr';
 
@@ -160,6 +160,24 @@ const styles = StyleSheet.create({
     minWidth: 72,
     textAlign: 'right',
   },
+  barcodeWrap: {
+    marginTop: 14,
+    padding: 10,
+    borderWidth: 0.5,
+    borderColor: '#bbb',
+  },
+  barcodeTitle: {
+    fontFamily: FF,
+    fontSize: 10,
+    fontWeight: 'bold',
+    marginBottom: 6,
+  },
+  barcodeMeta: {
+    fontFamily: FF,
+    marginTop: 4,
+    fontSize: 8,
+    color: '#333',
+  },
   napomena: {
     fontFamily: FF,
     marginTop: 12,
@@ -202,6 +220,14 @@ export type InvoicePdfData = {
   kupacEmail: string | null;
   profil: InvoiceProfilPdf;
   footerText?: string;
+  paymentBarcode?: {
+    matrix: number[][];
+    numCols: number;
+    numRows: number;
+    iban: string;
+    amountEur: number;
+    reference: string;
+  } | null;
   stavke: Array<{
     opis: string;
     kolicina: number;
@@ -251,6 +277,7 @@ export function InvoiceDocument({
   kupacEmail,
   profil,
   footerText = 'Sukladno članku 90. Zakona o porezu na dodanu vrijednost,\nizdavatelj računa nije u sustavu PDV-a te PDV nije obračunat.',
+  paymentBarcode,
   stavke,
 }: InvoicePdfData) {
   const brojZaPrikaz = formatBrojRacunaZaPdf(brojRacuna);
@@ -323,6 +350,50 @@ export function InvoiceDocument({
             {formatIznosEurHr(ukupniIznos)}
           </Text>
         </View>
+
+        {paymentBarcode ? (
+          <View style={styles.barcodeWrap}>
+            <Text style={styles.barcodeTitle}>Barkod za plaćanje</Text>
+            <Svg
+              width={260}
+              height={78}
+              viewBox={`0 0 ${paymentBarcode.numCols} ${paymentBarcode.numRows}`}
+            >
+              {paymentBarcode.matrix.flatMap((row, rowIndex) => {
+                const rects: React.ReactElement[] = [];
+                let start: number | null = null;
+                row.forEach((cell, colIndex) => {
+                  if (cell === 1 && start === null) {
+                    start = colIndex;
+                  }
+                  const atEnd = colIndex === row.length - 1;
+                  if ((cell !== 1 || atEnd) && start !== null) {
+                    const end = cell === 1 && atEnd ? colIndex + 1 : colIndex;
+                    rects.push(
+                      <Rect
+                        key={`${rowIndex}-${start}`}
+                        x={start}
+                        y={rowIndex}
+                        width={end - start}
+                        height={1}
+                        fill='#000'
+                      />,
+                    );
+                    start = null;
+                  }
+                });
+                return rects;
+              })}
+            </Svg>
+            <Text style={styles.barcodeMeta}>IBAN: {paymentBarcode.iban}</Text>
+            <Text style={styles.barcodeMeta}>
+              Iznos: {formatIznosEurHr(paymentBarcode.amountEur)}
+            </Text>
+            <Text style={styles.barcodeMeta}>
+              Poziv na broj: {paymentBarcode.reference}
+            </Text>
+          </View>
+        ) : null}
 
         {napomena ? (
           <Text style={styles.napomena}>Napomena: {napomena}</Text>

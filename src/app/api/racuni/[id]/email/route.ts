@@ -1,9 +1,11 @@
 import { NextResponse } from 'next/server';
 
+import { buildHub30EurCode } from '@/lib/alati/hub3-eur';
 import {
   formatBrojRacunaZaPdf,
   InvoiceDocument,
 } from '@/lib/pdf/invoice-document';
+import { generatePdf417Matrix } from '@/lib/pdf/pdf417-matrix';
 import { renderPdfToBuffer } from '@/lib/pdf/render-pdf-buffer';
 import { createClient } from '@/lib/supabase/server';
 
@@ -40,7 +42,7 @@ export async function POST(
     supabase
       .from('racuni')
       .select(
-        'id, broj_racuna, datum, datum_placanja, nacin_placanja, status, ukupni_iznos, napomena, kupci(naziv, oib, adresa, email)',
+        'id, broj_racuna, datum, datum_placanja, nacin_placanja, status, ukupni_iznos, napomena, dodaj_barkod_placanja, kupci(naziv, oib, adresa, email)',
       )
       .eq('id', params.id)
       .eq('user_id', user.id)
@@ -73,6 +75,31 @@ export async function POST(
     return NextResponse.json({ error: 'Email primatelja je obavezan.' }, { status: 400 });
   }
 
+  const iban = profil?.iban?.replace(/\s/g, '').trim() ?? '';
+  const shouldRenderBarcode =
+    racun.dodaj_barkod_placanja === true &&
+    racun.nacin_placanja === 'ziro' &&
+    iban.length > 0;
+  const reference = `HR00 ${formatBrojRacunaZaPdf(racun.broj_racuna)}`;
+  const barcodeMatrix = shouldRenderBarcode
+    ? generatePdf417Matrix(
+        buildHub30EurCode({
+          iznosEur: Number(racun.ukupni_iznos),
+          platiteljIme: kupac?.naziv ?? '',
+          platiteljAdresa1: kupac?.adresa ?? '',
+          platiteljAdresa2: '',
+          primateljIme: profil?.naziv_obrta ?? '',
+          primateljAdresa1: profil?.adresa ?? '',
+          primateljAdresa2: '',
+          iban,
+          model: 'HR00',
+          pozivNaBroj: formatBrojRacunaZaPdf(racun.broj_racuna),
+          sifraNamjene: 'OTHR',
+          opis: `Račun ${formatBrojRacunaZaPdf(racun.broj_racuna)}`,
+        }),
+      )
+    : null;
+
   const pdf = await renderPdfToBuffer(
     InvoiceDocument({
       brojRacuna: racun.broj_racuna,
@@ -92,6 +119,16 @@ export async function POST(
         adresa: profil?.adresa ?? null,
         iban: profil?.iban ?? null,
       },
+      paymentBarcode: barcodeMatrix
+        ? {
+            matrix: barcodeMatrix.rows,
+            numCols: barcodeMatrix.numCols,
+            numRows: barcodeMatrix.numRows,
+            iban,
+            amountEur: Number(racun.ukupni_iznos),
+            reference,
+          }
+        : null,
       stavke: (stavke ?? []).map((stavka) => ({
         opis: stavka.opis,
         kolicina: Number(stavka.kolicina),

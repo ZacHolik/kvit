@@ -10,6 +10,7 @@ type InvoicePayload = {
   nacinPlacanja: 'ziro' | 'gotovina' | 'kartica';
   status: 'izdano' | 'placeno' | 'stornirano';
   napomena?: string;
+  dodajBarkodPlacanja?: boolean;
   kupac: {
     naziv: string;
     oib?: string;
@@ -167,6 +168,8 @@ export async function POST(request: Request) {
       ukupni_iznos: ukupno,
       status: body.status,
       napomena: body.napomena || null,
+      dodaj_barkod_placanja:
+        body.nacinPlacanja === 'ziro' ? body.dodajBarkodPlacanja !== false : false,
     })
     .select('id, broj_racuna')
     .single();

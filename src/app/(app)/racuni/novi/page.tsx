@@ -13,6 +13,7 @@ type FormState = {
   datumPlacanja: string;
   nacinPlacanja: 'ziro' | 'gotovina' | 'kartica';
   status: 'izdano' | 'placeno' | 'stornirano';
+  dodajBarkodPlacanja: boolean;
   napomena: string;
   kupacNaziv: string;
   kupacOib: string;
@@ -80,6 +81,7 @@ export default function NoviRacunPage() {
     datumPlacanja: '',
     nacinPlacanja: 'ziro',
     status: 'izdano',
+    dodajBarkodPlacanja: true,
     napomena: '',
     kupacNaziv: '',
     kupacOib: '',
@@ -327,6 +329,10 @@ export default function NoviRacunPage() {
         datumPlacanja: formState.datumPlacanja || undefined,
         nacinPlacanja: formState.nacinPlacanja,
         status: formState.status,
+        dodajBarkodPlacanja:
+          formState.nacinPlacanja === 'ziro'
+            ? formState.dodajBarkodPlacanja
+            : false,
         napomena: formState.napomena,
         kupac: {
           naziv: formState.kupacNaziv,
@@ -417,13 +423,15 @@ export default function NoviRacunPage() {
               </span>
               <select
                 value={formState.nacinPlacanja}
-                onChange={(event) =>
+                onChange={(event) => {
+                  const nacin = event.target.value as FormState['nacinPlacanja'];
                   setFormState((previous) => ({
                     ...previous,
-                    nacinPlacanja: event.target
-                      .value as FormState['nacinPlacanja'],
-                  }))
-                }
+                    nacinPlacanja: nacin,
+                    dodajBarkodPlacanja:
+                      nacin === 'ziro' ? previous.dodajBarkodPlacanja : false,
+                  }));
+                }}
                 className='font-body w-full rounded-xl border border-[#2a3734] bg-[#0b0f0e] px-4 py-3 outline-none transition focus:border-[#0d9488]'
               >
                 <option value='ziro'>Žiro</option>
@@ -431,6 +439,27 @@ export default function NoviRacunPage() {
                 <option value='kartica'>Kartica</option>
               </select>
             </label>
+            {formState.nacinPlacanja === 'ziro' ? (
+              <label className='block rounded-xl border border-[#2a3734] bg-[#0b0f0e] px-4 py-3'>
+                <span className='font-body flex items-center gap-3 text-sm text-[#d5dfdd]'>
+                  <input
+                    type='checkbox'
+                    checked={formState.dodajBarkodPlacanja}
+                    onChange={(event) =>
+                      setFormState((previous) => ({
+                        ...previous,
+                        dodajBarkodPlacanja: event.target.checked,
+                      }))
+                    }
+                    className='h-4 w-4 accent-[#0d9488]'
+                  />
+                  Dodaj barkod za plaćanje
+                </span>
+                <span className='font-body mt-1 block text-xs text-[#64756f]'>
+                  Barkod se prikazuje na PDF-u ako profil ima IBAN.
+                </span>
+              </label>
+            ) : null}
             <label className='block'>
               <span className='font-body mb-2 block text-sm text-[#b9c7c4]'>
                 Status
