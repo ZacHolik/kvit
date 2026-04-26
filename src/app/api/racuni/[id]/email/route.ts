@@ -132,5 +132,14 @@ export async function POST(
     );
   }
 
+  await supabase
+    .from('racuni')
+    .update({
+      email_poslano_at: new Date().toISOString(),
+      email_poslano_na: to,
+    })
+    .eq('id', racun.id)
+    .eq('user_id', user.id);
+
   return NextResponse.json({ ok: true });
 }

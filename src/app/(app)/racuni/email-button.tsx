@@ -1,6 +1,7 @@
 'use client';
 
 import { FormEvent, useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 type EmailInvoiceButtonProps = {
   racunId: string;
@@ -13,6 +14,7 @@ export function EmailInvoiceButton({
   defaultEmail,
   defaultSubject,
 }: EmailInvoiceButtonProps) {
+  const router = useRouter();
   const [open, setOpen] = useState(false);
   const [to, setTo] = useState(defaultEmail);
   const [subject, setSubject] = useState(defaultSubject);
@@ -39,6 +41,7 @@ export function EmailInvoiceButton({
     }
 
     setFeedback('Email je poslan.');
+    router.refresh();
     window.setTimeout(() => setOpen(false), 900);
   }
 

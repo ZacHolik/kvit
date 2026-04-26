@@ -1,27 +1,9 @@
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 
-import {
-  formatDatumHr,
-  formatIznosEurHr,
-  formatRacunStatusHr,
-} from '@/lib/format-hr';
 import { createClient } from '@/lib/supabase/server';
 
-import { EmailInvoiceButton } from './email-button';
-import { MarkAsPaidButton } from './paid-button';
-
-type InvoiceRow = {
-  id: string;
-  broj_racuna: string;
-  datum: string;
-  status: 'izdano' | 'placeno' | 'stornirano';
-  ukupni_iznos: number;
-  kupci: {
-    naziv: string;
-    email: string | null;
-  } | null;
-};
+import { InvoiceList, type InvoiceRow } from './invoice-list';
 
 export default async function RacuniPage() {
   const supabase = createClient();
@@ -36,7 +18,9 @@ export default async function RacuniPage() {
   const [{ data: racuni }, { data: profil }] = await Promise.all([
     supabase
       .from('racuni')
-      .select('id, broj_racuna, datum, status, ukupni_iznos, kupci(naziv, email)')
+      .select(
+        'id, broj_racuna, datum, nacin_placanja, status, ukupni_iznos, email_poslano_at, email_poslano_na, kupci(naziv, email)',
+      )
       .eq('user_id', user.id)
       .order('datum', { ascending: false }),
     supabase
@@ -45,6 +29,15 @@ export default async function RacuniPage() {
       .eq('id', user.id)
       .maybeSingle(),
   ]);
+
+  const invoiceRows = ((racuni ?? []) as unknown as Array<
+    Omit<InvoiceRow, 'kupci'> & {
+      kupci: InvoiceRow['kupci'] | InvoiceRow['kupci'][];
+    }
+  >).map((racun) => ({
+    ...racun,
+    kupci: Array.isArray(racun.kupci) ? (racun.kupci[0] ?? null) : racun.kupci,
+  }));
 
   return (
     <main className='min-h-screen bg-[#0b0f0e] px-4 py-8 text-[#e2e8e7] sm:px-6 lg:px-8'>
@@ -64,57 +57,10 @@ export default async function RacuniPage() {
           </Link>
         </header>
 
-        <section className='overflow-x-auto rounded-2xl border border-[#1f2a28] bg-[#111716]'>
-          <table className='min-w-full divide-y divide-[#24312f]'>
-            <thead>
-              <tr className='text-left text-sm text-[#94a3a0]'>
-                <th className='px-4 py-3 font-medium'>Broj</th>
-                <th className='px-4 py-3 font-medium'>Kupac</th>
-                <th className='px-4 py-3 font-medium'>Datum</th>
-                <th className='px-4 py-3 font-medium'>Iznos</th>
-                <th className='px-4 py-3 font-medium'>Status</th>
-                <th className='px-4 py-3 font-medium'>Akcije</th>
-              </tr>
-            </thead>
-            <tbody className='divide-y divide-[#24312f]'>
-              {(racuni as InvoiceRow[] | null)?.map((racun) => (
-                <tr key={racun.id} className='text-sm'>
-                  <td className='px-4 py-4'>{racun.broj_racuna}</td>
-                  <td className='px-4 py-4'>{racun.kupci?.naziv ?? '-'}</td>
-                  <td className='px-4 py-4'>{formatDatumHr(racun.datum)}</td>
-                  <td className='px-4 py-4'>
-                    {formatIznosEurHr(Number(racun.ukupni_iznos))}
-                  </td>
-                  <td className='px-4 py-4 text-[#b9c7c4]'>
-                    {formatRacunStatusHr(racun.status)}
-                  </td>
-                  <td className='px-4 py-4'>
-                    <div className='flex flex-wrap items-center gap-2'>
-                      <a
-                        href={`/api/racuni/${racun.id}/pdf`}
-                        target='_blank'
-                        rel='noreferrer'
-                        className='font-body rounded-lg border border-[#2a3734] px-3 py-2 text-xs text-[#d5dfdd] transition hover:border-[#0d9488]'
-                      >
-                        PDF
-                      </a>
-                      {racun.status !== 'placeno' ? (
-                        <MarkAsPaidButton racunId={racun.id} />
-                      ) : null}
-                      <EmailInvoiceButton
-                        racunId={racun.id}
-                        defaultEmail={racun.kupci?.email ?? ''}
-                        defaultSubject={`Račun broj ${racun.broj_racuna} - ${
-                          profil?.naziv_obrta ?? 'Kvit'
-                        }`}
-                      />
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </section>
+        <InvoiceList
+          invoices={invoiceRows}
+          nazivObrta={profil?.naziv_obrta ?? 'Kvit'}
+        />
       </div>
     </main>
   );
