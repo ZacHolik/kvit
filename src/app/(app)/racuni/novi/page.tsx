@@ -62,8 +62,15 @@ export default function NoviRacunPage() {
   const supabase = useMemo(() => createClient(), []);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const [savedCustomers, setSavedCustomers] = useState<SavedCustomer[]>([]);
   const [savedArticles, setSavedArticles] = useState<SavedArticle[]>([]);
+  const [articleSuggestions, setArticleSuggestions] = useState<
+    Record<string, SavedArticle[]>
+  >({});
+  const [activeArticleItemId, setActiveArticleItemId] = useState<string | null>(
+    null,
+  );
   const [profile, setProfile] = useState<ProfilePreview | null>(null);
   const [items, setItems] = useState<InvoiceItemForm[]>([createEmptyItem()]);
   const [previewOpen, setPreviewOpen] = useState(false);
@@ -99,6 +106,7 @@ export default function NoviRacunPage() {
       if (!user || cancelled) {
         return;
       }
+      setCurrentUserId(user.id);
 
       const [{ data: kupci }, { data: artikli }, { data: profil }] = await Promise.all([
         supabase
@@ -214,6 +222,44 @@ export default function NoviRacunPage() {
       opis: article.naziv,
       jedinicnaCijena: String(article.jedinicna_cijena ?? 0),
     });
+  }
+
+  async function searchArticles(itemId: string, query: string) {
+    const q = query.trim();
+    if (!currentUserId || q.length === 0) {
+      setArticleSuggestions((previous) => ({ ...previous, [itemId]: [] }));
+      return;
+    }
+
+    const { data, error: searchError } = await supabase
+      .from('artikli')
+      .select('id, naziv, jedinicna_cijena')
+      .eq('user_id', currentUserId)
+      .ilike('naziv', `%${q}%`)
+      .order('naziv', { ascending: true })
+      .limit(8);
+
+    if (process.env.NODE_ENV === 'development') {
+      console.log('[racuni/novi] artikli autocomplete', {
+        query: q,
+        data,
+        error: searchError,
+      });
+    }
+
+    setArticleSuggestions((previous) => ({
+      ...previous,
+      [itemId]: searchError ? [] : ((data ?? []) as SavedArticle[]),
+    }));
+  }
+
+  function selectArticle(itemId: string, article: SavedArticle) {
+    updateItem(itemId, {
+      opis: article.naziv,
+      jedinicnaCijena: String(article.jedinicna_cijena ?? 0),
+    });
+    setActiveArticleItemId(null);
+    setArticleSuggestions((previous) => ({ ...previous, [itemId]: [] }));
   }
 
   function getPayloadItems() {
@@ -487,37 +533,64 @@ export default function NoviRacunPage() {
               </button>
             </div>
 
-            <datalist id='artikli-suggestions'>
-              {savedArticles.map((article) => (
-                <option key={article.id} value={article.naziv} />
-              ))}
-            </datalist>
-
             {items.map((item, index) => {
               const itemTotal =
                 (Number(item.kolicina) || 0) *
                 (Number(item.jedinicnaCijena) || 0);
+              const suggestions = articleSuggestions[item.id] ?? [];
               return (
                 <div
                   key={item.id}
                   className='grid gap-3 rounded-2xl border border-[#24312f] bg-[#0b0f0e] p-4 sm:grid-cols-12'
                 >
-                  <label className='block sm:col-span-5'>
+                  <label className='relative block sm:col-span-5'>
                     <span className='font-body mb-2 block text-sm text-[#b9c7c4]'>
                       Opis stavke
                     </span>
                     <input
                       required
-                      list='artikli-suggestions'
                       value={item.opis}
+                      onFocus={() => {
+                        setActiveArticleItemId(item.id);
+                        void searchArticles(item.id, item.opis);
+                      }}
                       onChange={(event) => {
                         const nextValue = event.target.value;
                         updateItem(item.id, { opis: nextValue });
                         applyArticleByName(item.id, nextValue);
+                        setActiveArticleItemId(item.id);
+                        void searchArticles(item.id, nextValue);
+                      }}
+                      onBlur={() => {
+                        window.setTimeout(() => {
+                          setActiveArticleItemId((activeId) =>
+                            activeId === item.id ? null : activeId,
+                          );
+                        }, 120);
                       }}
                       className='font-body w-full rounded-xl border border-[#2a3734] bg-[#111716] px-4 py-3 outline-none transition focus:border-[#0d9488]'
                       placeholder={`Stavka ${index + 1}`}
                     />
+                    {activeArticleItemId === item.id && suggestions.length > 0 ? (
+                      <div className='absolute left-0 right-0 top-full z-20 mt-2 max-h-56 overflow-y-auto rounded-xl border border-[#2a3734] bg-[#111716] shadow-xl shadow-black/30'>
+                        {suggestions.map((article) => (
+                          <button
+                            key={article.id}
+                            type='button'
+                            onMouseDown={(event) => event.preventDefault()}
+                            onClick={() => selectArticle(item.id, article)}
+                            className='flex w-full items-center justify-between gap-3 px-4 py-3 text-left text-sm text-[#d5dfdd] transition hover:bg-[#1f2a28]'
+                          >
+                            <span>{article.naziv}</span>
+                            <span className='shrink-0 text-[#5eead4]'>
+                              {formatIznosEurHr(
+                                Number(article.jedinicna_cijena ?? 0),
+                              )}
+                            </span>
+                          </button>
+                        ))}
+                      </div>
+                    ) : null}
                   </label>
                   <label className='block sm:col-span-2'>
                     <span className='font-body mb-2 block text-sm text-[#b9c7c4]'>
