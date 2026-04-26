@@ -41,7 +41,7 @@ export async function GET(
   }
 
   const { data: stavke } = await supabase
-    .from('stavke_racuna')
+    .from('invoice_items')
     .select('opis, kolicina, jedinicna_cijena, ukupno')
     .eq('racun_id', racun.id);
 

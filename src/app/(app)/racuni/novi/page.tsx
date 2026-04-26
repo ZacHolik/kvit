@@ -18,16 +18,46 @@ type FormState = {
   kupacOib: string;
   kupacAdresa: string;
   kupacEmail: string;
-  stavkaOpis: string;
-  stavkaKolicina: string;
-  stavkaCijena: string;
 };
+
+type InvoiceItemForm = {
+  id: string;
+  opis: string;
+  kolicina: string;
+  jedinicnaCijena: string;
+};
+
+type SavedCustomer = {
+  id: string;
+  naziv: string;
+  oib: string | null;
+  adresa: string | null;
+  email: string | null;
+};
+
+type SavedArticle = {
+  id: string;
+  naziv: string;
+  jedinicna_cijena: number | string;
+};
+
+function createEmptyItem(): InvoiceItemForm {
+  return {
+    id: crypto.randomUUID(),
+    opis: '',
+    kolicina: '1',
+    jedinicnaCijena: '0',
+  };
+}
 
 export default function NoviRacunPage() {
   const router = useRouter();
   const supabase = useMemo(() => createClient(), []);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
+  const [savedCustomers, setSavedCustomers] = useState<SavedCustomer[]>([]);
+  const [savedArticles, setSavedArticles] = useState<SavedArticle[]>([]);
+  const [items, setItems] = useState<InvoiceItemForm[]>([createEmptyItem()]);
   const [formState, setFormState] = useState<FormState>({
     brojRacuna: '',
     datum: new Date().toISOString().slice(0, 10),
@@ -39,17 +69,53 @@ export default function NoviRacunPage() {
     kupacOib: '',
     kupacAdresa: '',
     kupacEmail: '',
-    stavkaOpis: '',
-    stavkaKolicina: '1',
-    stavkaCijena: '0',
   });
 
   const ukupno = useMemo(() => {
-    return (
-      (Number(formState.stavkaKolicina) || 0) *
-      (Number(formState.stavkaCijena) || 0)
+    return items.reduce(
+      (sum, item) =>
+        sum +
+        (Number(item.kolicina) || 0) * (Number(item.jedinicnaCijena) || 0),
+      0,
     );
-  }, [formState.stavkaCijena, formState.stavkaKolicina]);
+  }, [items]);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadReusableData() {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (!user || cancelled) {
+        return;
+      }
+
+      const [{ data: kupci }, { data: artikli }] = await Promise.all([
+        supabase
+          .from('kupci')
+          .select('id, naziv, oib, adresa, email')
+          .eq('user_id', user.id)
+          .order('naziv', { ascending: true }),
+        supabase
+          .from('artikli')
+          .select('id, naziv, jedinicna_cijena')
+          .eq('user_id', user.id)
+          .order('naziv', { ascending: true }),
+      ]);
+
+      if (!cancelled) {
+        setSavedCustomers((kupci ?? []) as SavedCustomer[]);
+        setSavedArticles((artikli ?? []) as SavedArticle[]);
+      }
+    }
+
+    void loadReusableData();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [supabase]);
 
   // Sljedeći broj računa za paušal (broj-godina), ako polje još nije ručno popunjeno.
   useEffect(() => {
@@ -90,9 +156,75 @@ export default function NoviRacunPage() {
     };
   }, [supabase]);
 
+  function updateItem(id: string, patch: Partial<InvoiceItemForm>) {
+    setItems((previous) =>
+      previous.map((item) => (item.id === id ? { ...item, ...patch } : item)),
+    );
+  }
+
+  function addItem() {
+    setItems((previous) => [...previous, createEmptyItem()]);
+  }
+
+  function removeItem(id: string) {
+    setItems((previous) =>
+      previous.length === 1 ? previous : previous.filter((item) => item.id !== id),
+    );
+  }
+
+  function applyCustomerByName(name: string) {
+    const customer = savedCustomers.find(
+      (item) => item.naziv.toLocaleLowerCase() === name.toLocaleLowerCase(),
+    );
+    if (!customer) {
+      return;
+    }
+    setFormState((previous) => ({
+      ...previous,
+      kupacNaziv: customer.naziv,
+      kupacOib: customer.oib ?? '',
+      kupacAdresa: customer.adresa ?? '',
+      kupacEmail: customer.email ?? '',
+    }));
+  }
+
+  function applyArticleByName(itemId: string, name: string) {
+    const article = savedArticles.find(
+      (item) => item.naziv.toLocaleLowerCase() === name.toLocaleLowerCase(),
+    );
+    if (!article) {
+      return;
+    }
+    updateItem(itemId, {
+      opis: article.naziv,
+      jedinicnaCijena: String(article.jedinicna_cijena ?? 0),
+    });
+  }
+
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setError('');
+
+    const payloadItems = items
+      .map((item) => ({
+        opis: item.opis.trim(),
+        kolicina: Number(item.kolicina),
+        jedinicnaCijena: Number(item.jedinicnaCijena),
+      }))
+      .filter(
+        (item) =>
+          item.opis.length > 0 &&
+          Number.isFinite(item.kolicina) &&
+          item.kolicina > 0 &&
+          Number.isFinite(item.jedinicnaCijena) &&
+          item.jedinicnaCijena >= 0,
+      );
+
+    if (payloadItems.length === 0) {
+      setError('Dodaj barem jednu ispravnu stavku računa.');
+      return;
+    }
+
     setIsLoading(true);
 
     const response = await fetch('/api/racuni', {
@@ -113,11 +245,7 @@ export default function NoviRacunPage() {
           adresa: formState.kupacAdresa || undefined,
           email: formState.kupacEmail || undefined,
         },
-        stavka: {
-          opis: formState.stavkaOpis,
-          kolicina: Number(formState.stavkaKolicina),
-          jedinicnaCijena: Number(formState.stavkaCijena),
-        },
+        items: payloadItems,
       }),
     });
 
@@ -253,14 +381,22 @@ export default function NoviRacunPage() {
               <input
                 required
                 value={formState.kupacNaziv}
-                onChange={(event) =>
+                list='kupci-suggestions'
+                onChange={(event) => {
+                  const nextValue = event.target.value;
                   setFormState((previous) => ({
                     ...previous,
-                    kupacNaziv: event.target.value,
-                  }))
-                }
+                    kupacNaziv: nextValue,
+                  }));
+                  applyCustomerByName(nextValue);
+                }}
                 className='font-body w-full rounded-xl border border-[#2a3734] bg-[#0b0f0e] px-4 py-3 outline-none transition focus:border-[#0d9488]'
               />
+              <datalist id='kupci-suggestions'>
+                {savedCustomers.map((customer) => (
+                  <option key={customer.id} value={customer.naziv} />
+                ))}
+              </datalist>
             </label>
             <label className='block'>
               <span className='font-body mb-2 block text-sm text-[#b9c7c4]'>
@@ -310,67 +446,115 @@ export default function NoviRacunPage() {
             </label>
           </section>
 
-          <section className='grid gap-4 sm:grid-cols-3'>
-            <label className='block sm:col-span-3'>
-              <span className='font-body mb-2 block text-sm text-[#b9c7c4]'>
-                Opis stavke
-              </span>
-              <input
-                required
-                value={formState.stavkaOpis}
-                onChange={(event) =>
-                  setFormState((previous) => ({
-                    ...previous,
-                    stavkaOpis: event.target.value,
-                  }))
-                }
-                className='font-body w-full rounded-xl border border-[#2a3734] bg-[#0b0f0e] px-4 py-3 outline-none transition focus:border-[#0d9488]'
-                placeholder='Knjigovodstvene usluge'
-              />
-            </label>
-            <label className='block'>
-              <span className='font-body mb-2 block text-sm text-[#b9c7c4]'>
-                Količina
-              </span>
-              <input
-                required
-                type='number'
-                min='0'
-                step='0.01'
-                value={formState.stavkaKolicina}
-                onChange={(event) =>
-                  setFormState((previous) => ({
-                    ...previous,
-                    stavkaKolicina: event.target.value,
-                  }))
-                }
-                className='font-body w-full rounded-xl border border-[#2a3734] bg-[#0b0f0e] px-4 py-3 outline-none transition focus:border-[#0d9488]'
-              />
-            </label>
-            <label className='block'>
-              <span className='font-body mb-2 block text-sm text-[#b9c7c4]'>
-                Jedinična cijena
-              </span>
-              <input
-                required
-                type='number'
-                min='0'
-                step='0.01'
-                value={formState.stavkaCijena}
-                onChange={(event) =>
-                  setFormState((previous) => ({
-                    ...previous,
-                    stavkaCijena: event.target.value,
-                  }))
-                }
-                className='font-body w-full rounded-xl border border-[#2a3734] bg-[#0b0f0e] px-4 py-3 outline-none transition focus:border-[#0d9488]'
-              />
-            </label>
-            <div className='flex items-end'>
-              <p className='font-body w-full rounded-xl border border-[#2a3734] bg-[#0b0f0e] px-4 py-3 text-sm text-[#d5dfdd]'>
-                Ukupno: {formatIznosEurHr(ukupno)}
-              </p>
+          <section className='space-y-4'>
+            <div className='flex flex-wrap items-center justify-between gap-3'>
+              <div>
+                <h2 className='font-heading text-lg text-[#e2e8e7]'>Stavke</h2>
+                <p className='font-body mt-1 text-sm text-[#94a3a0]'>
+                  Stavke se automatski spremaju u katalog za sljedeći račun.
+                </p>
+              </div>
+              <button
+                type='button'
+                onClick={addItem}
+                className='font-body rounded-xl border border-[#0d9488] px-4 py-2 text-sm font-semibold text-[#5eead4] transition hover:bg-[#0d9488]/10'
+              >
+                + Dodaj stavku
+              </button>
             </div>
+
+            <datalist id='artikli-suggestions'>
+              {savedArticles.map((article) => (
+                <option key={article.id} value={article.naziv} />
+              ))}
+            </datalist>
+
+            {items.map((item, index) => {
+              const itemTotal =
+                (Number(item.kolicina) || 0) *
+                (Number(item.jedinicnaCijena) || 0);
+              return (
+                <div
+                  key={item.id}
+                  className='grid gap-3 rounded-2xl border border-[#24312f] bg-[#0b0f0e] p-4 sm:grid-cols-12'
+                >
+                  <label className='block sm:col-span-5'>
+                    <span className='font-body mb-2 block text-sm text-[#b9c7c4]'>
+                      Opis stavke
+                    </span>
+                    <input
+                      required
+                      list='artikli-suggestions'
+                      value={item.opis}
+                      onChange={(event) => {
+                        const nextValue = event.target.value;
+                        updateItem(item.id, { opis: nextValue });
+                        applyArticleByName(item.id, nextValue);
+                      }}
+                      className='font-body w-full rounded-xl border border-[#2a3734] bg-[#111716] px-4 py-3 outline-none transition focus:border-[#0d9488]'
+                      placeholder={`Stavka ${index + 1}`}
+                    />
+                  </label>
+                  <label className='block sm:col-span-2'>
+                    <span className='font-body mb-2 block text-sm text-[#b9c7c4]'>
+                      Količina
+                    </span>
+                    <input
+                      required
+                      type='number'
+                      min='0'
+                      step='0.01'
+                      value={item.kolicina}
+                      onChange={(event) =>
+                        updateItem(item.id, { kolicina: event.target.value })
+                      }
+                      className='font-body w-full rounded-xl border border-[#2a3734] bg-[#111716] px-4 py-3 outline-none transition focus:border-[#0d9488]'
+                    />
+                  </label>
+                  <label className='block sm:col-span-2'>
+                    <span className='font-body mb-2 block text-sm text-[#b9c7c4]'>
+                      Jed. cijena
+                    </span>
+                    <input
+                      required
+                      type='number'
+                      min='0'
+                      step='0.01'
+                      value={item.jedinicnaCijena}
+                      onChange={(event) =>
+                        updateItem(item.id, {
+                          jedinicnaCijena: event.target.value,
+                        })
+                      }
+                      className='font-body w-full rounded-xl border border-[#2a3734] bg-[#111716] px-4 py-3 outline-none transition focus:border-[#0d9488]'
+                    />
+                  </label>
+                  <div className='flex flex-col justify-end sm:col-span-2'>
+                    <span className='font-body mb-2 block text-sm text-[#b9c7c4]'>
+                      Ukupno
+                    </span>
+                    <p className='font-body rounded-xl border border-[#2a3734] bg-[#111716] px-4 py-3 text-sm text-[#d5dfdd]'>
+                      {formatIznosEurHr(itemTotal)}
+                    </p>
+                  </div>
+                  <div className='flex items-end sm:col-span-1'>
+                    <button
+                      type='button'
+                      onClick={() => removeItem(item.id)}
+                      disabled={items.length === 1}
+                      className='font-body h-12 w-full rounded-xl border border-red-500/30 text-red-200 transition hover:bg-red-500/10 disabled:cursor-not-allowed disabled:opacity-40'
+                      aria-label='Ukloni stavku'
+                    >
+                      ×
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
+
+            <p className='font-body rounded-xl border border-[#0d9488]/40 bg-[#0d9488]/10 px-4 py-3 text-right text-lg font-semibold text-[#e2e8e7]'>
+              Ukupno račun: {formatIznosEurHr(ukupno)}
+            </p>
           </section>
 
           <label className='block'>

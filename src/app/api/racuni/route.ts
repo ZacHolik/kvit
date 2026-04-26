@@ -16,12 +16,81 @@ type InvoicePayload = {
     adresa?: string;
     email?: string;
   };
-  stavka: {
+  items?: Array<{
+    opis: string;
+    kolicina: number;
+    jedinicnaCijena: number;
+  }>;
+  /** Backward compatibility for any older clients still sending one row. */
+  stavka?: {
     opis: string;
     kolicina: number;
     jedinicnaCijena: number;
   };
 };
+
+type NormalizedItem = {
+  opis: string;
+  kolicina: number;
+  jedinicnaCijena: number;
+  ukupno: number;
+};
+
+function normalizeItems(body: InvoicePayload): NormalizedItem[] {
+  const rawItems = Array.isArray(body.items)
+    ? body.items
+    : body.stavka
+      ? [body.stavka]
+      : [];
+
+  return rawItems
+    .map((item) => {
+      const kolicina = Number(item.kolicina);
+      const jedinicnaCijena = Number(item.jedinicnaCijena);
+      return {
+        opis: item.opis?.trim() ?? '',
+        kolicina,
+        jedinicnaCijena,
+        ukupno: kolicina * jedinicnaCijena,
+      };
+    })
+    .filter(
+      (item) =>
+        item.opis.length > 0 &&
+        Number.isFinite(item.kolicina) &&
+        item.kolicina > 0 &&
+        Number.isFinite(item.jedinicnaCijena) &&
+        item.jedinicnaCijena >= 0,
+    );
+}
+
+async function upsertCatalogItem(
+  supabase: ReturnType<typeof createClient>,
+  userId: string,
+  item: NormalizedItem,
+) {
+  const { data: existing } = await supabase
+    .from('artikli')
+    .select('id')
+    .eq('user_id', userId)
+    .ilike('naziv', item.opis)
+    .maybeSingle();
+
+  if (existing) {
+    await supabase
+      .from('artikli')
+      .update({ jedinicna_cijena: item.jedinicnaCijena })
+      .eq('id', existing.id)
+      .eq('user_id', userId);
+    return;
+  }
+
+  await supabase.from('artikli').insert({
+    user_id: userId,
+    naziv: item.opis,
+    jedinicna_cijena: item.jedinicnaCijena,
+  });
+}
 
 export async function POST(request: Request) {
   const supabase = createClient();
@@ -35,23 +104,56 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
-  const ukupno = Number(body.stavka.kolicina) * Number(body.stavka.jedinicnaCijena);
-
-  const { data: kupac, error: kupacError } = await supabase
-    .from('kupci')
-    .insert({
-      user_id: user.id,
-      naziv: body.kupac.naziv,
-      oib: body.kupac.oib || null,
-      adresa: body.kupac.adresa || null,
-      email: body.kupac.email || null,
-    })
-    .select('id')
-    .single();
-
-  if (kupacError) {
-    return NextResponse.json({ error: kupacError.message }, { status: 400 });
+  const items = normalizeItems(body);
+  if (items.length === 0) {
+    return NextResponse.json(
+      { error: 'Dodaj barem jednu ispravnu stavku računa.' },
+      { status: 400 },
+    );
   }
+
+  const kupacNaziv = body.kupac.naziv.trim();
+  if (!kupacNaziv) {
+    return NextResponse.json({ error: 'Naziv kupca je obavezan.' }, { status: 400 });
+  }
+
+  const ukupno = items.reduce((sum, item) => sum + item.ukupno, 0);
+
+  const { data: existingKupac } = await supabase
+    .from('kupci')
+    .select('id')
+    .eq('user_id', user.id)
+    .ilike('naziv', kupacNaziv)
+    .maybeSingle();
+
+  const kupacPayload = {
+    user_id: user.id,
+    naziv: kupacNaziv,
+    oib: body.kupac.oib?.trim() || null,
+    adresa: body.kupac.adresa?.trim() || null,
+    email: body.kupac.email?.trim() || null,
+  };
+
+  const kupacMutation = existingKupac
+    ? supabase
+        .from('kupci')
+        .update(kupacPayload)
+        .eq('id', existingKupac.id)
+        .eq('user_id', user.id)
+        .select('id')
+        .single()
+    : supabase.from('kupci').insert(kupacPayload).select('id').single();
+
+  const { data: kupac, error: kupacError } = await kupacMutation;
+
+  if (kupacError || !kupac) {
+    return NextResponse.json(
+      { error: kupacError?.message || 'Kupac nije spremljen.' },
+      { status: 400 },
+    );
+  }
+
+  await Promise.all(items.map((item) => upsertCatalogItem(supabase, user.id, item)));
 
   const { data: racun, error: racunError } = await supabase
     .from('racuni')
@@ -73,13 +175,15 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: racunError.message }, { status: 400 });
   }
 
-  const { error: stavkaError } = await supabase.from('stavke_racuna').insert({
-    racun_id: racun.id,
-    opis: body.stavka.opis,
-    kolicina: body.stavka.kolicina,
-    jedinicna_cijena: body.stavka.jedinicnaCijena,
-    ukupno,
-  });
+  const { error: stavkaError } = await supabase.from('invoice_items').insert(
+    items.map((item) => ({
+      racun_id: racun.id,
+      opis: item.opis,
+      kolicina: item.kolicina,
+      jedinicna_cijena: item.jedinicnaCijena,
+      ukupno: item.ukupno,
+    })),
+  );
 
   if (stavkaError) {
     return NextResponse.json({ error: stavkaError.message }, { status: 400 });

@@ -9,6 +9,8 @@ import { createClient } from '@/lib/supabase/client';
 const MAIN_NAV = [
   { href: '/dashboard', label: 'Dashboard', icon: '📊' },
   { href: '/racuni', label: 'Računi', icon: '📄' },
+  { href: '/kupci', label: 'Kupci', icon: '👥' },
+  { href: '/stavke', label: 'Stavke', icon: '📦' },
   { href: '/kpr', label: 'KPR', icon: '📋' },
   { href: '/po-sd', label: 'PO-SD', icon: '📑' },
   { href: '/asistent', label: 'AI Asistent', icon: '🤖' },
