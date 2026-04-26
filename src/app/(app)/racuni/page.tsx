@@ -8,6 +8,7 @@ import {
 } from '@/lib/format-hr';
 import { createClient } from '@/lib/supabase/server';
 
+import { EmailInvoiceButton } from './email-button';
 import { MarkAsPaidButton } from './paid-button';
 
 type InvoiceRow = {
@@ -18,6 +19,7 @@ type InvoiceRow = {
   ukupni_iznos: number;
   kupci: {
     naziv: string;
+    email: string | null;
   } | null;
 };
 
@@ -31,11 +33,18 @@ export default async function RacuniPage() {
     redirect('/login');
   }
 
-  const { data: racuni } = await supabase
-    .from('racuni')
-    .select('id, broj_racuna, datum, status, ukupni_iznos, kupci(naziv)')
-    .eq('user_id', user.id)
-    .order('datum', { ascending: false });
+  const [{ data: racuni }, { data: profil }] = await Promise.all([
+    supabase
+      .from('racuni')
+      .select('id, broj_racuna, datum, status, ukupni_iznos, kupci(naziv, email)')
+      .eq('user_id', user.id)
+      .order('datum', { ascending: false }),
+    supabase
+      .from('profiles')
+      .select('naziv_obrta')
+      .eq('id', user.id)
+      .maybeSingle(),
+  ]);
 
   return (
     <main className='min-h-screen bg-[#0b0f0e] px-4 py-8 text-[#e2e8e7] sm:px-6 lg:px-8'>
@@ -92,6 +101,13 @@ export default async function RacuniPage() {
                       {racun.status !== 'placeno' ? (
                         <MarkAsPaidButton racunId={racun.id} />
                       ) : null}
+                      <EmailInvoiceButton
+                        racunId={racun.id}
+                        defaultEmail={racun.kupci?.email ?? ''}
+                        defaultSubject={`Račun broj ${racun.broj_racuna} - ${
+                          profil?.naziv_obrta ?? 'Kvit'
+                        }`}
+                      />
                     </div>
                   </td>
                 </tr>

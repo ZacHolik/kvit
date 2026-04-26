@@ -41,6 +41,13 @@ type SavedArticle = {
   jedinicna_cijena: number | string;
 };
 
+type ProfilePreview = {
+  naziv_obrta: string | null;
+  oib: string | null;
+  iban: string | null;
+  adresa: string | null;
+};
+
 function createEmptyItem(): InvoiceItemForm {
   return {
     id: crypto.randomUUID(),
@@ -57,7 +64,9 @@ export default function NoviRacunPage() {
   const [error, setError] = useState('');
   const [savedCustomers, setSavedCustomers] = useState<SavedCustomer[]>([]);
   const [savedArticles, setSavedArticles] = useState<SavedArticle[]>([]);
+  const [profile, setProfile] = useState<ProfilePreview | null>(null);
   const [items, setItems] = useState<InvoiceItemForm[]>([createEmptyItem()]);
+  const [previewOpen, setPreviewOpen] = useState(false);
   const [formState, setFormState] = useState<FormState>({
     brojRacuna: '',
     datum: new Date().toISOString().slice(0, 10),
@@ -91,7 +100,7 @@ export default function NoviRacunPage() {
         return;
       }
 
-      const [{ data: kupci }, { data: artikli }] = await Promise.all([
+      const [{ data: kupci }, { data: artikli }, { data: profil }] = await Promise.all([
         supabase
           .from('kupci')
           .select('id, naziv, oib, adresa, email')
@@ -102,11 +111,17 @@ export default function NoviRacunPage() {
           .select('id, naziv, jedinicna_cijena')
           .eq('user_id', user.id)
           .order('naziv', { ascending: true }),
+        supabase
+          .from('profiles')
+          .select('naziv_obrta, oib, iban, adresa')
+          .eq('id', user.id)
+          .maybeSingle(),
       ]);
 
       if (!cancelled) {
         setSavedCustomers((kupci ?? []) as SavedCustomer[]);
         setSavedArticles((artikli ?? []) as SavedArticle[]);
+        setProfile(profil as ProfilePreview | null);
       }
     }
 
@@ -201,11 +216,8 @@ export default function NoviRacunPage() {
     });
   }
 
-  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    setError('');
-
-    const payloadItems = items
+  function getPayloadItems() {
+    return items
       .map((item) => ({
         opis: item.opis.trim(),
         kolicina: Number(item.kolicina),
@@ -219,10 +231,16 @@ export default function NoviRacunPage() {
           Number.isFinite(item.jedinicnaCijena) &&
           item.jedinicnaCijena >= 0,
       );
+  }
+
+  async function saveInvoice() {
+    setError('');
+
+    const payloadItems = getPayloadItems();
 
     if (payloadItems.length === 0) {
       setError('Dodaj barem jednu ispravnu stavku računa.');
-      return;
+      return false;
     }
 
     setIsLoading(true);
@@ -254,11 +272,17 @@ export default function NoviRacunPage() {
     if (!response.ok) {
       const payload = (await response.json()) as { error?: string };
       setError(payload.error || 'Dogodila se greška prilikom spremanja.');
-      return;
+      return false;
     }
 
     router.push('/racuni');
     router.refresh();
+    return true;
+  }
+
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    await saveInvoice();
   };
 
   return (
@@ -582,6 +606,13 @@ export default function NoviRacunPage() {
 
           <div className='flex flex-wrap items-center gap-3'>
             <button
+              type='button'
+              onClick={() => setPreviewOpen(true)}
+              className='font-body rounded-xl border border-[#0d9488] px-5 py-3 font-semibold text-[#5eead4] transition hover:bg-[#0d9488]/10'
+            >
+              Pregled
+            </button>
+            <button
               type='submit'
               disabled={isLoading}
               className='font-body rounded-xl bg-[#0d9488] px-5 py-3 font-semibold text-white transition hover:bg-[#14b8a6] disabled:cursor-not-allowed disabled:opacity-60'
@@ -596,6 +627,104 @@ export default function NoviRacunPage() {
             </Link>
           </div>
         </form>
+
+        {previewOpen ? (
+          <div className='fixed inset-0 z-50 overflow-y-auto bg-black/70 px-4 py-8'>
+            <div className='mx-auto max-w-4xl rounded-2xl border border-[#1f2a28] bg-[#0b0f0e] p-4 shadow-2xl sm:p-6'>
+              <div className='flex flex-wrap items-center justify-between gap-3 border-b border-[#1f2a28] pb-4'>
+                <h2 className='font-heading text-xl text-[#e2e8e7]'>
+                  Pregled računa
+                </h2>
+                <div className='flex flex-wrap gap-2'>
+                  <button
+                    type='button'
+                    onClick={() => setPreviewOpen(false)}
+                    className='font-body rounded-xl border border-[#2a3734] px-4 py-2 text-sm text-[#d5dfdd] transition hover:border-[#0d9488]'
+                  >
+                    Zatvori
+                  </button>
+                  <button
+                    type='button'
+                    onClick={() => void saveInvoice()}
+                    disabled={isLoading}
+                    className='font-body rounded-xl bg-[#0d9488] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[#14b8a6] disabled:cursor-not-allowed disabled:opacity-60'
+                  >
+                    {isLoading ? 'Spremam...' : 'Spremi račun'}
+                  </button>
+                </div>
+              </div>
+
+              <div className='mt-6 rounded-xl bg-white p-6 font-sans text-[#111] sm:p-8'>
+                <div className='flex flex-col justify-between gap-6 border-b border-black pb-5 sm:flex-row'>
+                  <div>
+                    <p className='font-bold'>{profile?.naziv_obrta || 'Moj obrt'}</p>
+                    <p className='text-sm'>OIB: {profile?.oib || '—'}</p>
+                    <p className='text-sm'>{profile?.adresa || '—'}</p>
+                    {profile?.iban ? (
+                      <p className='text-sm'>IBAN: {profile.iban}</p>
+                    ) : null}
+                  </div>
+                  <div className='text-left sm:text-right'>
+                    <p className='text-xl font-bold'>Račun</p>
+                    <p className='text-sm'>Broj: {formState.brojRacuna || '—'}</p>
+                    <p className='text-sm'>Datum: {formState.datum || '—'}</p>
+                  </div>
+                </div>
+
+                <section className='mt-5'>
+                  <h3 className='font-bold'>Kupac</h3>
+                  <p className='mt-2 text-sm'>{formState.kupacNaziv || '—'}</p>
+                  <p className='text-sm'>OIB: {formState.kupacOib || '—'}</p>
+                  <p className='text-sm'>{formState.kupacAdresa || '—'}</p>
+                  <p className='text-sm'>E-mail: {formState.kupacEmail || '—'}</p>
+                </section>
+
+                <table className='mt-6 w-full border-collapse text-sm'>
+                  <thead>
+                    <tr className='border-b border-black text-left'>
+                      <th className='py-2'>Opis</th>
+                      <th className='py-2 text-right'>Količina</th>
+                      <th className='py-2 text-right'>Jed. cijena</th>
+                      <th className='py-2 text-right'>Ukupno</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {items.map((item) => {
+                      const itemTotal =
+                        (Number(item.kolicina) || 0) *
+                        (Number(item.jedinicnaCijena) || 0);
+                      return (
+                        <tr key={item.id} className='border-b border-gray-300'>
+                          <td className='py-2 pr-3'>{item.opis || '—'}</td>
+                          <td className='py-2 text-right'>
+                            {Number(item.kolicina) || 0}
+                          </td>
+                          <td className='py-2 text-right'>
+                            {formatIznosEurHr(Number(item.jedinicnaCijena) || 0)}
+                          </td>
+                          <td className='py-2 text-right'>
+                            {formatIznosEurHr(itemTotal)}
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+
+                <p className='mt-6 border-t border-black pt-4 text-right text-lg font-bold'>
+                  UKUPNO: {formatIznosEurHr(ukupno)}
+                </p>
+                {formState.napomena ? (
+                  <p className='mt-4 text-sm'>Napomena: {formState.napomena}</p>
+                ) : null}
+                <p className='mt-10 border-t border-gray-400 pt-3 text-xs text-gray-700'>
+                  Sukladno članku 90. Zakona o porezu na dodanu vrijednost,
+                  izdavatelj računa nije u sustavu PDV-a te PDV nije obračunat.
+                </p>
+              </div>
+            </div>
+          </div>
+        ) : null}
       </div>
     </main>
   );

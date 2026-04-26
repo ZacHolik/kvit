@@ -188,6 +188,7 @@ export type InvoiceProfilPdf = {
 };
 
 export type InvoicePdfData = {
+  documentTitle?: string;
   brojRacuna: string;
   datum: string;
   datumPlacanja: string | null;
@@ -200,6 +201,7 @@ export type InvoicePdfData = {
   kupacAdresa: string | null;
   kupacEmail: string | null;
   profil: InvoiceProfilPdf;
+  footerText?: string;
   stavke: Array<{
     opis: string;
     kolicina: number;
@@ -235,6 +237,7 @@ function dash(v: string | null | undefined): string {
 }
 
 export function InvoiceDocument({
+  documentTitle = 'Račun',
   brojRacuna,
   datum,
   datumPlacanja,
@@ -247,6 +250,7 @@ export function InvoiceDocument({
   kupacAdresa,
   kupacEmail,
   profil,
+  footerText = 'Sukladno članku 90. Zakona o porezu na dodanu vrijednost,\nizdavatelj računa nije u sustavu PDV-a te PDV nije obračunat.',
   stavke,
 }: InvoicePdfData) {
   const brojZaPrikaz = formatBrojRacunaZaPdf(brojRacuna);
@@ -266,7 +270,7 @@ export function InvoiceDocument({
             ) : null}
           </View>
           <View style={styles.invoiceMeta}>
-            <Text style={styles.docTitle}>Račun</Text>
+            <Text style={styles.docTitle}>{documentTitle}</Text>
             <Text style={styles.metaLine}>Broj: {brojZaPrikaz}</Text>
             <Text style={styles.metaLine}>Datum: {formatDatumHr(datum)}</Text>
           </View>
@@ -324,11 +328,7 @@ export function InvoiceDocument({
           <Text style={styles.napomena}>Napomena: {napomena}</Text>
         ) : null}
 
-        {/* PDV — fiksni footer */}
-        <Text style={styles.footer}>
-          Sukladno članku 90. Zakona o porezu na dodanu vrijednost,{'\n'}
-          izdavatelj računa nije u sustavu PDV-a te PDV nije obračunat.
-        </Text>
+        <Text style={styles.footer}>{footerText}</Text>
       </Page>
     </Document>
   );
