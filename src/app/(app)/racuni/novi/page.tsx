@@ -136,14 +136,23 @@ export default function NoviRacunPage() {
   });
 
   const totals = useMemo(() => {
+    const meduzbrojPrijePopusta = items.reduce(
+      (sum, item) =>
+        sum +
+        (Number(item.kolicina) || 0) * (Number(item.jedinicnaCijena) || 0),
+      0,
+    );
     const meduzbroj = items.reduce((sum, item) => sum + calculateItemTotal(item), 0);
+    const popustStavke = meduzbrojPrijePopusta - meduzbroj;
     const popustPostotak = clampPercent(formState.popustRacun);
     const popustIznos = meduzbroj * (popustPostotak / 100);
     const dostavaIznos = formState.dodajDostavu
       ? Math.max(Number(formState.dostavaIznos) || 0, 0)
       : 0;
     return {
+      meduzbrojPrijePopusta,
       meduzbroj,
+      popustStavke,
       popustPostotak,
       popustIznos,
       dostavaIznos,
@@ -763,9 +772,9 @@ export default function NoviRacunPage() {
               return (
                 <div
                   key={item.id}
-                  className='grid gap-3 rounded-2xl border border-[#24312f] bg-[#0b0f0e] p-4 sm:grid-cols-12'
+                  className='space-y-4 rounded-2xl border border-[#24312f] bg-[#0b0f0e] p-4'
                 >
-                  <label className='relative block sm:col-span-4'>
+                  <label className='relative block'>
                     <span className='font-body mb-2 block text-sm text-[#b9c7c4]'>
                       Opis stavke
                     </span>
@@ -816,79 +825,81 @@ export default function NoviRacunPage() {
                       </div>
                     ) : null}
                   </label>
-                  <label className='block sm:col-span-2'>
-                    <span className='font-body mb-2 block text-sm text-[#b9c7c4]'>
-                      Količina
-                    </span>
-                    <input
-                      required
-                      type='number'
-                      min='0'
-                      step='0.01'
-                      value={item.kolicina}
-                      onChange={(event) =>
-                        updateItem(item.id, { kolicina: event.target.value })
-                      }
-                      className='font-body w-full rounded-xl border border-[#2a3734] bg-[#111716] px-4 py-3 outline-none transition focus:border-[#0d9488]'
-                    />
-                  </label>
-                  <label className='block sm:col-span-2'>
-                    <span className='font-body mb-2 block text-sm text-[#b9c7c4]'>
-                      Jed. cijena (€)
-                    </span>
-                    <input
-                      required
-                      type='number'
-                      min='0'
-                      step='0.01'
-                      value={item.jedinicnaCijena}
-                      onChange={(event) =>
-                        updateItem(item.id, {
-                          jedinicnaCijena: event.target.value,
-                        })
-                      }
-                      className='font-body w-full rounded-xl border border-[#2a3734] bg-[#111716] px-4 py-3 outline-none transition focus:border-[#0d9488]'
-                    />
-                  </label>
-                  <label className='block sm:col-span-1'>
-                    <span className='font-body mb-2 block text-sm text-[#b9c7c4]'>
-                      Popust (%)
-                    </span>
-                    <input
-                      type='number'
-                      min='0'
-                      max='100'
-                      step='0.01'
-                      value={item.popust}
-                      onChange={(event) =>
-                        updateItem(item.id, { popust: event.target.value })
-                      }
-                      className='font-body w-full rounded-xl border border-[#2a3734] bg-[#111716] px-3 py-3 outline-none transition focus:border-[#0d9488]'
-                    />
-                  </label>
-                  <div className='flex flex-col justify-end sm:col-span-2'>
-                    <span className='font-body mb-2 block text-sm text-[#b9c7c4]'>
-                      Ukupno
-                    </span>
-                    <p className='font-body rounded-xl border border-[#2a3734] bg-[#111716] px-4 py-3 text-sm text-[#d5dfdd]'>
-                      {formatIznosEurHr(itemTotal)}
-                    </p>
-                    {clampPercent(item.popust) > 0 ? (
-                      <span className='font-body mt-1 text-xs text-[#94a3a0]'>
-                        Prije popusta: {formatIznosEurHr(undiscountedTotal)}
+                  <div className='grid gap-3 sm:grid-cols-[1fr_1fr_1fr_1.35fr_3rem]'>
+                    <label className='block'>
+                      <span className='font-body mb-2 block text-sm text-[#b9c7c4]'>
+                        Količina
                       </span>
-                    ) : null}
-                  </div>
-                  <div className='flex items-end sm:col-span-1'>
-                    <button
-                      type='button'
-                      onClick={() => removeItem(item.id)}
-                      disabled={items.length === 1}
-                      className='font-body h-12 w-full rounded-xl border border-red-500/30 text-red-200 transition hover:bg-red-500/10 disabled:cursor-not-allowed disabled:opacity-40'
-                      aria-label='Ukloni stavku'
-                    >
-                      ×
-                    </button>
+                      <input
+                        required
+                        type='number'
+                        min='0'
+                        step='0.01'
+                        value={item.kolicina}
+                        onChange={(event) =>
+                          updateItem(item.id, { kolicina: event.target.value })
+                        }
+                        className='font-body w-full rounded-xl border border-[#2a3734] bg-[#111716] px-4 py-3 outline-none transition focus:border-[#0d9488]'
+                      />
+                    </label>
+                    <label className='block'>
+                      <span className='font-body mb-2 block text-sm text-[#b9c7c4]'>
+                        Jed. cijena (€)
+                      </span>
+                      <input
+                        required
+                        type='number'
+                        min='0'
+                        step='0.01'
+                        value={item.jedinicnaCijena}
+                        onChange={(event) =>
+                          updateItem(item.id, {
+                            jedinicnaCijena: event.target.value,
+                          })
+                        }
+                        className='font-body w-full rounded-xl border border-[#2a3734] bg-[#111716] px-4 py-3 outline-none transition focus:border-[#0d9488]'
+                      />
+                    </label>
+                    <label className='block'>
+                      <span className='font-body mb-2 block text-sm text-[#b9c7c4]'>
+                        Popust (%)
+                      </span>
+                      <input
+                        type='number'
+                        min='0'
+                        max='100'
+                        step='0.01'
+                        value={item.popust}
+                        onChange={(event) =>
+                          updateItem(item.id, { popust: event.target.value })
+                        }
+                        className='font-body w-full rounded-xl border border-[#2a3734] bg-[#111716] px-4 py-3 outline-none transition focus:border-[#0d9488]'
+                      />
+                    </label>
+                    <div className='flex flex-col justify-end'>
+                      <span className='font-body mb-2 block text-sm text-[#b9c7c4]'>
+                        Ukupno
+                      </span>
+                      <p className='font-body min-h-12 rounded-xl border border-[#2a3734] bg-[#111716] px-4 py-3 text-sm text-[#d5dfdd]'>
+                        {formatIznosEurHr(itemTotal)}
+                      </p>
+                      {clampPercent(item.popust) > 0 ? (
+                        <span className='font-body mt-1 text-xs text-[#94a3a0]'>
+                          Prije popusta: {formatIznosEurHr(undiscountedTotal)}
+                        </span>
+                      ) : null}
+                    </div>
+                    <div className='flex items-end'>
+                      <button
+                        type='button'
+                        onClick={() => removeItem(item.id)}
+                        disabled={items.length === 1}
+                        className='font-body h-12 w-full rounded-xl border border-red-500/30 text-red-200 transition hover:bg-red-500/10 disabled:cursor-not-allowed disabled:opacity-40'
+                        aria-label='Ukloni stavku'
+                      >
+                        ×
+                      </button>
+                    </div>
                   </div>
                 </div>
               );
@@ -965,14 +976,28 @@ export default function NoviRacunPage() {
                   </label>
                 </div>
               ) : null}
-              <div className='font-body space-y-2 text-right text-sm text-[#d5dfdd]'>
-                <p>Međuzbrojak: {formatIznosEurHr(totals.meduzbroj)}</p>
-                <p>Popust: -{formatIznosEurHr(totals.popustIznos)}</p>
+              <div className='font-body space-y-2 text-sm text-[#d5dfdd]'>
+                <p className='flex justify-between gap-4'>
+                  <span>Međuzbrojak:</span>
+                  <span>{formatIznosEurHr(totals.meduzbrojPrijePopusta)}</span>
+                </p>
+                <p className='flex justify-between gap-4'>
+                  <span>Popust na stavke:</span>
+                  <span>-{formatIznosEurHr(totals.popustStavke)}</span>
+                </p>
+                <p className='flex justify-between gap-4'>
+                  <span>Popust na račun:</span>
+                  <span>-{formatIznosEurHr(totals.popustIznos)}</span>
+                </p>
                 {formState.dodajDostavu ? (
-                  <p>Dostava: {formatIznosEurHr(totals.dostavaIznos)}</p>
+                  <p className='flex justify-between gap-4'>
+                    <span>Dostava:</span>
+                    <span>+{formatIznosEurHr(totals.dostavaIznos)}</span>
+                  </p>
                 ) : null}
-                <p className='text-lg font-semibold text-[#e2e8e7]'>
-                  Ukupno račun: {formatIznosEurHr(totals.ukupno)}
+                <p className='flex justify-between gap-4 border-t border-[#2a3734] pt-3 text-lg font-semibold text-[#e2e8e7]'>
+                  <span>UKUPNO:</span>
+                  <span>{formatIznosEurHr(totals.ukupno)}</span>
                 </p>
               </div>
             </div>
@@ -1136,10 +1161,14 @@ export default function NoviRacunPage() {
                 </table>
 
                 <div className='mt-6 space-y-1 border-t border-black pt-4 text-right text-sm'>
-                  <p>Međuzbrojak: {formatIznosEurHr(totals.meduzbroj)}</p>
-                  <p>Popust: -{formatIznosEurHr(totals.popustIznos)}</p>
+                  <p>
+                    Međuzbrojak:{' '}
+                    {formatIznosEurHr(totals.meduzbrojPrijePopusta)}
+                  </p>
+                  <p>Popust na stavke: -{formatIznosEurHr(totals.popustStavke)}</p>
+                  <p>Popust na račun: -{formatIznosEurHr(totals.popustIznos)}</p>
                   {formState.dodajDostavu ? (
-                    <p>Dostava: {formatIznosEurHr(totals.dostavaIznos)}</p>
+                    <p>Dostava: +{formatIznosEurHr(totals.dostavaIznos)}</p>
                   ) : null}
                   <p className='text-lg font-bold'>
                     UKUPNO: {formatIznosEurHr(totals.ukupno)}
