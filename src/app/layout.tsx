@@ -21,14 +21,20 @@ fbq('init', '${META_PIXEL_ID}');
 fbq('track', 'PageView');
 `.trim();
 
+const metaPixelNoscript = `<img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=${META_PIXEL_ID}&ev=PageView&noscript=1" alt="" />`;
+
 const syne = Syne({
   subsets: ['latin', 'latin-ext'],
   variable: '--font-syne',
+  display: 'swap',
+  preload: true,
 });
 
 const dmSans = DM_Sans({
   subsets: ['latin', 'latin-ext'],
   variable: '--font-dm-sans',
+  display: 'swap',
+  preload: true,
 });
 
 export const metadata: Metadata = {
@@ -68,15 +74,7 @@ export default function RootLayout({
           strategy='afterInteractive'
           dangerouslySetInnerHTML={{ __html: metaPixelInline }}
         />
-        <noscript>
-          <img
-            height='1'
-            width='1'
-            style={{ display: 'none' }}
-            src={`https://www.facebook.com/tr?id=${META_PIXEL_ID}&ev=PageView&noscript=1`}
-            alt=''
-          />
-        </noscript>
+        <noscript dangerouslySetInnerHTML={{ __html: metaPixelNoscript }} />
         <Analytics />
       </body>
     </html>

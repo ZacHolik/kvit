@@ -1,15 +1,11 @@
 'use client';
 
 import Link from 'next/link';
-import Script from 'next/script';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { KVIT_LANDING_CSS } from './kvit-landing-css';
 
 const TALLY = 'https://tally.so/r/44or65';
-const LANDING_BASE_STYLE_ID = 'kvit-landing-base-style';
-const LANDING_RESPONSIVE_STYLE_ID = 'kvit-landing-responsive-style';
-
 const LANDING_RESPONSIVE_CSS = `
 #kvit-landing .hero{overflow-x:hidden}
 #kvit-landing .hero-left{min-width:0}
@@ -213,38 +209,14 @@ export default function LandingPage() {
 
   return (
     <>
-      <Script
-        id='kvit-landing-base-style-script'
-        key='kvit-landing-base-style-script'
-        strategy='afterInteractive'
-        dangerouslySetInnerHTML={{
-          __html: `
-(() => {
-  if (document.getElementById('${LANDING_BASE_STYLE_ID}')) return;
-  const style = document.createElement('style');
-  style.id = '${LANDING_BASE_STYLE_ID}';
-  style.textContent = ${JSON.stringify(KVIT_LANDING_CSS)};
-  document.head.appendChild(style);
-})();
-`,
-        }}
+      <style
+        id='kvit-landing-base-style'
+        dangerouslySetInnerHTML={{ __html: KVIT_LANDING_CSS }}
       />
       {/* Desktop: outline Imam račun; mobile: two-row centered nav + equal-width CTAs */}
-      <Script
-        id='kvit-landing-responsive-style-script'
-        key='kvit-landing-responsive-style-script'
-        strategy='afterInteractive'
-        dangerouslySetInnerHTML={{
-          __html: `
-(() => {
-  if (document.getElementById('${LANDING_RESPONSIVE_STYLE_ID}')) return;
-  const style = document.createElement('style');
-  style.id = '${LANDING_RESPONSIVE_STYLE_ID}';
-  style.textContent = ${JSON.stringify(LANDING_RESPONSIVE_CSS)};
-  document.head.appendChild(style);
-})();
-`,
-        }}
+      <style
+        id='kvit-landing-responsive-style'
+        dangerouslySetInnerHTML={{ __html: LANDING_RESPONSIVE_CSS }}
       />
       <div id='kvit-landing'>
         <nav>
