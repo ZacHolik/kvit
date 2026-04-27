@@ -868,7 +868,7 @@ export default function NoviRacunPage() {
                         type='number'
                         min='0'
                         max='100'
-                        step='0.01'
+                        step='0.5'
                         value={item.popust}
                         onChange={(event) =>
                           updateItem(item.id, { popust: event.target.value })
@@ -914,7 +914,7 @@ export default function NoviRacunPage() {
                   type='number'
                   min='0'
                   max='100'
-                  step='0.01'
+                  step='0.5'
                   value={formState.popustRacun}
                   onChange={(event) =>
                     setFormState((previous) => ({
@@ -978,7 +978,7 @@ export default function NoviRacunPage() {
               ) : null}
               <div className='font-body space-y-2 text-sm text-[#d5dfdd]'>
                 <p className='flex justify-between gap-4'>
-                  <span>Međuzbrojak:</span>
+                  <span>Međuzbroj:</span>
                   <span>{formatIznosEurHr(totals.meduzbrojPrijePopusta)}</span>
                 </p>
                 <p className='flex justify-between gap-4'>
@@ -1162,7 +1162,7 @@ export default function NoviRacunPage() {
 
                 <div className='mt-6 space-y-1 border-t border-black pt-4 text-right text-sm'>
                   <p>
-                    Međuzbrojak:{' '}
+                    Međuzbroj:{' '}
                     {formatIznosEurHr(totals.meduzbrojPrijePopusta)}
                   </p>
                   <p>Popust na stavke: -{formatIznosEurHr(totals.popustStavke)}</p>

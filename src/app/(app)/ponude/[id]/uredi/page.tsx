@@ -31,6 +31,34 @@ type SavedArticle = {
   jedinicna_cijena: number | string;
 };
 
+type OfferRow = {
+  id: string;
+  broj_ponude: string;
+  datum: string;
+  datum_valjanosti: string | null;
+  kupac_naziv: string;
+  kupac_oib: string | null;
+  kupac_adresa: string | null;
+  kupac_email: string | null;
+  status: OfferStatus;
+  popust_racun: number | string | null;
+  rok_placanja: string | null;
+  datum_dospijeca: string | null;
+  dostava_iznos: number | string | null;
+  dostava_opis: string | null;
+  napomena: string | null;
+};
+
+type OfferItemRow = {
+  id: string;
+  opis: string;
+  kolicina: number | string;
+  jedinicna_cijena: number | string;
+  popust: number | string | null;
+};
+
+const PAYMENT_TERMS = [0, 7, 10, 15, 20, 30, 60, 90] as const;
+
 function createItem(): Item {
   return {
     id: crypto.randomUUID(),
@@ -40,8 +68,6 @@ function createItem(): Item {
     popust: '0',
   };
 }
-
-const PAYMENT_TERMS = [0, 7, 10, 15, 20, 30, 60, 90] as const;
 
 function addDaysToIsoDate(date: string, days: number) {
   const parsed = new Date(`${date}T00:00:00`);
@@ -64,7 +90,7 @@ function calculateItemTotal(item: Item) {
   );
 }
 
-export default function NovaPonudaPage() {
+export default function UrediPonuduPage({ params }: { params: { id: string } }) {
   const router = useRouter();
   const supabase = useMemo(() => createClient(), []);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
@@ -79,6 +105,7 @@ export default function NovaPonudaPage() {
   const [items, setItems] = useState<Item[]>([createItem()]);
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [isInitialLoading, setIsInitialLoading] = useState(true);
   const [formState, setFormState] = useState({
     brojPonude: '',
     datum: new Date().toISOString().slice(0, 10),
@@ -134,47 +161,105 @@ export default function NovaPonudaPage() {
       }
       setCurrentUserId(user.id);
 
-      const [{ data: kupci }, { data: artikli }, { count }] = await Promise.all([
-        supabase
-          .from('kupci')
-          .select('id, naziv, oib, adresa, email')
-          .eq('user_id', user.id)
-          .order('naziv', { ascending: true }),
-        supabase
-          .from('artikli')
-          .select('id, naziv, jedinicna_cijena')
-          .eq('user_id', user.id)
-          .order('naziv', { ascending: true }),
-        supabase
-          .from('ponude')
-          .select('id', { count: 'exact', head: true })
-          .eq('user_id', user.id),
-      ]);
+      const [{ data: ponuda }, { data: stavke }, { data: kupci }, { data: artikli }] =
+        await Promise.all([
+          supabase
+            .from('ponude')
+            .select(
+              'id, broj_ponude, datum, datum_valjanosti, kupac_naziv, kupac_oib, kupac_adresa, kupac_email, status, popust_racun, rok_placanja, datum_dospijeca, dostava_iznos, dostava_opis, napomena',
+            )
+            .eq('id', params.id)
+            .eq('user_id', user.id)
+            .single(),
+          supabase
+            .from('ponuda_items')
+            .select('id, opis, kolicina, jedinicna_cijena, popust')
+            .eq('ponuda_id', params.id),
+          supabase
+            .from('kupci')
+            .select('id, naziv, oib, adresa, email')
+            .eq('user_id', user.id)
+            .order('naziv', { ascending: true }),
+          supabase
+            .from('artikli')
+            .select('id, naziv, jedinicna_cijena')
+            .eq('user_id', user.id)
+            .order('naziv', { ascending: true }),
+        ]);
 
-      if (!cancelled) {
-        setCustomers((kupci ?? []) as Customer[]);
-        setSavedArticles((artikli ?? []) as SavedArticle[]);
-        setFormState((previous) =>
-          previous.brojPonude
-            ? previous
-            : {
-                ...previous,
-                brojPonude: `P-${(count ?? 0) + 1}-${new Date().getFullYear()}`,
-              },
-        );
+      if (cancelled) {
+        return;
       }
+
+      if (!ponuda) {
+        setError('Ponuda nije pronađena.');
+        setIsInitialLoading(false);
+        return;
+      }
+
+      const offer = ponuda as OfferRow;
+      setCustomers((kupci ?? []) as Customer[]);
+      setSavedArticles((artikli ?? []) as SavedArticle[]);
+      setItems(
+        ((stavke ?? []) as OfferItemRow[]).map((item) => ({
+          id: item.id,
+          opis: item.opis,
+          kolicina: String(item.kolicina ?? 1),
+          jedinicnaCijena: String(item.jedinicna_cijena ?? 0),
+          popust: String(item.popust ?? 0),
+        })),
+      );
+      if ((stavke ?? []).length === 0) {
+        setItems([createItem()]);
+      }
+      setFormState({
+        brojPonude: offer.broj_ponude,
+        datum: offer.datum,
+        datumValjanosti: offer.datum_valjanosti ?? '',
+        status: offer.status,
+        kupacNaziv: offer.kupac_naziv,
+        kupacOib: offer.kupac_oib ?? '',
+        kupacAdresa: offer.kupac_adresa ?? '',
+        kupacEmail: offer.kupac_email ?? '',
+        popustRacun: String(offer.popust_racun ?? 0),
+        rokPlacanja: offer.rok_placanja ?? '15 dana',
+        datumDospijeca:
+          offer.datum_dospijeca ??
+          addDaysToIsoDate(offer.datum, Number.parseInt(offer.rok_placanja ?? '', 10) || 15),
+        dodajDostavu: Number(offer.dostava_iznos ?? 0) > 0,
+        dostavaOpis: offer.dostava_opis ?? 'Troškovi dostave',
+        dostavaIznos: String(offer.dostava_iznos ?? 0),
+        napomena: offer.napomena ?? '',
+      });
+      setIsInitialLoading(false);
     }
 
     void loadData();
     return () => {
       cancelled = true;
     };
-  }, [supabase]);
+  }, [params.id, supabase]);
 
   function updateItem(id: string, patch: Partial<Item>) {
     setItems((previous) =>
       previous.map((item) => (item.id === id ? { ...item, ...patch } : item)),
     );
+  }
+
+  function applyCustomerByName(name: string) {
+    const customer = customers.find(
+      (item) => item.naziv.toLocaleLowerCase() === name.toLocaleLowerCase(),
+    );
+    if (!customer) {
+      return;
+    }
+    setFormState((previous) => ({
+      ...previous,
+      kupacNaziv: customer.naziv,
+      kupacOib: customer.oib ?? '',
+      kupacAdresa: customer.adresa ?? '',
+      kupacEmail: customer.email ?? '',
+    }));
   }
 
   function applyArticleByName(itemId: string, name: string) {
@@ -202,10 +287,7 @@ export default function NovaPonudaPage() {
         article.naziv.toLocaleLowerCase().includes(q.toLocaleLowerCase()),
       )
       .slice(0, 8);
-    setArticleSuggestions((previous) => ({
-      ...previous,
-      [itemId]: localMatches,
-    }));
+    setArticleSuggestions((previous) => ({ ...previous, [itemId]: localMatches }));
 
     const userId =
       currentUserId ||
@@ -245,22 +327,6 @@ export default function NovaPonudaPage() {
     setArticleSuggestions((previous) => ({ ...previous, [itemId]: [] }));
   }
 
-  function applyCustomerByName(name: string) {
-    const customer = customers.find(
-      (item) => item.naziv.toLocaleLowerCase() === name.toLocaleLowerCase(),
-    );
-    if (!customer) {
-      return;
-    }
-    setFormState((previous) => ({
-      ...previous,
-      kupacNaziv: customer.naziv,
-      kupacOib: customer.oib ?? '',
-      kupacAdresa: customer.adresa ?? '',
-      kupacEmail: customer.email ?? '',
-    }));
-  }
-
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setError('');
@@ -286,8 +352,8 @@ export default function NovaPonudaPage() {
     }
 
     setIsLoading(true);
-    const response = await fetch('/api/ponude', {
-      method: 'POST',
+    const response = await fetch(`/api/ponude/${params.id}`, {
+      method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         brojPonude: formState.brojPonude,
@@ -324,12 +390,22 @@ export default function NovaPonudaPage() {
     router.refresh();
   }
 
+  if (isInitialLoading) {
+    return (
+      <main className='min-h-screen bg-[#0b0f0e] px-4 py-8 text-[#e2e8e7] sm:px-6 lg:px-8'>
+        <div className='mx-auto w-full max-w-4xl rounded-2xl border border-[#1f2a28] bg-[#111716] p-6'>
+          <p className='font-body text-sm text-[#94a3a0]'>Učitavam ponudu...</p>
+        </div>
+      </main>
+    );
+  }
+
   return (
     <main className='min-h-screen bg-[#0b0f0e] px-4 py-8 text-[#e2e8e7] sm:px-6 lg:px-8'>
       <div className='mx-auto flex w-full max-w-4xl flex-col gap-6'>
         <header className='rounded-2xl border border-[#1f2a28] bg-[#111716] p-5 sm:p-6'>
           <p className='font-body text-sm text-[#94a3a0]'>Ponuda</p>
-          <h1 className='font-heading mt-2 text-2xl sm:text-3xl'>Nova ponuda</h1>
+          <h1 className='font-heading mt-2 text-2xl sm:text-3xl'>Uredi ponudu</h1>
         </header>
 
         <form
@@ -418,26 +494,25 @@ export default function NovaPonudaPage() {
                 Datum dospijeća: {formState.datumDospijeca || '—'}
               </span>
             </label>
+            <label className='block'>
+              <span className='font-body mb-2 block text-sm text-[#b9c7c4]'>Status</span>
+              <select
+                value={formState.status}
+                onChange={(event) =>
+                  setFormState((previous) => ({
+                    ...previous,
+                    status: event.target.value as OfferStatus,
+                  }))
+                }
+                className='font-body w-full rounded-xl border border-[#2a3734] bg-[#0b0f0e] px-4 py-3 outline-none transition focus:border-[#0d9488]'
+              >
+                <option value='poslana'>Poslana</option>
+                <option value='prihvacena'>Prihvaćena</option>
+                <option value='odbijena'>Odbijena</option>
+                <option value='istekla'>Istekla</option>
+              </select>
+            </label>
           </section>
-
-          <label className='block max-w-xs'>
-            <span className='font-body mb-2 block text-sm text-[#b9c7c4]'>Status</span>
-            <select
-              value={formState.status}
-              onChange={(event) =>
-                setFormState((previous) => ({
-                  ...previous,
-                  status: event.target.value as OfferStatus,
-                }))
-              }
-              className='font-body w-full rounded-xl border border-[#2a3734] bg-[#0b0f0e] px-4 py-3 outline-none transition focus:border-[#0d9488]'
-            >
-              <option value='poslana'>Poslana</option>
-              <option value='prihvacena'>Prihvaćena</option>
-              <option value='odbijena'>Odbijena</option>
-              <option value='istekla'>Istekla</option>
-            </select>
-          </label>
 
           <section className='grid gap-4 sm:grid-cols-2'>
             <label className='block'>
@@ -446,7 +521,7 @@ export default function NovaPonudaPage() {
               </span>
               <input
                 required
-                list='ponuda-kupci'
+                list='ponuda-edit-kupci'
                 value={formState.kupacNaziv}
                 onChange={(event) => {
                   const value = event.target.value;
@@ -455,7 +530,7 @@ export default function NovaPonudaPage() {
                 }}
                 className='font-body w-full rounded-xl border border-[#2a3734] bg-[#0b0f0e] px-4 py-3 outline-none transition focus:border-[#0d9488]'
               />
-              <datalist id='ponuda-kupci'>
+              <datalist id='ponuda-edit-kupci'>
                 {customers.map((customer) => (
                   <option key={customer.id} value={customer.naziv} />
                 ))}
@@ -769,13 +844,13 @@ export default function NovaPonudaPage() {
               disabled={isLoading}
               className='font-body rounded-xl bg-[#0d9488] px-5 py-3 font-semibold text-white transition hover:bg-[#14b8a6] disabled:cursor-not-allowed disabled:opacity-60'
             >
-              {isLoading ? 'Spremam...' : 'Spremi ponudu'}
+              {isLoading ? 'Spremam...' : 'Spremi promjene'}
             </button>
             <Link
               href='/ponude'
               className='font-body rounded-xl border border-[#2a3734] px-5 py-3 text-[#d5dfdd] transition hover:border-[#0d9488]'
             >
-              Odustani
+              Natrag
             </Link>
           </div>
         </form>

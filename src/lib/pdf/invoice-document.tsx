@@ -460,7 +460,7 @@ export function InvoiceDocument({
         <View style={styles.summaryWrap}>
           {hasSummaryDetails ? (
             <View style={styles.summaryRow}>
-              <Text style={styles.summaryLabel}>Međuzbrojak:</Text>
+              <Text style={styles.summaryLabel}>Međuzbroj:</Text>
               <Text style={styles.summaryValue}>{formatIznosEurHr(meduzbroj)}</Text>
             </View>
           ) : null}

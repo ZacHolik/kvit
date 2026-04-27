@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { useMemo, useState } from 'react';
 
 import { formatDatumHr, formatIznosEurHr } from '@/lib/format-hr';
@@ -107,6 +108,12 @@ export function OfferList({ offers }: { offers: PonudaRow[] }) {
                     >
                       PDF
                     </a>
+                    <Link
+                      href={`/ponude/${ponuda.id}/uredi`}
+                      className='rounded-lg border border-[#2a3734] px-3 py-2 text-xs text-[#d5dfdd] transition hover:border-[#0d9488]'
+                    >
+                      Uredi
+                    </Link>
                     <ConvertOfferButton ponudaId={ponuda.id} />
                   </div>
                 </td>
