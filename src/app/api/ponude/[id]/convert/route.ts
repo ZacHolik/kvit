@@ -28,7 +28,7 @@ export async function PATCH(
 
   const { data: items } = await supabase
     .from('ponuda_items')
-    .select('opis, kolicina, jedinicna_cijena, ukupno')
+    .select('opis, kolicina, jedinicna_cijena, popust, ukupno')
     .eq('ponuda_id', ponuda.id);
 
   const { count } = await supabase
@@ -82,6 +82,11 @@ export async function PATCH(
       ukupni_iznos: Number(ponuda.ukupno),
       status: 'izdano',
       tip_racuna: ponuda.kupac_oib ? 'R1' : 'R2',
+      popust_racun: Number(ponuda.popust_racun ?? 0),
+      rok_placanja: ponuda.rok_placanja,
+      datum_dospijeca: ponuda.datum_dospijeca,
+      dostava_iznos: Number(ponuda.dostava_iznos ?? 0),
+      dostava_opis: ponuda.dostava_opis,
       barkod_enabled: true,
       recurring: false,
       recurring_interval: null,
@@ -103,6 +108,7 @@ export async function PATCH(
       opis: item.opis,
       kolicina: item.kolicina,
       jedinicna_cijena: item.jedinicna_cijena,
+      popust: item.popust ?? 0,
       ukupno: item.ukupno,
     })),
   );

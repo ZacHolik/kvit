@@ -42,7 +42,7 @@ export async function POST(
     supabase
       .from('racuni')
       .select(
-        'id, broj_racuna, datum, datum_placanja, nacin_placanja, status, tip_racuna, ukupni_iznos, napomena, barkod_enabled, kupci(naziv, oib, adresa, email)',
+        'id, broj_racuna, datum, datum_placanja, nacin_placanja, status, tip_racuna, popust_racun, rok_placanja, datum_dospijeca, dostava_iznos, dostava_opis, ukupni_iznos, napomena, barkod_enabled, kupci(naziv, oib, adresa, email)',
       )
       .eq('id', params.id)
       .eq('user_id', user.id)
@@ -60,7 +60,7 @@ export async function POST(
 
   const { data: stavke } = await supabase
     .from('invoice_items')
-    .select('opis, kolicina, jedinicna_cijena, ukupno')
+    .select('opis, kolicina, jedinicna_cijena, popust, ukupno')
     .eq('racun_id', racun.id);
 
   const kupac = racun.kupci as {
@@ -99,6 +99,16 @@ export async function POST(
         }),
       )
     : null;
+  const stavkeZaPdf = (stavke ?? []).map((stavka) => ({
+    opis: stavka.opis,
+    kolicina: Number(stavka.kolicina),
+    jedinicnaCijena: Number(stavka.jedinicna_cijena),
+    popust: Number(stavka.popust ?? 0),
+    ukupno: Number(stavka.ukupno),
+  }));
+  const meduzbroj = stavkeZaPdf.reduce((sum, stavka) => sum + stavka.ukupno, 0);
+  const popustRacun = Number(racun.popust_racun ?? 0);
+  const popustRacunIznos = meduzbroj * (popustRacun / 100);
 
   const pdf = await renderPdfToBuffer(
     InvoiceDocument({
@@ -108,7 +118,14 @@ export async function POST(
       status: racun.status,
       nacinPlacanja: racun.nacin_placanja,
       tipRacuna: racun.tip_racuna,
+      rokPlacanja: racun.rok_placanja,
+      datumDospijeca: racun.datum_dospijeca,
       ukupniIznos: Number(racun.ukupni_iznos),
+      meduzbroj,
+      popustRacun,
+      popustRacunIznos,
+      dostavaOpis: racun.dostava_opis,
+      dostavaIznos: Number(racun.dostava_iznos ?? 0),
       napomena: racun.napomena,
       kupacNaziv: kupac?.naziv ?? '',
       kupacOib: kupac?.oib ?? null,
@@ -133,12 +150,7 @@ export async function POST(
             reference,
           }
         : null,
-      stavke: (stavke ?? []).map((stavka) => ({
-        opis: stavka.opis,
-        kolicina: Number(stavka.kolicina),
-        jedinicnaCijena: Number(stavka.jedinicna_cijena),
-        ukupno: Number(stavka.ukupno),
-      })),
+      stavke: stavkeZaPdf,
     }),
   );
 

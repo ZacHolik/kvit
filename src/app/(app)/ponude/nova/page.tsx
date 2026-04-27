@@ -14,6 +14,7 @@ type Item = {
   opis: string;
   kolicina: string;
   jedinicnaCijena: string;
+  popust: string;
 };
 
 type Customer = {
@@ -30,7 +31,31 @@ function createItem(): Item {
     opis: '',
     kolicina: '1',
     jedinicnaCijena: '0',
+    popust: '0',
   };
+}
+
+const PAYMENT_TERMS = [0, 7, 10, 15, 20, 30, 60, 90] as const;
+
+function addDaysToIsoDate(date: string, days: number) {
+  const parsed = new Date(`${date}T00:00:00`);
+  if (Number.isNaN(parsed.getTime())) {
+    return '';
+  }
+  parsed.setDate(parsed.getDate() + days);
+  return parsed.toISOString().slice(0, 10);
+}
+
+function clampPercent(value: string | number) {
+  return Math.min(Math.max(Number(value) || 0, 0), 100);
+}
+
+function calculateItemTotal(item: Item) {
+  return (
+    (Number(item.kolicina) || 0) *
+    (Number(item.jedinicnaCijena) || 0) *
+    (1 - clampPercent(item.popust) / 100)
+  );
 }
 
 export default function NovaPonudaPage() {
@@ -49,19 +74,30 @@ export default function NovaPonudaPage() {
     kupacOib: '',
     kupacAdresa: '',
     kupacEmail: '',
+    popustRacun: '0',
+    rokPlacanja: '15 dana',
+    datumDospijeca: addDaysToIsoDate(new Date().toISOString().slice(0, 10), 15),
+    dodajDostavu: false,
+    dostavaOpis: 'Troškovi dostave',
+    dostavaIznos: '0',
     napomena: '',
   });
 
-  const ukupno = useMemo(
-    () =>
-      items.reduce(
-        (sum, item) =>
-          sum +
-          (Number(item.kolicina) || 0) * (Number(item.jedinicnaCijena) || 0),
-        0,
-      ),
-    [items],
-  );
+  const totals = useMemo(() => {
+    const meduzbroj = items.reduce((sum, item) => sum + calculateItemTotal(item), 0);
+    const popustPostotak = clampPercent(formState.popustRacun);
+    const popustIznos = meduzbroj * (popustPostotak / 100);
+    const dostavaIznos = formState.dodajDostavu
+      ? Math.max(Number(formState.dostavaIznos) || 0, 0)
+      : 0;
+    return {
+      meduzbroj,
+      popustPostotak,
+      popustIznos,
+      dostavaIznos,
+      ukupno: Math.max(meduzbroj - popustIznos + dostavaIznos, 0),
+    };
+  }, [formState.dodajDostavu, formState.dostavaIznos, formState.popustRacun, items]);
 
   useEffect(() => {
     let cancelled = false;
@@ -135,6 +171,7 @@ export default function NovaPonudaPage() {
         opis: item.opis.trim(),
         kolicina: Number(item.kolicina),
         jedinicnaCijena: Number(item.jedinicnaCijena),
+        popust: clampPercent(item.popust),
       }))
       .filter(
         (item) =>
@@ -159,6 +196,14 @@ export default function NovaPonudaPage() {
         datum: formState.datum,
         datumValjanosti: formState.datumValjanosti || undefined,
         status: formState.status,
+        popustRacun: totals.popustPostotak,
+        rokPlacanja: formState.rokPlacanja,
+        datumDospijeca: formState.datumDospijeca,
+        dostava: {
+          enabled: formState.dodajDostavu,
+          opis: formState.dostavaOpis,
+          iznos: Number(formState.dostavaIznos) || 0,
+        },
         napomena: formState.napomena,
         kupac: {
           naziv: formState.kupacNaziv,
@@ -220,6 +265,10 @@ export default function NovaPonudaPage() {
                   setFormState((previous) => ({
                     ...previous,
                     datum: event.target.value,
+                    datumDospijeca: addDaysToIsoDate(
+                      event.target.value,
+                      Number.parseInt(previous.rokPlacanja, 10) || 0,
+                    ),
                   }))
                 }
                 className='font-body w-full rounded-xl border border-[#2a3734] bg-[#0b0f0e] px-4 py-3 outline-none transition focus:border-[#0d9488]'
@@ -240,6 +289,36 @@ export default function NovaPonudaPage() {
                 }
                 className='font-body w-full rounded-xl border border-[#2a3734] bg-[#0b0f0e] px-4 py-3 outline-none transition focus:border-[#0d9488]'
               />
+            </label>
+          </section>
+
+          <section className='grid gap-4 sm:grid-cols-2'>
+            <label className='block'>
+              <span className='font-body mb-2 block text-sm text-[#b9c7c4]'>
+                Rok plaćanja
+              </span>
+              <select
+                value={formState.rokPlacanja}
+                onChange={(event) => {
+                  const value = event.target.value;
+                  const days = Number.parseInt(value, 10) || 0;
+                  setFormState((previous) => ({
+                    ...previous,
+                    rokPlacanja: value,
+                    datumDospijeca: addDaysToIsoDate(previous.datum, days),
+                  }));
+                }}
+                className='font-body w-full rounded-xl border border-[#2a3734] bg-[#0b0f0e] px-4 py-3 outline-none transition focus:border-[#0d9488]'
+              >
+                {PAYMENT_TERMS.map((days) => (
+                  <option key={days} value={days === 0 ? 'Odmah' : `${days} dana`}>
+                    {days === 0 ? 'Odmah' : `${days} dana`}
+                  </option>
+                ))}
+              </select>
+              <span className='font-body mt-1 block text-xs text-[#64756f]'>
+                Datum dospijeća: {formState.datumDospijeca || '—'}
+              </span>
             </label>
           </section>
 
@@ -338,8 +417,9 @@ export default function NovaPonudaPage() {
               </button>
             </div>
             {items.map((item, index) => {
-              const total =
+              const undiscountedTotal =
                 (Number(item.kolicina) || 0) * (Number(item.jedinicnaCijena) || 0);
+              const total = calculateItemTotal(item);
               return (
                 <div
                   key={item.id}
@@ -351,7 +431,7 @@ export default function NovaPonudaPage() {
                     onChange={(event) =>
                       updateItem(item.id, { opis: event.target.value })
                     }
-                    className='font-body rounded-xl border border-[#2a3734] bg-[#111716] px-4 py-3 outline-none transition focus:border-[#0d9488] sm:col-span-5'
+                    className='font-body rounded-xl border border-[#2a3734] bg-[#111716] px-4 py-3 outline-none transition focus:border-[#0d9488] sm:col-span-4'
                     placeholder={`Stavka ${index + 1}`}
                   />
                   <input
@@ -364,6 +444,7 @@ export default function NovaPonudaPage() {
                       updateItem(item.id, { kolicina: event.target.value })
                     }
                     className='font-body rounded-xl border border-[#2a3734] bg-[#111716] px-4 py-3 outline-none transition focus:border-[#0d9488] sm:col-span-2'
+                    placeholder='Količina'
                   />
                   <input
                     required
@@ -375,10 +456,28 @@ export default function NovaPonudaPage() {
                       updateItem(item.id, { jedinicnaCijena: event.target.value })
                     }
                     className='font-body rounded-xl border border-[#2a3734] bg-[#111716] px-4 py-3 outline-none transition focus:border-[#0d9488] sm:col-span-2'
+                    placeholder='Jed. cijena (€)'
                   />
-                  <p className='font-body rounded-xl border border-[#2a3734] bg-[#111716] px-4 py-3 text-sm text-[#d5dfdd] sm:col-span-2'>
-                    {formatIznosEurHr(total)}
-                  </p>
+                  <input
+                    type='number'
+                    min='0'
+                    max='100'
+                    step='0.01'
+                    value={item.popust}
+                    onChange={(event) =>
+                      updateItem(item.id, { popust: event.target.value })
+                    }
+                    className='font-body rounded-xl border border-[#2a3734] bg-[#111716] px-3 py-3 outline-none transition focus:border-[#0d9488] sm:col-span-1'
+                    placeholder='Popust (%)'
+                  />
+                  <div className='font-body rounded-xl border border-[#2a3734] bg-[#111716] px-4 py-3 text-sm text-[#d5dfdd] sm:col-span-2'>
+                    <p>{formatIznosEurHr(total)}</p>
+                    {clampPercent(item.popust) > 0 ? (
+                      <p className='mt-1 text-xs text-[#94a3a0]'>
+                        Prije popusta: {formatIznosEurHr(undiscountedTotal)}
+                      </p>
+                    ) : null}
+                  </div>
                   <button
                     type='button'
                     onClick={() =>
@@ -396,9 +495,80 @@ export default function NovaPonudaPage() {
                 </div>
               );
             })}
-            <p className='font-body rounded-xl border border-[#0d9488]/40 bg-[#0d9488]/10 px-4 py-3 text-right text-lg font-semibold'>
-              Ukupno ponuda: {formatIznosEurHr(ukupno)}
-            </p>
+            <div className='space-y-3 rounded-xl border border-[#2a3734] bg-[#0b0f0e] p-4'>
+              <label className='block max-w-xs'>
+                <span className='font-body mb-2 block text-sm text-[#b9c7c4]'>
+                  Popust na cijelu ponudu (%)
+                </span>
+                <input
+                  type='number'
+                  min='0'
+                  max='100'
+                  step='0.01'
+                  value={formState.popustRacun}
+                  onChange={(event) =>
+                    setFormState((previous) => ({
+                      ...previous,
+                      popustRacun: event.target.value,
+                    }))
+                  }
+                  className='font-body w-full rounded-xl border border-[#2a3734] bg-[#111716] px-4 py-3 outline-none transition focus:border-[#0d9488]'
+                />
+              </label>
+              <label className='font-body flex items-center gap-3 text-sm text-[#d5dfdd]'>
+                <input
+                  type='checkbox'
+                  checked={formState.dodajDostavu}
+                  onChange={(event) =>
+                    setFormState((previous) => ({
+                      ...previous,
+                      dodajDostavu: event.target.checked,
+                    }))
+                  }
+                  className='h-4 w-4 accent-[#0d9488]'
+                />
+                Dodaj trošak dostave/prijevoza
+              </label>
+              {formState.dodajDostavu ? (
+                <div className='grid gap-3 sm:grid-cols-2'>
+                  <input
+                    value={formState.dostavaOpis}
+                    onChange={(event) =>
+                      setFormState((previous) => ({
+                        ...previous,
+                        dostavaOpis: event.target.value,
+                      }))
+                    }
+                    className='font-body rounded-xl border border-[#2a3734] bg-[#111716] px-4 py-3 outline-none transition focus:border-[#0d9488]'
+                    placeholder='Opis dostave'
+                  />
+                  <input
+                    type='number'
+                    min='0'
+                    step='0.01'
+                    value={formState.dostavaIznos}
+                    onChange={(event) =>
+                      setFormState((previous) => ({
+                        ...previous,
+                        dostavaIznos: event.target.value,
+                      }))
+                    }
+                    className='font-body rounded-xl border border-[#2a3734] bg-[#111716] px-4 py-3 outline-none transition focus:border-[#0d9488]'
+                    placeholder='Iznos (€)'
+                  />
+                </div>
+              ) : null}
+              <div className='font-body space-y-2 text-right text-sm text-[#d5dfdd]'>
+                <p>Međuzbrojak: {formatIznosEurHr(totals.meduzbroj)}</p>
+                <p>Popust: -{formatIznosEurHr(totals.popustIznos)}</p>
+                {formState.dodajDostavu ? (
+                  <p>Dostava: {formatIznosEurHr(totals.dostavaIznos)}</p>
+                ) : null}
+                <p className='text-lg font-semibold text-[#e2e8e7]'>
+                  Ukupno ponuda: {formatIznosEurHr(totals.ukupno)}
+                </p>
+              </div>
+            </div>
           </section>
 
           <label className='block'>

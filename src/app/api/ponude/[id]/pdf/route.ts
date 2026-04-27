@@ -21,7 +21,7 @@ export async function GET(
     supabase
       .from('ponude')
       .select(
-        'id, broj_ponude, datum, datum_valjanosti, kupac_naziv, kupac_oib, kupac_adresa, kupac_email, status, napomena, ukupno',
+        'id, broj_ponude, datum, datum_valjanosti, kupac_naziv, kupac_oib, kupac_adresa, kupac_email, status, popust_racun, rok_placanja, datum_dospijeca, dostava_iznos, dostava_opis, napomena, ukupno',
       )
       .eq('id', params.id)
       .eq('user_id', user.id)
@@ -39,8 +39,18 @@ export async function GET(
 
   const { data: stavke } = await supabase
     .from('ponuda_items')
-    .select('opis, kolicina, jedinicna_cijena, ukupno')
+    .select('opis, kolicina, jedinicna_cijena, popust, ukupno')
     .eq('ponuda_id', ponuda.id);
+  const stavkeZaPdf = (stavke ?? []).map((stavka) => ({
+    opis: stavka.opis,
+    kolicina: Number(stavka.kolicina),
+    jedinicnaCijena: Number(stavka.jedinicna_cijena),
+    popust: Number(stavka.popust ?? 0),
+    ukupno: Number(stavka.ukupno),
+  }));
+  const meduzbroj = stavkeZaPdf.reduce((sum, stavka) => sum + stavka.ukupno, 0);
+  const popustRacun = Number(ponuda.popust_racun ?? 0);
+  const popustRacunIznos = meduzbroj * (popustRacun / 100);
 
   const stream = await renderToStream(
     InvoiceDocument({
@@ -50,7 +60,14 @@ export async function GET(
       datumPlacanja: ponuda.datum_valjanosti,
       status: ponuda.status,
       nacinPlacanja: null,
+      rokPlacanja: ponuda.rok_placanja,
+      datumDospijeca: ponuda.datum_dospijeca,
       ukupniIznos: Number(ponuda.ukupno),
+      meduzbroj,
+      popustRacun,
+      popustRacunIznos,
+      dostavaOpis: ponuda.dostava_opis,
+      dostavaIznos: Number(ponuda.dostava_iznos ?? 0),
       napomena: ponuda.napomena,
       kupacNaziv: ponuda.kupac_naziv,
       kupacOib: ponuda.kupac_oib,
@@ -66,12 +83,7 @@ export async function GET(
         iban: profil?.iban ?? null,
       },
       footerText: 'Ponuda nije fiskalizirani račun. Iznosi su informativni do prihvaćanja ponude.',
-      stavke: (stavke ?? []).map((stavka) => ({
-        opis: stavka.opis,
-        kolicina: Number(stavka.kolicina),
-        jedinicnaCijena: Number(stavka.jedinicna_cijena),
-        ukupno: Number(stavka.ukupno),
-      })),
+      stavke: stavkeZaPdf,
     }),
   );
 

@@ -9,6 +9,14 @@ type OfferPayload = {
   datumValjanosti?: string;
   status: 'poslana' | 'prihvacena' | 'odbijena' | 'istekla';
   napomena?: string;
+  popustRacun?: number;
+  rokPlacanja?: string;
+  datumDospijeca?: string;
+  dostava?: {
+    enabled?: boolean;
+    opis?: string;
+    iznos?: number;
+  };
   kupac: {
     naziv: string;
     oib?: string;
@@ -19,6 +27,7 @@ type OfferPayload = {
     opis: string;
     kolicina: number;
     jedinicnaCijena: number;
+    popust?: number;
   }>;
 };
 
@@ -64,7 +73,18 @@ export async function POST(request: Request) {
     );
   }
 
-  const ukupno = items.reduce((sum, item) => sum + item.ukupno, 0);
+  const popustRacun = Math.min(Math.max(Number(body.popustRacun ?? 0) || 0, 0), 100);
+  const meduzbroj = items.reduce((sum, item) => sum + item.ukupno, 0);
+  const popustRacunIznos = meduzbroj * (popustRacun / 100);
+  const dostavaIznos =
+    body.dostava?.enabled === true
+      ? Math.max(Number(body.dostava.iznos ?? 0) || 0, 0)
+      : 0;
+  const dostavaOpis =
+    body.dostava?.enabled === true
+      ? body.dostava.opis?.trim() || 'Troškovi dostave'
+      : null;
+  const ukupno = Math.max(meduzbroj - popustRacunIznos + dostavaIznos, 0);
   const { data: ponuda, error } = await supabase
     .from('ponude')
     .insert({
@@ -78,6 +98,11 @@ export async function POST(request: Request) {
       kupac_email: body.kupac.email || null,
       status: body.status,
       napomena: body.napomena || null,
+      popust_racun: popustRacun,
+      rok_placanja: body.rokPlacanja || '15 dana',
+      datum_dospijeca: body.datumDospijeca || null,
+      dostava_iznos: dostavaIznos,
+      dostava_opis: dostavaOpis,
       ukupno,
     })
     .select('id, broj_ponude')
@@ -96,6 +121,7 @@ export async function POST(request: Request) {
       opis: item.opis,
       kolicina: item.kolicina,
       jedinicna_cijena: item.jedinicnaCijena,
+      popust: item.popust,
       ukupno: item.ukupno,
     })),
   );

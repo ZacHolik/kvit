@@ -17,6 +17,12 @@ type FormState = {
   dodajBarkodPlacanja: boolean;
   recurring: boolean;
   recurringInterval: 'mjesecno' | 'kvartalno' | 'godisnje';
+  popustRacun: string;
+  rokPlacanja: string;
+  datumDospijeca: string;
+  dodajDostavu: boolean;
+  dostavaOpis: string;
+  dostavaIznos: string;
   napomena: string;
   kupacNaziv: string;
   kupacOib: string;
@@ -29,6 +35,7 @@ type InvoiceItemForm = {
   opis: string;
   kolicina: string;
   jedinicnaCijena: string;
+  popust: string;
 };
 
 type SavedCustomer = {
@@ -61,7 +68,31 @@ function createEmptyItem(): InvoiceItemForm {
     opis: '',
     kolicina: '1',
     jedinicnaCijena: '0',
+    popust: '0',
   };
+}
+
+const PAYMENT_TERMS = [0, 7, 10, 15, 20, 30, 60, 90] as const;
+
+function addDaysToIsoDate(date: string, days: number) {
+  const parsed = new Date(`${date}T00:00:00`);
+  if (Number.isNaN(parsed.getTime())) {
+    return '';
+  }
+  parsed.setDate(parsed.getDate() + days);
+  return parsed.toISOString().slice(0, 10);
+}
+
+function clampPercent(value: string | number) {
+  return Math.min(Math.max(Number(value) || 0, 0), 100);
+}
+
+function calculateItemTotal(item: InvoiceItemForm) {
+  return (
+    (Number(item.kolicina) || 0) *
+    (Number(item.jedinicnaCijena) || 0) *
+    (1 - clampPercent(item.popust) / 100)
+  );
 }
 
 export default function NoviRacunPage() {
@@ -91,6 +122,12 @@ export default function NoviRacunPage() {
     dodajBarkodPlacanja: true,
     recurring: false,
     recurringInterval: 'mjesecno',
+    popustRacun: '0',
+    rokPlacanja: '15 dana',
+    datumDospijeca: addDaysToIsoDate(new Date().toISOString().slice(0, 10), 15),
+    dodajDostavu: false,
+    dostavaOpis: 'Troškovi dostave',
+    dostavaIznos: '0',
     napomena: '',
     kupacNaziv: '',
     kupacOib: '',
@@ -98,14 +135,21 @@ export default function NoviRacunPage() {
     kupacEmail: '',
   });
 
-  const ukupno = useMemo(() => {
-    return items.reduce(
-      (sum, item) =>
-        sum +
-        (Number(item.kolicina) || 0) * (Number(item.jedinicnaCijena) || 0),
-      0,
-    );
-  }, [items]);
+  const totals = useMemo(() => {
+    const meduzbroj = items.reduce((sum, item) => sum + calculateItemTotal(item), 0);
+    const popustPostotak = clampPercent(formState.popustRacun);
+    const popustIznos = meduzbroj * (popustPostotak / 100);
+    const dostavaIznos = formState.dodajDostavu
+      ? Math.max(Number(formState.dostavaIznos) || 0, 0)
+      : 0;
+    return {
+      meduzbroj,
+      popustPostotak,
+      popustIznos,
+      dostavaIznos,
+      ukupno: Math.max(meduzbroj - popustIznos + dostavaIznos, 0),
+    };
+  }, [formState.dodajDostavu, formState.dostavaIznos, formState.popustRacun, items]);
 
   useEffect(() => {
     let cancelled = false;
@@ -304,6 +348,7 @@ export default function NoviRacunPage() {
         opis: item.opis.trim(),
         kolicina: Number(item.kolicina),
         jedinicnaCijena: Number(item.jedinicnaCijena),
+        popust: clampPercent(item.popust),
       }))
       .filter(
         (item) =>
@@ -344,6 +389,14 @@ export default function NoviRacunPage() {
         nacinPlacanja: formState.nacinPlacanja,
         status: formState.status,
         tipRacuna: formState.tipRacuna,
+        popustRacun: totals.popustPostotak,
+        rokPlacanja: formState.rokPlacanja,
+        datumDospijeca: formState.datumDospijeca,
+        dostava: {
+          enabled: formState.dodajDostavu,
+          opis: formState.dostavaOpis,
+          iznos: Number(formState.dostavaIznos) || 0,
+        },
         dodajBarkodPlacanja:
           formState.nacinPlacanja === 'ziro'
             ? formState.dodajBarkodPlacanja
@@ -428,6 +481,10 @@ export default function NoviRacunPage() {
                   setFormState((previous) => ({
                     ...previous,
                     datum: event.target.value,
+                    datumDospijeca: addDaysToIsoDate(
+                      event.target.value,
+                      Number.parseInt(previous.rokPlacanja, 10) || 0,
+                    ),
                   }))
                 }
                 className='font-body w-full rounded-xl border border-[#2a3734] bg-[#0b0f0e] px-4 py-3 outline-none transition focus:border-[#0d9488]'
@@ -525,6 +582,33 @@ export default function NoviRacunPage() {
           </section>
 
           <section className='grid gap-4 sm:grid-cols-2'>
+            <label className='block'>
+              <span className='font-body mb-2 block text-sm text-[#b9c7c4]'>
+                Rok plaćanja
+              </span>
+              <select
+                value={formState.rokPlacanja}
+                onChange={(event) => {
+                  const value = event.target.value;
+                  const days = Number.parseInt(value, 10) || 0;
+                  setFormState((previous) => ({
+                    ...previous,
+                    rokPlacanja: value,
+                    datumDospijeca: addDaysToIsoDate(previous.datum, days),
+                  }));
+                }}
+                className='font-body w-full rounded-xl border border-[#2a3734] bg-[#0b0f0e] px-4 py-3 outline-none transition focus:border-[#0d9488]'
+              >
+                {PAYMENT_TERMS.map((days) => (
+                  <option key={days} value={days === 0 ? 'Odmah' : `${days} dana`}>
+                    {days === 0 ? 'Odmah' : `${days} dana`}
+                  </option>
+                ))}
+              </select>
+              <span className='font-body mt-1 block text-xs text-[#64756f]'>
+                Datum dospijeća: {formState.datumDospijeca || '—'}
+              </span>
+            </label>
             <label className='block'>
               <span className='font-body mb-2 block text-sm text-[#b9c7c4]'>
                 Datum plaćanja
@@ -672,16 +756,16 @@ export default function NoviRacunPage() {
             </div>
 
             {items.map((item, index) => {
-              const itemTotal =
-                (Number(item.kolicina) || 0) *
-                (Number(item.jedinicnaCijena) || 0);
+              const undiscountedTotal =
+                (Number(item.kolicina) || 0) * (Number(item.jedinicnaCijena) || 0);
+              const itemTotal = calculateItemTotal(item);
               const suggestions = articleSuggestions[item.id] ?? [];
               return (
                 <div
                   key={item.id}
                   className='grid gap-3 rounded-2xl border border-[#24312f] bg-[#0b0f0e] p-4 sm:grid-cols-12'
                 >
-                  <label className='relative block sm:col-span-5'>
+                  <label className='relative block sm:col-span-4'>
                     <span className='font-body mb-2 block text-sm text-[#b9c7c4]'>
                       Opis stavke
                     </span>
@@ -750,7 +834,7 @@ export default function NoviRacunPage() {
                   </label>
                   <label className='block sm:col-span-2'>
                     <span className='font-body mb-2 block text-sm text-[#b9c7c4]'>
-                      Jed. cijena
+                      Jed. cijena (€)
                     </span>
                     <input
                       required
@@ -766,6 +850,22 @@ export default function NoviRacunPage() {
                       className='font-body w-full rounded-xl border border-[#2a3734] bg-[#111716] px-4 py-3 outline-none transition focus:border-[#0d9488]'
                     />
                   </label>
+                  <label className='block sm:col-span-1'>
+                    <span className='font-body mb-2 block text-sm text-[#b9c7c4]'>
+                      Popust (%)
+                    </span>
+                    <input
+                      type='number'
+                      min='0'
+                      max='100'
+                      step='0.01'
+                      value={item.popust}
+                      onChange={(event) =>
+                        updateItem(item.id, { popust: event.target.value })
+                      }
+                      className='font-body w-full rounded-xl border border-[#2a3734] bg-[#111716] px-3 py-3 outline-none transition focus:border-[#0d9488]'
+                    />
+                  </label>
                   <div className='flex flex-col justify-end sm:col-span-2'>
                     <span className='font-body mb-2 block text-sm text-[#b9c7c4]'>
                       Ukupno
@@ -773,6 +873,11 @@ export default function NoviRacunPage() {
                     <p className='font-body rounded-xl border border-[#2a3734] bg-[#111716] px-4 py-3 text-sm text-[#d5dfdd]'>
                       {formatIznosEurHr(itemTotal)}
                     </p>
+                    {clampPercent(item.popust) > 0 ? (
+                      <span className='font-body mt-1 text-xs text-[#94a3a0]'>
+                        Prije popusta: {formatIznosEurHr(undiscountedTotal)}
+                      </span>
+                    ) : null}
                   </div>
                   <div className='flex items-end sm:col-span-1'>
                     <button
@@ -789,9 +894,88 @@ export default function NoviRacunPage() {
               );
             })}
 
-            <p className='font-body rounded-xl border border-[#0d9488]/40 bg-[#0d9488]/10 px-4 py-3 text-right text-lg font-semibold text-[#e2e8e7]'>
-              Ukupno račun: {formatIznosEurHr(ukupno)}
-            </p>
+            <div className='space-y-3 rounded-xl border border-[#2a3734] bg-[#0b0f0e] p-4'>
+              <label className='block max-w-xs'>
+                <span className='font-body mb-2 block text-sm text-[#b9c7c4]'>
+                  Popust na cijeli račun (%)
+                </span>
+                <input
+                  type='number'
+                  min='0'
+                  max='100'
+                  step='0.01'
+                  value={formState.popustRacun}
+                  onChange={(event) =>
+                    setFormState((previous) => ({
+                      ...previous,
+                      popustRacun: event.target.value,
+                    }))
+                  }
+                  className='font-body w-full rounded-xl border border-[#2a3734] bg-[#111716] px-4 py-3 outline-none transition focus:border-[#0d9488]'
+                />
+              </label>
+              <label className='font-body flex items-center gap-3 text-sm text-[#d5dfdd]'>
+                <input
+                  type='checkbox'
+                  checked={formState.dodajDostavu}
+                  onChange={(event) =>
+                    setFormState((previous) => ({
+                      ...previous,
+                      dodajDostavu: event.target.checked,
+                    }))
+                  }
+                  className='h-4 w-4 accent-[#0d9488]'
+                />
+                Dodaj trošak dostave/prijevoza
+              </label>
+              {formState.dodajDostavu ? (
+                <div className='grid gap-3 sm:grid-cols-2'>
+                  <label className='block'>
+                    <span className='font-body mb-2 block text-sm text-[#b9c7c4]'>
+                      Opis dostave
+                    </span>
+                    <input
+                      value={formState.dostavaOpis}
+                      onChange={(event) =>
+                        setFormState((previous) => ({
+                          ...previous,
+                          dostavaOpis: event.target.value,
+                        }))
+                      }
+                      className='font-body w-full rounded-xl border border-[#2a3734] bg-[#111716] px-4 py-3 outline-none transition focus:border-[#0d9488]'
+                    />
+                  </label>
+                  <label className='block'>
+                    <span className='font-body mb-2 block text-sm text-[#b9c7c4]'>
+                      Iznos (€)
+                    </span>
+                    <input
+                      type='number'
+                      min='0'
+                      step='0.01'
+                      value={formState.dostavaIznos}
+                      onChange={(event) =>
+                        setFormState((previous) => ({
+                          ...previous,
+                          dostavaIznos: event.target.value,
+                        }))
+                      }
+                      className='font-body w-full rounded-xl border border-[#2a3734] bg-[#111716] px-4 py-3 outline-none transition focus:border-[#0d9488]'
+                    />
+                  </label>
+                </div>
+              ) : null}
+              <div className='font-body space-y-2 text-right text-sm text-[#d5dfdd]'>
+                <p>Međuzbrojak: {formatIznosEurHr(totals.meduzbroj)}</p>
+                <p>Popust: -{formatIznosEurHr(totals.popustIznos)}</p>
+                {formState.dodajDostavu ? (
+                  <p>Dostava: {formatIznosEurHr(totals.dostavaIznos)}</p>
+                ) : null}
+                <p className='text-lg font-semibold text-[#e2e8e7]'>
+                  Ukupno račun: {formatIznosEurHr(totals.ukupno)}
+                </p>
+              </div>
+            </div>
           </section>
 
           <label className='block'>
@@ -932,9 +1116,7 @@ export default function NoviRacunPage() {
                   </thead>
                   <tbody>
                     {items.map((item) => {
-                      const itemTotal =
-                        (Number(item.kolicina) || 0) *
-                        (Number(item.jedinicnaCijena) || 0);
+                      const itemTotal = calculateItemTotal(item);
                       return (
                         <tr key={item.id} className='border-b border-gray-300'>
                           <td className='py-2 pr-3'>{item.opis || '—'}</td>
@@ -953,9 +1135,16 @@ export default function NoviRacunPage() {
                   </tbody>
                 </table>
 
-                <p className='mt-6 border-t border-black pt-4 text-right text-lg font-bold'>
-                  UKUPNO: {formatIznosEurHr(ukupno)}
-                </p>
+                <div className='mt-6 space-y-1 border-t border-black pt-4 text-right text-sm'>
+                  <p>Međuzbrojak: {formatIznosEurHr(totals.meduzbroj)}</p>
+                  <p>Popust: -{formatIznosEurHr(totals.popustIznos)}</p>
+                  {formState.dodajDostavu ? (
+                    <p>Dostava: {formatIznosEurHr(totals.dostavaIznos)}</p>
+                  ) : null}
+                  <p className='text-lg font-bold'>
+                    UKUPNO: {formatIznosEurHr(totals.ukupno)}
+                  </p>
+                </div>
                 {formState.napomena ? (
                   <p className='mt-4 text-sm'>Napomena: {formState.napomena}</p>
                 ) : null}

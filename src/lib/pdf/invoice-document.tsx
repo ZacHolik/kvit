@@ -134,13 +134,19 @@ const styles = StyleSheet.create({
   },
   colJed: {
     fontFamily: FF,
-    width: '24%',
+    width: '19%',
+    fontSize: 9,
+    textAlign: 'right',
+  },
+  colPopust: {
+    fontFamily: FF,
+    width: '13%',
     fontSize: 9,
     textAlign: 'right',
   },
   colUkupno: {
     fontFamily: FF,
-    width: '24%',
+    width: '19%',
     fontSize: 9,
     textAlign: 'right',
   },
@@ -169,6 +175,40 @@ const styles = StyleSheet.create({
     fontSize: 11,
     fontWeight: 'bold',
     minWidth: 72,
+    textAlign: 'right',
+  },
+  summaryWrap: {
+    marginTop: 14,
+    paddingTop: 10,
+    borderTopWidth: 1,
+    borderTopColor: '#000',
+    alignSelf: 'flex-end',
+    width: 260,
+  },
+  summaryRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 5,
+  },
+  summaryLabel: {
+    fontFamily: FF,
+    fontSize: 9,
+    color: '#333',
+  },
+  summaryValue: {
+    fontFamily: FF,
+    fontSize: 9,
+    textAlign: 'right',
+  },
+  summaryTotalLabel: {
+    fontFamily: FF,
+    fontSize: 11,
+    fontWeight: 'bold',
+  },
+  summaryTotalValue: {
+    fontFamily: FF,
+    fontSize: 11,
+    fontWeight: 'bold',
     textAlign: 'right',
   },
   barcodeWrap: {
@@ -227,7 +267,14 @@ export type InvoicePdfData = {
   status: string;
   nacinPlacanja: string | null;
   tipRacuna?: string | null;
+  rokPlacanja?: string | null;
+  datumDospijeca?: string | null;
   ukupniIznos: number;
+  meduzbroj?: number;
+  popustRacun?: number;
+  popustRacunIznos?: number;
+  dostavaOpis?: string | null;
+  dostavaIznos?: number;
   napomena: string | null;
   kupacNaziv: string;
   kupacOib: string | null;
@@ -247,6 +294,7 @@ export type InvoicePdfData = {
     opis: string;
     kolicina: number;
     jedinicnaCijena: number;
+    popust?: number;
     ukupno: number;
   }>;
 };
@@ -298,7 +346,14 @@ export function InvoiceDocument({
   status,
   nacinPlacanja,
   tipRacuna,
+  rokPlacanja,
+  datumDospijeca,
   ukupniIznos,
+  meduzbroj = ukupniIznos,
+  popustRacun = 0,
+  popustRacunIznos = 0,
+  dostavaOpis,
+  dostavaIznos = 0,
   napomena,
   kupacNaziv,
   kupacOib,
@@ -312,6 +367,11 @@ export function InvoiceDocument({
   const brojZaPrikaz = formatBrojRacunaZaPdf(brojRacuna);
   const ibanZaPrikaz = profil.iban?.replace(/\s/g, '').trim();
   const issuerLines = issuerAddressLines(profil);
+  const hasAnyItemDiscount = stavke.some((stavka) => Number(stavka.popust ?? 0) > 0);
+  const hasSummaryDetails =
+    Math.abs(meduzbroj - ukupniIznos) > 0.004 ||
+    popustRacunIznos > 0 ||
+    dostavaIznos > 0;
 
   return (
     <Document>
@@ -359,6 +419,14 @@ export function InvoiceDocument({
               Datum plaćanja: {formatDatumHr(datumPlacanja)}
             </Text>
           ) : null}
+          {rokPlacanja ? (
+            <Text style={styles.metaItem}>Rok plaćanja: {rokPlacanja}</Text>
+          ) : null}
+          {datumDospijeca ? (
+            <Text style={styles.metaItem}>
+              Datum dospijeća: {formatDatumHr(datumDospijeca)}
+            </Text>
+          ) : null}
         </View>
 
         {/* Stavke — tablica */}
@@ -366,6 +434,7 @@ export function InvoiceDocument({
           <Text style={[styles.colOpis, styles.th]}>Opis</Text>
           <Text style={[styles.colKol, styles.th]}>Količina</Text>
           <Text style={[styles.colJed, styles.th]}>Jed. cijena</Text>
+          <Text style={[styles.colPopust, styles.th]}>Popust</Text>
           <Text style={[styles.colUkupno, styles.th]}>Ukupno</Text>
         </View>
         {stavke.map((stavka, index) => (
@@ -375,17 +444,48 @@ export function InvoiceDocument({
             <Text style={styles.colJed}>
               {formatIznosEurHr(stavka.jedinicnaCijena)}
             </Text>
+            <Text style={styles.colPopust}>
+              {Number(stavka.popust ?? 0) > 0
+                ? `-${Number(stavka.popust).toFixed(0)}%`
+                : hasAnyItemDiscount
+                  ? '—'
+                  : '0%'}
+            </Text>
             <Text style={styles.colUkupno}>
               {formatIznosEurHr(stavka.ukupno)}
             </Text>
           </View>
         ))}
 
-        <View style={styles.totalWrap}>
-          <Text style={styles.totalLabel}>UKUPNO</Text>
-          <Text style={styles.totalValue}>
-            {formatIznosEurHr(ukupniIznos)}
-          </Text>
+        <View style={styles.summaryWrap}>
+          {hasSummaryDetails ? (
+            <View style={styles.summaryRow}>
+              <Text style={styles.summaryLabel}>Međuzbrojak:</Text>
+              <Text style={styles.summaryValue}>{formatIznosEurHr(meduzbroj)}</Text>
+            </View>
+          ) : null}
+          {popustRacunIznos > 0 ? (
+            <View style={styles.summaryRow}>
+              <Text style={styles.summaryLabel}>
+                Popust ({Number(popustRacun).toFixed(0)}%):
+              </Text>
+              <Text style={styles.summaryValue}>
+                -{formatIznosEurHr(popustRacunIznos)}
+              </Text>
+            </View>
+          ) : null}
+          {dostavaIznos > 0 ? (
+            <View style={styles.summaryRow}>
+              <Text style={styles.summaryLabel}>{dostavaOpis || 'Dostava'}:</Text>
+              <Text style={styles.summaryValue}>{formatIznosEurHr(dostavaIznos)}</Text>
+            </View>
+          ) : null}
+          <View style={styles.summaryRow}>
+            <Text style={styles.summaryTotalLabel}>UKUPNO ZA PLATITI:</Text>
+            <Text style={styles.summaryTotalValue}>
+              {formatIznosEurHr(ukupniIznos)}
+            </Text>
+          </View>
         </View>
 
         {paymentBarcode ? (

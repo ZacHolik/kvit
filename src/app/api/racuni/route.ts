@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 
+import { normalizeDocumentItems } from '@/lib/invoice-normalize';
 import { opisAutomatskogKprUnosaZaRacun } from '@/lib/kpr-export';
 import { createClient } from '@/lib/supabase/server';
 
@@ -14,6 +15,14 @@ type InvoicePayload = {
   dodajBarkodPlacanja?: boolean;
   recurring?: boolean;
   recurringInterval?: 'mjesecno' | 'kvartalno' | 'godisnje';
+  popustRacun?: number;
+  rokPlacanja?: string;
+  datumDospijeca?: string;
+  dostava?: {
+    enabled?: boolean;
+    opis?: string;
+    iznos?: number;
+  };
   kupac: {
     naziv: string;
     oib?: string;
@@ -24,54 +33,21 @@ type InvoicePayload = {
     opis: string;
     kolicina: number;
     jedinicnaCijena: number;
+    popust?: number;
   }>;
   /** Backward compatibility for any older clients still sending one row. */
   stavka?: {
     opis: string;
     kolicina: number;
     jedinicnaCijena: number;
+    popust?: number;
   };
 };
-
-type NormalizedItem = {
-  opis: string;
-  kolicina: number;
-  jedinicnaCijena: number;
-  ukupno: number;
-};
-
-function normalizeItems(body: InvoicePayload): NormalizedItem[] {
-  const rawItems = Array.isArray(body.items)
-    ? body.items
-    : body.stavka
-      ? [body.stavka]
-      : [];
-
-  return rawItems
-    .map((item) => {
-      const kolicina = Number(item.kolicina);
-      const jedinicnaCijena = Number(item.jedinicnaCijena);
-      return {
-        opis: item.opis?.trim() ?? '',
-        kolicina,
-        jedinicnaCijena,
-        ukupno: kolicina * jedinicnaCijena,
-      };
-    })
-    .filter(
-      (item) =>
-        item.opis.length > 0 &&
-        Number.isFinite(item.kolicina) &&
-        item.kolicina > 0 &&
-        Number.isFinite(item.jedinicnaCijena) &&
-        item.jedinicnaCijena >= 0,
-    );
-}
 
 async function upsertCatalogItem(
   supabase: ReturnType<typeof createClient>,
   userId: string,
-  item: NormalizedItem,
+  item: ReturnType<typeof normalizeDocumentItems>[number],
 ) {
   const { data: existing } = await supabase
     .from('artikli')
@@ -108,7 +84,9 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
-  const items = normalizeItems(body);
+  const items = normalizeDocumentItems(
+    Array.isArray(body.items) ? body.items : body.stavka ? [body.stavka] : [],
+  );
   if (items.length === 0) {
     return NextResponse.json(
       { error: 'Dodaj barem jednu ispravnu stavku računa.' },
@@ -145,7 +123,18 @@ export async function POST(request: Request) {
     );
   }
 
-  const ukupno = items.reduce((sum, item) => sum + item.ukupno, 0);
+  const popustRacun = Math.min(Math.max(Number(body.popustRacun ?? 0) || 0, 0), 100);
+  const meduzbroj = items.reduce((sum, item) => sum + item.ukupno, 0);
+  const popustRacunIznos = meduzbroj * (popustRacun / 100);
+  const dostavaIznos =
+    body.dostava?.enabled === true
+      ? Math.max(Number(body.dostava.iznos ?? 0) || 0, 0)
+      : 0;
+  const dostavaOpis =
+    body.dostava?.enabled === true
+      ? body.dostava.opis?.trim() || 'Troškovi dostave'
+      : null;
+  const ukupno = Math.max(meduzbroj - popustRacunIznos + dostavaIznos, 0);
 
   const { data: existingKupac } = await supabase
     .from('kupci')
@@ -195,6 +184,11 @@ export async function POST(request: Request) {
       ukupni_iznos: ukupno,
       status: body.status,
       tip_racuna: tipRacuna,
+      popust_racun: popustRacun,
+      rok_placanja: body.rokPlacanja || '15 dana',
+      datum_dospijeca: body.datumDospijeca || null,
+      dostava_iznos: dostavaIznos,
+      dostava_opis: dostavaOpis,
       napomena: body.napomena || null,
       recurring,
       recurring_interval: recurringInterval,
@@ -216,6 +210,7 @@ export async function POST(request: Request) {
       opis: item.opis,
       kolicina: item.kolicina,
       jedinicna_cijena: item.jedinicnaCijena,
+      popust: item.popust,
       ukupno: item.ukupno,
     })),
   );
