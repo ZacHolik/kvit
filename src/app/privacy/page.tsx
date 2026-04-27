@@ -2,9 +2,9 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 
 export const metadata: Metadata = {
-  title: 'Politika privatnosti | Kvit',
+  title: 'Politika privatnosti | Kvik',
   description:
-    'Politika privatnosti za Kvit aplikaciju: obrada osobnih podataka, kolačići, zadržavanje podataka i GDPR prava korisnika.',
+    'Politika privatnosti za Kvik aplikaciju: obrada osobnih podataka, kolačići, zadržavanje podataka i GDPR prava korisnika.',
 };
 
 const updatedAt = '27. travnja 2026.';

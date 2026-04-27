@@ -2,9 +2,9 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 
 export const metadata: Metadata = {
-  title: 'Uvjeti korištenja | Kvit',
+  title: 'Uvjeti korištenja | Kvik',
   description:
-    'Uvjeti korištenja Kvit aplikacije: korisnički račun, dopuštena upotreba, pretplate, fiskalizacija, odgovornost i raskid.',
+    'Uvjeti korištenja Kvik aplikacije: korisnički račun, dopuštena upotreba, pretplate, fiskalizacija, odgovornost i raskid.',
 };
 
 const updatedAt = '27. travnja 2026.';

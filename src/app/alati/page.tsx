@@ -19,10 +19,10 @@ export const metadata: Metadata = {
     'alati obrt',
   ],
   openGraph: {
-    title: 'Alati za paušalne obrtnike | Kvit',
+    title: 'Alati za paušalne obrtnike | Kvik',
     description: META_DESC,
     url: `${getSiteUrl()}/alati`,
-    siteName: 'Kvit',
+    siteName: 'Kvik',
     locale: 'hr_HR',
     type: 'website',
   },
@@ -121,7 +121,7 @@ export default function AlatiIndexPage() {
   const navLd = {
     '@context': 'https://schema.org',
     '@type': 'SiteNavigationElement',
-    name: 'Alati Kvit',
+    name: 'Alati Kvik',
     url: `${base}/alati`,
     hasPart: TOOLS.map((t) => ({
       '@type': 'WebPage',
