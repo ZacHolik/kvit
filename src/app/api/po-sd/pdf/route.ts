@@ -11,6 +11,21 @@ import {
 } from '@/lib/po-sd-data';
 import { createClient } from '@/lib/supabase/server';
 
+function joinAddress(
+  street?: string | null,
+  postalCode?: string | null,
+  city?: string | null,
+  fallback?: string | null,
+) {
+  const structured = [
+    street?.trim(),
+    [postalCode?.trim(), city?.trim()].filter(Boolean).join(' '),
+  ]
+    .filter(Boolean)
+    .join(', ');
+  return structured || fallback || null;
+}
+
 export async function GET(request: Request) {
   const supabase = createClient();
   const {
@@ -27,7 +42,9 @@ export async function GET(request: Request) {
   const [{ data: profil }, kprZbroj] = await Promise.all([
     supabase
       .from('profiles')
-      .select('naziv_obrta, oib, adresa, opcina, sifra_opcine, godisnji_primici_prosle_godine')
+      .select(
+        'naziv_obrta, oib, adresa, ulica, postanski_broj, grad, opcina, sifra_opcine, vlasnik_ime, vlasnik_ulica, vlasnik_postanski_broj, vlasnik_grad, vlasnik_sifra_opcine, adresa_ista, godisnji_primici_prosle_godine',
+      )
       .eq('id', user.id)
       .maybeSingle(),
     zbrojiKprZaGodinu(supabase, user.id, godina),
@@ -40,14 +57,34 @@ export async function GET(request: Request) {
   );
 
   const razred = getPausalRazred2026(zbroj.ukupno);
-  const opcina = findOpcinaBySifra(profil?.sifra_opcine);
+  const useBusinessAddress = profil?.adresa_ista !== false;
+  const businessAddress = joinAddress(
+    profil?.ulica,
+    profil?.postanski_broj,
+    profil?.grad,
+    profil?.adresa,
+  );
+  const ownerAddress = useBusinessAddress
+    ? businessAddress
+    : joinAddress(
+        profil?.vlasnik_ulica,
+        profil?.vlasnik_postanski_broj,
+        profil?.vlasnik_grad,
+        businessAddress,
+      );
+  const poSdSifraOpcine = useBusinessAddress
+    ? profil?.sifra_opcine
+    : (profil?.vlasnik_sifra_opcine ?? profil?.sifra_opcine);
+  const opcina = findOpcinaBySifra(poSdSifraOpcine);
   const doc = PoSdDocument({
     godina,
     nazivObrta: profil?.naziv_obrta ?? '—',
+    vlasnikIme: profil?.vlasnik_ime ?? null,
     oib: profil?.oib ?? '—',
-    adresa: profil?.adresa ?? null,
-    sifraOpcine: profil?.sifra_opcine ?? null,
-    nazivOpcine: opcina?.naziv ?? profil?.opcina ?? null,
+    adresa: ownerAddress,
+    poslovnaAdresa: businessAddress,
+    sifraOpcine: poSdSifraOpcine ?? null,
+    nazivOpcine: opcina?.naziv ?? (useBusinessAddress ? profil?.opcina : null),
     gotovina: zbroj.gotovina,
     bezgotovinsko: zbroj.bezgotovinsko,
     ukupnoPrimici: zbroj.ukupno,

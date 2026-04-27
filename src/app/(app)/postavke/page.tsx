@@ -14,6 +14,14 @@ type ProfileForm = {
   grad: string;
   opcina: string;
   sifraOpcine: string;
+  adresaIsta: boolean;
+  vlasnikIme: string;
+  vlasnikUlica: string;
+  vlasnikPostanskiBroj: string;
+  vlasnikGrad: string;
+  vlasnikOpcina: string;
+  vlasnikSifraOpcine: string;
+  vlasnikIspostavaPu: string;
   jeJedinaDjelatnost: boolean;
   godisnjiPrimiciProsleGodine: string;
   ispostavaPorezne: string;
@@ -28,6 +36,14 @@ const EMPTY_FORM: ProfileForm = {
   grad: '',
   opcina: '',
   sifraOpcine: '',
+  adresaIsta: true,
+  vlasnikIme: '',
+  vlasnikUlica: '',
+  vlasnikPostanskiBroj: '',
+  vlasnikGrad: '',
+  vlasnikOpcina: '',
+  vlasnikSifraOpcine: '',
+  vlasnikIspostavaPu: '',
   jeJedinaDjelatnost: true,
   godisnjiPrimiciProsleGodine: '0',
   ispostavaPorezne: '',
@@ -49,6 +65,7 @@ export default function PostavkePage() {
   const supabase = useMemo(() => createClient(), []);
   const [form, setForm] = useState<ProfileForm>(EMPTY_FORM);
   const [municipalityQuery, setMunicipalityQuery] = useState('');
+  const [ownerMunicipalityQuery, setOwnerMunicipalityQuery] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [toast, setToast] = useState<{ type: 'success' | 'error'; message: string } | null>(
@@ -75,7 +92,7 @@ export default function PostavkePage() {
       const { data, error } = await supabase
         .from('profiles')
         .select(
-          'naziv_obrta, oib, iban, adresa, ulica, postanski_broj, grad, opcina, sifra_opcine, je_jedina_djelatnost, godisnji_primici_prosle_godine, ispostava_porezne',
+          'naziv_obrta, oib, iban, adresa, ulica, postanski_broj, grad, opcina, sifra_opcine, vlasnik_ime, vlasnik_ulica, vlasnik_postanski_broj, vlasnik_grad, vlasnik_sifra_opcine, vlasnik_ispostava_pu, adresa_ista, je_jedina_djelatnost, godisnji_primici_prosle_godine, ispostava_porezne',
         )
         .eq('id', user.id)
         .maybeSingle();
@@ -92,6 +109,10 @@ export default function PostavkePage() {
         (opcina) => opcina.sifra === data?.sifra_opcine,
       );
       const opcinaNaziv = selectedOpcina?.naziv ?? data?.opcina ?? '';
+      const selectedOwnerOpcina = OPCINE.find(
+        (opcina) => opcina.sifra === data?.vlasnik_sifra_opcine,
+      );
+      const ownerOpcinaNaziv = selectedOwnerOpcina?.naziv ?? '';
 
       setForm({
         nazivObrta: data?.naziv_obrta ?? '',
@@ -102,6 +123,14 @@ export default function PostavkePage() {
         grad: data?.grad ?? '',
         opcina: opcinaNaziv,
         sifraOpcine: data?.sifra_opcine ?? selectedOpcina?.sifra ?? '',
+        adresaIsta: data?.adresa_ista ?? true,
+        vlasnikIme: data?.vlasnik_ime ?? '',
+        vlasnikUlica: data?.vlasnik_ulica ?? '',
+        vlasnikPostanskiBroj: data?.vlasnik_postanski_broj ?? '',
+        vlasnikGrad: data?.vlasnik_grad ?? '',
+        vlasnikOpcina: ownerOpcinaNaziv,
+        vlasnikSifraOpcine: data?.vlasnik_sifra_opcine ?? selectedOwnerOpcina?.sifra ?? '',
+        vlasnikIspostavaPu: data?.vlasnik_ispostava_pu ?? '',
         jeJedinaDjelatnost: data?.je_jedina_djelatnost ?? true,
         godisnjiPrimiciProsleGodine: String(
           data?.godisnji_primici_prosle_godine ?? 0,
@@ -109,6 +138,7 @@ export default function PostavkePage() {
         ispostavaPorezne: data?.ispostava_porezne ?? '',
       });
       setMunicipalityQuery(opcinaNaziv);
+      setOwnerMunicipalityQuery(ownerOpcinaNaziv);
       setIsLoading(false);
     }
 
@@ -130,6 +160,17 @@ export default function PostavkePage() {
     ).slice(0, 25);
   }, [municipalityQuery]);
 
+  const filteredOwnerOpcine = useMemo(() => {
+    const q = ownerMunicipalityQuery.trim().toLocaleLowerCase();
+    if (q.length === 0) {
+      return OPCINE.slice(0, 25);
+    }
+    return OPCINE.filter(
+      (opcina) =>
+        opcina.naziv.toLocaleLowerCase().includes(q) || opcina.sifra.includes(q),
+    ).slice(0, 25);
+  }, [ownerMunicipalityQuery]);
+
   function selectOpcina(opcina: Opcina) {
     setForm((previous) => ({
       ...previous,
@@ -137,6 +178,15 @@ export default function PostavkePage() {
       sifraOpcine: opcina.sifra,
     }));
     setMunicipalityQuery(opcina.naziv);
+  }
+
+  function selectOwnerOpcina(opcina: Opcina) {
+    setForm((previous) => ({
+      ...previous,
+      vlasnikOpcina: opcina.naziv,
+      vlasnikSifraOpcine: opcina.sifra,
+    }));
+    setOwnerMunicipalityQuery(opcina.naziv);
   }
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -154,6 +204,17 @@ export default function PostavkePage() {
     }
     if (form.postanskiBroj.trim() && !/^\d{5}$/.test(form.postanskiBroj.trim())) {
       setToast({ type: 'error', message: 'Poštanski broj mora imati 5 znamenki.' });
+      return;
+    }
+    if (
+      !form.adresaIsta &&
+      form.vlasnikPostanskiBroj.trim() &&
+      !/^\d{5}$/.test(form.vlasnikPostanskiBroj.trim())
+    ) {
+      setToast({
+        type: 'error',
+        message: 'Poštanski broj prebivališta mora imati 5 znamenki.',
+      });
       return;
     }
 
@@ -181,6 +242,19 @@ export default function PostavkePage() {
         grad: form.grad.trim() || null,
         opcina: form.opcina.trim() || null,
         sifra_opcine: form.sifraOpcine.trim() || null,
+        vlasnik_ime: form.adresaIsta ? null : form.vlasnikIme.trim() || null,
+        vlasnik_ulica: form.adresaIsta ? null : form.vlasnikUlica.trim() || null,
+        vlasnik_postanski_broj: form.adresaIsta
+          ? null
+          : form.vlasnikPostanskiBroj.trim() || null,
+        vlasnik_grad: form.adresaIsta ? null : form.vlasnikGrad.trim() || null,
+        vlasnik_sifra_opcine: form.adresaIsta
+          ? null
+          : form.vlasnikSifraOpcine.trim() || null,
+        vlasnik_ispostava_pu: form.adresaIsta
+          ? null
+          : form.vlasnikIspostavaPu.trim() || null,
+        adresa_ista: form.adresaIsta,
         je_jedina_djelatnost: form.jeJedinaDjelatnost,
         godisnji_primici_prosle_godine: Number(
           form.godisnjiPrimiciProsleGodine || 0,
@@ -364,6 +438,150 @@ export default function PostavkePage() {
                   />
                 </label>
               </div>
+            </section>
+
+            <section className='space-y-4'>
+              <h2 className='font-heading text-lg'>Prebivalište vlasnika</h2>
+              <label className='font-body flex items-center gap-3 rounded-xl border border-[#2a3734] bg-[#0b0f0e] p-4 text-sm text-[#d5dfdd]'>
+                <input
+                  type='checkbox'
+                  checked={form.adresaIsta}
+                  onChange={(event) =>
+                    setForm((previous) => ({
+                      ...previous,
+                      adresaIsta: event.target.checked,
+                    }))
+                  }
+                  className='h-4 w-4 accent-[#0d9488]'
+                />
+                Adresa prebivališta ista kao sjedište obrta
+              </label>
+
+              {!form.adresaIsta ? (
+                <div className='grid gap-4 sm:grid-cols-2'>
+                  <label className='block sm:col-span-2'>
+                    <span className='font-body mb-2 block text-sm text-[#b9c7c4]'>
+                      Ime i prezime vlasnika
+                    </span>
+                    <input
+                      value={form.vlasnikIme}
+                      onChange={(event) =>
+                        setForm((previous) => ({
+                          ...previous,
+                          vlasnikIme: event.target.value,
+                        }))
+                      }
+                      className='font-body w-full rounded-xl border border-[#2a3734] bg-[#0b0f0e] px-4 py-3 outline-none transition focus:border-[#0d9488]'
+                    />
+                  </label>
+                  <label className='block sm:col-span-2'>
+                    <span className='font-body mb-2 block text-sm text-[#b9c7c4]'>
+                      Ulica i kućni broj
+                    </span>
+                    <input
+                      value={form.vlasnikUlica}
+                      onChange={(event) =>
+                        setForm((previous) => ({
+                          ...previous,
+                          vlasnikUlica: event.target.value,
+                        }))
+                      }
+                      className='font-body w-full rounded-xl border border-[#2a3734] bg-[#0b0f0e] px-4 py-3 outline-none transition focus:border-[#0d9488]'
+                    />
+                  </label>
+                  <label className='block'>
+                    <span className='font-body mb-2 block text-sm text-[#b9c7c4]'>
+                      Poštanski broj
+                    </span>
+                    <input
+                      inputMode='numeric'
+                      value={form.vlasnikPostanskiBroj}
+                      onChange={(event) =>
+                        setForm((previous) => ({
+                          ...previous,
+                          vlasnikPostanskiBroj: event.target.value,
+                        }))
+                      }
+                      className='font-body w-full rounded-xl border border-[#2a3734] bg-[#0b0f0e] px-4 py-3 outline-none transition focus:border-[#0d9488]'
+                    />
+                  </label>
+                  <label className='block'>
+                    <span className='font-body mb-2 block text-sm text-[#b9c7c4]'>
+                      Grad/Mjesto
+                    </span>
+                    <input
+                      value={form.vlasnikGrad}
+                      onChange={(event) =>
+                        setForm((previous) => ({
+                          ...previous,
+                          vlasnikGrad: event.target.value,
+                        }))
+                      }
+                      className='font-body w-full rounded-xl border border-[#2a3734] bg-[#0b0f0e] px-4 py-3 outline-none transition focus:border-[#0d9488]'
+                    />
+                  </label>
+                  <label className='relative block'>
+                    <span className='font-body mb-2 block text-sm text-[#b9c7c4]'>
+                      Općina
+                    </span>
+                    <input
+                      value={ownerMunicipalityQuery}
+                      onChange={(event) => {
+                        setOwnerMunicipalityQuery(event.target.value);
+                        setForm((previous) => ({
+                          ...previous,
+                          vlasnikOpcina: event.target.value,
+                          vlasnikSifraOpcine: '',
+                        }));
+                      }}
+                      className='font-body w-full rounded-xl border border-[#2a3734] bg-[#0b0f0e] px-4 py-3 outline-none transition focus:border-[#0d9488]'
+                      placeholder='Počni tipkati naziv ili šifru...'
+                    />
+                    {ownerMunicipalityQuery ? (
+                      <div className='absolute left-0 right-0 top-full z-20 mt-2 max-h-60 overflow-y-auto rounded-xl border border-[#2a3734] bg-[#111716] shadow-xl shadow-black/30'>
+                        {filteredOwnerOpcine.map((opcina) => (
+                          <button
+                            key={opcina.sifra}
+                            type='button'
+                            onClick={() => selectOwnerOpcina(opcina)}
+                            className='flex w-full items-center justify-between gap-3 px-4 py-3 text-left text-sm text-[#d5dfdd] transition hover:bg-[#1f2a28]'
+                          >
+                            <span>{opcina.naziv}</span>
+                            <span className='font-semibold text-[#5eead4]'>
+                              {opcina.sifra}
+                            </span>
+                          </button>
+                        ))}
+                      </div>
+                    ) : null}
+                  </label>
+                  <label className='block'>
+                    <span className='font-body mb-2 block text-sm text-[#b9c7c4]'>
+                      Šifra općine
+                    </span>
+                    <input
+                      readOnly
+                      value={form.vlasnikSifraOpcine}
+                      className='font-body w-full rounded-xl border border-[#2a3734] bg-[#0b0f0e] px-4 py-3 text-[#94a3a0] outline-none'
+                    />
+                  </label>
+                  <label className='block sm:col-span-2'>
+                    <span className='font-body mb-2 block text-sm text-[#b9c7c4]'>
+                      Ispostava Porezne uprave
+                    </span>
+                    <input
+                      value={form.vlasnikIspostavaPu}
+                      onChange={(event) =>
+                        setForm((previous) => ({
+                          ...previous,
+                          vlasnikIspostavaPu: event.target.value,
+                        }))
+                      }
+                      className='font-body w-full rounded-xl border border-[#2a3734] bg-[#0b0f0e] px-4 py-3 outline-none transition focus:border-[#0d9488]'
+                    />
+                  </label>
+                </div>
+              ) : null}
             </section>
 
             <section className='space-y-4'>

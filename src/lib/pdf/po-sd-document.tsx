@@ -93,8 +93,10 @@ const styles = StyleSheet.create({
 export type PoSdPdfPayload = {
   godina: number;
   nazivObrta: string;
+  vlasnikIme?: string | null;
   oib: string;
   adresa: string | null;
+  poslovnaAdresa?: string | null;
   sifraOpcine?: string | null;
   nazivOpcine?: string | null;
   gotovina: number;
@@ -109,8 +111,10 @@ export type PoSdPdfPayload = {
 export function PoSdDocument({
   godina,
   nazivObrta,
+  vlasnikIme,
   oib,
   adresa,
+  poslovnaAdresa,
   sifraOpcine,
   nazivOpcine,
   gotovina,
@@ -142,16 +146,29 @@ export function PoSdDocument({
             <Text style={styles.valueCell}>{nazivObrta || '—'}</Text>
           </View>
           <View style={styles.row}>
+            <Text style={styles.labelCell}>Ime i prezime vlasnika</Text>
+            <Text style={styles.valueCell}>{vlasnikIme?.trim() || '—'}</Text>
+          </View>
+          <View style={styles.row}>
             <Text style={styles.labelCell}>OIB</Text>
             <Text style={styles.valueCell}>{oib || '—'}</Text>
           </View>
           <View style={styles.row}>
-            <Text style={styles.labelCell}>Sjedište / adresa</Text>
+            <Text style={styles.labelCell}>Prebivalište / adresa za PO-SD</Text>
             <Text
               style={styles.valueCell}
               hyphenationCallback={noHyphenation}
             >
               {adresa?.trim() ? adresa.trim() : '—'}
+            </Text>
+          </View>
+          <View style={styles.row}>
+            <Text style={styles.labelCell}>Sjedište obrta</Text>
+            <Text
+              style={styles.valueCell}
+              hyphenationCallback={noHyphenation}
+            >
+              {poslovnaAdresa?.trim() ? poslovnaAdresa.trim() : '—'}
             </Text>
           </View>
           <View style={styles.rowLast}>

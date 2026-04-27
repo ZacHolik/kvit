@@ -11,6 +11,21 @@ import {
 } from '@/lib/po-sd-data';
 import { createClient } from '@/lib/supabase/server';
 
+function joinAddress(
+  street?: string | null,
+  postalCode?: string | null,
+  city?: string | null,
+  fallback?: string | null,
+) {
+  const structured = [
+    street?.trim(),
+    [postalCode?.trim(), city?.trim()].filter(Boolean).join(' '),
+  ]
+    .filter(Boolean)
+    .join(', ');
+  return structured || fallback || null;
+}
+
 export default async function PoSdPage({
   searchParams,
 }: {
@@ -30,7 +45,9 @@ export default async function PoSdPage({
   const [{ data: profil }, kprZbroj] = await Promise.all([
     supabase
       .from('profiles')
-      .select('naziv_obrta, oib, adresa, opcina, sifra_opcine, godisnji_primici_prosle_godine')
+      .select(
+        'naziv_obrta, oib, adresa, ulica, postanski_broj, grad, opcina, sifra_opcine, vlasnik_ime, vlasnik_ulica, vlasnik_postanski_broj, vlasnik_grad, vlasnik_sifra_opcine, adresa_ista, godisnji_primici_prosle_godine',
+      )
       .eq('id', user.id)
       .maybeSingle(),
     zbrojiKprZaGodinu(supabase, user.id, godina),
@@ -43,8 +60,26 @@ export default async function PoSdPage({
   );
 
   const razred = getPausalRazred2026(zbroj.ukupno);
-  const opcina = findOpcinaBySifra(profil?.sifra_opcine);
-  const opcinaNaziv = opcina?.naziv ?? profil?.opcina ?? null;
+  const useBusinessAddress = profil?.adresa_ista !== false;
+  const businessAddress = joinAddress(
+    profil?.ulica,
+    profil?.postanski_broj,
+    profil?.grad,
+    profil?.adresa,
+  );
+  const ownerAddress = useBusinessAddress
+    ? businessAddress
+    : joinAddress(
+        profil?.vlasnik_ulica,
+        profil?.vlasnik_postanski_broj,
+        profil?.vlasnik_grad,
+        businessAddress,
+      );
+  const poSdSifraOpcine = useBusinessAddress
+    ? profil?.sifra_opcine
+    : (profil?.vlasnik_sifra_opcine ?? profil?.sifra_opcine);
+  const opcina = findOpcinaBySifra(poSdSifraOpcine);
+  const opcinaNaziv = opcina?.naziv ?? (useBusinessAddress ? profil?.opcina : null);
   const godineOpcije = Array.from({ length: 7 }, (_, i) => {
     const y = new Date().getFullYear() - i;
     return y;
@@ -102,22 +137,34 @@ export default async function PoSdPage({
               </dd>
             </div>
             <div className='flex justify-between gap-4'>
+              <dt>Vlasnik</dt>
+              <dd className='text-right text-[#e2e8e7]'>
+                {profil?.vlasnik_ime ?? '—'}
+              </dd>
+            </div>
+            <div className='flex justify-between gap-4'>
               <dt>OIB</dt>
               <dd className='text-right text-[#e2e8e7]'>
                 {profil?.oib ?? '—'}
               </dd>
             </div>
             <div className='flex justify-between gap-4'>
-              <dt>Adresa</dt>
+              <dt>Adresa za PO-SD</dt>
               <dd className='text-right text-[#e2e8e7]'>
-                {profil?.adresa ?? '—'}
+                {ownerAddress ?? '—'}
+              </dd>
+            </div>
+            <div className='flex justify-between gap-4'>
+              <dt>Sjedište obrta</dt>
+              <dd className='text-right text-[#e2e8e7]'>
+                {businessAddress ?? '—'}
               </dd>
             </div>
             <div className='flex justify-between gap-4'>
               <dt>Općina/Grad za PO-SD</dt>
               <dd className='text-right text-[#e2e8e7]'>
-                {profil?.sifra_opcine
-                  ? `${profil.sifra_opcine} ${opcinaNaziv ? `— ${opcinaNaziv}` : ''}`
+                {poSdSifraOpcine
+                  ? `${poSdSifraOpcine} ${opcinaNaziv ? `— ${opcinaNaziv}` : ''}`
                   : '—'}
               </dd>
             </div>
