@@ -52,7 +52,7 @@ export const metadata: Metadata = {
     apple: '/favicon.ico',
   },
   verification: {
-    google: '2zDiYQ95uANtsRiQteyTkZ8Pp-qmoAD43bylIbGd15w',
+    google: 'bgft4wJhAEgJDKCp-4kE8fsazAiwsgRe6OSmTpy0wvI',
   },
 };
 
