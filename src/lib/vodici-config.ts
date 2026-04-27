@@ -165,6 +165,16 @@ export const VODICI_ENTRIES: VodiciEntry[] = [
     primaryKeyword: 'izdavanje računa paušalni obrt',
   },
   {
+    slug: 'sjediste-obrta-vs-prebivaliste',
+    title: 'Sjedište obrta vs prebivalište vlasnika – što ide gdje?',
+    shortTitle: 'Sjedište vs prebivalište',
+    description:
+      'Koja adresa ide na račun, koja na PO-SD obrazac i koja za fiskalizaciju – jasno objašnjeno.',
+    readingMinutes: 9,
+    category: 'osnove',
+    primaryKeyword: 'sjedište obrta prebivalište paušalni obrt',
+  },
+  {
     slug: 'kpr-knjiga-prometa',
     title: 'KPR – Knjiga prometa za paušaliste 2026.',
     shortTitle: 'KPR knjiga prometa',
