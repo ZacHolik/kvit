@@ -4,8 +4,8 @@ import { VodiciNav } from '../vodici/_components/vodici-nav';
 
 export const metadata: Metadata = {
   title: {
-    default: 'Alati | Kvit',
-    template: '%s | Kvit',
+    default: 'Alati | Kvik',
+    template: '%s | Kvik',
   },
   description:
     'Alati za paušalne obrtnike: kalkulator paušalnog poreza 2026, PDV prag, interni akt, checklista, plaćanje doprinosa, rokovi; PRO izjave i podsjetnici.',
@@ -18,7 +18,7 @@ export default function AlatiLayout({ children }: { children: React.ReactNode })
       <main>{children}</main>
       <footer className='border-t border-[#1f2a28] px-4 py-8 text-center text-sm text-[#64756f] sm:px-6'>
         <p className='font-body'>
-          © {new Date().getFullYear()} Kvit ·{' '}
+          © {new Date().getFullYear()} Kvik ·{' '}
           <a href='/' className='text-[#0d9488] hover:underline'>
             Početna
           </a>

@@ -14,10 +14,10 @@ export const metadata: Metadata = {
   title: 'FINA certifikat za fiskalizaciju — kako nabaviti i koliko košta',
   description: META_DESC,
   openGraph: {
-    title: 'FINA certifikat za fiskalizaciju | Kvit',
+    title: 'FINA certifikat za fiskalizaciju | Kvik',
     description: META_DESC,
     url: `${getSiteUrl()}/vodici/${SLUG}`,
-    siteName: 'Kvit',
+    siteName: 'Kvik',
     locale: 'hr_HR',
     type: 'article',
   },
@@ -208,10 +208,10 @@ export default function FinaCertifikatFiskalizacijaPage() {
 
       <div className='mt-8 rounded-2xl border border-[#0d9488]/40 bg-[#111716] p-6'>
         <p className='font-heading text-lg font-semibold text-[#e2e8e7]'>
-          Kvit i fiskalizacija
+          Kvik i fiskalizacija
         </p>
         <p className='mt-2 text-sm leading-relaxed text-[#b9c7c4]'>
-          Kvit ima fiskalizaciju ugrađenu — nema ručnog podešavanja certifikata u odnosu
+          Kvik ima fiskalizaciju ugrađenu — nema ručnog podešavanja certifikata u odnosu
           na tipičan “DIY” tijek.
         </p>
         <Link

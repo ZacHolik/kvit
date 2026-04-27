@@ -8,16 +8,16 @@ import { GuideShell } from '../_components/guide-shell';
 const SLUG = 'alati-za-pausalne-obrtnike';
 
 const META_DESC =
-  'Alati za paušalne obrtnike: zašto izolirani kalkulatori, generatori uplatnica i checkliste nisu dovoljni. Kako Kvit povezuje KPR, PDV prag, PO-SD i rokove u jedan sustav.';
+  'Alati za paušalne obrtnike: zašto izolirani kalkulatori, generatori uplatnica i checkliste nisu dovoljni. Kako Kvik povezuje KPR, PDV prag, PO-SD i rokove u jedan sustav.';
 
 export const metadata: Metadata = {
   title: 'Alati za paušalne obrtnike 2026 — zašto izolirani alati nisu dovoljni',
   description: META_DESC,
   openGraph: {
-    title: 'Alati za paušalne obrtnike 2026 | Kvit',
+    title: 'Alati za paušalne obrtnike 2026 | Kvik',
     description: META_DESC,
     url: `${getSiteUrl()}/vodici/${SLUG}`,
-    siteName: 'Kvit',
+    siteName: 'Kvik',
     locale: 'hr_HR',
     type: 'article',
   },
@@ -27,20 +27,20 @@ const faq = [
   {
     question: 'Zašto koristiti povezan sustav umjesto besplatnih alata?',
     answer:
-      'Izolirani alati s interneta rade svoj dio, ali ti si most: prepisuješ iznose između kalkulatora, uplatnica i checklista. Kvit to automatizira — kad izdaš račun, KPR, PDV prag kalkulator i razred poreza se ažuriraju istog trena.',
+      'Izolirani alati s interneta rade svoj dio, ali ti si most: prepisuješ iznose između kalkulatora, uplatnica i checklista. Kvik to automatizira — kad izdaš račun, KPR, PDV prag kalkulator i razred poreza se ažuriraju istog trena.',
   },
   {
-    question: 'Mogu li koristiti Kvit alate bez prijave?',
+    question: 'Mogu li koristiti Kvik alate bez prijave?',
     answer:
       'Da. Kalkulator paušalnog poreza, PDV prag kalkulator, checklista i PDF predlošci (interni akt, izjave) dostupni su bez registracije. Razlika je u tome što bez prijave svaki put ručno unosiš podatke, a s prijavom sustav čita tvoje stvarne račune i KPR.',
   },
   {
-    question: 'Kako Kvit generira PO-SD automatski?',
+    question: 'Kako Kvik generira PO-SD automatski?',
     answer:
       'PO-SD se računa iz računa koje si izdao tijekom godine — razdvojeno na gotovinu i bezgotovinu, kako propisuje obrazac. Ti ne zbrajaš ručno iz Excela; klikneš „Generiraj PO-SD" i obrazac je popunjen iz KPR-a.',
   },
   {
-    question: 'Pomaže li Kvit s PDV pragom od 60.000 €?',
+    question: 'Pomaže li Kvik s PDV pragom od 60.000 €?',
     answer:
       'Da. Dashboard u svakom trenutku pokazuje koliko si iskoristio od limita od 60.000 € primitaka (ključna granica za ulazak u sustav PDV-a za paušaliste). Kad dosegneš 80%, dobiješ upozorenje da pravovremeno reagiraš — prelazak praga mijenja tvoj PDV status.',
   },
@@ -56,20 +56,20 @@ export default function AlatiZaPausalneObrtnikePage() {
     <GuideShell
       slug={SLUG}
       title='Alati za paušalne obrtnike — zašto izolirani alati nisu dovoljni'
-      subtitle='Kalkulator ovdje, uplatnica tamo, checklista negdje drugdje — i opet nisi siguran je li sve točno. Kvit povezuje sve u jedan sustav koji zna tko si.'
+      subtitle='Kalkulator ovdje, uplatnica tamo, checklista negdje drugdje — i opet nisi siguran je li sve točno. Kvik povezuje sve u jedan sustav koji zna tko si.'
       readingMinutes={9}
       metaDescription={META_DESC}
       toc={[
         { id: 'drugi-alati', label: 'Što drugi nude — izolirani alati' },
-        { id: 'kvit-sustav', label: 'Što Kvit nudi — jedan ekosustav' },
+        { id: 'kvik-sustav', label: 'Što Kvik nudi — jedan ekosustav' },
         { id: 'primjeri', label: 'Konkretni primjeri „prije i poslije"' },
-        { id: 'pregled', label: 'Pregled Kvit alata' },
+        { id: 'pregled', label: 'Pregled Kvik alata' },
         { id: 'kada-prijaviti', label: 'Kada se prijaviti — i što dobiješ' },
         { id: 'cta', label: 'Isprobaj besplatno' },
       ]}
       faq={faq}
       related={[
-        { href: '/alati', title: 'Svi Kvit alati' },
+        { href: '/alati', title: 'Svi Kvik alati' },
         { href: vodiciHref('po-sd-obrazac'), title: 'PO-SD obrazac' },
         { href: vodiciHref('doprinosi'), title: 'Doprinosi za paušalni obrt' },
         { href: vodiciHref('rokovi-placanja'), title: 'Rokovi plaćanja' },
@@ -78,7 +78,7 @@ export default function AlatiZaPausalneObrtnikePage() {
       <p>
         Postoje deseci besplatnih alata za paušalne obrtnike. Kalkulator ovdje,
         uplatnica tamo, checklista negdje drugdje. Otvoriš pet tabova, prekopiraš
-        broj iz jednog u drugi, i na kraju opet nisi siguran je li sve točno. Kvit
+        broj iz jednog u drugi, i na kraju opet nisi siguran je li sve točno. Kvik
         radi drugačije — umjesto zbirke izoliranih alata, nudi jedan sustav koji
         zna tko si i koliko zarađuješ.
       </p>
@@ -134,9 +134,9 @@ export default function AlatiZaPausalneObrtnikePage() {
         prilika za grešku.
       </p>
 
-      <h2 id='kvit-sustav'>Što Kvit nudi — jedan ekosustav koji zna tko si</h2>
+      <h2 id='kvik-sustav'>Što Kvik nudi — jedan ekosustav koji zna tko si</h2>
       <p>
-        Kvit ne nudi alate. Nudi <strong>sustav</strong> koji radi umjesto tebe.
+        Kvik ne nudi alate. Nudi <strong>sustav</strong> koji radi umjesto tebe.
         Tok podataka ide ovako:
       </p>
       <ol>
@@ -169,7 +169,7 @@ export default function AlatiZaPausalneObrtnikePage() {
         otvori generator uplatnice, ručno upiši iznos i OIB, generiraj barkod.”
       </p>
       <p>
-        <em>U Kvitu:</em> Tvoj razred se zna. Uplatnica je uvijek ispravna. Barkod
+        <em>U Kviku:</em> Tvoj razred se zna. Uplatnica je uvijek ispravna. Barkod
         generiraš jednim klikom jer su podaci već tamo.
       </p>
 
@@ -182,7 +182,7 @@ export default function AlatiZaPausalneObrtnikePage() {
         pogriješio.”
       </p>
       <p>
-        <em>U Kvitu:</em> Klikneš „Generiraj PO-SD” — obrazac je popunjen iz
+        <em>U Kviku:</em> Klikneš „Generiraj PO-SD” — obrazac je popunjen iz
         tvojih stvarnih računa. Nula ručnog unosa.
       </p>
 
@@ -194,12 +194,12 @@ export default function AlatiZaPausalneObrtnikePage() {
         brineš se hoćeš li ući u PDV sustav.”
       </p>
       <p>
-        <em>U Kvitu:</em> Dashboard ti u svakom trenutku pokazuje koliko si
+        <em>U Kviku:</em> Dashboard ti u svakom trenutku pokazuje koliko si
         iskoristio od limita, koji razred ti odgovara i koliko kvartalno plaćaš —
         bez da išta računaš.
       </p>
 
-      <h2 id='pregled'>Pregled Kvit alata</h2>
+      <h2 id='pregled'>Pregled Kvik alata</h2>
       <p>
         Ispod je pregled što je dostupno bez prijave i što se otključava kad se
         registriraš. Razlika nije u količini alata, nego u tome što <em>znaju</em>{' '}

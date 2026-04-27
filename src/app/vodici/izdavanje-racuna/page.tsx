@@ -14,10 +14,10 @@ export const metadata: Metadata = {
   title: 'Izdavanje računa paušalni obrt',
   description: META_DESC,
   openGraph: {
-    title: 'Izdavanje računa paušalni obrt | Kvit',
+    title: 'Izdavanje računa paušalni obrt | Kvik',
     description: META_DESC,
     url: `${getSiteUrl()}/vodici/${SLUG}`,
-    siteName: 'Kvit',
+    siteName: 'Kvik',
     locale: 'hr_HR',
     type: 'article',
   },
@@ -153,7 +153,7 @@ export default function IzdavanjeRacunaPage() {
         Gotovina i kartice u B2C često povlače fiskalizaciju transakcijskih računa od
         2026. To znači da program mora poslati podatke Poreznoj i vratiti potvrdu prije
         nego što račun smatraš konačnim. Ako si do sada slao Word ili Excel klijentima,
-        vrijeme je za <Link href='/register'>digitalno rješenje</Link> poput Kvita.
+        vrijeme je za <Link href='/register'>digitalno rješenje</Link> poput Kvika.
       </p>
 
       <h2 id='eracun'>eRačun za firme</h2>
@@ -167,7 +167,7 @@ export default function IzdavanjeRacunaPage() {
       <h2 id='iban'>IBAN na računu</h2>
       <p>
         IBAN nije uvijek zakonski obvezan na svakom obrascu, ali je praktičan i smanjuje
-        greške pri plaćanju. U Kvitu ga možeš spremiti u profil obrta i automatski
+        greške pri plaćanju. U Kviku ga možeš spremiti u profil obrta i automatski
         ispisivati na PDF računima. Ako ga nemaš, klijenti često traže dodatne poruke.
       </p>
 

@@ -24,7 +24,7 @@ export function RokPodsjetniciClient() {
           <Link href='/login' className='font-semibold text-[#0d9488] hover:underline'>
             Prijavi se
           </Link>{' '}
-          za sinkronizaciju s Kvitom.
+          za sinkronizaciju s Kvikom.
         </p>
       ) : null}
 
@@ -42,7 +42,7 @@ export function RokPodsjetniciClient() {
       {isPro ? (
         <p className='rounded-2xl border border-[#0d9488]/40 bg-[#111716] p-4 text-sm text-[#b9c7c4]'>
           PRO: push i email podsjetnici na zakonite rokove bit će dostupni kroz postavke
-          Kvita.
+          Kvika.
         </p>
       ) : null}
 

@@ -53,7 +53,7 @@ export function GuideShell({
       {
         '@type': 'ListItem',
         position: 1,
-        name: 'Kvit',
+        name: 'Kvik',
         item: base,
       },
       {
@@ -81,12 +81,12 @@ export function GuideShell({
     dateModified: modified,
     author: {
       '@type': 'Organization',
-      name: 'Kvit',
+      name: 'Kvik',
       url: base,
     },
     publisher: {
       '@type': 'Organization',
-      name: 'Kvit',
+      name: 'Kvik',
       url: base,
     },
     mainEntityOfPage: {
@@ -163,7 +163,7 @@ export function GuideShell({
           <ol className='flex flex-wrap items-center gap-2'>
             <li>
               <Link href='/' className='transition hover:text-[#0d9488]'>
-                Kvit
+                Kvik
               </Link>
             </li>
             <li aria-hidden='true'>/</li>
@@ -263,7 +263,7 @@ export function GuideShell({
         <div className='mt-10 grid gap-4 sm:grid-cols-2'>
           <div className='rounded-2xl border border-[#0d9488]/40 bg-[#111716] p-6'>
             <p className='font-heading text-lg font-semibold text-[#e2e8e7]'>
-              Isprobaj Kvit besplatno
+              Isprobaj Kvik besplatno
             </p>
             <p className='mt-2 text-sm text-[#94a3a0]'>
               Računi, KPR i PO-SD na jednom mjestu — bez papira.
@@ -280,7 +280,7 @@ export function GuideShell({
               Imaš pitanje? Pitaj AI asistenta
             </p>
             <p className='mt-2 text-sm text-[#94a3a0]'>
-              Unutar aplikacije Kvit AI odgovara na pitanja o paušalu.
+              Unutar aplikacije Kvik AI odgovara na pitanja o paušalu.
             </p>
             <Link
               href='/asistent'

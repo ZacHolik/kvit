@@ -131,7 +131,7 @@ export default async function DashboardPage() {
     <main className='min-h-screen bg-[#0b0f0e] px-4 py-8 text-[#e2e8e7] sm:px-6 lg:px-8'>
       <div className='mx-auto flex w-full max-w-5xl flex-col gap-6'>
         <header className='rounded-2xl border border-[#1f2a28] bg-[#111716] p-5 sm:p-6'>
-          <p className='font-body text-sm text-[#94a3a0]'>Kvit dashboard</p>
+          <p className='font-body text-sm text-[#94a3a0]'>Kvik dashboard</p>
           <h1 className='font-heading mt-2 text-2xl sm:text-3xl'>
             {nazivObrta}
           </h1>

@@ -14,10 +14,10 @@ export const metadata: Metadata = {
   title: 'Paušalni obrt 2026',
   description: META_DESC,
   openGraph: {
-    title: 'Paušalni obrt 2026 | Kvit',
+    title: 'Paušalni obrt 2026 | Kvik',
     description: META_DESC,
     url: `${getSiteUrl()}/vodici/${SLUG}`,
-    siteName: 'Kvit',
+    siteName: 'Kvik',
     locale: 'hr_HR',
     type: 'article',
   },
@@ -27,7 +27,7 @@ const faq = [
   {
     question: 'Koliki je limit primitaka za paušalni obrt?',
     answer:
-      'Prag za ulazak u sustav PDV-a za paušalne obrtnike iznosi 60.000 € godišnjih primitaka. Ako ga prekoračiš, moraš se prijaviti kao obveznik PDV-a i mijenja se način obračuna poreza. Pratiti ukupne primitke ključno je kroz godinu — KPR i alati poput Kvita pomažu da uvijek vidiš gdje si.',
+      'Prag za ulazak u sustav PDV-a za paušalne obrtnike iznosi 60.000 € godišnjih primitaka. Ako ga prekoračiš, moraš se prijaviti kao obveznik PDV-a i mijenja se način obračuna poreza. Pratiti ukupne primitke ključno je kroz godinu — KPR i alati poput Kvika pomažu da uvijek vidiš gdje si.',
   },
   {
     question: 'Moram li voditi KPR ako sam paušalist?',
@@ -129,7 +129,7 @@ export default function PauzalniObrtVodicPage() {
         Bitno je znati da i dalje moraš izdavati račune za primitke, voditi KPR i
         godišnje izvještavati primitke — samo se ne radi puni poslovni knjigovodstveni
         obrt kao kod većih tvrtki. Ako želiš digitalno olakšanje, aplikacija{' '}
-        <Link href='/register'>Kvit</Link> spaja izdavanje računa, KPR i pripremu
+        <Link href='/register'>Kvik</Link> spaja izdavanje računa, KPR i pripremu
         podataka za PO-SD na jednom mjestu.
       </p>
 
@@ -226,7 +226,7 @@ export default function PauzalniObrtVodicPage() {
       </p>
       <p>
         Za praktičan rad od računa do KPR-a i PO-SD-a isprobaj{' '}
-        <Link href='/register'>Kvit besplatno</Link>, a dodatna pitanja možeš postaviti
+        <Link href='/register'>Kvik besplatno</Link>, a dodatna pitanja možeš postaviti
         i <Link href='/asistent'>AI asistentu u aplikaciji</Link>.
       </p>
     </GuideShell>

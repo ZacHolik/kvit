@@ -4,7 +4,7 @@ const html = fs.readFileSync(new URL('./landing-source.html', import.meta.url), 
 let css = html.match(/<style>([\s\S]*?)<\/style>/)[1];
 
 css = css.replace(/\*{margin:0;padding:0;box-sizing:border-box}/, '');
-css = css.replace(':root{', '#kvit-landing{');
+css = css.replace(':root{', '#kvik-landing{');
 css = css.replace(
   /body\{font-family:'DM Sans',sans-serif;background:var\(--bg\);color:var\(--text\);overflow-x:hidden;line-height:1\.6\}/,
   '',
@@ -12,11 +12,11 @@ css = css.replace(
 
 const extraRoot =
   'font-family:var(--font-dm-sans),DM Sans,sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;line-height:1.6;min-height:100vh;';
-css = css.replace(/#kvit-landing\{/, `#kvit-landing{${extraRoot}`);
+css = css.replace(/#kvik-landing\{/, `#kvik-landing{${extraRoot}`);
 
 css = css.replace(
   /^h1,h2,h3,h4,h5\{/m,
-  '#kvit-landing h1,#kvit-landing h2,#kvit-landing h3,#kvit-landing h4,#kvit-landing h5{',
+  '#kvik-landing h1,#kvik-landing h2,#kvik-landing h3,#kvik-landing h4,#kvik-landing h5{',
 );
 
 const lines = css.split('\n');
@@ -41,10 +41,10 @@ for (const line of lines) {
     mediaBrace +=
       (line.match(/\{/g) || []).length - (line.match(/\}/g) || []).length;
     const m = line.match(/^(\s*)([^{]+)(\{.*)$/);
-    if (m && !m[2].trim().startsWith('#kvit-landing')) {
+    if (m && !m[2].trim().startsWith('#kvik-landing')) {
       const sel = m[2].trim();
       if (sel && !sel.startsWith('/*')) {
-        out.push(line.replace(/^(\s*)([^{]+)(\{.*)$/, `$1#kvit-landing $2$3`));
+        out.push(line.replace(/^(\s*)([^{]+)(\{.*)$/, `$1#kvik-landing $2$3`));
       } else {
         out.push(line);
       }
@@ -63,12 +63,12 @@ for (const line of lines) {
   const m = line.match(/^(\s*)([^{]+)(\{.*)$/);
   if (m && m[3]) {
     const sel = m[2].trim();
-    if (sel.startsWith('#kvit-landing') || sel.startsWith('@')) {
+    if (sel.startsWith('#kvik-landing') || sel.startsWith('@')) {
       out.push(line);
     } else if (sel.startsWith('html{')) {
       out.push(line);
     } else {
-      out.push(line.replace(/^(\s*)([^{]+)(\{.*)$/, `$1#kvit-landing $2$3`));
+      out.push(line.replace(/^(\s*)([^{]+)(\{.*)$/, `$1#kvik-landing $2$3`));
     }
   } else {
     out.push(line);
@@ -76,8 +76,8 @@ for (const line of lines) {
 }
 
 let result = [
-  '#kvit-landing,#kvit-landing *{box-sizing:border-box}',
-  '#kvit-landing *{margin:0;padding:0}',
+  '#kvik-landing,#kvik-landing *{box-sizing:border-box}',
+  '#kvik-landing *{margin:0;padding:0}',
   ...out,
 ].join('\n');
 
@@ -90,21 +90,21 @@ result = result.replace(
   'font-family:var(--font-dm-sans),DM Sans,sans-serif',
 );
 
-result = result.replace(/#kvit-landing html\{/g, 'html{');
+result = result.replace(/#kvik-landing html\{/g, 'html{');
 
-result += `\n#kvit-landing .nav-actions{display:flex;align-items:center;gap:0.75rem;flex-shrink:0}
-#kvit-landing .nav-login{color:var(--text2);text-decoration:none;font-size:0.9rem;font-weight:500;transition:color 0.2s;white-space:nowrap}
-#kvit-landing .nav-login:hover{color:var(--text)}
-#kvit-landing .section--tight-top{padding-top:0}
-#kvit-landing .section-sub--accent{color:var(--teal2);font-weight:500}`;
+result += `\n#kvik-landing .nav-actions{display:flex;align-items:center;gap:0.75rem;flex-shrink:0}
+#kvik-landing .nav-login{color:var(--text2);text-decoration:none;font-size:0.9rem;font-weight:500;transition:color 0.2s;white-space:nowrap}
+#kvik-landing .nav-login:hover{color:var(--text)}
+#kvik-landing .section--tight-top{padding-top:0}
+#kvik-landing .section-sub--accent{color:var(--teal2);font-weight:500}`;
 
 const ts = `/* eslint-disable max-len -- generated from index.html landing CSS */
-export const KVIT_LANDING_CSS = ${JSON.stringify(result)};
+export const KVIK_LANDING_CSS = ${JSON.stringify(result)};
 `;
 
 fs.writeFileSync(
-  new URL('../src/app/kvit-landing-css.ts', import.meta.url),
+  new URL('../src/app/kvik-landing-css.ts', import.meta.url),
   ts,
 );
 
-console.log('Wrote src/app/kvit-landing-css.ts', ts.length, 'chars');
+console.log('Wrote src/app/kvik-landing-css.ts', ts.length, 'chars');

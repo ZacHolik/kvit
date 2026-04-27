@@ -19,10 +19,10 @@ export const metadata: Metadata = {
   description: DESC,
   keywords: ['interni akt paušalni obrt', 'interni akt obrt', 'predložak internog akta'],
   openGraph: {
-    title: `${TITLE} | Kvit`,
+    title: `${TITLE} | Kvik`,
     description: DESC,
     url: `${getSiteUrl()}/alati/interni-akt`,
-    siteName: 'Kvit',
+    siteName: 'Kvik',
     locale: 'hr_HR',
     type: 'website',
   },
@@ -35,7 +35,7 @@ export default function InterniAktPage() {
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
     itemListElement: [
-      { '@type': 'ListItem', position: 1, name: 'Kvit', item: base },
+      { '@type': 'ListItem', position: 1, name: 'Kvik', item: base },
       { '@type': 'ListItem', position: 2, name: 'Alati', item: `${base}/alati` },
       { '@type': 'ListItem', position: 3, name: 'Interni akt', item: pageUrl },
     ],
@@ -52,7 +52,7 @@ export default function InterniAktPage() {
       <article className='mx-auto max-w-3xl px-4 py-10 sm:px-6 lg:px-8'>
         <AlatiBreadcrumb
           items={[
-            { label: 'Kvit', href: '/' },
+            { label: 'Kvik', href: '/' },
             { label: 'Alati', href: '/alati' },
             { label: 'Interni akt' },
           ]}
@@ -76,7 +76,7 @@ export default function InterniAktPage() {
           </ul>
         </section>
         <CtaRegister
-          title='Kvit drži profil, KPR i račune na jednom mjestu.'
+          title='Kvik drži profil, KPR i račune na jednom mjestu.'
           body='Manje kopiranja u obrasce — više vremena za klijente.'
           buttonLabel='Registriraj se besplatno →'
         />

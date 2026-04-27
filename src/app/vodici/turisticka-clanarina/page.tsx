@@ -14,10 +14,10 @@ export const metadata: Metadata = {
   title: 'Turistička članarina – tko plaća i koliko 2026.',
   description: META_DESC,
   openGraph: {
-    title: 'Turistička članarina – tko plaća i koliko 2026. | Kvit',
+    title: 'Turistička članarina – tko plaća i koliko 2026. | Kvik',
     description: META_DESC,
     url: `${getSiteUrl()}/vodici/${SLUG}`,
-    siteName: 'Kvit',
+    siteName: 'Kvik',
     locale: 'hr_HR',
     type: 'article',
   },

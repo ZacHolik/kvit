@@ -17,10 +17,10 @@ export const metadata: Metadata = {
   description: DESC,
   keywords: ['izjava poslovni prostor', 'tuđi poslovni prostor obrt', 'suglasnost'],
   openGraph: {
-    title: `${TITLE} | Kvit`,
+    title: `${TITLE} | Kvik`,
     description: DESC,
     url: `${getSiteUrl()}/alati/izjava-poslovni-prostor`,
-    siteName: 'Kvit',
+    siteName: 'Kvik',
     locale: 'hr_HR',
     type: 'website',
   },
@@ -33,7 +33,7 @@ export default function IzjavaPoslovniProstorPage() {
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
     itemListElement: [
-      { '@type': 'ListItem', position: 1, name: 'Kvit', item: base },
+      { '@type': 'ListItem', position: 1, name: 'Kvik', item: base },
       { '@type': 'ListItem', position: 2, name: 'Alati', item: `${base}/alati` },
       { '@type': 'ListItem', position: 3, name: 'Izjava — poslovni prostor', item: pageUrl },
     ],
@@ -50,7 +50,7 @@ export default function IzjavaPoslovniProstorPage() {
       <article className='mx-auto max-w-3xl px-4 py-10 sm:px-6 lg:px-8'>
         <AlatiBreadcrumb
           items={[
-            { label: 'Kvit', href: '/' },
+            { label: 'Kvik', href: '/' },
             { label: 'Alati', href: '/alati' },
             { label: 'Izjava — poslovni prostor' },
           ]}

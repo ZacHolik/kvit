@@ -19,10 +19,10 @@ export const metadata: Metadata = {
   description: DESC,
   keywords: ['kalkulator paušalnog poreza 2026', 'paušalni porez', 'porezni razred'],
   openGraph: {
-    title: `${TITLE} | Kvit`,
+    title: `${TITLE} | Kvik`,
     description: DESC,
     url: `${getSiteUrl()}/alati/kalkulator-poreza`,
-    siteName: 'Kvit',
+    siteName: 'Kvik',
     locale: 'hr_HR',
     type: 'website',
   },
@@ -47,7 +47,7 @@ const FAQ = [
   {
     question: 'Gdje predajem PO-SD i pratim obveze?',
     answer:
-      'Godišnji PO-SD predaje se u ePoreznoj. U aplikaciji Kvit možeš voditi KPR i račune na jednom mjestu.',
+      'Godišnji PO-SD predaje se u ePoreznoj. U aplikaciji Kvik možeš voditi KPR i račune na jednom mjestu.',
   },
 ];
 
@@ -59,7 +59,7 @@ export default function KalkulatorPorezaPage() {
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
     itemListElement: [
-      { '@type': 'ListItem', position: 1, name: 'Kvit', item: base },
+      { '@type': 'ListItem', position: 1, name: 'Kvik', item: base },
       { '@type': 'ListItem', position: 2, name: 'Alati', item: `${base}/alati` },
       {
         '@type': 'ListItem',
@@ -98,7 +98,7 @@ export default function KalkulatorPorezaPage() {
       <article className='mx-auto max-w-3xl px-4 py-10 sm:px-6 lg:px-8'>
         <AlatiBreadcrumb
           items={[
-            { label: 'Kvit', href: '/' },
+            { label: 'Kvik', href: '/' },
             { label: 'Alati', href: '/alati' },
             { label: 'Kalkulator poreza' },
           ]}
@@ -133,7 +133,7 @@ export default function KalkulatorPorezaPage() {
         </section>
 
         <CtaRegister
-          title='Kvit automatski prati tvoj razred i šalje podsjetnike za kvartalni porez.'
+          title='Kvik automatski prati tvoj razred i šalje podsjetnike za kvartalni porez.'
           body='Manje ručnog proračuna — više vremena za posao.'
           buttonLabel='Registriraj se besplatno →'
         />

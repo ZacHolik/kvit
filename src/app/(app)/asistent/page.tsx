@@ -106,7 +106,7 @@ export default function AsistentPage() {
     {
       role: 'assistant',
       content:
-        'Bok! Ja sam Kvit asistent. Pitaj me sve o rokovima, porezu, KPR-u i PO-SD obvezama za paušalni obrt.',
+        'Bok! Ja sam Kvik asistent. Pitaj me sve o rokovima, porezu, KPR-u i PO-SD obvezama za paušalni obrt.',
     },
   ]);
   const [input, setInput] = useState('');
@@ -218,10 +218,10 @@ export default function AsistentPage() {
       <div className='mx-auto flex w-full max-w-4xl flex-col gap-5'>
         <header className='rounded-2xl border border-[#1f2a28] bg-[#111716] p-5 sm:p-6'>
           <p className='font-body text-sm text-[#94a3a0]'>AI podrška za paušalce</p>
-          <h1 className='font-heading mt-2 text-2xl sm:text-3xl'>Kvit Asistent</h1>
+          <h1 className='font-heading mt-2 text-2xl sm:text-3xl'>Kvik Asistent</h1>
           <p className='font-body mt-3 text-sm text-[#b9c7c4]'>
             Odgovori su optimizirani za hrvatske paušalne obrtnike i aktualna
-            pravila iz Kvit baze znanja.
+            pravila iz Kvik baze znanja.
           </p>
         </header>
 

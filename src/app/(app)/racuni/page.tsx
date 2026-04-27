@@ -59,7 +59,7 @@ export default async function RacuniPage() {
 
         <InvoiceList
           invoices={invoiceRows}
-          nazivObrta={profil?.naziv_obrta ?? 'Kvit'}
+          nazivObrta={profil?.naziv_obrta ?? 'Kvik'}
         />
       </div>
     </main>

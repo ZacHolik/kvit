@@ -14,10 +14,10 @@ export const metadata: Metadata = {
   title: 'Knjiga tražbina paušalni obrt',
   description: META_DESC,
   openGraph: {
-    title: 'Knjiga tražbina paušalni obrt | Kvit',
+    title: 'Knjiga tražbina paušalni obrt | Kvik',
     description: META_DESC,
     url: `${getSiteUrl()}/vodici/${SLUG}`,
-    siteName: 'Kvit',
+    siteName: 'Kvik',
     locale: 'hr_HR',
     type: 'article',
   },
@@ -120,7 +120,7 @@ export default function KnjigaTrazbiPage() {
       <h2 id='vodjenje'>Jednostavno vođenje</h2>
       <p>
         Minimalni set stupaca: broj računa, kupac, iznos, datum, dospijeće, status
-        (otvoreno / djelomično / zatvoreno), zadnja napomena. Ako koristiš Kvit ili drugi
+        (otvoreno / djelomično / zatvoreno), zadnja napomena. Ako koristiš Kvik ili drugi
         alat, provjeri postoji li modul za otvorene stavke; ako ne, CSV u mapi “obrt
         2026” sasvim dobro radi. Važnije od softvera je tjedni ritual: petkom pregledaš
         otvorene račune i šalješ podsjetnik prije vikenda.
@@ -160,7 +160,7 @@ export default function KnjigaTrazbiPage() {
       </p>
       <p>
         Za praktičan rad na računima i KPR-u otvori{' '}
-        <Link href='/register'>Kvit</Link> i pročitaj{' '}
+        <Link href='/register'>Kvik</Link> i pročitaj{' '}
         <Link href={vodiciHref('izdavanje-racuna')}>izdavanje računa</Link>.
       </p>
     </GuideShell>

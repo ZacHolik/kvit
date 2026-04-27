@@ -14,10 +14,10 @@ export const metadata: Metadata = {
   title: 'KPR knjiga prometa paušalisti',
   description: META_DESC,
   openGraph: {
-    title: 'KPR knjiga prometa paušalisti | Kvit',
+    title: 'KPR knjiga prometa paušalisti | Kvik',
     description: META_DESC,
     url: `${getSiteUrl()}/vodici/${SLUG}`,
-    siteName: 'Kvit',
+    siteName: 'Kvik',
     locale: 'hr_HR',
     type: 'article',
   },
@@ -108,7 +108,7 @@ export default function KprKnjigaPrometaPage() {
         praksi je to tvoj dnevnik zarade: što si naplatio, kada i kojim putem. Bez KPR-a
         ne možeš točno ispunjavati <Link href={vodiciHref('po-sd-obrazac')}>PO-SD</Link>{' '}
         niti dokazati primitke u slučaju kontrole. Zato ga trebaš shvatiti kao alat, ne
-        kao kaznu. Ako koristiš <Link href='/register'>Kvit</Link>, dio unosa može biti
+        kao kaznu. Ako koristiš <Link href='/register'>Kvik</Link>, dio unosa može biti
         automatski vezan uz{' '}
         <Link href={vodiciHref('izdavanje-racuna')}>izdavanje računa</Link>.
       </p>
@@ -180,7 +180,7 @@ export default function KprKnjigaPrometaPage() {
         Ako primaš devize od stranih klijenata, vidi i{' '}
         <Link href={vodiciHref('pausalni-obrt-za-it-freelancere')}>paušalni obrt za IT freelancere</Link>{' '}
         (isti princip evidencije primitaka). U aplikaciji pitaj{' '}
-        <Link href='/asistent'>AI asistenta</Link> za konkretne korake u Kvitu.
+        <Link href='/asistent'>AI asistenta</Link> za konkretne korake u Kviku.
       </p>
     </GuideShell>
   );

@@ -14,10 +14,10 @@ export const metadata: Metadata = {
   title: 'Paušalni obrt za kozmetičare',
   description: META_DESC,
   openGraph: {
-    title: 'Paušalni obrt za kozmetičare | Kvit',
+    title: 'Paušalni obrt za kozmetičare | Kvik',
     description: META_DESC,
     url: `${getSiteUrl()}/vodici/${SLUG}`,
-    siteName: 'Kvit',
+    siteName: 'Kvik',
     locale: 'hr_HR',
     type: 'article',
   },
@@ -179,7 +179,7 @@ export default function PauzalniObrtZaKozmeticarePage() {
       </p>
       <p>
         Ako uz gotovinu primaš i kartice, svaki kanal treba završiti istom
-        logikom evidencije. <Link href='/register'>Kvit</Link> i slični alati
+        logikom evidencije. <Link href='/register'>Kvik</Link> i slični alati
         pomažu da se brojevi računa ne preklapaju i da KPR ostane čitljiv
         inspektoru.
       </p>

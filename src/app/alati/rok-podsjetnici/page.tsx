@@ -12,17 +12,17 @@ import { RokPodsjetniciClient } from './rok-podsjetnici-client';
 
 const TITLE = 'Rok podsjetnici — zakoniti rokovi za paušalni obrt';
 const DESC =
-  'Pregled tipičnih mjesečnih, kvartalnih i godišnjih rokova za paušalnog obrtnika. Gost: pregled. PRO: push i email obavijesti (uskoro u Kvitu).';
+  'Pregled tipičnih mjesečnih, kvartalnih i godišnjih rokova za paušalnog obrtnika. Gost: pregled. PRO: push i email obavijesti (uskoro u Kviku).';
 
 export const metadata: Metadata = {
   title: TITLE,
   description: DESC,
   keywords: ['rokovi paušalni obrt', 'podsjetnici porez', 'obveze obrt'],
   openGraph: {
-    title: `${TITLE} | Kvit`,
+    title: `${TITLE} | Kvik`,
     description: DESC,
     url: `${getSiteUrl()}/alati/rok-podsjetnici`,
-    siteName: 'Kvit',
+    siteName: 'Kvik',
     locale: 'hr_HR',
     type: 'website',
   },
@@ -35,7 +35,7 @@ export default function RokPodsjetniciPage() {
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
     itemListElement: [
-      { '@type': 'ListItem', position: 1, name: 'Kvit', item: base },
+      { '@type': 'ListItem', position: 1, name: 'Kvik', item: base },
       { '@type': 'ListItem', position: 2, name: 'Alati', item: `${base}/alati` },
       { '@type': 'ListItem', position: 3, name: 'Rok podsjetnici', item: pageUrl },
     ],
@@ -52,7 +52,7 @@ export default function RokPodsjetniciPage() {
       <article className='mx-auto max-w-3xl px-4 py-10 sm:px-6 lg:px-8'>
         <AlatiBreadcrumb
           items={[
-            { label: 'Kvit', href: '/' },
+            { label: 'Kvik', href: '/' },
             { label: 'Alati', href: '/alati' },
             { label: 'Rok podsjetnici' },
           ]}
@@ -77,7 +77,7 @@ export default function RokPodsjetniciPage() {
         </section>
         <CtaRegister
           title='Želiš rokove na dashboardu i u mobitelu?'
-          body='Kvit povezuje KPR, račune i podsjetnike na jednom mjestu.'
+          body='Kvik povezuje KPR, račune i podsjetnike na jednom mjestu.'
           buttonLabel='Registriraj se →'
         />
       </article>

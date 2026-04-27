@@ -38,13 +38,13 @@ const dmSans = DM_Sans({
 });
 
 export const metadata: Metadata = {
-  title: 'Kvit – Paušalni obrt bez glavobolje',
+  title: 'Kvik – Paušalni obrt bez glavobolje',
   description:
     'Jedina aplikacija koja te vodi korak po korak kroz sve obveze paušalnog obrta. Bez papirologije, bez stresa, bez kazni.',
   manifest: '/manifest.json',
   appleWebApp: {
     capable: true,
-    title: 'Kvit',
+    title: 'Kvik',
     statusBarStyle: 'default',
   },
   icons: {

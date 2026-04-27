@@ -14,10 +14,10 @@ export const metadata: Metadata = {
   title: 'RPO obrazac – kako ispuniti i predati online 2026.',
   description: META_DESC,
   openGraph: {
-    title: 'RPO obrazac – kako ispuniti i predati online 2026. | Kvit',
+    title: 'RPO obrazac – kako ispuniti i predati online 2026. | Kvik',
     description: META_DESC,
     url: `${getSiteUrl()}/vodici/${SLUG}`,
-    siteName: 'Kvit',
+    siteName: 'Kvik',
     locale: 'hr_HR',
     type: 'article',
   },

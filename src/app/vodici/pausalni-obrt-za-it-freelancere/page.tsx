@@ -14,10 +14,10 @@ export const metadata: Metadata = {
   title: 'Paušalni obrt za IT freelancere',
   description: META_DESC,
   openGraph: {
-    title: 'Paušalni obrt za IT freelancere | Kvit',
+    title: 'Paušalni obrt za IT freelancere | Kvik',
     description: META_DESC,
     url: `${getSiteUrl()}/vodici/${SLUG}`,
-    siteName: 'Kvit',
+    siteName: 'Kvik',
     locale: 'hr_HR',
     type: 'article',
   },
@@ -118,7 +118,7 @@ export default function PauzalniObrtZaItFreelancerePage() {
         stvarnim prihodima i rashodima u klasičnom smislu, nego plaćaš paušalni
         porez u razredima i mjesečne doprinose. Za freelancera koji naplaćuje
         sate ili projekte to znači manje papira i brži start nego kod d.o.o.
-        Dodatno, alati poput <Link href='/register'>Kvita</Link> pomažu da
+        Dodatno, alati poput <Link href='/register'>Kvika</Link> pomažu da
         računi, KPR i podsjetnici ostanu na jednom mjestu kad broj klijenata
         raste.
       </p>
@@ -225,7 +225,7 @@ export default function PauzalniObrtZaItFreelancerePage() {
         svakog segmenta.
       </p>
       <p>
-        Kvit kao alat pomaže držati red oko brojeva računa, KPR-a i priprema za
+        Kvik kao alat pomaže držati red oko brojeva računa, KPR-a i priprema za
         obveze koje dolaze u serijama. Kombiniraj ga s individualnim savjetom
         kad ugovor postane složen ili kad uđeš u više jurisdikcija istovremeno.
       </p>

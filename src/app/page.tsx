@@ -3,14 +3,14 @@
 import Link from 'next/link';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
-import { KVIT_LANDING_CSS } from './kvit-landing-css';
+import { KVIK_LANDING_CSS } from './kvik-landing-css';
 
 const TALLY = 'https://tally.so/r/44or65';
 const LANDING_RESPONSIVE_CSS = `
-#kvit-landing .hero{overflow-x:hidden}
-#kvit-landing .hero-left{min-width:0}
+#kvik-landing .hero{overflow-x:hidden}
+#kvik-landing .hero-left{min-width:0}
 @media(min-width:641px){
-  #kvit-landing .nav-login{
+  #kvik-landing .nav-login{
     display:inline-flex;
     align-items:center;
     justify-content:center;
@@ -27,25 +27,25 @@ const LANDING_RESPONSIVE_CSS = `
     white-space:nowrap;
     transition:color 0.2s,border-color 0.2s,background 0.2s;
   }
-  #kvit-landing .nav-login:hover{
+  #kvik-landing .nav-login:hover{
     color:var(--teal3);
     border-color:var(--teal2);
     background:rgba(13,148,136,0.08);
   }
 }
 @media(max-width:640px){
-  #kvit-landing nav{
+  #kvik-landing nav{
     flex-direction:column;
     align-items:center;
     gap:0.5rem;
     padding:0.75rem 1.25rem;
   }
-  #kvit-landing .logo{
+  #kvik-landing .logo{
     font-size:1.6rem;
     width:100%;
     text-align:center;
   }
-  #kvit-landing .nav-actions{
+  #kvik-landing .nav-actions{
     display:flex;
     flex-direction:row;
     width:100%;
@@ -53,8 +53,8 @@ const LANDING_RESPONSIVE_CSS = `
     gap:0.75rem;
     align-items:stretch;
   }
-  #kvit-landing .nav-login,
-  #kvit-landing .nav-cta{
+  #kvik-landing .nav-login,
+  #kvik-landing .nav-cta{
     flex:1;
     min-width:0;
     display:flex;
@@ -70,23 +70,23 @@ const LANDING_RESPONSIVE_CSS = `
     text-decoration:none;
     transition:color 0.2s,border-color 0.2s,background 0.2s;
   }
-  #kvit-landing .nav-login{
+  #kvik-landing .nav-login{
     border:1px solid var(--teal);
     background:transparent;
     color:var(--text);
   }
-  #kvit-landing .nav-login:hover{
+  #kvik-landing .nav-login:hover{
     color:var(--teal3);
     border-color:var(--teal2);
     background:rgba(13,148,136,0.08);
   }
-  #kvit-landing .nav-cta{
+  #kvik-landing .nav-cta{
     border:none;
   }
-  #kvit-landing .hero{
+  #kvik-landing .hero{
     padding:8.75rem 1.25rem 3rem;
   }
-  #kvit-landing .hero h1{
+  #kvik-landing .hero h1{
     font-size:clamp(1.85rem,8.5vw,2.75rem);
     word-break:break-word;
     overflow-wrap:anywhere;
@@ -96,25 +96,25 @@ const LANDING_RESPONSIVE_CSS = `
 
 const AI_ANSWERS: Record<string, string> = {
   'Kada moram platiti doprinose?':
-    'Doprinose plaćaš do <strong>15. u mjesecu</strong> za prethodni mjesec. Za 2026. iznos je <strong>290,98€ ukupno</strong> ako je obrt tvoja jedina djelatnost. Kvit ti šalje podsjetnik 3 dana prije roka. 📅',
+    'Doprinose plaćaš do <strong>15. u mjesecu</strong> za prethodni mjesec. Za 2026. iznos je <strong>290,98€ ukupno</strong> ako je obrt tvoja jedina djelatnost. Kvik ti šalje podsjetnik 3 dana prije roka. 📅',
   'Jesam li obveznik fiskalizacije?':
-    'Od <strong>1.1.2026.</strong> svi paušalisti koji izdaju račune fizičkim osobama moraju fiskalizirati — čak i transakcijske. Ako izdaješ samo B2B račune firmama, fiskalizacija dolazi <strong>od 1.1.2027.</strong> Kvit to rješava automatski. ⚡',
+    'Od <strong>1.1.2026.</strong> svi paušalisti koji izdaju račune fizičkim osobama moraju fiskalizirati — čak i transakcijske. Ako izdaješ samo B2B račune firmama, fiskalizacija dolazi <strong>od 1.1.2027.</strong> Kvik to rješava automatski. ⚡',
   'Kako ispuniti PO-SD obrazac?':
-    'PO-SD predaješ <strong>do 15. siječnja</strong> za prethodnu godinu. U Kvitu klikneš "Generiraj PO-SD" — obrazac se automatski popuni svim tvojim primitcima iz KPR-a. Provjeriš, klikneš pošalji. <strong>Gotovo.</strong> 🎯',
+    'PO-SD predaješ <strong>do 15. siječnja</strong> za prethodnu godinu. U Kviku klikneš "Generiraj PO-SD" — obrazac se automatski popuni svim tvojim primitcima iz KPR-a. Provjeriš, klikneš pošalji. <strong>Gotovo.</strong> 🎯',
   'Koliko mogu zaraditi bez PDV-a?':
-    'Prag za PDV je <strong>60.000€ godišnjih primitaka</strong>. Ako ga prijeđeš, od prvog sljedećeg dana ulaziš u PDV. Kvit ti pokazuje progress bar koliko si blizu — nikad više iznenađenja. 📊',
+    'Prag za PDV je <strong>60.000€ godišnjih primitaka</strong>. Ako ga prijeđeš, od prvog sljedećeg dana ulaziš u PDV. Kvik ti pokazuje progress bar koliko si blizu — nikad više iznenađenja. 📊',
 };
 
 const AI_GENERIC =
-  'Unutar Kvit aplikacije AI asistent zna sve o paušalnom obrtu. Registriraj se besplatno i dobij odgovor u sekundi. 🚀';
+  'Unutar Kvik aplikacije AI asistent zna sve o paušalnom obrtu. Registriraj se besplatno i dobij odgovor u sekundi. 🚀';
 
 const AI_GENERIC_CUSTOM =
-  'Odlično pitanje! Unutar Kvit aplikacije AI asistent odgovori na sve detalje. Registriraj se besplatno i isprobaj. 🚀';
+  'Odlično pitanje! Unutar Kvik aplikacije AI asistent odgovori na sve detalje. Registriraj se besplatno i isprobaj. 🚀';
 
 const FAQ_ITEMS: { q: string; a: string }[] = [
   {
     q: 'Moram li imati tehničko znanje?',
-    a: 'Ne. Sve je klik po klik. Ako znaš koristiti WhatsApp, znaš koristiti Kvit. Onboarding te vodi korak po korak kroz sve što trebaš postaviti.',
+    a: 'Ne. Sve je klik po klik. Ako znaš koristiti WhatsApp, znaš koristiti Kvik. Onboarding te vodi korak po korak kroz sve što trebaš postaviti.',
   },
   {
     q: 'Je li aplikacija usklađena s Fiskalizacijom 2.0?',
@@ -210,18 +210,18 @@ export default function LandingPage() {
   return (
     <>
       <style
-        id='kvit-landing-base-style'
-        dangerouslySetInnerHTML={{ __html: KVIT_LANDING_CSS }}
+        id='kvik-landing-base-style'
+        dangerouslySetInnerHTML={{ __html: KVIK_LANDING_CSS }}
       />
       {/* Desktop: outline Imam račun; mobile: two-row centered nav + equal-width CTAs */}
       <style
-        id='kvit-landing-responsive-style'
+        id='kvik-landing-responsive-style'
         dangerouslySetInnerHTML={{ __html: LANDING_RESPONSIVE_CSS }}
       />
-      <div id='kvit-landing'>
+      <div id='kvik-landing'>
         <nav>
           <div className='logo'>
-            Kvit<span>.</span>
+            Kvik<span>.</span>
           </div>
           <ul className='nav-links'>
             <li>
@@ -355,7 +355,7 @@ export default function LandingPage() {
             <div className='stat-num'>
               0<span>€</span>
             </div>
-            <div className='stat-label'>kazne ako koristiš Kvit</div>
+            <div className='stat-label'>kazne ako koristiš Kvik</div>
           </div>
           <div className='stat'>
             <div className='stat-num'>
@@ -372,7 +372,7 @@ export default function LandingPage() {
         </div>
 
         <section className='section' id='prednosti'>
-          <div className='section-tag'>Zašto Kvit</div>
+          <div className='section-tag'>Zašto Kvik</div>
           <div className='section-title'>
             Sve što trebaš.
             <br />
@@ -447,7 +447,7 @@ export default function LandingPage() {
               <div className='step-icon'>👤</div>
               <h3>Registriraj se za 2 minute</h3>
               <p>
-                Uneseš ime obrta i OIB. Kvit se spoji s Poreznom i postavi sve
+                Uneseš ime obrta i OIB. Kvik se spoji s Poreznom i postavi sve
                 automatski. Bez papirnatih obrazaca.
               </p>
             </div>
@@ -484,7 +484,7 @@ export default function LandingPage() {
               <div className='ai-demo-top'>
                 <div className='ai-avatar'>AI</div>
                 <div className='ai-info'>
-                  <div className='ai-name'>Kvit AI asistent</div>
+                  <div className='ai-name'>Kvik AI asistent</div>
                   <div className='ai-status'>Online</div>
                 </div>
               </div>
@@ -576,7 +576,7 @@ export default function LandingPage() {
           <div className='section-tag'>Korisnici</div>
           <div className='section-title'>Što kažu paušalisti?</div>
           <p className='section-sub section-sub--accent'>
-            Kvit koristi 2.500+ paušalnih obrtnika u Hrvatskoj
+            Kvik koristi 2.500+ paušalnih obrtnika u Hrvatskoj
           </p>
           <div className='testi-grid'>
             <div className='testi'>
@@ -792,7 +792,7 @@ export default function LandingPage() {
         <footer>
           <div className='footer-left'>
             <div className='logo'>
-              Kvit<span style={{ color: 'var(--teal)' }}>.</span>
+              Kvik<span style={{ color: 'var(--teal)' }}>.</span>
             </div>
           </div>
           <ul className='footer-links'>
@@ -812,7 +812,7 @@ export default function LandingPage() {
               </a>
             </li>
           </ul>
-          <div className='footer-copy'>© 2026 Kvit. Sva prava pridržana.</div>
+          <div className='footer-copy'>© 2026 Kvik. Sva prava pridržana.</div>
         </footer>
       </div>
     </>

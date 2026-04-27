@@ -19,10 +19,10 @@ export const metadata: Metadata = {
   description: DESC,
   keywords: ['obveze paušalnog obrtnika checklista', 'paušalni obrt obveze', 'checklista'],
   openGraph: {
-    title: `${TITLE} | Kvit`,
+    title: `${TITLE} | Kvik`,
     description: DESC,
     url: `${getSiteUrl()}/alati/checklista`,
-    siteName: 'Kvit',
+    siteName: 'Kvik',
     locale: 'hr_HR',
     type: 'website',
   },
@@ -36,7 +36,7 @@ export default function ChecklistaPage() {
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
     itemListElement: [
-      { '@type': 'ListItem', position: 1, name: 'Kvit', item: base },
+      { '@type': 'ListItem', position: 1, name: 'Kvik', item: base },
       { '@type': 'ListItem', position: 2, name: 'Alati', item: `${base}/alati` },
       { '@type': 'ListItem', position: 3, name: 'Checklista', item: pageUrl },
     ],
@@ -54,7 +54,7 @@ export default function ChecklistaPage() {
       <article className='mx-auto max-w-3xl px-4 py-10 sm:px-6 lg:px-8'>
         <AlatiBreadcrumb
           items={[
-            { label: 'Kvit', href: '/' },
+            { label: 'Kvik', href: '/' },
             { label: 'Alati', href: '/alati' },
             { label: 'Checklista' },
           ]}
@@ -97,7 +97,7 @@ export default function ChecklistaPage() {
         </section>
 
         <CtaRegister
-          title='Kvit automatski prati rokove i šalje ti podsjetnike da ništa ne zaboraviš.'
+          title='Kvik automatski prati rokove i šalje ti podsjetnike da ništa ne zaboraviš.'
           body='Kombiniraj ovu listu s aplikacijom — podsjetnici stižu kad treba.'
           buttonLabel='Registriraj se besplatno →'
         />

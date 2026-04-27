@@ -25,7 +25,7 @@ export default function RegisterPage() {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [acceptedLegalTerms, setAcceptedLegalTerms] = useState(false);
   /** Honeypot — ostaje prazno; botovi ga često popune. */
-  const [kvitHpConfirm, setKvitHpConfirm] = useState('');
+  const [kvikHpConfirm, setKvikHpConfirm] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [registeredEmail, setRegisteredEmail] = useState<string | null>(null);
@@ -94,7 +94,7 @@ export default function RegisterPage() {
           email: email.trim(),
           password,
           emailRedirectTo: buildEmailRedirectTo(),
-          kvit_hp_confirm: kvitHpConfirm,
+          kvit_hp_confirm: kvikHpConfirm,
           turnstileToken: turnstileSiteKey ? turnstileToken : undefined,
         }),
       });
@@ -166,7 +166,7 @@ export default function RegisterPage() {
                 setPassword('');
                 setConfirmPassword('');
                 setAcceptedLegalTerms(false);
-                setKvitHpConfirm('');
+                setKvikHpConfirm('');
               }}
             >
               Drugi email
@@ -180,7 +180,7 @@ export default function RegisterPage() {
   return (
     <main className='flex min-h-screen items-center justify-center bg-[#0b0f0e] px-4 py-10'>
       <section className='w-full max-w-md rounded-2xl border border-[#1f2a28] bg-[#111716] p-6 shadow-xl shadow-black/25 sm:p-8'>
-        <p className='font-body text-sm text-[#94a3a0]'>Kreiraj Kvit račun</p>
+        <p className='font-body text-sm text-[#94a3a0]'>Kreiraj Kvik račun</p>
         <h1 className='font-heading mt-2 text-3xl text-[#e2e8e7]'>
           Registracija
         </h1>
@@ -200,8 +200,8 @@ export default function RegisterPage() {
                 type='text'
                 tabIndex={-1}
                 autoComplete='off'
-                value={kvitHpConfirm}
-                onChange={(event) => setKvitHpConfirm(event.target.value)}
+                value={kvikHpConfirm}
+                onChange={(event) => setKvikHpConfirm(event.target.value)}
                 className='mt-1 block'
               />
             </label>

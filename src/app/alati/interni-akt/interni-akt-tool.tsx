@@ -80,7 +80,7 @@ export function InterniAktTool() {
         </p>
       ) : session.status === 'signed_in' && prof ? (
         <p className='rounded-2xl border border-[#0d9488]/30 bg-[#0d9488]/10 p-4 text-sm text-[#b9c7c4]'>
-          Polja su djelomično popunjena iz tvog Kvit profila — prilagodi tekst prije ispisa.
+          Polja su djelomično popunjena iz tvog Kvik profila — prilagodi tekst prije ispisa.
         </p>
       ) : null}
 

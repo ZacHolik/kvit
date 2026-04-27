@@ -14,10 +14,10 @@ export const metadata: Metadata = {
   title: 'Fiskalizacija 2.0 paušalisti',
   description: META_DESC,
   openGraph: {
-    title: 'Fiskalizacija 2.0 paušalisti | Kvit',
+    title: 'Fiskalizacija 2.0 paušalisti | Kvik',
     description: META_DESC,
     url: `${getSiteUrl()}/vodici/${SLUG}`,
-    siteName: 'Kvit',
+    siteName: 'Kvik',
     locale: 'hr_HR',
     type: 'article',
   },
@@ -121,7 +121,7 @@ export default function Fiskalizacija20Page() {
         Ključno je ne miješati pojam &quot;fiskalizacija&quot; s &quot;eRačunom&quot;:
         prvi se odnosi na potvrdu prometa u realnom vremenu, drugi na strukturirani
         elektronički dokument u poslovnom prometu. Oba sustava zahtijevaju pouzdanu
-        infrastrukturu — zato većina obrta danas oslanja na softver poput Kvita koji
+        infrastrukturu — zato većina obrta danas oslanja na softver poput Kvika koji
         te korake pojednostavljuje.
       </p>
 
@@ -180,7 +180,7 @@ export default function Fiskalizacija20Page() {
         Napravi popis scenarija: gotovina, kartica, žiralna uplata, inozemni klijent.
         Za svaki scenarij zapiši treba li fiskalni korak, treba li eRačun i kako ga
         šalješ. Edukuj se o čuvanju potvrda i arhivi jer inspekcije i dalje traže
-        tragljivost. Na kraju, isprobaj <Link href='/register'>Kvit</Link> ili drugi
+        tragljivost. Na kraju, isprobaj <Link href='/register'>Kvik</Link> ili drugi
         alat koji objedinjuje račune i evidenciju kako bi prijelaz na nove propise bio
         što glatkiji.
       </p>

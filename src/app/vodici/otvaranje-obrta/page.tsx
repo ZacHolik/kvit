@@ -21,10 +21,10 @@ export const metadata: Metadata = {
   title: 'Kako otvoriti paušalni obrt',
   description: META_DESC,
   openGraph: {
-    title: 'Kako otvoriti paušalni obrt | Kvit',
+    title: 'Kako otvoriti paušalni obrt | Kvik',
     description: META_DESC,
     url: `${getSiteUrl()}/vodici/${SLUG}`,
-    siteName: 'Kvit',
+    siteName: 'Kvik',
     locale: 'hr_HR',
     type: 'article',
   },
@@ -105,7 +105,7 @@ export default function OtvaranjeObrtaPage() {
           },
           {
             name: 'Postavi izdavanje računa i KPR',
-            text: 'Od prvog dana bilježi svaki primitak — aplikacija Kvit može to pojednostaviti.',
+            text: 'Od prvog dana bilježi svaki primitak — aplikacija Kvik može to pojednostaviti.',
           },
         ],
       }}
@@ -179,7 +179,7 @@ export default function OtvaranjeObrtaPage() {
         nego u panici u siječnju.
       </p>
       <p>
-        Aplikacija <Link href='/register'>Kvit</Link> cilja pokriti veći dio tog
+        Aplikacija <Link href='/register'>Kvik</Link> cilja pokriti veći dio tog
         &quot;odmah&quot; kroz jedan onboarding: podaci obrta, računi, KPR i podloga za
         PO-SD. Za pitanja unutar aplikacije koristi{' '}
         <Link href='/asistent'>AI asistenta</Link>.

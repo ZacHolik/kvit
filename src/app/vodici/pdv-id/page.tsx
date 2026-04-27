@@ -14,10 +14,10 @@ export const metadata: Metadata = {
   title: 'PDV ID broj paušalni obrt',
   description: META_DESC,
   openGraph: {
-    title: 'PDV ID broj paušalni obrt | Kvit',
+    title: 'PDV ID broj paušalni obrt | Kvik',
     description: META_DESC,
     url: `${getSiteUrl()}/vodici/${SLUG}`,
-    siteName: 'Kvit',
+    siteName: 'Kvik',
     locale: 'hr_HR',
     type: 'article',
   },
@@ -182,10 +182,10 @@ export default function PdvIdPage() {
         izdavanje računa koji koristiš.
       </p>
       <p>
-        Za individualna pitanja koristi <Link href='/asistent'>Kvit asistenta</Link> u
+        Za individualna pitanja koristi <Link href='/asistent'>Kvik asistenta</Link> u
         aplikaciji i stručnjaka za granične slučajeve. Za cjelinu obrta vidi još{' '}
         <Link href={vodiciHref('pausalni-obrt-vodic')}>paušalni obrt 2026.</Link> i{' '}
-        <Link href='/register'>registraciju na Kvit</Link>.
+        <Link href='/register'>registraciju na Kvik</Link>.
       </p>
     </GuideShell>
   );

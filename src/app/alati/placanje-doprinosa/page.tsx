@@ -19,10 +19,10 @@ export const metadata: Metadata = {
   description: DESC,
   keywords: ['plaćanje doprinosa', 'uplatnica doprinosa', '2D barkod uplatnica'],
   openGraph: {
-    title: `${TITLE} | Kvit`,
+    title: `${TITLE} | Kvik`,
     description: DESC,
     url: `${getSiteUrl()}/alati/placanje-doprinosa`,
-    siteName: 'Kvit',
+    siteName: 'Kvik',
     locale: 'hr_HR',
     type: 'website',
   },
@@ -36,7 +36,7 @@ export default function PlacanjeDoprinosaPage() {
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
     itemListElement: [
-      { '@type': 'ListItem', position: 1, name: 'Kvit', item: base },
+      { '@type': 'ListItem', position: 1, name: 'Kvik', item: base },
       { '@type': 'ListItem', position: 2, name: 'Alati', item: `${base}/alati` },
       { '@type': 'ListItem', position: 3, name: 'Plaćanje doprinosa', item: pageUrl },
     ],
@@ -53,7 +53,7 @@ export default function PlacanjeDoprinosaPage() {
       <article className='mx-auto max-w-3xl px-4 py-10 sm:px-6 lg:px-8'>
         <AlatiBreadcrumb
           items={[
-            { label: 'Kvit', href: '/' },
+            { label: 'Kvik', href: '/' },
             { label: 'Alati', href: '/alati' },
             { label: 'Plaćanje doprinosa' },
           ]}

@@ -1,6 +1,6 @@
 /**
  * Paušalni porez po razredima primitaka — 2026. (kvartalni iznos po razredu).
- * Izvor: Kvit specifikacija proizvoda.
+ * Izvor: Kvik specifikacija proizvoda.
  *
  * Granicni razredi: [donja, gornja) osim zadnjeg [50000, 60000].
  */

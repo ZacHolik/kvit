@@ -14,10 +14,10 @@ export const metadata: Metadata = {
   title: 'Paušalni obrt za konzultante',
   description: META_DESC,
   openGraph: {
-    title: 'Paušalni obrt za konzultante | Kvit',
+    title: 'Paušalni obrt za konzultante | Kvik',
     description: META_DESC,
     url: `${getSiteUrl()}/vodici/${SLUG}`,
-    siteName: 'Kvit',
+    siteName: 'Kvik',
     locale: 'hr_HR',
     type: 'article',
   },
@@ -132,7 +132,7 @@ export default function PauzalniObrtZaKonzultantePage() {
         >
           Poreznoj upravi
         </a>
-        . Za sažetak na Kvitu otvori <Link href={vodiciHref('pdv-id')}>PDV ID vodič</Link>.
+        . Za sažetak na Kviku otvori <Link href={vodiciHref('pdv-id')}>PDV ID vodič</Link>.
       </p>
 
       <h2 id='ugovor'>Ugovor o djelu vs obrt</h2>
@@ -169,7 +169,7 @@ export default function PauzalniObrtZaKonzultantePage() {
         godine kad vidiš prazan račun.
       </p>
       <p>
-        Za svakodnevni rad koristi <Link href='/register'>Kvit</Link> za račune i KPR, a
+        Za svakodnevni rad koristi <Link href='/register'>Kvik</Link> za račune i KPR, a
         za složena pitanja <Link href='/asistent'>AI asistenta</Link> unutar aplikacije.
       </p>
     </GuideShell>

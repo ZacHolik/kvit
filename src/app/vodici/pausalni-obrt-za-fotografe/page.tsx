@@ -14,10 +14,10 @@ export const metadata: Metadata = {
   title: 'Paušalni obrt za fotografe',
   description: META_DESC,
   openGraph: {
-    title: 'Paušalni obrt za fotografe | Kvit',
+    title: 'Paušalni obrt za fotografe | Kvik',
     description: META_DESC,
     url: `${getSiteUrl()}/vodici/${SLUG}`,
-    siteName: 'Kvit',
+    siteName: 'Kvik',
     locale: 'hr_HR',
     type: 'article',
   },

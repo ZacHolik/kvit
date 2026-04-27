@@ -8,7 +8,7 @@ export function VodiciNav() {
           href='/'
           className='font-heading text-xl font-bold tracking-tight text-[#e2e8e7]'
         >
-          Kvit<span className='text-[#0d9488]'>.</span>
+          Kvik<span className='text-[#0d9488]'>.</span>
         </Link>
         <ul className='flex flex-wrap items-center gap-4 text-sm text-[#b9c7c4]'>
           <li>

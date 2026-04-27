@@ -14,10 +14,10 @@ export const metadata: Metadata = {
   title: 'Paušalni obrt za ugostitelje',
   description: META_DESC,
   openGraph: {
-    title: 'Paušalni obrt za ugostitelje | Kvit',
+    title: 'Paušalni obrt za ugostitelje | Kvik',
     description: META_DESC,
     url: `${getSiteUrl()}/vodici/${SLUG}`,
-    siteName: 'Kvit',
+    siteName: 'Kvik',
     locale: 'hr_HR',
     type: 'article',
   },
@@ -163,7 +163,7 @@ export default function PauzalniObrtZaUgostiteljePage() {
         “ručnih” razlika između blagajne i žiro računa, to lakši siječanj.
       </p>
       <p>
-        Za fiskalizaciju i račune u jednom alatu pogledaj <Link href='/register'>Kvit</Link>.
+        Za fiskalizaciju i račune u jednom alatu pogledaj <Link href='/register'>Kvik</Link>.
       </p>
     </GuideShell>
   );

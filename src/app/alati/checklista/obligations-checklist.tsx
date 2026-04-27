@@ -49,7 +49,7 @@ const SECTIONS: Section[] = [
 const allIds = SECTIONS.flatMap((s) => s.items.map((i) => i.id));
 
 function storageKey(id: string) {
-  return `kvit-checklista-${id}`;
+  return `kvik-checklista-${id}`;
 }
 
 function readStored(id: string): boolean {
@@ -134,7 +134,7 @@ export function ObligationsChecklist() {
 
       {isPro ? (
         <div className='rounded-2xl border border-[#0d9488]/40 bg-[#111716] p-4 text-sm text-[#b9c7c4]'>
-          PRO račun: email podsjetnici na obveze bit će dostupni kroz postavke Kvita čim
+          PRO račun: email podsjetnici na obveze bit će dostupni kroz postavke Kvika čim
           aktiviramo slanje — do tada koristi ovu listu u aplikaciji.
         </div>
       ) : null}

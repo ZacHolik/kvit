@@ -17,10 +17,10 @@ export const metadata: Metadata = {
   description: DESC,
   keywords: ['izjava pozajmnica', 'pozajmica vlasnika obrt', 'paušalni obrt izjava'],
   openGraph: {
-    title: `${TITLE} | Kvit`,
+    title: `${TITLE} | Kvik`,
     description: DESC,
     url: `${getSiteUrl()}/alati/izjava-pozajmnica`,
-    siteName: 'Kvit',
+    siteName: 'Kvik',
     locale: 'hr_HR',
     type: 'website',
   },
@@ -33,7 +33,7 @@ export default function IzjavaPozajmnicaPage() {
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
     itemListElement: [
-      { '@type': 'ListItem', position: 1, name: 'Kvit', item: base },
+      { '@type': 'ListItem', position: 1, name: 'Kvik', item: base },
       { '@type': 'ListItem', position: 2, name: 'Alati', item: `${base}/alati` },
       { '@type': 'ListItem', position: 3, name: 'Izjava — pozajmnica', item: pageUrl },
     ],
@@ -50,7 +50,7 @@ export default function IzjavaPozajmnicaPage() {
       <article className='mx-auto max-w-3xl px-4 py-10 sm:px-6 lg:px-8'>
         <AlatiBreadcrumb
           items={[
-            { label: 'Kvit', href: '/' },
+            { label: 'Kvik', href: '/' },
             { label: 'Alati', href: '/alati' },
             { label: 'Izjava — pozajmnica' },
           ]}

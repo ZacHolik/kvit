@@ -14,10 +14,10 @@ export const metadata: Metadata = {
   title: 'PO-SD obrazac kako ispuniti',
   description: META_DESC,
   openGraph: {
-    title: 'PO-SD obrazac kako ispuniti | Kvit',
+    title: 'PO-SD obrazac kako ispuniti | Kvik',
     description: META_DESC,
     url: `${getSiteUrl()}/vodici/${SLUG}`,
-    siteName: 'Kvit',
+    siteName: 'Kvik',
     locale: 'hr_HR',
     type: 'article',
   },
@@ -118,7 +118,7 @@ export default function PoSdObrazacPage() {
       <p>
         Bez točnog KPR-a teško ispunjavaš PO-SD: brojke moraju biti konzistentne s
         računima i bankovnim izvodima. Zato mnogi paušalisti prvo srede digitalni KPR
-        u Kvitu, pa tek onda prelaze na PO-SD generiran iz istih podataka.
+        u Kviku, pa tek onda prelaze na PO-SD generiran iz istih podataka.
       </p>
 
       <h2 id='rok'>Rok predaje</h2>
@@ -166,7 +166,7 @@ export default function PoSdObrazacPage() {
         testna okolina ako postoji).
       </p>
       <p>
-        Kvit kao aplikacija cilja olakšati dio posla prikupljanjem primitaka kroz godinu
+        Kvik kao aplikacija cilja olakšati dio posla prikupljanjem primitaka kroz godinu
         tako da kasnije imaš manje ručnog prepisivanja u PO-SD — pogledaj{' '}
         <Link href='/register'>besplatnu registraciju</Link> ako želiš cjelinu na jednom
         mjestu.
@@ -191,7 +191,7 @@ export default function PoSdObrazacPage() {
         Za povezanu logiku primitaka pročitaj i vodič o{' '}
         <Link href={vodiciHref('izdavanje-racuna')}>izdavanju računa</Link>, a za širi
         kontekst <Link href={vodiciHref('pausalni-obrt-vodic')}>paušalni obrt 2026.</Link>{' '}
-        Pitaj <Link href='/asistent'>AI asistenta u Kvitu</Link> za sitnice u aplikaciji.
+        Pitaj <Link href='/asistent'>AI asistenta u Kviku</Link> za sitnice u aplikaciji.
       </p>
     </GuideShell>
   );

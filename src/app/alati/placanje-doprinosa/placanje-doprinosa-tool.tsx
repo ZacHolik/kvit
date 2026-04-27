@@ -10,7 +10,7 @@ import {
 import { MJESECNI_DOPRINOSI_EUR } from '@/lib/alati/pausal-brackets';
 import { useAlatiSession } from '@/hooks/use-alati-session';
 
-const GUEST_USE_KEY = 'kvit-alat-doprinos-guest-used';
+const GUEST_USE_KEY = 'kvik-alat-doprinos-guest-used';
 
 const eur = new Intl.NumberFormat('hr-HR', {
   style: 'currency',
@@ -143,7 +143,7 @@ export function PlacanjeDoprinosaTool() {
 
       {isPro ? (
         <p className='rounded-2xl border border-[#0d9488]/40 bg-[#111716] p-4 text-sm text-[#b9c7c4]'>
-          PRO: predviđen automatski podsjetnik 14. u mjesecu — prati obavijesti u Kvitu.
+          PRO: predviđen automatski podsjetnik 14. u mjesecu — prati obavijesti u Kviku.
         </p>
       ) : null}
 

@@ -4,8 +4,8 @@ import { VodiciNav } from './_components/vodici-nav';
 
 export const metadata: Metadata = {
   title: {
-    default: 'Vodiči | Kvit',
-    template: '%s | Kvit',
+    default: 'Vodiči | Kvik',
+    template: '%s | Kvik',
   },
   description:
     'Besplatni vodiči za paušalne obrtnike u Hrvatskoj. KPR, PO-SD, fiskalizacija 2.0, doprinosi – sve na jednom mjestu.',
@@ -22,7 +22,7 @@ export default function VodiciLayout({
       <main>{children}</main>
       <footer className='border-t border-[#1f2a28] px-4 py-8 text-center text-sm text-[#64756f] sm:px-6'>
         <p className='font-body'>
-          © {new Date().getFullYear()} Kvit ·{' '}
+          © {new Date().getFullYear()} Kvik ·{' '}
           <a href='/' className='text-[#0d9488] hover:underline'>
             Početna
           </a>

@@ -14,10 +14,10 @@ export const metadata: Metadata = {
   title: 'Sezonski paušalni obrt mirovanje',
   description: META_DESC,
   openGraph: {
-    title: 'Sezonski paušalni obrt mirovanje | Kvit',
+    title: 'Sezonski paušalni obrt mirovanje | Kvik',
     description: META_DESC,
     url: `${getSiteUrl()}/vodici/${SLUG}`,
-    siteName: 'Kvit',
+    siteName: 'Kvik',
     locale: 'hr_HR',
     type: 'article',
   },
@@ -182,7 +182,7 @@ export default function SezonskiObrtPage() {
       <p>
         Za svakodnevni rad izvan sezone koristi{' '}
         <Link href='/alati/rok-podsjetnici'>rok podsjetnike</Link> i aplikaciju{' '}
-        <Link href='/register'>Kvit</Link> kako ne bi propustio prvi račun kad sezona krene.
+        <Link href='/register'>Kvik</Link> kako ne bi propustio prvi račun kad sezona krene.
       </p>
     </GuideShell>
   );

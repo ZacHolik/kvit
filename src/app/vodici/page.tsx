@@ -16,10 +16,10 @@ export const metadata: Metadata = {
   title: 'Vodiči za paušalne obrtnike',
   description: DESC,
   openGraph: {
-    title: 'Vodiči za paušalne obrtnike | Kvit',
+    title: 'Vodiči za paušalne obrtnike | Kvik',
     description: DESC,
     url: `${getSiteUrl()}/vodici`,
-    siteName: 'Kvit',
+    siteName: 'Kvik',
     locale: 'hr_HR',
     type: 'website',
   },
@@ -35,7 +35,7 @@ export default function VodiciIndexPage() {
   const navLd = {
     '@context': 'https://schema.org',
     '@type': 'SiteNavigationElement',
-    name: 'Vodiči Kvit',
+    name: 'Vodiči Kvik',
     url: `${base}/vodici`,
     hasPart: VODICI_ENTRIES.map((e) => ({
       '@type': 'WebPage',
@@ -68,7 +68,7 @@ export default function VodiciIndexPage() {
           <p className='font-body mt-5 text-lg leading-relaxed text-[#b9c7c4]'>
             {DESC} Koristi vodiče uz aplikaciju{' '}
             <Link href='/register' className='text-[#0d9488] hover:underline'>
-              Kvit
+              Kvik
             </Link>{' '}
             — računi, KPR i PO-SD na jednom mjestu.
           </p>
@@ -124,7 +124,7 @@ export default function VodiciIndexPage() {
 
         <div className='mt-14 rounded-2xl border border-[#0d9488]/30 bg-[#111716] p-8 text-center'>
           <p className='font-heading text-xl font-semibold text-[#e2e8e7]'>
-            Isprobaj Kvit besplatno
+            Isprobaj Kvik besplatno
           </p>
           <p className='font-body mx-auto mt-2 max-w-lg text-sm text-[#94a3a0]'>
             Automatski KPR, PDF računi i PO-SD — manje papira, više vremena za

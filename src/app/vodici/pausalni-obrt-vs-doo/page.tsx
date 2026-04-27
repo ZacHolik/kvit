@@ -14,10 +14,10 @@ export const metadata: Metadata = {
   title: 'Paušalni obrt vs d.o.o.',
   description: META_DESC,
   openGraph: {
-    title: 'Paušalni obrt vs d.o.o. | Kvit',
+    title: 'Paušalni obrt vs d.o.o. | Kvik',
     description: META_DESC,
     url: `${getSiteUrl()}/vodici/${SLUG}`,
-    siteName: 'Kvit',
+    siteName: 'Kvik',
     locale: 'hr_HR',
     type: 'article',
   },
@@ -243,7 +243,7 @@ export default function PauzalniObrtVsDooPage() {
         rad ako si zapravo bio u odnosu s jednom tvrtkom kao zaposlena osoba.
       </p>
       <p>
-        Za svakodnevni rad dok si još na obrtu, <Link href='/register'>Kvit</Link>{' '}
+        Za svakodnevni rad dok si još na obrtu, <Link href='/register'>Kvik</Link>{' '}
         pomaže držati red oko računa i KPR-a; kad pređeš u d.o.o., isti disciplinski
         navici vrijede, samo u složenijem okviru.
       </p>

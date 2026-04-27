@@ -14,10 +14,10 @@ export const metadata: Metadata = {
   title: 'Doprinosi paušalni obrt iznos',
   description: META_DESC,
   openGraph: {
-    title: 'Doprinosi paušalni obrt iznos | Kvit',
+    title: 'Doprinosi paušalni obrt iznos | Kvik',
     description: META_DESC,
     url: `${getSiteUrl()}/vodici/${SLUG}`,
-    siteName: 'Kvit',
+    siteName: 'Kvik',
     locale: 'hr_HR',
     type: 'article',
   },
@@ -130,7 +130,7 @@ export default function DoprinosiPage() {
       <p>
         Tablični prikaz olakšava planiranje cashflowa: ako znaš da svakog 12. u mjesecu
         ide renta, a dopinosi do 15., možeš si složiti jednostavan kalendar. Alati poput
-        Kvita mogu poslati podsjetnik prije roka.
+        Kvika mogu poslati podsjetnik prije roka.
       </p>
 
       <h2 id='rokovi'>Rokovi plaćanja</h2>
@@ -146,7 +146,7 @@ export default function DoprinosiPage() {
         Svaka uplatnica traži točan IBAN primatelja, model, poziv na broj i opis. Pogrešan
         model često znači da sredstva &quot;vise&quot; dok ih ručno ne prebaceš. Zato
         većina modernih obrta koristi predpopunjene naloge iz aplikacije — npr.{' '}
-        <Link href='/alati/placanje-doprinosa'>Plaćanje doprinosa</Link> u Kvitu. Za
+        <Link href='/alati/placanje-doprinosa'>Plaćanje doprinosa</Link> u Kviku. Za
         porezni kontekst usporedi i{' '}
         <Link href={vodiciHref('pausalni-obrt-vodic')}>paušalni obrt 2026.</Link>
       </p>
@@ -190,7 +190,7 @@ export default function DoprinosiPage() {
         <Link href={vodiciHref('otvaranje-obrta')}>kako otvoriti paušalni obrt</Link>, a
         za račune i primitke koji utječu na razrede poreza vidi{' '}
         <Link href={vodiciHref('izdavanje-racuna')}>izdavanje računa</Link>. U aplikaciji
-        otvori <Link href='/asistent'>AI asistenta</Link> za brza pitanja o Kvitu.
+        otvori <Link href='/asistent'>AI asistenta</Link> za brza pitanja o Kviku.
       </p>
     </GuideShell>
   );

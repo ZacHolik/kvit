@@ -16,10 +16,10 @@ export const metadata: Metadata = {
   title: 'Sjedište obrta vs prebivalište vlasnika – što ide gdje?',
   description: META_DESC,
   openGraph: {
-    title: 'Sjedište obrta vs prebivalište vlasnika – što ide gdje? | Kvit',
+    title: 'Sjedište obrta vs prebivalište vlasnika – što ide gdje? | Kvik',
     description: META_DESC,
     url: `${getSiteUrl()}/vodici/${SLUG}`,
-    siteName: 'Kvit',
+    siteName: 'Kvik',
     locale: 'hr_HR',
     type: 'article',
   },
@@ -68,7 +68,7 @@ export default function SjedisteObrtaVsPrebivalistePage() {
         { id: 'sto-gdje', label: 'Što ide gdje' },
         { id: 'porezna', label: 'Porezna ispostava i šifra općine' },
         { id: 'primjer', label: 'Primjer: Zagreb i Samobor' },
-        { id: 'kvit', label: 'Kako unijeti u Kvit' },
+        { id: 'kvik', label: 'Kako unijeti u Kvik' },
       ]}
       faq={faq}
       related={[
@@ -204,9 +204,9 @@ export default function SjedisteObrtaVsPrebivalistePage() {
         krenu iz nove lokacije.
       </p>
 
-      <h2 id='kvit'>Kako to ispravno unijeti u Kvit</h2>
+      <h2 id='kvik'>Kako to ispravno unijeti u Kvik</h2>
       <p>
-        U Kvitu razdvoji podatke tako da se poslovni podaci obrta koriste na računima,
+        U Kviku razdvoji podatke tako da se poslovni podaci obrta koriste na računima,
         a osobni porezni podaci vlasnika ondje gdje služe za obrasce i poreznu
         nadležnost. Ulogirani korisnici mogu provjeriti i ažurirati podatke u{' '}
         <Link href='/postavke'>postavkama</Link>. Posebno provjeri naziv obrta,

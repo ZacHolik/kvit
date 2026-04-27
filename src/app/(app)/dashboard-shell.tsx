@@ -160,7 +160,7 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
           className='font-heading text-lg text-[#e2e8e7]'
           onClick={closeMenu}
         >
-          Kvit<span className='text-[#0d9488]'>.</span>
+          Kvik<span className='text-[#0d9488]'>.</span>
         </Link>
         <button
           type='button'
@@ -192,7 +192,7 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
       >
         <div className='flex items-center justify-between border-b border-[#1f2a28] px-4 py-4'>
           <span className='font-heading text-lg text-[#e2e8e7]'>
-            Kvit<span className='text-[#0d9488]'>.</span>
+            Kvik<span className='text-[#0d9488]'>.</span>
           </span>
           <button
             type='button'
@@ -240,7 +240,7 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
         <aside className='hidden w-64 shrink-0 flex-col border-r border-[#1f2a28] bg-[#111916] md:flex'>
           <div className='border-b border-[#1f2a28] p-6'>
             <Link href='/dashboard' className='font-heading text-xl text-[#e2e8e7]'>
-              Kvit<span className='text-[#0d9488]'>.</span>
+              Kvik<span className='text-[#0d9488]'>.</span>
             </Link>
           </div>
 

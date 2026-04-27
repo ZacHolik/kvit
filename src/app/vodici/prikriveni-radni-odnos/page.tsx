@@ -14,10 +14,10 @@ export const metadata: Metadata = {
   title: 'Prikriveni radni odnos paušalac',
   description: META_DESC,
   openGraph: {
-    title: 'Prikriveni radni odnos paušalac | Kvit',
+    title: 'Prikriveni radni odnos paušalac | Kvik',
     description: META_DESC,
     url: `${getSiteUrl()}/vodici/${SLUG}`,
-    siteName: 'Kvit',
+    siteName: 'Kvik',
     locale: 'hr_HR',
     type: 'article',
   },
@@ -215,7 +215,7 @@ export default function PrikriveniRadniOdnosPage() {
         Zaključak: <strong>prikriveni radni odnos paušalac</strong> nije etiketa
         koju želiš ignorirati. Pametnije je dizajnirati suradnju tako da i ti i
         klijent spavate mirno — uz digitalnu evidenciju u{' '}
-        <Link href='/register'>Kvitu</Link> da primitci i računi uvijek pričaju istu
+        <Link href='/register'>Kviku</Link> da primitci i računi uvijek pričaju istu
         priču kao ugovor.
       </p>
     </GuideShell>

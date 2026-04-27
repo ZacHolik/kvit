@@ -14,10 +14,10 @@ export const metadata: Metadata = {
   title: 'Zatvaranje paušalnog obrta',
   description: META_DESC,
   openGraph: {
-    title: 'Zatvaranje paušalnog obrta | Kvit',
+    title: 'Zatvaranje paušalnog obrta | Kvik',
     description: META_DESC,
     url: `${getSiteUrl()}/vodici/${SLUG}`,
-    siteName: 'Kvit',
+    siteName: 'Kvik',
     locale: 'hr_HR',
     type: 'article',
   },
@@ -191,7 +191,7 @@ export default function ZatvaranjeObrtaPage() {
         Kada završiš s formalnostima, razmisli želiš li u budućnosti opet{' '}
         <Link href={vodiciHref('otvaranje-obrta')}>otvoriti obrt</Link> ili preći na drugi
         oblik. Ako planiraš ostati u poduzetništvu uz manje papira,{' '}
-        <Link href='/register'>Kvit</Link> i dalje može pomoći dok si u paušalu.
+        <Link href='/register'>Kvik</Link> i dalje može pomoći dok si u paušalu.
       </p>
     </GuideShell>
   );

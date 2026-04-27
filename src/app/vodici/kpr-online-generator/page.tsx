@@ -14,10 +14,10 @@ export const metadata: Metadata = {
   title: 'KPR online paušalni obrt',
   description: META_DESC,
   openGraph: {
-    title: 'KPR online paušalni obrt | Kvit',
+    title: 'KPR online paušalni obrt | Kvik',
     description: META_DESC,
     url: `${getSiteUrl()}/vodici/${SLUG}`,
-    siteName: 'Kvit',
+    siteName: 'Kvik',
     locale: 'hr_HR',
     type: 'article',
   },
@@ -66,7 +66,7 @@ export default function KprOnlineGeneratorPage() {
         { id: 'greske', label: 'Najčešće greške' },
         { id: 'digital', label: 'Zašto digitalni KPR' },
         { id: 'po-sd', label: 'Veza s PO-SD-om' },
-        { id: 'kvit', label: 'Kvit KPR modul' },
+        { id: 'kvik', label: 'Kvik KPR modul' },
       ]}
       faq={faq}
       related={[
@@ -140,12 +140,12 @@ export default function KprOnlineGeneratorPage() {
         rizik inspekcije. Zato KPR nije “papir za sebe”, nego frontend za godišnji obrazac.
       </p>
 
-      <h2 id='kvit'>Kvit KPR modul</h2>
+      <h2 id='kvik'>Kvik KPR modul</h2>
       <p>
-        Kvit automatski puni KPR iz izdanih računa i omogućuje rad u pregledniku ili
+        Kvik automatski puni KPR iz izdanih računa i omogućuje rad u pregledniku ili
         aplikaciji. Direktan link na KPR sučelje:{' '}
         <Link href='/kpr' className='text-[#0d9488] hover:underline'>
-          KPR u Kvitu (/kpr)
+          KPR u Kviku (/kpr)
         </Link>
         . Prije korištenja se{' '}
         <Link href='/register'>registriraj</Link> i poveži obrt. Za teoriju pročitaj još{' '}

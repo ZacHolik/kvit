@@ -14,10 +14,10 @@ export const metadata: Metadata = {
   title: 'Porez na dohodak u paušalnom obrtu 2026.',
   description: META_DESC,
   openGraph: {
-    title: 'Porez na dohodak u paušalnom obrtu 2026. | Kvit',
+    title: 'Porez na dohodak u paušalnom obrtu 2026. | Kvik',
     description: META_DESC,
     url: `${getSiteUrl()}/vodici/${SLUG}`,
-    siteName: 'Kvit',
+    siteName: 'Kvik',
     locale: 'hr_HR',
     type: 'article',
   },

@@ -14,10 +14,10 @@ export const metadata: Metadata = {
   title: 'Rokovi plaćanja paušalni obrt 2026',
   description: META_DESC,
   openGraph: {
-    title: 'Rokovi plaćanja paušalni obrt 2026 | Kvit',
+    title: 'Rokovi plaćanja paušalni obrt 2026 | Kvik',
     description: META_DESC,
     url: `${getSiteUrl()}/vodici/${SLUG}`,
-    siteName: 'Kvit',
+    siteName: 'Kvik',
     locale: 'hr_HR',
     type: 'article',
   },
@@ -32,7 +32,7 @@ const faq = [
   {
     question: 'Kada se plaća paušalni porez na dohodak?',
     answer:
-      'Porez na dohodak u paušalnom obrtu plaća se na kraju svakog tromjesečja: do 31. ožujka, 30. lipnja, 30. rujna i 31. prosinca. Iznos ovisi o razredu primitaka u prethodnoj godini — vidi tablicu u vodiču i kalkulator na Kvitu.',
+      'Porez na dohodak u paušalnom obrtu plaća se na kraju svakog tromjesečja: do 31. ožujka, 30. lipnja, 30. rujna i 31. prosinca. Iznos ovisi o razredu primitaka u prethodnoj godini — vidi tablicu u vodiču i kalkulator na Kviku.',
   },
   {
     question: 'Do kada se predaje PO-SD?',
@@ -154,7 +154,7 @@ export default function RokoviPlacanjaPage() {
         do 11.300 € i ide do 270,00 € kvartalno za raspon 50.000,01–60.000,00 €. Isti
         raspored koristi i{' '}
         <Link href='/alati/kalkulator-poreza' className='text-[#0d9488] hover:underline'>
-          Kvitov kalkulator paušalnog poreza
+          Kvikov kalkulator paušalnog poreza
         </Link>{' '}
         — bitno je da tvoj zbroj KPR-a odgovara
         stvarno naplaćenom.
@@ -200,7 +200,7 @@ export default function RokoviPlacanjaPage() {
 
       <h2 id='alati'>Podsjetnici i checkliste</h2>
       <p>
-        Besplatni alati na Kvitu:{' '}
+        Besplatni alati na Kviku:{' '}
         <Link href='/alati/rok-podsjetnici' className='text-[#0d9488] hover:underline'>
           rok podsjetnici
         </Link>{' '}
@@ -211,7 +211,7 @@ export default function RokoviPlacanjaPage() {
         . Kombiniraj ih s ovim cheat sheetom: jednom mjesečno provjeri doprinos, svaka
         tri mjeseca porez, jednom godišnje PO-SD (+ TZ1 ako treba), a HOK držiš na radaru
         čim ispunjavaš uvjet dvije godine. Za registraciju aplikacije koja drži KPR i
-        račune otvori <Link href='/register'>Kvit</Link>.
+        račune otvori <Link href='/register'>Kvik</Link>.
       </p>
     </GuideShell>
   );

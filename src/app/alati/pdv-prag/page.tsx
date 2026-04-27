@@ -24,10 +24,10 @@ export const metadata: Metadata = {
     'paušalni obrt',
   ],
   openGraph: {
-    title: `${TITLE} | Kvit`,
+    title: `${TITLE} | Kvik`,
     description: DESC,
     url: `${getSiteUrl()}/alati/pdv-prag`,
-    siteName: 'Kvit',
+    siteName: 'Kvik',
     locale: 'hr_HR',
     type: 'website',
   },
@@ -41,7 +41,7 @@ export default function PdvPragPage() {
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
     itemListElement: [
-      { '@type': 'ListItem', position: 1, name: 'Kvit', item: base },
+      { '@type': 'ListItem', position: 1, name: 'Kvik', item: base },
       { '@type': 'ListItem', position: 2, name: 'Alati', item: `${base}/alati` },
       { '@type': 'ListItem', position: 3, name: 'PDV prag', item: pageUrl },
     ],
@@ -59,7 +59,7 @@ export default function PdvPragPage() {
       <article className='mx-auto max-w-3xl px-4 py-10 sm:px-6 lg:px-8'>
         <AlatiBreadcrumb
           items={[
-            { label: 'Kvit', href: '/' },
+            { label: 'Kvik', href: '/' },
             { label: 'Alati', href: '/alati' },
             { label: 'PDV prag' },
           ]}
@@ -97,7 +97,7 @@ export default function PdvPragPage() {
         </section>
 
         <CtaRegister
-          title='Kvit ti pokazuje PDV prag u realnom vremenu na dashboardu — uvijek znaš gdje si.'
+          title='Kvik ti pokazuje PDV prag u realnom vremenu na dashboardu — uvijek znaš gdje si.'
           body='Prati primitke i prag bez ručnog proračuna u tablicama.'
           buttonLabel='Isprobaj besplatno →'
         />

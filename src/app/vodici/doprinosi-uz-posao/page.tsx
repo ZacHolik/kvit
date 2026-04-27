@@ -14,10 +14,10 @@ export const metadata: Metadata = {
   title: 'Doprinosi paušalni obrt uz posao',
   description: META_DESC,
   openGraph: {
-    title: 'Doprinosi paušalni obrt uz posao | Kvit',
+    title: 'Doprinosi paušalni obrt uz posao | Kvik',
     description: META_DESC,
     url: `${getSiteUrl()}/vodici/${SLUG}`,
-    siteName: 'Kvit',
+    siteName: 'Kvik',
     locale: 'hr_HR',
     type: 'article',
   },
@@ -257,7 +257,7 @@ export default function DoprinosiUzPosaoPage() {
 
       <h2 id='alat'>Alat za uplate</h2>
       <p>
-        Kvit ima alat za pripremu podataka o uplatama:{' '}
+        Kvik ima alat za pripremu podataka o uplatama:{' '}
         <Link href='/alati/placanje-doprinosa' className='text-[#0d9488] hover:underline'>
           Plaćanje doprinosa
         </Link>
