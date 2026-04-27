@@ -19,6 +19,8 @@ const MAIN_NAV = [
   { href: '/alati', label: 'Alati', icon: '🛠️' },
 ] as const;
 
+const SETTINGS_NAV = { href: '/postavke', label: 'Postavke', icon: '⚙️' } as const;
+
 function navLinkActive(pathname: string, href: string) {
   if (href === '/dashboard') {
     return pathname === '/dashboard';
@@ -96,6 +98,39 @@ function MainNavLinks({
         );
       })}
     </>
+  );
+}
+
+function SettingsNavLink({
+  pathname,
+  onNavigate,
+  variant,
+}: {
+  pathname: string;
+  onNavigate?: () => void;
+  variant: 'drawer' | 'sidebar';
+}) {
+  const isDrawer = variant === 'drawer';
+  const baseRow =
+    'font-body flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition';
+  const inactive = isDrawer
+    ? 'border-l-4 border-transparent text-[#b9c7c4] hover:border-[#0d9488]/40 hover:bg-[#111916] hover:text-[#e2e8e7]'
+    : 'border-l-4 border-transparent text-[#b9c7c4] hover:bg-[#1f2a28] hover:text-[#e2e8e7]';
+  const active =
+    'border-l-4 border-[#0d9488] bg-[#0d9488]/20 pl-2 font-medium text-[#0d9488]';
+  const activeRoute = navLinkActive(pathname, SETTINGS_NAV.href);
+
+  return (
+    <Link
+      href={SETTINGS_NAV.href}
+      onClick={onNavigate}
+      className={`${baseRow} ${activeRoute ? active : inactive}`}
+    >
+      <span className='w-6 shrink-0 text-center text-base' aria-hidden>
+        {SETTINGS_NAV.icon}
+      </span>
+      <span>{SETTINGS_NAV.label}</span>
+    </Link>
   );
 }
 
@@ -179,6 +214,11 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
             variant='drawer'
           />
           <NavDivider />
+          <SettingsNavLink
+            pathname={pathname}
+            onNavigate={closeMenu}
+            variant='drawer'
+          />
           <button
             type='button'
             onClick={() => {
@@ -212,6 +252,8 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
           </nav>
 
           <div className='border-t border-[#1f2a28] p-4'>
+            <SettingsNavLink pathname={pathname} variant='sidebar' />
+            <NavDivider />
             <button
               type='button'
               onClick={() => {

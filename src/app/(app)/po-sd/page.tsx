@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { redirect } from 'next/navigation';
 
 import { formatIznosEurHr } from '@/lib/format-hr';
+import { findOpcinaBySifra } from '@/lib/opcine';
 import { getPausalRazred2026 } from '@/lib/pausal-tax';
 import {
   applyPoSdOnboardingPrimici,
@@ -29,7 +30,7 @@ export default async function PoSdPage({
   const [{ data: profil }, kprZbroj] = await Promise.all([
     supabase
       .from('profiles')
-      .select('naziv_obrta, oib, adresa, godisnji_primici_prosle_godine')
+      .select('naziv_obrta, oib, adresa, opcina, sifra_opcine, godisnji_primici_prosle_godine')
       .eq('id', user.id)
       .maybeSingle(),
     zbrojiKprZaGodinu(supabase, user.id, godina),
@@ -42,6 +43,8 @@ export default async function PoSdPage({
   );
 
   const razred = getPausalRazred2026(zbroj.ukupno);
+  const opcina = findOpcinaBySifra(profil?.sifra_opcine);
+  const opcinaNaziv = opcina?.naziv ?? profil?.opcina ?? null;
   const godineOpcije = Array.from({ length: 7 }, (_, i) => {
     const y = new Date().getFullYear() - i;
     return y;
@@ -108,6 +111,14 @@ export default async function PoSdPage({
               <dt>Adresa</dt>
               <dd className='text-right text-[#e2e8e7]'>
                 {profil?.adresa ?? '—'}
+              </dd>
+            </div>
+            <div className='flex justify-between gap-4'>
+              <dt>Općina/Grad za PO-SD</dt>
+              <dd className='text-right text-[#e2e8e7]'>
+                {profil?.sifra_opcine
+                  ? `${profil.sifra_opcine} ${opcinaNaziv ? `— ${opcinaNaziv}` : ''}`
+                  : '—'}
               </dd>
             </div>
           </dl>

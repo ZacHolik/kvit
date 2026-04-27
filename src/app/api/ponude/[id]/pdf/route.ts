@@ -28,7 +28,7 @@ export async function GET(
       .single(),
     supabase
       .from('profiles')
-      .select('naziv_obrta, oib, adresa, iban')
+      .select('naziv_obrta, oib, adresa, ulica, postanski_broj, grad, iban')
       .eq('id', user.id)
       .maybeSingle(),
   ]);
@@ -60,6 +60,9 @@ export async function GET(
         nazivObrta: profil?.naziv_obrta ?? '',
         oib: profil?.oib ?? '',
         adresa: profil?.adresa ?? null,
+        ulica: profil?.ulica ?? null,
+        postanskiBroj: profil?.postanski_broj ?? null,
+        grad: profil?.grad ?? null,
         iban: profil?.iban ?? null,
       },
       footerText: 'Ponuda nije fiskalizirani račun. Iznosi su informativni do prihvaćanja ponude.',

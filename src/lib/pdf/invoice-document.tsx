@@ -212,6 +212,9 @@ export type InvoiceProfilPdf = {
   nazivObrta: string;
   oib: string;
   adresa: string | null;
+  ulica?: string | null;
+  postanskiBroj?: string | null;
+  grad?: string | null;
   /** Bez razmaka; prikaz samo ako nije prazno. */
   iban: string | null;
 };
@@ -274,6 +277,19 @@ function dash(v: string | null | undefined): string {
   return t ? t : '—';
 }
 
+function issuerAddressLines(profil: InvoiceProfilPdf): string[] {
+  const street = profil.ulica?.trim();
+  const cityLine = [profil.postanskiBroj?.trim(), profil.grad?.trim()]
+    .filter(Boolean)
+    .join(' ');
+
+  if (street || cityLine) {
+    return [street, cityLine].filter((line): line is string => Boolean(line));
+  }
+
+  return profil.adresa?.trim() ? [profil.adresa.trim()] : [];
+}
+
 export function InvoiceDocument({
   documentTitle = 'Račun',
   brojRacuna,
@@ -295,6 +311,7 @@ export function InvoiceDocument({
 }: InvoicePdfData) {
   const brojZaPrikaz = formatBrojRacunaZaPdf(brojRacuna);
   const ibanZaPrikaz = profil.iban?.replace(/\s/g, '').trim();
+  const issuerLines = issuerAddressLines(profil);
 
   return (
     <Document>
@@ -303,8 +320,12 @@ export function InvoiceDocument({
           {/* Izdavatelj — podaci iz Supabase profiles */}
           <View style={styles.issuerBlock}>
             <Text style={styles.issuerName}>{dash(profil.nazivObrta)}</Text>
+            {issuerLines.map((line) => (
+              <Text style={styles.issuerLine} key={line}>
+                {line}
+              </Text>
+            ))}
             <Text style={styles.issuerLine}>OIB: {dash(profil.oib)}</Text>
-            <Text style={styles.issuerLine}>{dash(profil.adresa)}</Text>
             {ibanZaPrikaz ? (
               <Text style={styles.issuerLine}>IBAN: {ibanZaPrikaz}</Text>
             ) : null}

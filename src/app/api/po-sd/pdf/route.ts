@@ -1,6 +1,7 @@
 import { renderToStream } from '@react-pdf/renderer';
 import { NextResponse } from 'next/server';
 
+import { findOpcinaBySifra } from '@/lib/opcine';
 import { getPausalRazred2026 } from '@/lib/pausal-tax';
 import { PoSdDocument } from '@/lib/pdf/po-sd-document';
 import {
@@ -26,7 +27,7 @@ export async function GET(request: Request) {
   const [{ data: profil }, kprZbroj] = await Promise.all([
     supabase
       .from('profiles')
-      .select('naziv_obrta, oib, adresa, godisnji_primici_prosle_godine')
+      .select('naziv_obrta, oib, adresa, opcina, sifra_opcine, godisnji_primici_prosle_godine')
       .eq('id', user.id)
       .maybeSingle(),
     zbrojiKprZaGodinu(supabase, user.id, godina),
@@ -39,11 +40,14 @@ export async function GET(request: Request) {
   );
 
   const razred = getPausalRazred2026(zbroj.ukupno);
+  const opcina = findOpcinaBySifra(profil?.sifra_opcine);
   const doc = PoSdDocument({
     godina,
     nazivObrta: profil?.naziv_obrta ?? '—',
     oib: profil?.oib ?? '—',
     adresa: profil?.adresa ?? null,
+    sifraOpcine: profil?.sifra_opcine ?? null,
+    nazivOpcine: opcina?.naziv ?? profil?.opcina ?? null,
     gotovina: zbroj.gotovina,
     bezgotovinsko: zbroj.bezgotovinsko,
     ukupnoPrimici: zbroj.ukupno,

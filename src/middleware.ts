@@ -19,7 +19,7 @@ const AUTH_PUBLIC_PREFIXES = [
 /**
  * Session required for all routes except: `/` (landing), `/vodici`, `/alati`,
  * auth flows below, `/api/*` (handlers enforce auth), and PWA manifest. App UI
- * lives under `/dashboard`, `/racuni`, `/ponude`, `/kupci`, `/stavke`, `/kpr`, `/po-sd`, `/asistent`.
+ * lives under `/dashboard`, `/racuni`, `/ponude`, `/kupci`, `/stavke`, `/kpr`, `/po-sd`, `/asistent`, `/postavke`.
  */
 /** Rute aplikacije koje zahtijevaju dovršen onboarding (naziv obrta u profilu). */
 function requiresCompletedProfile(pathname: string) {
@@ -32,6 +32,7 @@ function requiresCompletedProfile(pathname: string) {
     '/kpr',
     '/po-sd',
     '/asistent',
+    '/postavke',
   ] as const;
   return roots.some(
     (p) => pathname === p || pathname.startsWith(`${p}/`),

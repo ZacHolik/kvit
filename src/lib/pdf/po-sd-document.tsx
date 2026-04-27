@@ -95,6 +95,8 @@ export type PoSdPdfPayload = {
   nazivObrta: string;
   oib: string;
   adresa: string | null;
+  sifraOpcine?: string | null;
+  nazivOpcine?: string | null;
   gotovina: number;
   bezgotovinsko: number;
   ukupnoPrimici: number;
@@ -109,6 +111,8 @@ export function PoSdDocument({
   nazivObrta,
   oib,
   adresa,
+  sifraOpcine,
+  nazivOpcine,
   gotovina,
   bezgotovinsko,
   ukupnoPrimici,
@@ -141,13 +145,21 @@ export function PoSdDocument({
             <Text style={styles.labelCell}>OIB</Text>
             <Text style={styles.valueCell}>{oib || '—'}</Text>
           </View>
-          <View style={styles.rowLast}>
+          <View style={styles.row}>
             <Text style={styles.labelCell}>Sjedište / adresa</Text>
             <Text
               style={styles.valueCell}
               hyphenationCallback={noHyphenation}
             >
               {adresa?.trim() ? adresa.trim() : '—'}
+            </Text>
+          </View>
+          <View style={styles.rowLast}>
+            <Text style={styles.labelCell}>Šifra općine/grada za PO-SD</Text>
+            <Text style={styles.valueCell}>
+              {sifraOpcine?.trim()
+                ? `${sifraOpcine.trim()}${nazivOpcine ? ` — ${nazivOpcine}` : ''}`
+                : '—'}
             </Text>
           </View>
         </View>

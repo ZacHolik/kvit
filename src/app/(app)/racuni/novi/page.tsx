@@ -50,6 +50,9 @@ type ProfilePreview = {
   oib: string | null;
   iban: string | null;
   adresa: string | null;
+  ulica: string | null;
+  postanski_broj: string | null;
+  grad: string | null;
 };
 
 function createEmptyItem(): InvoiceItemForm {
@@ -129,7 +132,7 @@ export default function NoviRacunPage() {
           .order('naziv', { ascending: true }),
         supabase
           .from('profiles')
-          .select('naziv_obrta, oib, iban, adresa')
+          .select('naziv_obrta, oib, iban, adresa, ulica, postanski_broj, grad')
           .eq('id', user.id)
           .maybeSingle(),
       ]);
@@ -838,6 +841,23 @@ export default function NoviRacunPage() {
           </div>
         </form>
 
+        {profile?.iban ? (
+          <p className='font-body rounded-xl border border-[#0d9488]/40 bg-[#0d9488]/10 px-4 py-3 text-sm text-[#b9c7c4]'>
+            IBAN za plaćanje:{' '}
+            <span className='font-semibold text-[#e2e8e7]'>
+              {profile.iban.replace(/\s/g, '')}
+            </span>
+          </p>
+        ) : (
+          <p className='font-body rounded-xl border border-amber-500/40 bg-amber-500/10 px-4 py-3 text-sm text-amber-100'>
+            ⚠️ Dodaj IBAN u{' '}
+            <Link href='/postavke' className='font-semibold underline'>
+              Postavkama
+            </Link>{' '}
+            da bi barkod bio vidljiv na PDF-u.
+          </p>
+        )}
+
         {previewOpen ? (
           <div className='fixed inset-0 z-50 overflow-y-auto bg-black/70 px-4 py-8'>
             <div className='mx-auto max-w-4xl rounded-2xl border border-[#1f2a28] bg-[#0b0f0e] p-4 shadow-2xl sm:p-6'>
@@ -868,8 +888,17 @@ export default function NoviRacunPage() {
                 <div className='flex flex-col justify-between gap-6 border-b border-black pb-5 sm:flex-row'>
                   <div>
                     <p className='font-bold'>{profile?.naziv_obrta || 'Moj obrt'}</p>
+                    <p className='text-sm'>
+                      {profile?.ulica || profile?.adresa || '—'}
+                    </p>
+                    {profile?.postanski_broj || profile?.grad ? (
+                      <p className='text-sm'>
+                        {[profile?.postanski_broj, profile?.grad]
+                          .filter(Boolean)
+                          .join(' ')}
+                      </p>
+                    ) : null}
                     <p className='text-sm'>OIB: {profile?.oib || '—'}</p>
-                    <p className='text-sm'>{profile?.adresa || '—'}</p>
                     {profile?.iban ? (
                       <p className='text-sm'>IBAN: {profile.iban}</p>
                     ) : null}
