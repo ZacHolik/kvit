@@ -3,7 +3,7 @@ import type { MetadataRoute } from 'next';
 import { CANONICAL_SITE_ORIGIN, VODICI_ENTRIES } from '@/lib/vodici-config';
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  /** Uvijek apex domena — neovisno o NEXT_PUBLIC_APP_URL (npr. app.kvit.online). */
+  /** Uvijek apex domena — neovisno o NEXT_PUBLIC_APP_URL (npr. app.kvik.online). */
   const base = CANONICAL_SITE_ORIGIN;
   const lastModified = new Date();
 

@@ -8,7 +8,7 @@ export const metadata: Metadata = {
 };
 
 const updatedAt = '27. travnja 2026.';
-const contactEmail = 'privacy@kvit.online';
+const contactEmail = 'privacy@kvik.online';
 
 const toc = [
   ['voditelj-obrade', 'Voditelj obrade'],
@@ -49,7 +49,7 @@ export default function PrivacyPage() {
           <p className='font-body mt-5 max-w-3xl text-base leading-relaxed text-[#b9c7c4]'>
             Ova Politika privatnosti objašnjava kako Kvit prikuplja, koristi,
             pohranjuje i štiti osobne podatke korisnika aplikacije i javnih
-            stranica na kvit.online, u skladu s Općom uredbom o zaštiti podataka
+            stranica na kvik.online, u skladu s Općom uredbom o zaštiti podataka
             (GDPR) i primjenjivim propisima Republike Hrvatske.
           </p>
         </header>
@@ -85,7 +85,7 @@ export default function PrivacyPage() {
               </h2>
               <p className='font-body mt-4 leading-relaxed text-[#d5dfdd]'>
                 Voditelj obrade osobnih podataka je Kvit, digitalna usluga
-                dostupna na domeni kvit.online. Za pitanja o privatnosti,
+                dostupna na domeni kvik.online. Za pitanja o privatnosti,
                 ostvarivanje GDPR prava ili sigurnosne upite možeš nas
                 kontaktirati na{' '}
                 <a

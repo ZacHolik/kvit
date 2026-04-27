@@ -1,9 +1,9 @@
 /** Canonical marketing origin (sitemap, robots, OG, JSON-LD) — uvijek apex domena. */
-export const CANONICAL_SITE_ORIGIN = 'https://kvit.online';
+export const CANONICAL_SITE_ORIGIN = 'https://kvik.online';
 
 /**
  * Javna baza URL-a za SEO (og:url, sitemap, JSON-LD, robots).
- * Deploy na app.kvit.online ne smije ući u sitemap — normaliziramo na kvit.online.
+ * Deploy na app.kvik.online ne smije ući u sitemap — normaliziramo na kvik.online.
  */
 export function getSiteUrl(): string {
   const raw = process.env.NEXT_PUBLIC_APP_URL?.replace(/\/$/, '') || '';
@@ -12,7 +12,7 @@ export function getSiteUrl(): string {
   }
   try {
     const url = new URL(raw);
-    if (url.hostname === 'app.kvit.online') {
+    if (url.hostname === 'app.kvik.online') {
       return CANONICAL_SITE_ORIGIN;
     }
   } catch {

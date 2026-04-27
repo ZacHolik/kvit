@@ -8,7 +8,7 @@ export const metadata: Metadata = {
 };
 
 const updatedAt = '27. travnja 2026.';
-const contactEmail = 'support@kvit.online';
+const contactEmail = 'support@kvik.online';
 
 const toc = [
   ['pruzatelj', 'Pružatelj usluge'],
@@ -85,7 +85,7 @@ export default function TermsPage() {
               </h2>
               <p className='font-body mt-4 leading-relaxed text-[#d5dfdd]'>
                 Pružatelj usluge je Kvit, digitalna aplikacija dostupna na
-                domeni kvit.online. Za pitanja o ovim Uvjetima korištenja možeš
+                domeni kvik.online. Za pitanja o ovim Uvjetima korištenja možeš
                 nas kontaktirati na{' '}
                 <a
                   href={`mailto:${contactEmail}`}
