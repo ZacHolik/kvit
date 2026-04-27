@@ -74,7 +74,7 @@ export async function GET(request: Request) {
       );
   const poSdSifraOpcine = useBusinessAddress
     ? profil?.sifra_opcine
-    : (profil?.vlasnik_sifra_opcine ?? profil?.sifra_opcine);
+    : profil?.vlasnik_sifra_opcine;
   const opcina = findOpcinaBySifra(poSdSifraOpcine);
   const doc = PoSdDocument({
     godina,

@@ -236,9 +236,10 @@ export function PoSdDocument({
 
         <Text style={styles.note}>
           Ova isprava je informativna i ne zamjenjuje službeni obrazac PO-SD u
-          sustavu ePorezna. Prirez na dohodak ovisi o opcini prebivališta — nije
-          uključen. Za sezonski rad, mirovanje obrta ili posebne olakšice koristi
-          službene kalkulatore u ePoreznoj.
+          sustavu ePorezna. Paušalni porez iznosi 12% na paušalnu osnovicu i
+          jednak je za sve paušaliste u Hrvatskoj bez obzira na općinu. Lokalne
+          porezne stope koje su zamijenile prirez od 2024. ne primjenjuju se na
+          paušalno oporezivanje.
         </Text>
       </Page>
     </Document>

@@ -77,7 +77,7 @@ export default async function PoSdPage({
       );
   const poSdSifraOpcine = useBusinessAddress
     ? profil?.sifra_opcine
-    : (profil?.vlasnik_sifra_opcine ?? profil?.sifra_opcine);
+    : profil?.vlasnik_sifra_opcine;
   const opcina = findOpcinaBySifra(poSdSifraOpcine);
   const opcinaNaziv = opcina?.naziv ?? (useBusinessAddress ? profil?.opcina : null);
   const godineOpcije = Array.from({ length: 7 }, (_, i) => {
@@ -225,8 +225,10 @@ export default async function PoSdPage({
             </p>
           )}
           <p className='font-body mt-4 text-xs leading-relaxed text-[#94a3a0]'>
-            {/* TODO: Uvesti izračun prireza po općini kada budemo imali adresu prebivališta. */}
-            Prirez na dohodak ovisi o općini — nije uključen u procjenu.
+            Napomena: Paušalni porez iznosi 12% na paušalnu osnovicu i jednak
+            je za sve paušaliste u Hrvatskoj bez obzira na općinu. Lokalne
+            porezne stope koje su zamijenile prirez od 2024. ne primjenjuju se
+            na paušalno oporezivanje.
           </p>
         </section>
 
