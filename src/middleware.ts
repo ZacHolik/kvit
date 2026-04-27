@@ -49,6 +49,9 @@ function isPublicPath(pathname: string) {
   if (pathname === '/alati' || pathname.startsWith('/alati/')) {
     return true;
   }
+  if (pathname === '/privacy' || pathname === '/uvjeti') {
+    return true;
+  }
   if (pathname === '/manifest.json') {
     return true;
   }

@@ -23,6 +23,7 @@ export default function RegisterPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [acceptedLegalTerms, setAcceptedLegalTerms] = useState(false);
   /** Honeypot — ostaje prazno; botovi ga često popune. */
   const [kvitHpConfirm, setKvitHpConfirm] = useState('');
   const [error, setError] = useState('');
@@ -68,6 +69,13 @@ export default function RegisterPage() {
 
     if (password !== confirmPassword) {
       setError('Lozinke se ne podudaraju.');
+      return;
+    }
+
+    if (!acceptedLegalTerms) {
+      setError(
+        'Za registraciju je potrebno prihvatiti uvjete i politiku privatnosti.',
+      );
       return;
     }
 
@@ -157,6 +165,7 @@ export default function RegisterPage() {
                 setEmail('');
                 setPassword('');
                 setConfirmPassword('');
+                setAcceptedLegalTerms(false);
                 setKvitHpConfirm('');
               }}
             >
@@ -251,6 +260,37 @@ export default function RegisterPage() {
               <div ref={turnstileContainerRef} />
             </div>
           ) : null}
+
+          <label className='font-body flex gap-3 rounded-xl border border-[#2a3734] bg-[#0b0f0e] p-4 text-sm leading-relaxed text-[#d5dfdd]'>
+            <input
+              required
+              type='checkbox'
+              checked={acceptedLegalTerms}
+              onChange={(event) => setAcceptedLegalTerms(event.target.checked)}
+              className='mt-1 h-4 w-4 rounded border-[#2a3734] accent-[#0d9488]'
+            />
+            <span>
+              Prihvaćam{' '}
+              <Link
+                href='/uvjeti'
+                className='font-semibold text-[#5eead4] hover:underline'
+                target='_blank'
+                rel='noopener noreferrer'
+              >
+                Uvjete korištenja
+              </Link>{' '}
+              i{' '}
+              <Link
+                href='/privacy'
+                className='font-semibold text-[#5eead4] hover:underline'
+                target='_blank'
+                rel='noopener noreferrer'
+              >
+                Politiku privatnosti
+              </Link>
+              .
+            </span>
+          </label>
 
           {error ? (
             <p className='font-body rounded-lg border border-red-500/30 bg-red-500/10 p-3 text-sm text-red-200'>

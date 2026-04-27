@@ -797,14 +797,14 @@ export default function LandingPage() {
           </div>
           <ul className='footer-links'>
             <li>
-              <a href={TALLY} target='_blank' rel='noopener noreferrer'>
-                Uvjeti korištenja
-              </a>
+              <Link href='/privacy'>
+                Privatnost
+              </Link>
             </li>
             <li>
-              <a href={TALLY} target='_blank' rel='noopener noreferrer'>
-                Privatnost
-              </a>
+              <Link href='/uvjeti'>
+                Uvjeti korištenja
+              </Link>
             </li>
             <li>
               <a href={TALLY} target='_blank' rel='noopener noreferrer'>
