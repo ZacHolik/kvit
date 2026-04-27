@@ -3,8 +3,8 @@ import { NextResponse } from 'next/server';
 
 import { createClient } from '@/lib/supabase/server';
 
-/** Sažeta interna knowledge base (Kvit vodiči/alati); bez vanjskih konkurentnih portala. */
-const SYSTEM_PROMPT = `Ti si Kvit AI asistent za hrvatske paušalne obrtnike.
+/** Sažeta interna knowledge base (Kvik vodiči/alati); bez vanjskih konkurentnih portala. */
+const SYSTEM_PROMPT = `Ti si Kvik AI asistent za hrvatske paušalne obrtnike.
 
 JEZIK I TON:
 - Odgovaraj ISKLJUČIVO na hrvatskom standardnom jeziku
@@ -377,7 +377,7 @@ Bitno je razlikovat
 
 ## https://kvik.online/vodici/alati-za-pausalne-obrtnike
 
-Postoje deseci besplatnih alata za paušalne obrtnike. Kalkulator ovdje, uplatnica tamo, checklista negdje drugdje. Otvoriš pet tabova, prekopiraš broj iz jednog u drugi, i na kraju opet nisi siguran je li sve točno. Kvit radi drugačije — umjesto zbirke izoliranih alata, nudi jedan sustav koji zna tko si i koliko zarađuješ.
+Postoje deseci besplatnih alata za paušalne obrtnike. Kalkulator ovdje, uplatnica tamo, checklista negdje drugdje. Otvoriš pet tabova, prekopiraš broj iz jednog u drugi, i na kraju opet nisi siguran je li sve točno. Kvik radi drugačije — umjesto zbirke izoliranih alata, nudi jedan sustav koji zna tko si i koliko zarađuješ.
 Brojke i rokove koje spominjemo (limit od **60.000 €** primitaka za PDV prag, kvartalne iznose poreza, doprinose **290,98 €** mjesečno) usklađeni su s našim vodičima i alatima za 2026.: [paušalni obrt 2026.](https://kvik.online/vodici/pausalni-obrt-vodic), [doprinosi](https://kvik.online/vodici/doprinosi) i [kalkulator paušalnog poreza](https://kvik.online/alati/kalkulator-poreza).
 ## Što drugi nude — izolirani alati
 Ostali izolirani alati na webu nude korisne stvari, ali svaki za sebe. Ti si veza između njih — ručno, svaki put:
@@ -388,7 +388,7 @@ Ostali izolirani alati na webu nude korisne stvari, ali svaki za sebe. Ti si vez
 
 ## https://kvik.online/vodici/kpr-knjiga-prometa
 
-Pojam **KPR knjiga prometa paušalisti** zvuči birokratski, ali u praksi je to tvoj dnevnik zarade: što si naplatio, kada i kojim putem. Bez KPR-a ne možeš točno ispunjavati [PO-SD](https://kvik.online/vodici/po-sd-obrazac) niti dokazati primitke u slučaju kontrole. Zato ga trebaš shvatiti kao alat, ne kao kaznu. Ako koristiš [Kvit](https://kvik.online/register), dio unosa može biti automatski vezan uz [izdavanje računa](https://kvik.online/vodici/izdavanje-racuna).
+Pojam **KPR knjiga prometa paušalisti** zvuči birokratski, ali u praksi je to tvoj dnevnik zarade: što si naplatio, kada i kojim putem. Bez KPR-a ne možeš točno ispunjavati [PO-SD](https://kvik.online/vodici/po-sd-obrazac) niti dokazati primitke u slučaju kontrole. Zato ga trebaš shvatiti kao alat, ne kao kaznu. Ako koristiš [Kvik](https://kvik.online/register), dio unosa može biti automatski vezan uz [izdavanje računa](https://kvik.online/vodici/izdavanje-racuna).
 ## Što je KPR?
 Knjiga prometa računa služi poreznim tijelima i tebi: iz nje se vidi koliko si ostvario primitaka kroz godinu i kako su raspoređeni između gotovinskog i bezgotovinskog kanala. To su iste brojke koje kasnije traži PO-SD. Drugim riječima, KPR je izvor istine za godišnji izvještaj — ako je KPR netočan, cijela godišnja slika je pomačena.
 ## Što se upisuje
@@ -446,7 +446,7 @@ Ograničenje je manjak fleksibiln
 Ako tražiš odgovor na pitanje **PO-SD obrazac kako ispuniti**, ovaj vodič prolazi cijeli životni ciklus obrasca: što predstavlja, koji je rok, kako povezuješ podatke s [KPR knjigom prometa](https://kvik.online/vodici/kpr-knjiga-prometa) i kako izbjegavati tipične greške. Paušalni obrt 2026. i dalje zahtijeva disciplinu u evidenciji — bez nje PO-SD postaje noćna mora umjesto rutine.
 ## Što je PO-SD?
 PO-SD je godišnji izvještaj o paušalnom dohotku i uplaćenom paušalnom porezu na dohodak. Drugim riječima, državi jednom godišnje pokazuješ koliko si naplatio primitaka i koliko si poreza stvarno platio kroz kvartale. Obrazac povezuje realne primitke iz poslovanja s razredima i obračunom koji si već primjenjivao tijekom godine.
-Bez točnog KPR-a teško ispunjavaš PO-SD: brojke moraju biti konzistentne s računima i bankovnim izvodima. Zato mnogi paušalisti prvo srede digitalni KPR u Kvitu, pa tek onda prelaze na PO-SD generiran iz istih podataka.
+Bez točnog KPR-a teško ispunjavaš PO-SD: brojke moraju biti konzistentne s računima i bankovnim izvodima. Zato mnogi paušalisti prvo srede digitalni KPR u Kviku, pa tek onda prelaze na PO-SD generiran iz istih podataka.
 ## Rok predaje
 Standardni rok za prethodnu godinu
 
