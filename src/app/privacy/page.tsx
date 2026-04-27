@@ -33,7 +33,7 @@ export default function PrivacyPage() {
           href='/'
           className='font-body text-sm font-semibold text-[#5eead4] transition hover:text-[#99f6e4]'
         >
-          ← Natrag na Kvit
+          ← Natrag na Kvik
         </Link>
 
         <header className='mt-8 rounded-3xl border border-[#1f2a28] bg-[#111716] p-6 shadow-xl shadow-black/25 sm:p-10'>
@@ -47,7 +47,7 @@ export default function PrivacyPage() {
             Politika privatnosti
           </h1>
           <p className='font-body mt-5 max-w-3xl text-base leading-relaxed text-[#b9c7c4]'>
-            Ova Politika privatnosti objašnjava kako Kvit prikuplja, koristi,
+            Ova Politika privatnosti objašnjava kako Kvik prikuplja, koristi,
             pohranjuje i štiti osobne podatke korisnika aplikacije i javnih
             stranica na kvik.online, u skladu s Općom uredbom o zaštiti podataka
             (GDPR) i primjenjivim propisima Republike Hrvatske.
@@ -84,7 +84,7 @@ export default function PrivacyPage() {
                 1. Voditelj obrade
               </h2>
               <p className='font-body mt-4 leading-relaxed text-[#d5dfdd]'>
-                Voditelj obrade osobnih podataka je Kvit, digitalna usluga
+                Voditelj obrade osobnih podataka je Kvik, digitalna usluga
                 dostupna na domeni kvik.online. Za pitanja o privatnosti,
                 ostvarivanje GDPR prava ili sigurnosne upite možeš nas
                 kontaktirati na{' '}
@@ -175,7 +175,7 @@ export default function PrivacyPage() {
                 4. Kako koristimo podatke
               </h2>
               <ul className='font-body mt-4 list-disc space-y-3 pl-6 leading-relaxed text-[#d5dfdd]'>
-                <li>Za pružanje, održavanje i sigurnost Kvit usluge.</li>
+                <li>Za pružanje, održavanje i sigurnost Kvik usluge.</li>
                 <li>
                   Za izradu računa, ponuda, KPR-a, PO-SD-a i drugih evidencija
                   koje korisnik samostalno generira u aplikaciji.
@@ -243,7 +243,7 @@ export default function PrivacyPage() {
                 <li>
                   <strong>Anthropic</strong> za AI asistenta; razgovori se šalju
                   radi generiranja odgovora i ne koriste se za trajnu pohranu
-                  razgovora u Kvitu osim ako korisnik izričito zatraži funkciju
+                  razgovora u Kviku osim ako korisnik izričito zatraži funkciju
                   koja to zahtijeva.
                 </li>
                 <li>
@@ -352,7 +352,7 @@ export default function PrivacyPage() {
                 10. Maloljetnici
               </h2>
               <p className='font-body mt-4 leading-relaxed text-[#d5dfdd]'>
-                Kvit nije namijenjen osobama mlađim od 18 godina. Ako saznamo
+                Kvik nije namijenjen osobama mlađim od 18 godina. Ako saznamo
                 da je račun otvorila maloljetna osoba bez valjane pravne osnove,
                 poduzet ćemo razumne korake za ograničenje ili brisanje računa.
               </p>
@@ -366,7 +366,7 @@ export default function PrivacyPage() {
                 11. Izmjene politike
               </h2>
               <p className='font-body mt-4 leading-relaxed text-[#d5dfdd]'>
-                Kvit može povremeno ažurirati ovu Politiku privatnosti.
+                Kvik može povremeno ažurirati ovu Politiku privatnosti.
                 Materijalne izmjene objavit ćemo na ovoj stranici i, kada je
                 primjenjivo, poslati obavijest emailom najmanje 30 dana prije
                 stupanja izmjena na snagu.

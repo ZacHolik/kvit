@@ -34,7 +34,7 @@ export default function TermsPage() {
           href='/'
           className='font-body text-sm font-semibold text-[#5eead4] transition hover:text-[#99f6e4]'
         >
-          ← Natrag na Kvit
+          ← Natrag na Kvik
         </Link>
 
         <header className='mt-8 rounded-3xl border border-[#1f2a28] bg-[#111716] p-6 shadow-xl shadow-black/25 sm:p-10'>
@@ -48,7 +48,7 @@ export default function TermsPage() {
             Uvjeti korištenja
           </h1>
           <p className='font-body mt-5 max-w-3xl text-base leading-relaxed text-[#b9c7c4]'>
-            Ovi Uvjeti korištenja uređuju pristup i korištenje Kvit aplikacije,
+            Ovi Uvjeti korištenja uređuju pristup i korištenje Kvik aplikacije,
             javnih stranica i povezanih digitalnih usluga. Molimo pročitaj ih
             pažljivo prije registracije ili korištenja aplikacije.
           </p>
@@ -84,7 +84,7 @@ export default function TermsPage() {
                 1. Pružatelj usluge
               </h2>
               <p className='font-body mt-4 leading-relaxed text-[#d5dfdd]'>
-                Pružatelj usluge je Kvit, digitalna aplikacija dostupna na
+                Pružatelj usluge je Kvik, digitalna aplikacija dostupna na
                 domeni kvik.online. Za pitanja o ovim Uvjetima korištenja možeš
                 nas kontaktirati na{' '}
                 <a
@@ -105,14 +105,14 @@ export default function TermsPage() {
                 2. Opis usluge i namjena
               </h2>
               <p className='font-body mt-4 leading-relaxed text-[#d5dfdd]'>
-                Kvit je SaaS aplikacija namijenjena prvenstveno hrvatskim
+                Kvik je SaaS aplikacija namijenjena prvenstveno hrvatskim
                 paušalnim obrtnicima. Usluga omogućuje izradu i slanje računa i
                 ponuda, vođenje kupaca i stavki, generiranje poslovnih
                 evidencija poput KPR-a i PO-SD-a, korištenje edukativnih vodiča
                 i alata te pristup AI asistentu za opće informativne odgovore.
               </p>
               <p className='font-body mt-4 leading-relaxed text-[#d5dfdd]'>
-                Kvit ne zamjenjuje poreznog savjetnika, računovođu, odvjetnika
+                Kvik ne zamjenjuje poreznog savjetnika, računovođu, odvjetnika
                 ili službeno tumačenje nadležnih tijela. Korisnik je odgovoran
                 provjeriti je li konkretna poslovna odluka usklađena s njegovom
                 situacijom i važećim propisima.
@@ -128,7 +128,7 @@ export default function TermsPage() {
               </h2>
               <p className='font-body mt-4 leading-relaxed text-[#d5dfdd]'>
                 Registracijom korisničkog računa, pristupom aplikaciji ili
-                korištenjem bilo koje Kvit funkcionalnosti korisnik potvrđuje da
+                korištenjem bilo koje Kvik funkcionalnosti korisnik potvrđuje da
                 je pročitao, razumio i prihvatio ove Uvjete korištenja te
                 povezanu{' '}
                 <Link
@@ -178,7 +178,7 @@ export default function TermsPage() {
                 5. Dopuštena i zabranjena upotreba
               </h2>
               <p className='font-body mt-4 leading-relaxed text-[#d5dfdd]'>
-                Kvit se smije koristiti samo za zakonito poslovanje, vlastite
+                Kvik se smije koristiti samo za zakonito poslovanje, vlastite
                 poslovne evidencije i funkcionalnosti dostupne unutar
                 odabranog plana.
               </p>
@@ -252,10 +252,10 @@ export default function TermsPage() {
                 <li>
                   Korisnik je odgovoran za točnost poslovnih, poreznih,
                   fiskalizacijskih i certifikacijskih podataka koje unosi u
-                  Kvit.
+                  Kvik.
                 </li>
                 <li>
-                  Kvit poduzima razumne tehničke i organizacijske mjere za
+                  Kvik poduzima razumne tehničke i organizacijske mjere za
                   komunikaciju s povezanim servisima, ali ne odgovara za greške,
                   nedostupnost ili odbijanja koja nastanu u komunikaciji s FINA
                   sustavima, Poreznom upravom, informacijskim posrednicima ili
@@ -279,7 +279,7 @@ export default function TermsPage() {
               </h2>
               <ul className='font-body mt-4 list-disc space-y-3 pl-6 leading-relaxed text-[#d5dfdd]'>
                 <li>
-                  Cilj Kvita je održavati dostupnost usluge od 99,5% na
+                  Cilj Kvika je održavati dostupnost usluge od 99,5% na
                   mjesečnoj razini, uz razumne iznimke za održavanje i više sile.
                 </li>
                 <li>
@@ -287,7 +287,7 @@ export default function TermsPage() {
                   to razumno moguće.
                 </li>
                 <li>
-                  Kvit nije odgovoran za prekide uzrokovane događajima izvan
+                  Kvik nije odgovoran za prekide uzrokovane događajima izvan
                   razumne kontrole, uključujući force majeure, kvarove
                   infrastrukture trećih strana, prekide interneta, regulatorne
                   odluke ili sigurnosne incidente vanjskih sustava.
@@ -304,12 +304,12 @@ export default function TermsPage() {
               </h2>
               <p className='font-body mt-4 leading-relaxed text-[#d5dfdd]'>
                 U najvećoj mjeri dopuštenoj primjenjivim pravom, ukupna
-                odgovornost Kvita prema korisniku ograničena je na iznos
+                odgovornost Kvika prema korisniku ograničena je na iznos
                 pretplate koju je korisnik stvarno platio za uslugu u razdoblju
                 na koje se zahtjev odnosi.
               </p>
               <p className='font-body mt-4 leading-relaxed text-[#d5dfdd]'>
-                Kvit ne odgovara za indirektnu, posljedičnu, posebnu ili
+                Kvik ne odgovara za indirektnu, posljedičnu, posebnu ili
                 izgubljenu dobit, gubitak prihoda, gubitak podataka, porezne
                 kazne nastale zbog netočnih korisničkih podataka ili odluka koje
                 korisnik donese bez neovisne provjere.
@@ -325,8 +325,8 @@ export default function TermsPage() {
               </h2>
               <ul className='font-body mt-4 list-disc space-y-3 pl-6 leading-relaxed text-[#d5dfdd]'>
                 <li>
-                  Kvit kod, dizajn, sučelje, vodiči, tekstovi, vizualni elementi
-                  i poslovna logika vlasništvo su Kvita ili njegovih licencora.
+                  Kvik kod, dizajn, sučelje, vodiči, tekstovi, vizualni elementi
+                  i poslovna logika vlasništvo su Kvika ili njegovih licencora.
                 </li>
                 <li>
                   Korisnički podaci, računi, ponude, evidencije i dokumenti koje
@@ -334,7 +334,7 @@ export default function TermsPage() {
                   korisnika.
                 </li>
                 <li>
-                  Korisnik Kvitu daje ograničeno pravo obrade korisničkih
+                  Korisnik Kviku daje ograničeno pravo obrade korisničkih
                   podataka isključivo radi pružanja, održavanja i poboljšanja
                   usluge u skladu s Politikom privatnosti.
                 </li>
@@ -348,10 +348,10 @@ export default function TermsPage() {
               <h2 className='font-heading text-2xl font-bold'>11. Raskid</h2>
               <ul className='font-body mt-4 list-disc space-y-3 pl-6 leading-relaxed text-[#d5dfdd]'>
                 <li>
-                  Korisnik može otkazati korištenje Kvita u bilo kojem trenutku.
+                  Korisnik može otkazati korištenje Kvika u bilo kojem trenutku.
                 </li>
                 <li>
-                  Kvit može privremeno suspendirati ili trajno zatvoriti račun
+                  Kvik može privremeno suspendirati ili trajno zatvoriti račun
                   korisnika koji krši ove Uvjete, ugrožava sigurnost sustava,
                   unosi lažne podatke ili koristi uslugu nezakonito.
                 </li>
@@ -371,7 +371,7 @@ export default function TermsPage() {
                 12. Izmjene uvjeta
               </h2>
               <p className='font-body mt-4 leading-relaxed text-[#d5dfdd]'>
-                Kvit može ažurirati ove Uvjete korištenja. Materijalne izmjene
+                Kvik može ažurirati ove Uvjete korištenja. Materijalne izmjene
                 objavit ćemo na ovoj stranici i, kada je primjenjivo, poslati
                 obavijest emailom najmanje 30 dana prije stupanja izmjena na
                 snagu.

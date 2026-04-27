@@ -48,7 +48,7 @@ export const VODICI_CATEGORY_LABELS: Record<VodiciCategoryId, string> = {
 /**
  * Redoslijed unutar kategorije = redoslijed kartica na /vodici.
  * Brojke i rokovi u tekstovima usklađeni su sa službenim izvorima (Porezna uprava, NN)
- * i s Kvit vodičima / alatima — bez vanjskih edukativnih portala.
+ * i s Kvik vodičima / alatima — bez vanjskih edukativnih portala.
  */
 export const VODICI_ENTRIES: VodiciEntry[] = [
   // =========================================================================
@@ -190,7 +190,7 @@ export const VODICI_ENTRIES: VodiciEntry[] = [
       'Alati za paušalne obrtnike 2026. — zašto izolirani alati nisu dovoljni',
     shortTitle: 'Alati za paušalne obrtnike',
     description:
-      'Kalkulator, uplatnica, checklista i PO-SD generator kao izolirani alati ne rade umjesto tebe. Kako Kvit povezuje sve u jedan sustav.',
+      'Kalkulator, uplatnica, checklista i PO-SD generator kao izolirani alati ne rade umjesto tebe. Kako Kvik povezuje sve u jedan sustav.',
     readingMinutes: 9,
     category: 'osnove',
     primaryKeyword: 'alati za paušalne obrtnike',

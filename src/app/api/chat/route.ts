@@ -267,7 +267,7 @@ Ako ste do sada izdavali samo transakcijske računa i to putem Worda, Excela ili
 ---
 
 
-# IZVOR: KVIT.ONLINE/VODICI
+# IZVOR: KVIK.ONLINE/VODICI
 
 ## https://kvik.online/vodici/pausalni-obrt-vodic
 
