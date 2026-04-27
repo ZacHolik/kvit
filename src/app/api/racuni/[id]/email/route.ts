@@ -162,11 +162,11 @@ export async function POST(
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      from: process.env.RESEND_FROM_EMAIL || 'Kvit <noreply@kvik.online>',
+      from: process.env.RESEND_FROM_EMAIL || 'Kvik <noreply@kvik.online>',
       to,
       subject:
         body.subject?.trim() ||
-        `Račun broj ${racun.broj_racuna} - ${profil?.naziv_obrta ?? 'Kvit'}`,
+        `Račun broj ${racun.broj_racuna} - ${profil?.naziv_obrta ?? 'Kvik'}`,
       text: body.message?.trim() || 'U prilogu se nalazi vaš račun.',
       attachments: [
         {
