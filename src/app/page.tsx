@@ -363,12 +363,6 @@ export default function LandingPage() {
             </div>
             <div className='stat-label'>za izdati račun</div>
           </div>
-          <div className='stat'>
-            <div className='stat-num'>
-              4.9<span>★</span>
-            </div>
-            <div className='stat-label'>ocjena korisnika</div>
-          </div>
         </div>
 
         <section className='section' id='prednosti'>
@@ -573,58 +567,11 @@ export default function LandingPage() {
         </section>
 
         <section className='section section--tight-top'>
-          <div className='section-tag'>Korisnici</div>
-          <div className='section-title'>Što kažu paušalisti?</div>
+          <div className='section-tag'>Lansiranje</div>
+          <div className='section-title'>Pridruži se među prvima.</div>
           <p className='section-sub section-sub--accent'>
-            Kvik koristi 2.500+ paušalnih obrtnika u Hrvatskoj
+            Aplikacija je u fazi lansiranja. Prvih 50 prijava – 3 mjeseca gratis!
           </p>
-          <div className='testi-grid'>
-            <div className='testi'>
-              <div className='stars'>★★★★★</div>
-              <p>
-                &quot;Konačno nešto što razumijem. Račun napravim za 30
-                sekundi, KPR se sam popuni. Nemam pojma zašto sam ovo ručno radio
-                godinama.&quot;
-              </p>
-              <div className='testi-author'>
-                <div className='testi-avatar'>MB</div>
-                <div>
-                  <div className='testi-name'>Marko B.</div>
-                  <div className='testi-role'>Grafički dizajner, Zagreb</div>
-                </div>
-              </div>
-            </div>
-            <div className='testi'>
-              <div className='stars'>★★★★★</div>
-              <p>
-                &quot;PO-SD sam uvijek radila sa strahom da ću nešto krivo
-                upisati. Sad samo kliknem i gotovo. Doslovno sam se prestala
-                stresirati.&quot;
-              </p>
-              <div className='testi-author'>
-                <div className='testi-avatar'>AK</div>
-                <div>
-                  <div className='testi-name'>Ana K.</div>
-                  <div className='testi-role'>Prevoditeljica, Split</div>
-                </div>
-              </div>
-            </div>
-            <div className='testi'>
-              <div className='stars'>★★★★★</div>
-              <p>
-                &quot;AI asistent me spasio kad sam imao pitanje o
-                fiskalizaciji u nedjelju navečer. Odgovor za 5 sekundi, bez
-                čekanja na knjigovođu.&quot;
-              </p>
-              <div className='testi-author'>
-                <div className='testi-avatar'>IP</div>
-                <div>
-                  <div className='testi-name'>Ivan P.</div>
-                  <div className='testi-role'>IT freelancer, Osijek</div>
-                </div>
-              </div>
-            </div>
-          </div>
         </section>
 
         <section className='section' id='cijene'>
