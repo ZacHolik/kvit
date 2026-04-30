@@ -69,7 +69,7 @@ export default function DoprinosiUzPosaoPage() {
       ]}
       faq={faq}
       related={[
-        { href: vodiciHref('doprinosi'), title: 'Doprinosi za paušalni obrt' },
+        { href: vodiciHref('doprinosi'), title: 'Doprinosi' },
         { href: vodiciHref('otvaranje-obrta'), title: 'Otvaranje obrta' },
         { href: vodiciHref('pausalni-obrt-za-it-freelancere'), title: 'Paušalni obrt za IT freelancere' },
         { href: vodiciHref('rokovi-placanja'), title: 'Rokovi plaćanja' },

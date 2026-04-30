@@ -69,7 +69,7 @@ export default function Fiskalizacija20Page() {
       ]}
       faq={faq}
       related={[
-        { href: vodiciHref('fina-certifikat-fiskalizacija'), title: 'FINA certifikat za fiskalizaciju' },
+        { href: vodiciHref('fina-certifikat-fiskalizacija'), title: 'FINA certifikat fiskalizacija' },
         { href: vodiciHref('izdavanje-racuna'), title: 'Izdavanje računa u paušalu' },
         { href: vodiciHref('pausalni-obrt-za-it-freelancere'), title: 'Paušalni obrt za IT freelancere' },
         { href: vodiciHref('pausalni-obrt-za-kozmeticare'), title: 'Paušalni obrt za kozmetičare' },

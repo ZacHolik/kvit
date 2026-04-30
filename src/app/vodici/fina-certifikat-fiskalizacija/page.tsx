@@ -64,7 +64,7 @@ export default function FinaCertifikatFiskalizacijaPage() {
       ]}
       faq={faq}
       related={[
-        { href: vodiciHref('fiskalizacija-20'), title: 'Fiskalizacija 2.0 za paušaliste' },
+        { href: vodiciHref('fiskalizacija-20'), title: 'Fiskalizacija 2.0' },
         { href: vodiciHref('izdavanje-racuna'), title: 'Izdavanje računa u paušalnom obrtu' },
         { href: vodiciHref('izdavanje-racuna-vodic'), title: 'Vodič za izdavanje računa' },
         { href: vodiciHref('pausalni-obrt-vodic'), title: 'Paušalni obrt 2026.' },

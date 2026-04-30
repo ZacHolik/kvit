@@ -71,7 +71,7 @@ export default function RokoviPlacanjaPage() {
       ]}
       faq={faq}
       related={[
-        { href: vodiciHref('doprinosi'), title: 'Doprinosi za paušalni obrt' },
+        { href: vodiciHref('doprinosi'), title: 'Doprinosi' },
         { href: vodiciHref('po-sd-obrazac'), title: 'PO-SD obrazac' },
         { href: vodiciHref('doprinosi-uz-posao'), title: 'Doprinosi uz zaposlenje' },
       ]}
