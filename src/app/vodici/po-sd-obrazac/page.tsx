@@ -74,6 +74,7 @@ export default function PoSdObrazacPage() {
         { href: vodiciHref('kpr-knjiga-prometa'), title: 'KPR knjiga prometa' },
         { href: vodiciHref('pausalni-obrt-vodic'), title: 'Paušalni obrt 2026.' },
         { href: vodiciHref('pausalni-obrt-vs-doo'), title: 'Paušalni obrt vs d.o.o.' },
+        { href: vodiciHref('rokovi-placanja'), title: 'Rokovi plaćanja' },
       ]}
       howTo={{
         name: 'Kako ispuniti i predati PO-SD obrazac',

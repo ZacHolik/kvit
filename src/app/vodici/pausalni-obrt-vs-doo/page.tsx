@@ -74,6 +74,7 @@ export default function PauzalniObrtVsDooPage() {
         { href: vodiciHref('pausalni-obrt-za-it-freelancere'), title: 'Paušalni obrt za IT freelancere' },
         { href: vodiciHref('doprinosi'), title: 'Doprinosi za paušalni obrt' },
         { href: vodiciHref('otvaranje-obrta'), title: 'Kako otvoriti paušalni obrt' },
+        { href: vodiciHref('zatvaranje-obrta'), title: 'Zatvaranje obrta' },
       ]}
       howTo={{
         name: 'Procjena treba li d.o.o.',

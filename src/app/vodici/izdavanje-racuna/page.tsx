@@ -111,7 +111,9 @@ export default function IzdavanjeRacunaPage() {
         <Link href={vodiciHref('po-sd-obrazac')}>PO-SD obrascu</Link>. U vodiču prolazimo
         elemente koje moraš znati napamet, vezu s{' '}
         <Link href={vodiciHref('fiskalizacija-20')}>fiskalizacijom 2.0</Link> i razliku
-        između običnog računa i eRačuna. Za širi kontekst vidi i{' '}
+        između običnog računa i eRačuna. Za detaljniji operativni walkthrough pogledaj i{' '}
+        <Link href={vodiciHref('izdavanje-racuna-vodic')}>vodič za izdavanje računa</Link>.
+        Za širi kontekst vidi i{' '}
         <Link href={vodiciHref('pausalni-obrt-vodic')}>paušalni obrt 2026.</Link>
       </p>
 

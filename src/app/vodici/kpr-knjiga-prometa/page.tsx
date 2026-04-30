@@ -74,6 +74,7 @@ export default function KprKnjigaPrometaPage() {
         { href: vodiciHref('izdavanje-racuna'), title: 'Izdavanje računa' },
         { href: vodiciHref('pausalni-obrt-za-it-freelancere'), title: 'Paušalni obrt za IT freelancere' },
         { href: vodiciHref('doprinosi'), title: 'Doprinosi' },
+        { href: vodiciHref('kpr-online-generator'), title: 'KPR online generator' },
       ]}
       howTo={{
         name: 'Vođenje KPR-a za paušalni obrt',

@@ -129,7 +129,7 @@ export default function DoprinosiPage() {
       </p>
       <p>
         Tablični prikaz olakšava planiranje cashflowa: ako znaš da svakog 12. u mjesecu
-        ide renta, a dopinosi do 15., možeš si složiti jednostavan kalendar. Alati poput
+        ide renta, a doprinosi do 15., možeš si složiti jednostavan kalendar. Alati poput
         Kvika mogu poslati podsjetnik prije roka.
       </p>
 
@@ -164,7 +164,9 @@ export default function DoprinosiPage() {
         Kad si zaposlen kod drugog poslodavca, dio doprinosa već ide kroz plaću. Obrt
         tada često prelazi na godišnji obračun prema rješenju Porezne. To nije isto što
         i mjesečna tri uplate — zato ne kopiraj savjete kolega bez provjere njihovog
-        statusa. U takvim slučajevima individualni savjet štedi novac.
+        statusa. U takvim slučajevima individualni savjet štedi novac. Za taj scenarij
+        pročitaj i{' '}
+        <Link href={vodiciHref('doprinosi-uz-posao')}>doprinosi uz zaposlenje</Link>.
       </p>
 
       <h2 id='planiranje'>Planiranje cashflowa</h2>
