@@ -42,7 +42,7 @@ const faq = [
   {
     question: 'Trebam li fiskalizaciju kao IT freelancer?',
     answer:
-      'Ako naplaćuješ fizičkim osobama u krajnjoj potrošnji (B2C), transakijski računi podliježu fiskalizaciji 2.0 od 2026. Za čiste B2B eRačune prema firmama rokovi su drugačiji — vidi vodič o fiskalizaciji i svoj konkretan mix klijenata.',
+      'Ako naplaćuješ fizičkim osobama u krajnjoj potrošnji (B2C), transakcijski računi podliježu fiskalizaciji 2.0 od 2026. Za čiste B2B eRačune prema firmama rokovi su drugačiji — vidi vodič o fiskalizaciji i svoj konkretan mix klijenata.',
   },
   {
     question: 'Kada se isplati prijeći na d.o.o.?',

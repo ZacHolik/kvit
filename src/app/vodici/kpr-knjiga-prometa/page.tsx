@@ -120,7 +120,7 @@ export default function KprKnjigaPrometaPage() {
         ostvario primitaka kroz godinu i kako su raspoređeni između gotovinskog i
         bezgotovinskog kanala. To su iste brojke koje kasnije traži PO-SD. Drugim
         riječima, KPR je izvor istine za godišnji izvještaj — ako je KPR netočan, cijela
-        godišnja slika je pomačena.
+        godišnja slika je pomaknuta.
       </p>
 
       <h2 id='sto-upisati'>Što se upisuje</h2>

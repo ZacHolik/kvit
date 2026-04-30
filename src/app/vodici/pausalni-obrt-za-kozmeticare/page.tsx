@@ -171,7 +171,7 @@ export default function PauzalniObrtZaKozmeticarePage() {
 
       <h2 id='fiskal-gotovina'>Fiskalizacija za gotovinu (obvezna!)</h2>
       <p>
-        Gotovina je srž beauty poslovanja. Od 2026. transakijski računi u B2C
+        Gotovina je srž beauty poslovanja. Od 2026. transakcijski računi u B2C
         često moraju proći kroz fiskalizaciju 2.0. To znači program koji šalje
         podatke Poreznoj, JIR/ZKI gdje je primjenjivo, i arhivu. Nemoj se
         oslanjati na ručno pisane blokove bez digitalnog traga ako zakon

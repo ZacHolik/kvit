@@ -128,7 +128,7 @@ export default function DoprinosiUzPosaoPage() {
         rješenja</strong>.
       </p>
       <p>
-        Praktična posljedica: kalendar u glavi mora imati dva modusa. U samostalom
+        Praktična posljedica: kalendar u glavi mora imati dva modusa. U samostalnom
         obrtu si naviknuo na 15. u mjesecu; uz zaposlenje moraš paziti na pismo
         Porezne, jer se iznos ne čita iz &quot;isti kao prošli mjesec&quot;, nego iz
         primitaka koje si ostvario kroz obrt u protekloj godini. Zato je KPR i zbroj

@@ -226,7 +226,7 @@ export default function PauzalniObrtVsDooPage() {
         Praktičan redoslijed: (1) zatvori otvorene projekte na obrtu ili
         prebaci ih ugovorno na novi subjekt, (2) osnuj d.o.o. i otvori račun
         tvrtke, (3) obavijesti klijente o novim podacima za eRačun, (4) uskladi
-        zadnje obrtevske izvještaje, (5) pokreni knjige u d.o.o. Svaki korak ima
+        zadnje obrtničke izvještaje, (5) pokreni knjige u d.o.o. Svaki korak ima
         rok — ne raditi ga vikend prije isteka PDV obveze.
       </p>
       <p>

@@ -42,7 +42,7 @@ const faq = [
   {
     question: 'Trebam li fiskalizaciju za vjenčanja?',
     answer:
-      'Vjenčanja su tipično B2C gotovina ili kartica. Ako izdaješ transakijski račun fizičkoj osobi, fiskalizacija 2.0 često je obvezna od 2026. Priprema unaprijed štedi stres na sam dan snimanja.',
+      'Vjenčanja su tipično B2C gotovina ili kartica. Ako izdaješ transakcijski račun fizičkoj osobi, fiskalizacija 2.0 često je obvezna od 2026. Priprema unaprijed štedi stres na sam dan snimanja.',
   },
   {
     question: 'Kako fakturirati inozemnom klijentu?',

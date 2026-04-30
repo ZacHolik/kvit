@@ -129,7 +129,7 @@ export default function Fiskalizacija20Page() {
       <p>
         Prva faza fiskalizacije fokusirala se uglavnom na fiskalne blagajne i
         klasične maloprodajne tokove. Fiskalizacija 2.0 širi se na širi krug računa,
-        uključujući transakijske račune u krajnjoj potrošnji te sustav eRačuna između
+        uključujući transakcijske račune u krajnjoj potrošnji te sustav eRačuna između
         tvrtki i s javnim sektorom. Za paušaliste je važno znati koji se dio odnosi
         upravo na njihov način poslovanja, a ne samo na velike trgovce.
       </p>
@@ -139,7 +139,7 @@ export default function Fiskalizacija20Page() {
         Prema javno dostupnim sažecima pravila koja se često citiraju u zajednici
         paušalista: od 1.1.2026. paušalni obrt nije obveznik izdavanja eRačuna, ali
         jest obveznik zaprimanja eRačuna od drugih poslovnih subjekata; istodobno je
-        obveznik fiskalizirati transakijske račune u krajnjoj potrošnji. Izdavanje
+        obveznik fiskalizirati transakcijske račune u krajnjoj potrošnji. Izdavanje
         eRačuna u B2B kontekstu za paušaliste često se veže uz datum 1.1.2027. Pravila
         se mogu pojašnjavati podzakonskim aktima — prati službene izvore Porezne
         uprave.
