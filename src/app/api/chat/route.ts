@@ -554,6 +554,21 @@ export async function POST(request: Request) {
       );
     }
 
+    // UI šalje početnu dobrodošlicu kao assistant — Anthropic zahtijeva da `messages`
+    // počinje s user i da se role izmjenjuju; inače API vraća grešku.
+    const firstUserIndex = filteredMessages.findIndex(
+      (message) => message.role === 'user',
+    );
+    const anthropicMessages =
+      firstUserIndex >= 0 ? filteredMessages.slice(firstUserIndex) : [];
+
+    if (anthropicMessages.length === 0) {
+      return NextResponse.json(
+        { error: 'Poruka je prazna. Pošalji pitanje.' },
+        { status: 400 },
+      );
+    }
+
     const anthropic = new Anthropic({
       apiKey: process.env.ANTHROPIC_API_KEY,
     });
@@ -563,7 +578,7 @@ export async function POST(request: Request) {
       system: SYSTEM_PROMPT,
       max_tokens: 1200,
       stream: true,
-      messages: filteredMessages.map((message) => ({
+      messages: anthropicMessages.map((message) => ({
         role: message.role,
         content: message.content,
       })),
