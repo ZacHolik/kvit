@@ -1,10 +1,15 @@
 'use client';
 
-import { FormEvent, useMemo, useRef, useState } from 'react';
+import Link from 'next/link';
+import { FormEvent, useEffect, useMemo, useRef, useState } from 'react';
 import type { Components } from 'react-markdown';
 import ReactMarkdown from 'react-markdown';
 
+import { createClient } from '@/lib/supabase/client';
+
 import { ShareAiResponse } from './share-ai-response';
+
+const GUEST_FREE_QUESTIONS_LS = 'kvik-asistent-guest-questions-used';
 
 const ASSISTANT_MD_COMPONENTS: Components = {
   p: ({ children }) => (
@@ -15,14 +20,10 @@ const ASSISTANT_MD_COMPONENTS: Components = {
   ),
   em: ({ children }) => <em className='italic text-[#d5dfdd]'>{children}</em>,
   ul: ({ children }) => (
-    <ul className='my-2 list-disc space-y-1 pl-5 marker:text-[#64756f]'>
-      {children}
-    </ul>
+    <ul className='my-2 list-disc space-y-1 pl-5 marker:text-[#64756f]'>{children}</ul>
   ),
   ol: ({ children }) => (
-    <ol className='my-2 list-decimal space-y-1 pl-5 marker:text-[#64756f]'>
-      {children}
-    </ol>
+    <ol className='my-2 list-decimal space-y-1 pl-5 marker:text-[#64756f]'>{children}</ol>
   ),
   li: ({ children }) => <li className='leading-relaxed'>{children}</li>,
   h1: ({ children }) => (
@@ -112,6 +113,18 @@ function lastUserQuestionBefore(messages: ChatMessage[], assistantIndex: number)
   return null;
 }
 
+function readGuestQuestionCount(): number {
+  if (typeof window === 'undefined') {
+    return 0;
+  }
+  const raw = window.localStorage.getItem(GUEST_FREE_QUESTIONS_LS);
+  const n = Number.parseInt(raw ?? '0', 10);
+  if (!Number.isFinite(n) || n < 0) {
+    return 0;
+  }
+  return Math.min(n, 99);
+}
+
 export default function AsistentPage() {
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
@@ -124,10 +137,44 @@ export default function AsistentPage() {
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const scrollContainerRef = useRef<HTMLDivElement | null>(null);
+  const [authReady, setAuthReady] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [guestQuestionsUsed, setGuestQuestionsUsed] = useState(0);
+
+  useEffect(() => {
+    const supabase = createClient();
+    let cancelled = false;
+
+    const refresh = () => {
+      void supabase.auth.getUser().then(({ data: { user } }) => {
+        if (cancelled) {
+          return;
+        }
+        setIsLoggedIn(!!user);
+        if (!user) {
+          setGuestQuestionsUsed(readGuestQuestionCount());
+        }
+        setAuthReady(true);
+      });
+    };
+
+    refresh();
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange(() => {
+      refresh();
+    });
+    return () => {
+      cancelled = true;
+      subscription.unsubscribe();
+    };
+  }, []);
+
+  const guestQuotaExhausted = authReady && !isLoggedIn && guestQuestionsUsed >= 3;
 
   const canSubmit = useMemo(
-    () => input.trim().length > 0 && !isLoading,
-    [input, isLoading],
+    () => input.trim().length > 0 && !isLoading && !guestQuotaExhausted,
+    [input, isLoading, guestQuotaExhausted],
   );
 
   const scrollToBottom = () => {
@@ -143,6 +190,22 @@ export default function AsistentPage() {
     const cleanText = text.trim();
     if (!cleanText || isLoading) {
       return;
+    }
+
+    const supabase = createClient();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    const isGuest = !user;
+
+    if (isGuest) {
+      const used = readGuestQuestionCount();
+      if (used >= 3) {
+        setError(
+          'Iskoristio si besplatna pitanja. Registriraj se za neograničen pristup.',
+        );
+        return;
+      }
     }
 
     setError('');
@@ -200,7 +263,13 @@ export default function AsistentPage() {
         scrollToBottom();
       }
 
-      if (assistantText.trim()) {
+      if (isGuest && assistantText.trim()) {
+        const next = readGuestQuestionCount() + 1;
+        window.localStorage.setItem(GUEST_FREE_QUESTIONS_LS, String(next));
+        setGuestQuestionsUsed(next);
+      }
+
+      if (assistantText.trim() && !isGuest) {
         void fetch('/api/referral/record-activation', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -236,12 +305,34 @@ export default function AsistentPage() {
     <main className='min-h-screen bg-[#0b0f0e] px-4 py-8 text-[#e2e8e7] sm:px-6 lg:px-8'>
       <div className='mx-auto flex w-full max-w-4xl flex-col gap-5'>
         <header className='rounded-2xl border border-[#1f2a28] bg-[#111716] p-5 sm:p-6'>
-          <p className='font-body text-sm text-[#94a3a0]'>AI podrška za paušalce</p>
-          <h1 className='font-heading mt-2 text-2xl sm:text-3xl'>Kvik Asistent</h1>
-          <p className='font-body mt-3 text-sm text-[#b9c7c4]'>
-            Odgovori su optimizirani za hrvatske paušalne obrtnike i aktualna
-            pravila iz Kvik baze znanja.
-          </p>
+          <div className='flex flex-wrap items-start justify-between gap-3'>
+            <div>
+              <p className='font-body text-sm text-[#94a3a0]'>AI podrška za paušalce</p>
+              <h1 className='font-heading mt-2 text-2xl sm:text-3xl'>Kvik Asistent</h1>
+              <p className='font-body mt-3 text-sm text-[#b9c7c4]'>
+                Odgovori su optimizirani za hrvatske paušalne obrtnike i aktualna
+                pravila iz Kvik baze znanja.
+              </p>
+            </div>
+            {!isLoggedIn ? (
+              <Link
+                href='/login'
+                className='font-body shrink-0 rounded-lg border border-[#2a3734] px-3 py-2 text-sm text-[#d5dfdd] transition hover:border-[#0d9488]'
+              >
+                Prijavi se
+              </Link>
+            ) : null}
+          </div>
+          {authReady && !isLoggedIn ? (
+            <p className='font-body mt-3 text-xs text-[#94a3a0]'>
+              Besplatno do 3 pitanja po pregledniku (sessija).{' '}
+              {guestQuestionsUsed >= 3 ? null : (
+                <span>
+                  Iskorišteno: {guestQuestionsUsed} / 3
+                </span>
+              )}
+            </p>
+          ) : null}
         </header>
 
         <section className='rounded-2xl border border-[#1f2a28] bg-[#111716] p-3 sm:p-4'>
@@ -286,44 +377,60 @@ export default function AsistentPage() {
         </section>
 
         <section className='rounded-2xl border border-[#1f2a28] bg-[#111716] p-4'>
-          <div className='mb-3 flex flex-wrap gap-2'>
-            {STARTER_PROMPTS.map((prompt) => (
-              <button
-                key={prompt}
-                type='button'
-                disabled={isLoading}
-                onClick={() => sendMessage(prompt)}
-                className='font-body rounded-lg border border-[#2a3734] px-3 py-2 text-xs text-[#d5dfdd] transition hover:border-[#0d9488] disabled:cursor-not-allowed disabled:opacity-60'
-              >
-                {prompt}
-              </button>
-            ))}
-          </div>
-
-          <form onSubmit={handleSubmit} className='space-y-3'>
-            <textarea
-              rows={4}
-              value={input}
-              disabled={isLoading}
-              onChange={(event) => setInput(event.target.value)}
-              className='font-body w-full rounded-xl border border-[#2a3734] bg-[#0b0f0e] px-4 py-3 text-sm text-[#e2e8e7] outline-none transition focus:border-[#0d9488] disabled:opacity-70'
-              placeholder='Postavi pitanje (npr. “Koje su moje obveze ovaj mjesec?”)'
-            />
-            {error ? (
-              <p className='font-body rounded-lg border border-red-500/30 bg-red-500/10 p-3 text-sm text-red-200'>
-                {error}
+          {guestQuotaExhausted ? (
+            <div className='rounded-xl border border-amber-500/30 bg-amber-500/10 p-4 text-center'>
+              <p className='font-body text-sm text-amber-100'>
+                Iskoristio si besplatna pitanja. Registriraj se za neograničen pristup.
               </p>
-            ) : null}
-            <div className='flex justify-end'>
-              <button
-                type='submit'
-                disabled={!canSubmit}
-                className='font-body rounded-xl bg-[#0d9488] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#14b8a6] disabled:cursor-not-allowed disabled:opacity-60'
+              <Link
+                href='/register'
+                className='font-body mt-3 inline-flex rounded-xl bg-[#0d9488] px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-[#14b8a6]'
               >
-                {isLoading ? 'Generiram odgovor...' : 'Pošalji'}
-              </button>
+                Registriraj se →
+              </Link>
             </div>
-          </form>
+          ) : (
+            <>
+              <div className='mb-3 flex flex-wrap gap-2'>
+                {STARTER_PROMPTS.map((prompt) => (
+                  <button
+                    key={prompt}
+                    type='button'
+                    disabled={isLoading || guestQuotaExhausted}
+                    onClick={() => void sendMessage(prompt)}
+                    className='font-body rounded-lg border border-[#2a3734] px-3 py-2 text-xs text-[#d5dfdd] transition hover:border-[#0d9488] disabled:cursor-not-allowed disabled:opacity-60'
+                  >
+                    {prompt}
+                  </button>
+                ))}
+              </div>
+
+              <form onSubmit={handleSubmit} className='space-y-3'>
+                <textarea
+                  rows={4}
+                  value={input}
+                  disabled={isLoading || guestQuotaExhausted}
+                  onChange={(event) => setInput(event.target.value)}
+                  className='font-body w-full rounded-xl border border-[#2a3734] bg-[#0b0f0e] px-4 py-3 text-sm text-[#e2e8e7] outline-none transition focus:border-[#0d9488] disabled:opacity-70'
+                  placeholder='Postavi pitanje (npr. “Koje su moje obveze ovaj mjesec?”)'
+                />
+                {error ? (
+                  <p className='font-body rounded-lg border border-red-500/30 bg-red-500/10 p-3 text-sm text-red-200'>
+                    {error}
+                  </p>
+                ) : null}
+                <div className='flex justify-end'>
+                  <button
+                    type='submit'
+                    disabled={!canSubmit}
+                    className='font-body rounded-xl bg-[#0d9488] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#14b8a6] disabled:cursor-not-allowed disabled:opacity-60'
+                  >
+                    {isLoading ? 'Generiram odgovor...' : 'Pošalji'}
+                  </button>
+                </div>
+              </form>
+            </>
+          )}
         </section>
       </div>
     </main>

@@ -1,8 +1,6 @@
 import Anthropic from '@anthropic-ai/sdk';
 import { NextResponse } from 'next/server';
 
-import { createClient } from '@/lib/supabase/server';
-
 /** Sažeta interna knowledge base (Kvik vodiči/alati); bez vanjskih konkurentnih portala. */
 const SYSTEM_PROMPT = `Ti si Kvik AI asistent za hrvatske paušalne obrtnike.
 
@@ -526,15 +524,6 @@ type ChatMessage = {
 
 export async function POST(request: Request) {
   try {
-    const supabase = createClient();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-
-    if (!user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
-
     if (!process.env.ANTHROPIC_API_KEY) {
       return NextResponse.json(
         { error: 'Nedostaje ANTHROPIC_API_KEY u okruženju.' },
