@@ -1,7 +1,9 @@
 'use client';
 
 import Link from 'next/link';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { createElement, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+
+import { ValueGateExportModal } from '@/app/alati/_components/value-gate-export-modal';
 
 import {
   buildHub30EurCode,
@@ -19,7 +21,11 @@ const eur = new Intl.NumberFormat('hr-HR', {
   maximumFractionDigits: 2,
 });
 
-export function PlacanjeDoprinosaTool() {
+const TOOL_PATH = '/alati/placanje-doprinosa';
+const SHARE_ORIGIN = 'https://kvik.online';
+
+export function PlacanjeDoprinosaTool(props?: { toolReferralParam?: string | null }) {
+  const { toolReferralParam } = props ?? {};
   const session = useAlatiSession();
   const signedIn = session.status === 'signed_in';
   const isPro = signedIn && session.isPro;
@@ -31,6 +37,9 @@ export function PlacanjeDoprinosaTool() {
   const [platiteljLinija2, setPlatiteljLinija2] = useState('');
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [guestLocked, setGuestLocked] = useState(false);
+  const [gateModalOpen, setGateModalOpen] = useState(false);
+  const [myReferralCode, setMyReferralCode] = useState<string | null>(null);
+  const [pdfBusy, setPdfBusy] = useState(false);
 
   useEffect(() => {
     if (typeof window === 'undefined') {
@@ -40,6 +49,27 @@ export function PlacanjeDoprinosaTool() {
       setGuestLocked(true);
     }
   }, [session.status]);
+
+  useEffect(() => {
+    if (!signedIn || isPro) {
+      return;
+    }
+    let cancelled = false;
+    void (async () => {
+      try {
+        const res = await fetch('/api/referral/ensure-code', { credentials: 'same-origin' });
+        const body = (await res.json()) as { code?: string };
+        if (!cancelled && res.ok && body.code) {
+          setMyReferralCode(body.code);
+        }
+      } catch {
+        /* noop */
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [signedIn, isPro]);
 
   useEffect(() => {
     if (!prof) {
@@ -104,6 +134,36 @@ export function PlacanjeDoprinosaTool() {
     }
     setGuestLocked(true);
   }
+
+  const shareLinkFreeUser = myReferralCode
+    ? `${SHARE_ORIGIN}${TOOL_PATH}?ref=${encodeURIComponent(myReferralCode)}`
+    : `${SHARE_ORIGIN}${TOOL_PATH}`;
+
+  const downloadPdf = async () => {
+    setPdfBusy(true);
+    try {
+      const { downloadReactPdfClient } = await import('@/lib/alati/download-react-pdf-client');
+      const { DoprinosUplataPreviewDocument } = await import(
+        '@/lib/pdf/doprinos-uplata-preview-document'
+      );
+      await downloadReactPdfClient(
+        createElement(DoprinosUplataPreviewDocument, { hubCode }),
+        'kvik-doprinos-uplata-demo.pdf',
+      );
+    } finally {
+      setPdfBusy(false);
+    }
+  };
+
+  const onPdfClick = () => {
+    if (!signedIn) {
+      setGateModalOpen(true);
+      return;
+    }
+    if (isPro) {
+      void downloadPdf();
+    }
+  };
 
   if (session.status === 'guest' && guestLocked) {
     return (
@@ -236,6 +296,70 @@ export function PlacanjeDoprinosaTool() {
           </button>
         ) : null}
       </div>
+
+      {!(session.status === 'guest' && guestLocked) ? (
+        <div className='rounded-2xl border border-[#1f2a28] bg-[#111716] p-5 sm:p-6'>
+          <h2 className='font-heading text-lg font-semibold text-[#e2e8e7]'>PDF export</h2>
+          {signedIn && !isPro ? (
+            <div className='mt-4 rounded-xl border border-[#0d9488]/25 bg-[#0b0f0e] p-4'>
+              <p className='font-body text-sm font-medium text-[#e2e8e7]'>Želiš PDF export?</p>
+              <p className='font-body mt-2 text-sm text-[#94a3a0]'>
+                Pošalji link jednom prijatelju paušalistu → dobij PDF export + 1 tjedan PRO
+              </p>
+              <div className='mt-3 flex flex-wrap gap-2'>
+                <a
+                  href={`https://wa.me/?text=${encodeURIComponent(`Kvik alat za doprinose: ${shareLinkFreeUser}`)}`}
+                  target='_blank'
+                  rel='noopener noreferrer'
+                  className='rounded-lg border border-[#2a3734] px-3 py-2 text-xs text-[#d5dfdd]'
+                >
+                  📱 WhatsApp
+                </a>
+                <a
+                  href={`mailto:?subject=${encodeURIComponent('Kvik — doprinosi')}&body=${encodeURIComponent(shareLinkFreeUser)}`}
+                  className='rounded-lg border border-[#2a3734] px-3 py-2 text-xs text-[#d5dfdd]'
+                >
+                  📧 Email
+                </a>
+                <button
+                  type='button'
+                  onClick={() =>
+                    void navigator.clipboard.writeText(shareLinkFreeUser).catch(() => {})
+                  }
+                  className='rounded-lg border border-[#2a3734] px-3 py-2 text-xs text-[#d5dfdd]'
+                >
+                  🔗 Kopiraj link
+                </button>
+              </div>
+              <p className='font-body mt-4 text-sm text-[#94a3a0]'>
+                Ili:{' '}
+                <a href='/#cijene' className='font-semibold text-[#5eead4] underline'>
+                  nadogradi na PRO za 12€/mj
+                </a>
+              </p>
+            </div>
+          ) : null}
+          <button
+            type='button'
+            disabled={pdfBusy || (signedIn && !isPro)}
+            onClick={onPdfClick}
+            className='font-body mt-4 w-full rounded-xl bg-[#0d9488] px-4 py-3 text-sm font-semibold text-white transition hover:bg-[#14b8a6] disabled:cursor-not-allowed disabled:opacity-40 sm:w-auto'
+          >
+            {pdfBusy
+              ? 'Generiram PDF…'
+              : signedIn && !isPro
+                ? 'PDF (otključaj PRO ili dijeljenjem)'
+                : 'Preuzmi PDF'}
+          </button>
+        </div>
+      ) : null}
+
+      <ValueGateExportModal
+        open={gateModalOpen}
+        onClose={() => setGateModalOpen(false)}
+        refFromUrl={toolReferralParam}
+        toolPath={TOOL_PATH}
+      />
 
       <details className='rounded-xl border border-[#2a3734] bg-[#0b0f0e] p-4 text-xs text-[#94a3a0]'>
         <summary className='cursor-pointer font-medium text-[#b9c7c4]'>

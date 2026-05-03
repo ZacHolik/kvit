@@ -39,7 +39,7 @@ export function useAlatiSession(): AlatiSessionState {
 
     const { data: profil, error } = await supabase
       .from('profiles')
-      .select('oib, naziv_obrta, adresa, opcina, kvit_plan')
+      .select('oib, naziv_obrta, adresa, opcina, kvit_plan, pro_expires_at')
       .eq('id', user.id)
       .maybeSingle();
 
@@ -53,12 +53,16 @@ export function useAlatiSession(): AlatiSessionState {
       adresa?: string | null;
       opcina?: string | null;
       kvit_plan?: string | null;
+      pro_expires_at?: string | null;
     } | null;
+
+    const proUntil = row?.pro_expires_at ? new Date(row.pro_expires_at) : null;
+    const trialActive = proUntil != null && !Number.isNaN(proUntil.getTime()) && proUntil > new Date();
 
     setState({
       status: 'signed_in',
       userId: user.id,
-      isPro: row?.kvit_plan === 'pro',
+      isPro: row?.kvit_plan === 'pro' || trialActive,
       profile: row
         ? {
             oib: row.oib?.trim() ?? '',

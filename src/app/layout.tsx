@@ -4,6 +4,8 @@ import { DM_Sans, Syne } from 'next/font/google';
 import { Analytics } from '@vercel/analytics/next';
 import Script from 'next/script';
 
+import { getSiteUrl } from '@/lib/vodici-config';
+
 import './globals.css';
 
 const META_PIXEL_ID = '110959382772503';
@@ -38,6 +40,7 @@ const dmSans = DM_Sans({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(getSiteUrl()),
   title: 'Kvik – Paušalni obrt bez glavobolje',
   description:
     'Jedina aplikacija koja te vodi korak po korak kroz sve obveze paušalnog obrta. Bez papirologije, bez stresa, bez kazni.',

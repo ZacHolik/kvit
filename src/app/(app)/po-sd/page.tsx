@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 
+import { ToolRefTracker } from '@/app/alati/_components/tool-ref-tracker';
 import { formatIznosEurHr } from '@/lib/format-hr';
 import { findOpcinaBySifra } from '@/lib/opcine';
 import { getPausalRazred2026 } from '@/lib/pausal-tax';
@@ -10,6 +11,9 @@ import {
   zbrojiKprZaGodinu,
 } from '@/lib/po-sd-data';
 import { createClient } from '@/lib/supabase/server';
+
+import { PoSdPdfActions } from './po-sd-pdf-actions';
+import { PoSdReferralActivation } from './po-sd-referral-activation';
 
 function joinAddress(
   street?: string | null,
@@ -29,7 +33,7 @@ function joinAddress(
 export default async function PoSdPage({
   searchParams,
 }: {
-  searchParams: { year?: string };
+  searchParams: { year?: string; ref?: string | string[] };
 }) {
   const supabase = createClient();
   const {
@@ -41,6 +45,9 @@ export default async function PoSdPage({
   }
 
   const godina = normalizePoSdGodina(searchParams.year);
+  const rawRef = searchParams?.ref;
+  const refParam =
+    typeof rawRef === 'string' ? rawRef : Array.isArray(rawRef) ? rawRef[0] : undefined;
 
   const [{ data: profil }, kprZbroj] = await Promise.all([
     supabase
@@ -87,6 +94,8 @@ export default async function PoSdPage({
 
   return (
     <main className='min-h-screen bg-[#0b0f0e] px-4 py-8 text-[#e2e8e7] sm:px-6 lg:px-8'>
+      <PoSdReferralActivation />
+      <ToolRefTracker code={refParam} />
       <div className='mx-auto flex w-full max-w-3xl flex-col gap-6'>
         <header className='rounded-2xl border border-[#1f2a28] bg-[#111716] p-5 sm:p-6'>
           <p className='font-body text-sm text-[#94a3a0]'>
@@ -232,22 +241,7 @@ export default async function PoSdPage({
           </p>
         </section>
 
-        <section className='flex flex-wrap gap-3'>
-          <Link
-            href={`/api/po-sd/pdf?year=${godina}`}
-            target='_blank'
-            rel='noreferrer'
-            className='font-body inline-flex rounded-xl bg-[#0d9488] px-5 py-3 font-semibold text-white transition hover:bg-[#14b8a6]'
-          >
-            Preuzmi PDF
-          </Link>
-          <Link
-            href='/kpr'
-            className='font-body inline-flex rounded-xl border border-[#2a3734] px-5 py-3 text-[#d5dfdd] transition hover:border-[#0d9488]'
-          >
-            KPR knjiga
-          </Link>
-        </section>
+        <PoSdPdfActions year={godina} />
       </div>
     </main>
   );

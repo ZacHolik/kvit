@@ -8,6 +8,9 @@ const turnstileSiteKey =
     ? process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY.trim()
     : '';
 
+const UUID_RE =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+
 function buildEmailRedirectTo(): string {
   if (typeof window === 'undefined') {
     return '';
@@ -17,6 +20,39 @@ function buildEmailRedirectTo(): string {
     window.location.origin;
   const next = encodeURIComponent('/confirm-email?verified=1');
   return `${origin}/auth/callback?next=${next}`;
+}
+
+function readShareAnswerIdFromUrl(): string | undefined {
+  if (typeof window === 'undefined') {
+    return undefined;
+  }
+  const raw = new URLSearchParams(window.location.search).get('share')?.trim() ?? '';
+  if (raw && UUID_RE.test(raw)) {
+    return raw;
+  }
+  return undefined;
+}
+
+const REF_CODE_RE = /^[a-z0-9]{6}$/;
+
+function readReferralFriendCodeFromUrl(): string | undefined {
+  if (typeof window === 'undefined') {
+    return undefined;
+  }
+  const raw =
+    new URLSearchParams(window.location.search).get('ref')?.trim().toLowerCase() ?? '';
+  if (raw && REF_CODE_RE.test(raw)) {
+    return raw;
+  }
+  return undefined;
+}
+
+function readRegistrationSourceFromUrl(): string | undefined {
+  if (typeof window === 'undefined') {
+    return undefined;
+  }
+  const src = new URLSearchParams(window.location.search).get('src')?.trim().toLowerCase() ?? '';
+  return src === 'gate' ? 'tool_gate' : undefined;
 }
 
 export default function RegisterPage() {
@@ -96,6 +132,9 @@ export default function RegisterPage() {
           emailRedirectTo: buildEmailRedirectTo(),
           kvit_hp_confirm: kvikHpConfirm,
           turnstileToken: turnstileSiteKey ? turnstileToken : undefined,
+          shareAnswerId: readShareAnswerIdFromUrl(),
+          referralFriendCode: readReferralFriendCodeFromUrl(),
+          registrationSource: readRegistrationSourceFromUrl(),
         }),
       });
     } catch {

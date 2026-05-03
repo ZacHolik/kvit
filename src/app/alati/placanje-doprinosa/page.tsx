@@ -5,6 +5,7 @@ import Script from 'next/script';
 import { getSiteUrl } from '@/lib/vodici-config';
 
 import { AlatiBreadcrumb } from '../_components/alati-breadcrumb';
+import { ToolRefTracker } from '../_components/tool-ref-tracker';
 import { CtaRegister } from '../_components/cta-register';
 import { jsonLdSafe } from '../_components/json-ld';
 
@@ -28,7 +29,15 @@ export const metadata: Metadata = {
   },
 };
 
-export default function PlacanjeDoprinosaPage() {
+export default function PlacanjeDoprinosaPage({
+  searchParams,
+}: {
+  searchParams: { ref?: string | string[] };
+}) {
+  const rawRef = searchParams?.ref;
+  const refParam =
+    typeof rawRef === 'string' ? rawRef : Array.isArray(rawRef) ? rawRef[0] : undefined;
+
   const base = getSiteUrl();
   const pageUrl = `${base}/alati/placanje-doprinosa`;
 
@@ -65,7 +74,8 @@ export default function PlacanjeDoprinosaPage() {
           </h1>
           <p className='font-body mt-4 text-lg text-[#b9c7c4]'>{DESC}</p>
         </header>
-        <PlacanjeDoprinosaTool />
+        <ToolRefTracker code={refParam} />
+        <PlacanjeDoprinosaTool toolReferralParam={refParam} />
         <section className='mt-10 font-body text-sm text-[#94a3a0]'>
           <h2 className='font-heading text-base font-semibold text-[#e2e8e7]'>Povezano</h2>
           <ul className='mt-3 list-disc space-y-2 pl-5'>

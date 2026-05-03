@@ -43,12 +43,23 @@ export async function GET(request: Request) {
     supabase
       .from('profiles')
       .select(
-        'naziv_obrta, oib, adresa, ulica, postanski_broj, grad, opcina, sifra_opcine, vlasnik_ime, vlasnik_ulica, vlasnik_postanski_broj, vlasnik_grad, vlasnik_sifra_opcine, adresa_ista, godisnji_primici_prosle_godine',
+        'naziv_obrta, oib, adresa, ulica, postanski_broj, grad, opcina, sifra_opcine, vlasnik_ime, vlasnik_ulica, vlasnik_postanski_broj, vlasnik_grad, vlasnik_sifra_opcine, adresa_ista, godisnji_primici_prosle_godine, kvit_plan, pro_expires_at',
       )
       .eq('id', user.id)
       .maybeSingle(),
     zbrojiKprZaGodinu(supabase, user.id, godina),
   ]);
+
+  const proOk =
+    profil?.kvit_plan === 'pro' ||
+    (profil?.pro_expires_at &&
+      new Date(profil.pro_expires_at as string) > new Date());
+  if (!proOk) {
+    return NextResponse.json(
+      { error: 'PDF je dostupan uz PRO ili nagradni PRO pristup.' },
+      { status: 403 },
+    );
+  }
 
   const { zbroj, izvorOnboardinga } = applyPoSdOnboardingPrimici(
     godina,

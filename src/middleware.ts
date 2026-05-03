@@ -52,6 +52,12 @@ function isPublicPath(pathname: string) {
   if (pathname === '/privacy' || pathname === '/uvjeti') {
     return true;
   }
+  if (pathname === '/share' || pathname.startsWith('/share/')) {
+    return true;
+  }
+  if (pathname === '/r' || pathname.startsWith('/r/')) {
+    return true;
+  }
   if (pathname === '/manifest.json') {
     return true;
   }

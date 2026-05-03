@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
+import { EarlyAdopterHeroNote } from './early-adopter-hero-note';
 import { KVIK_LANDING_CSS } from './kvik-landing-css';
 
 const TALLY = 'https://tally.so/r/44or65';
@@ -32,6 +33,13 @@ const LANDING_RESPONSIVE_CSS = `
     border-color:var(--teal2);
     background:rgba(13,148,136,0.08);
   }
+}
+@keyframes kvikEarlyAdopterPulse{
+  0%,100%{opacity:1;filter:brightness(1)}
+  50%{opacity:0.88;filter:brightness(1.12)}
+}
+#kvik-landing .early-adopter-bar-fill{
+  animation:kvikEarlyAdopterPulse 1.35s ease-in-out infinite;
 }
 @media(max-width:640px){
   #kvik-landing nav{
@@ -284,10 +292,7 @@ export default function LandingPage() {
                 Kako radi
               </a>
             </div>
-            <p className='hero-note'>
-              Aplikacija je u fazi lansiranja. Prvih 50 prijava – 3 mjeseca
-              gratis!
-            </p>
+            <EarlyAdopterHeroNote layout='hero' />
           </div>
           <div className='hero-right'>
             <div className='phone-wrap'>
@@ -569,9 +574,7 @@ export default function LandingPage() {
         <section className='section section--tight-top'>
           <div className='section-tag'>Lansiranje</div>
           <div className='section-title'>Pridruži se među prvima.</div>
-          <p className='section-sub section-sub--accent'>
-            Aplikacija je u fazi lansiranja. Prvih 50 prijava – 3 mjeseca gratis!
-          </p>
+          <EarlyAdopterHeroNote layout='section' />
         </section>
 
         <section className='section' id='cijene'>
@@ -729,10 +732,7 @@ export default function LandingPage() {
             >
               Počni besplatno →
             </a>
-            <p className='cta-note'>
-              Aplikacija je u fazi lansiranja. Prvih 50 prijava – 3 mjeseca
-              gratis!
-            </p>
+            <EarlyAdopterHeroNote layout='cta' />
           </div>
         </div>
 

@@ -4,6 +4,8 @@ import { redirect } from 'next/navigation';
 import { formatDatumHr, formatIznosEurHr } from '@/lib/format-hr';
 import { createClient } from '@/lib/supabase/server';
 
+import { DashboardReferralSection } from './dashboard-referral-section';
+
 const PAUSAL_LIMIT = 60000;
 export const dynamic = 'force-dynamic';
 
@@ -247,6 +249,8 @@ export default async function DashboardPage() {
             </p>
           </article>
         </section>
+
+        <DashboardReferralSection />
 
         <section className='rounded-2xl border border-[#1f2a28] bg-[#111716] p-5 sm:p-6'>
           <div className='flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center'>

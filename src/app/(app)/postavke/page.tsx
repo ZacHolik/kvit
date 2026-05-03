@@ -71,6 +71,10 @@ export default function PostavkePage() {
   const [toast, setToast] = useState<{ type: 'success' | 'error'; message: string } | null>(
     null,
   );
+  const [priceLockBanner, setPriceLockBanner] = useState<{
+    locked: boolean;
+    amount: number | null;
+  }>({ locked: false, amount: null });
 
   useEffect(() => {
     let cancelled = false;
@@ -92,7 +96,7 @@ export default function PostavkePage() {
       const { data, error } = await supabase
         .from('profiles')
         .select(
-          'naziv_obrta, oib, iban, adresa, ulica, postanski_broj, grad, opcina, sifra_opcine, vlasnik_ime, vlasnik_ulica, vlasnik_postanski_broj, vlasnik_grad, vlasnik_sifra_opcine, vlasnik_ispostava_pu, adresa_ista, je_jedina_djelatnost, godisnji_primici_prosle_godine, ispostava_porezne',
+          'naziv_obrta, oib, iban, adresa, ulica, postanski_broj, grad, opcina, sifra_opcine, vlasnik_ime, vlasnik_ulica, vlasnik_postanski_broj, vlasnik_grad, vlasnik_sifra_opcine, vlasnik_ispostava_pu, adresa_ista, je_jedina_djelatnost, godisnji_primici_prosle_godine, ispostava_porezne, price_locked, locked_price',
         )
         .eq('id', user.id)
         .maybeSingle();
@@ -139,6 +143,10 @@ export default function PostavkePage() {
       });
       setMunicipalityQuery(opcinaNaziv);
       setOwnerMunicipalityQuery(ownerOpcinaNaziv);
+      setPriceLockBanner({
+        locked: Boolean(data?.price_locked),
+        amount: data?.locked_price != null ? Number(data.locked_price) : null,
+      });
       setIsLoading(false);
     }
 
@@ -283,6 +291,13 @@ export default function PostavkePage() {
             Postavke obrta
           </h1>
         </header>
+
+        {priceLockBanner.locked ? (
+          <section className='rounded-2xl border border-[#0d9488]/35 bg-[#0d9488]/10 p-4 font-body text-sm text-[#b9c7c4]'>
+            ✅ Cijena zaključana — {priceLockBanner.amount ?? 5.99}€/mj zauvijek (early
+            adopter referral).
+          </section>
+        ) : null}
 
         {toast ? (
           <p

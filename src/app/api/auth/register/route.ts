@@ -7,6 +7,9 @@ import { createServiceRoleClient } from '@/lib/supabase/service-role';
 
 const TURNSTILE_VERIFY = 'https://challenges.cloudflare.com/turnstile/v0/siteverify';
 
+const UUID_RE =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+
 type RegisterBody = {
   email?: string;
   password?: string;
@@ -14,7 +17,15 @@ type RegisterBody = {
   /** Honeypot — must stay empty (bots often fill hidden fields). */
   kvit_hp_confirm?: string;
   turnstileToken?: string;
+  /** Sloj 1: UUID dijeljenog AI odgovora s /share/[uuid] CTA. */
+  shareAnswerId?: string;
+  /** Sloj 3: referral kod s /r/[code] ili ?ref=. */
+  referralFriendCode?: string;
+  /** Sloj 2: nagrada PRO tjedan refereru kad se prijatelj registrira s value gate linka. */
+  registrationSource?: string;
 };
+
+const REF_CODE_RE = /^[a-z0-9]{6}$/;
 
 async function verifyTurnstile(token: string, remoteIp: string | undefined) {
   const secret = process.env.TURNSTILE_SECRET_KEY;
@@ -113,7 +124,26 @@ export async function POST(request: NextRequest) {
     auth: { persistSession: false, autoRefreshToken: false },
   });
 
-  const { error: signUpError } = await supabase.auth.signUp({
+  const shareAnswerIdRaw =
+    typeof body.shareAnswerId === 'string' ? body.shareAnswerId.trim() : '';
+  const shareAnswerId =
+    shareAnswerIdRaw && UUID_RE.test(shareAnswerIdRaw) ? shareAnswerIdRaw : '';
+
+  const referralFriendCodeRaw =
+    typeof body.referralFriendCode === 'string'
+      ? body.referralFriendCode.trim().toLowerCase()
+      : '';
+  const referralFriendCode =
+    referralFriendCodeRaw && REF_CODE_RE.test(referralFriendCodeRaw)
+      ? referralFriendCodeRaw
+      : '';
+
+  const registrationSource =
+    typeof body.registrationSource === 'string'
+      ? body.registrationSource.trim().toLowerCase()
+      : '';
+
+  const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
     email,
     password,
     options: emailRedirectTo ? { emailRedirectTo } : undefined,
@@ -121,6 +151,69 @@ export async function POST(request: NextRequest) {
 
   if (signUpError) {
     return NextResponse.json({ error: signUpError.message }, { status: 400 });
+  }
+
+  const newUserId = signUpData.user?.id;
+  if (admin && newUserId) {
+    if (shareAnswerId) {
+      const { error: refError } = await admin.from('referrals').insert({
+        referrer_share_id: shareAnswerId,
+        referred_user_id: newUserId,
+      });
+      if (!refError) {
+        const { data: shareRow } = await admin
+          .from('shared_answers')
+          .select('signup_count')
+          .eq('id', shareAnswerId)
+          .maybeSingle();
+        const prev = Number(shareRow?.signup_count ?? 0);
+        await admin
+          .from('shared_answers')
+          .update({ signup_count: prev + 1 })
+          .eq('id', shareAnswerId);
+      }
+    } else if (referralFriendCode) {
+      const { data: codeOwner } = await admin
+        .from('user_referral_codes')
+        .select('user_id')
+        .eq('code', referralFriendCode)
+        .maybeSingle();
+      const ownerId = codeOwner?.user_id as string | undefined;
+      if (ownerId && ownerId !== newUserId) {
+        await admin.from('referrals').insert({
+          referrer_user_id: ownerId,
+          referred_user_id: newUserId,
+        });
+      }
+    }
+  }
+
+  if (
+    admin &&
+    newUserId &&
+    registrationSource === 'tool_gate' &&
+    referralFriendCode
+  ) {
+    const { data: owner } = await admin
+      .from('user_referral_codes')
+      .select('user_id')
+      .eq('code', referralFriendCode)
+      .maybeSingle();
+    const rid = owner?.user_id as string | undefined;
+    if (rid && rid !== newUserId) {
+      const { data: proProf } = await admin
+        .from('profiles')
+        .select('pro_expires_at')
+        .eq('id', rid)
+        .maybeSingle();
+      const nowMs = Date.now();
+      const cur = proProf?.pro_expires_at
+        ? new Date(proProf.pro_expires_at as string).getTime()
+        : 0;
+      const base = Math.max(nowMs, cur);
+      const newExp = new Date(base + 7 * 86400000).toISOString();
+      await admin.from('profiles').update({ pro_expires_at: newExp }).eq('id', rid);
+    }
   }
 
   return NextResponse.json({ ok: true });

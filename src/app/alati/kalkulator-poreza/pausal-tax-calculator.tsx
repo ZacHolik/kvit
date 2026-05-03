@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useMemo, useState } from 'react';
+import { createElement, useEffect, useMemo, useRef, useState } from 'react';
 
 import {
   bracketTrackColor,
@@ -10,6 +10,7 @@ import {
   PAUSAL_MAX_INCOME,
   pausalBracketForIncome,
 } from '@/lib/alati/pausal-brackets';
+import { ValueGateExportModal } from '@/app/alati/_components/value-gate-export-modal';
 import { useAlatiSession, useKprYearTotal } from '@/hooks/use-alati-session';
 
 const eur = new Intl.NumberFormat('hr-HR', {
@@ -29,10 +30,19 @@ function segmentFlex(min: number, max: number): number {
   return ((max - min) / PAUSAL_MAX_INCOME) * 100;
 }
 
-export function PausalTaxCalculator() {
+const TOOL_PATH = '/alati/kalkulator-poreza';
+const SHARE_ORIGIN = 'https://kvik.online';
+
+export function PausalTaxCalculator(props?: { toolReferralParam?: string | null }) {
+  const { toolReferralParam } = props ?? {};
   const session = useAlatiSession();
   const signedIn = session.status === 'signed_in';
+  const isProAccess = signedIn && session.isPro;
   const kpr = useKprYearTotal(signedIn);
+  const calcActivationSent = useRef(false);
+  const [gateModalOpen, setGateModalOpen] = useState(false);
+  const [myReferralCode, setMyReferralCode] = useState<string | null>(null);
+  const [pdfBusy, setPdfBusy] = useState(false);
 
   const [income, setIncome] = useState(20_000);
   const bracket = useMemo(() => pausalBracketForIncome(income), [income]);
@@ -52,6 +62,77 @@ export function PausalTaxCalculator() {
   }
 
   const thumbPct = (Math.min(income, PAUSAL_MAX_INCOME) / PAUSAL_MAX_INCOME) * 100;
+
+  useEffect(() => {
+    if (!signedIn || !bracket || calcActivationSent.current) {
+      return;
+    }
+    calcActivationSent.current = true;
+    void fetch('/api/referral/record-activation', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'same-origin',
+      body: JSON.stringify({ activationType: 'calculator' }),
+    }).catch(() => {});
+  }, [signedIn, bracket]);
+
+  useEffect(() => {
+    if (!signedIn || isProAccess) {
+      return;
+    }
+    let cancelled = false;
+    void (async () => {
+      try {
+        const res = await fetch('/api/referral/ensure-code', { credentials: 'same-origin' });
+        const body = (await res.json()) as { code?: string };
+        if (!cancelled && res.ok && body.code) {
+          setMyReferralCode(body.code);
+        }
+      } catch {
+        /* noop */
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [signedIn, isProAccess]);
+
+  const downloadPdf = async () => {
+    if (!bracket) {
+      return;
+    }
+    if (signedIn && !isProAccess) {
+      return;
+    }
+    setPdfBusy(true);
+    try {
+      const { downloadReactPdfClient } = await import('@/lib/alati/download-react-pdf-client');
+      const { KalkulatorRezultatDocument } = await import('@/lib/pdf/kalkulator-rezultat-document');
+      await downloadReactPdfClient(
+        createElement(KalkulatorRezultatDocument, { income, bracket }),
+        `kvik-kalkulator-poreza-${income}.pdf`,
+      );
+    } finally {
+      setPdfBusy(false);
+    }
+  };
+
+  const shareLinkFreeUser = myReferralCode
+    ? `${SHARE_ORIGIN}${TOOL_PATH}?ref=${encodeURIComponent(myReferralCode)}`
+    : `${SHARE_ORIGIN}${TOOL_PATH}`;
+
+  const onPdfClick = () => {
+    if (!bracket) {
+      return;
+    }
+    if (!signedIn) {
+      setGateModalOpen(true);
+      return;
+    }
+    if (isProAccess) {
+      void downloadPdf();
+    }
+  };
 
   return (
     <div className='space-y-6'>
@@ -276,7 +357,71 @@ export function PausalTaxCalculator() {
             Unesi godišnji prihod veći od 0 € da vidiš razred i iznose.
           </p>
         )}
+
+        {bracket ? (
+          <div className='mt-6 border-t border-[#1f2a28] pt-6'>
+            {signedIn && !isProAccess ? (
+              <div className='rounded-xl border border-[#0d9488]/25 bg-[#0b0f0e] p-4'>
+                <p className='font-body text-sm font-medium text-[#e2e8e7]'>Želiš PDF export?</p>
+                <p className='font-body mt-2 text-sm text-[#94a3a0]'>
+                  Pošalji link jednom prijatelju paušalistu → dobij PDF export + 1 tjedan PRO
+                  pristupa
+                </p>
+                <div className='mt-3 flex flex-wrap gap-2'>
+                  <a
+                    href={`https://wa.me/?text=${encodeURIComponent(`Kvik kalkulator poreza: ${shareLinkFreeUser}`)}`}
+                    target='_blank'
+                    rel='noopener noreferrer'
+                    className='rounded-lg border border-[#2a3734] px-3 py-2 text-xs text-[#d5dfdd]'
+                  >
+                    📱 WhatsApp
+                  </a>
+                  <a
+                    href={`mailto:?subject=${encodeURIComponent('Kvik — kalkulator poreza')}&body=${encodeURIComponent(shareLinkFreeUser)}`}
+                    className='rounded-lg border border-[#2a3734] px-3 py-2 text-xs text-[#d5dfdd]'
+                  >
+                    📧 Email
+                  </a>
+                  <button
+                    type='button'
+                    onClick={() =>
+                      void navigator.clipboard.writeText(shareLinkFreeUser).catch(() => {})
+                    }
+                    className='rounded-lg border border-[#2a3734] px-3 py-2 text-xs text-[#d5dfdd]'
+                  >
+                    🔗 Kopiraj link
+                  </button>
+                </div>
+                <p className='font-body mt-4 text-sm text-[#94a3a0]'>
+                  Ili:{' '}
+                  <a href='/#cijene' className='font-semibold text-[#5eead4] underline'>
+                    nadogradi na PRO za 12€/mj
+                  </a>
+                </p>
+              </div>
+            ) : null}
+            <button
+              type='button'
+              disabled={pdfBusy || (signedIn && !isProAccess)}
+              onClick={onPdfClick}
+              className='font-body mt-4 w-full rounded-xl bg-[#0d9488] px-4 py-3 text-sm font-semibold text-white transition hover:bg-[#14b8a6] disabled:cursor-not-allowed disabled:opacity-40 sm:w-auto'
+            >
+              {pdfBusy
+                ? 'Generiram PDF…'
+                : signedIn && !isProAccess
+                  ? 'PDF (otključaj PRO ili dijeljenjem)'
+                  : 'Preuzmi PDF'}
+            </button>
+          </div>
+        ) : null}
       </div>
+
+      <ValueGateExportModal
+        open={gateModalOpen}
+        onClose={() => setGateModalOpen(false)}
+        refFromUrl={toolReferralParam}
+        toolPath={TOOL_PATH}
+      />
 
       <div className='rounded-xl border border-[#1f2a28] bg-[#111716] p-4 text-sm text-[#b9c7c4]'>
         <p className='font-medium text-[#e2e8e7]'>Mjesečni doprinosi (podsjetnik)</p>

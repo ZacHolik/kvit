@@ -4,6 +4,8 @@ import { FormEvent, useMemo, useRef, useState } from 'react';
 import type { Components } from 'react-markdown';
 import ReactMarkdown from 'react-markdown';
 
+import { ShareAiResponse } from './share-ai-response';
+
 const ASSISTANT_MD_COMPONENTS: Components = {
   p: ({ children }) => (
     <p className='mb-2 last:mb-0 leading-relaxed'>{children}</p>
@@ -101,6 +103,15 @@ const STARTER_PROMPTS = [
   'Što trebam predati za PO-SD?',
 ];
 
+function lastUserQuestionBefore(messages: ChatMessage[], assistantIndex: number) {
+  for (let i = assistantIndex - 1; i >= 0; i -= 1) {
+    if (messages[i].role === 'user') {
+      return messages[i].content;
+    }
+  }
+  return null;
+}
+
 export default function AsistentPage() {
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
@@ -188,6 +199,14 @@ export default function AsistentPage() {
         });
         scrollToBottom();
       }
+
+      if (assistantText.trim()) {
+        void fetch('/api/referral/record-activation', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ activationType: 'ai_question' }),
+        }).catch(() => {});
+      }
     } catch (sendError) {
       setError(
         sendError instanceof Error
@@ -230,24 +249,39 @@ export default function AsistentPage() {
             ref={scrollContainerRef}
             className='max-h-[58vh] space-y-3 overflow-y-auto pr-1'
           >
-            {messages.map((message, index) => (
-              <article
-                key={`${message.role}-${index}`}
-                className={`max-w-[88%] rounded-2xl px-4 py-3 text-sm leading-relaxed ${
-                  message.role === 'user'
-                    ? 'ml-auto bg-[#0d9488] text-white'
-                    : 'bg-[#0b0f0e] text-[#d5dfdd] border border-[#253330]'
-                }`}
-              >
-                {message.role === 'user' ? (
-                  <span className='whitespace-pre-wrap'>{message.content}</span>
-                ) : message.content ? (
-                  <AssistantMessageContent content={message.content} />
-                ) : isLoading ? (
-                  'Pišem odgovor...'
-                ) : null}
-              </article>
-            ))}
+            {messages.map((message, index) => {
+              const userQ =
+                message.role === 'assistant'
+                  ? lastUserQuestionBefore(messages, index)
+                  : null;
+              const showShare =
+                message.role === 'assistant' &&
+                index > 0 &&
+                Boolean(message.content.trim()) &&
+                userQ != null;
+
+              return (
+                <article
+                  key={`${message.role}-${index}`}
+                  className={`max-w-[88%] rounded-2xl px-4 py-3 text-sm leading-relaxed ${
+                    message.role === 'user'
+                      ? 'ml-auto bg-[#0d9488] text-white'
+                      : 'bg-[#0b0f0e] text-[#d5dfdd] border border-[#253330]'
+                  }`}
+                >
+                  {message.role === 'user' ? (
+                    <span className='whitespace-pre-wrap'>{message.content}</span>
+                  ) : message.content ? (
+                    <AssistantMessageContent content={message.content} />
+                  ) : isLoading ? (
+                    'Pišem odgovor...'
+                  ) : null}
+                  {showShare ? (
+                    <ShareAiResponse question={userQ} answer={message.content} />
+                  ) : null}
+                </article>
+              );
+            })}
           </div>
         </section>
 
