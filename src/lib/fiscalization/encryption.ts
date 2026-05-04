@@ -51,3 +51,33 @@ export function decryptCertificate(encrypted: string, iv: string, salt: string):
   decipher.setAuthTag(authTag);
   return Buffer.concat([decipher.update(data), decipher.final()]);
 }
+
+/**
+ * Enkriptira kratki string (lozinku) istim ključem kao certifikat.
+ * Vraća base64 string s IV-om na početku (16 bajta) + authTag (16 bajta).
+ */
+export function encryptPassword(password: string): string {
+  const key = getEncryptionKey();
+  const iv = crypto.randomBytes(16);
+  const cipher = crypto.createCipheriv('aes-256-gcm', key, iv);
+  const encrypted = Buffer.concat([
+    cipher.update(password, 'utf8'),
+    cipher.final(),
+  ]);
+  const authTag = cipher.getAuthTag();
+  return Buffer.concat([iv, authTag, encrypted]).toString('base64');
+}
+
+/**
+ * Dekriptira lozinku enkriptiranu s encryptPassword.
+ */
+export function decryptPassword(encryptedPassword: string): string {
+  const key = getEncryptionKey();
+  const combined = Buffer.from(encryptedPassword, 'base64');
+  const iv = combined.subarray(0, 16);
+  const authTag = combined.subarray(16, 32);
+  const data = combined.subarray(32);
+  const decipher = crypto.createDecipheriv('aes-256-gcm', key, iv);
+  decipher.setAuthTag(authTag);
+  return Buffer.concat([decipher.update(data), decipher.final()]).toString('utf8');
+}

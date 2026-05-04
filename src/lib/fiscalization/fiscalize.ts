@@ -9,6 +9,7 @@
 
 import { createClient } from '@/lib/supabase/server';
 
+import { decryptPassword } from './encryption';
 import { sendRacunToCIS } from './cis';
 import type { FiscalizationResult, NacinPlacanja } from './types';
 import { formatDatVrijemeZaCIS, formatIznosZaCIS, generateZki } from './zki';
@@ -69,6 +70,7 @@ type FiscalCertRow = {
   encrypted_p12: string;
   iv: string;
   salt: string;
+  encrypted_password: string | null;
   fina_oib: string;
   poslovni_prostor: string;
   blagajna: string;
@@ -90,7 +92,9 @@ export async function fiscalizeRacun(
 
   const { data: cert, error: certError } = await supabase
     .from('fiscal_certificates')
-    .select('encrypted_p12, iv, salt, fina_oib, poslovni_prostor, blagajna')
+    .select(
+      'encrypted_p12, iv, salt, encrypted_password, fina_oib, poslovni_prostor, blagajna',
+    )
     .eq('user_id', input.userId)
     .eq('is_active', true)
     .maybeSingle();
@@ -104,6 +108,10 @@ export async function fiscalizeRacun(
   }
 
   const certRow = cert as FiscalCertRow;
+
+  const p12Password = certRow.encrypted_password
+    ? decryptPassword(certRow.encrypted_password)
+    : '';
 
   if (certRow.fina_oib.trim() !== input.oib.trim()) {
     return {
@@ -125,7 +133,7 @@ export async function fiscalizeRacun(
     encryptedP12: certRow.encrypted_p12,
     iv: certRow.iv,
     salt: certRow.salt,
-    p12Password: input.p12Password,
+    p12Password: input.p12Password ?? p12Password,
   };
 
   let zki: string;

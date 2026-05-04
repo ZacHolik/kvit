@@ -7,7 +7,7 @@
 import { NextResponse } from 'next/server';
 
 import { validateCertificate } from '@/lib/fiscalization/certificate';
-import { encryptCertificate } from '@/lib/fiscalization/encryption';
+import { encryptCertificate, encryptPassword } from '@/lib/fiscalization/encryption';
 import { createClient } from '@/lib/supabase/server';
 
 type ActiveCertRow = {
@@ -115,6 +115,7 @@ export async function POST(request: Request) {
     }
 
     const { encrypted, iv, salt } = encryptCertificate(buffer);
+    const encryptedPassword = encryptPassword(password);
 
     await supabase
       .from('fiscal_certificates')
@@ -127,6 +128,7 @@ export async function POST(request: Request) {
       encrypted_p12: encrypted,
       iv,
       salt,
+      encrypted_password: encryptedPassword,
       fina_oib: certInfo.oib,
       valid_from: certInfo.validFrom.toISOString(),
       valid_until: certInfo.validUntil.toISOString(),
