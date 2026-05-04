@@ -33,7 +33,7 @@ export const HARDCODED_QA: { categories: HardcodedCategory[] } = {
           question:
             'Radim u firmi i imam obrt uz posao. Koliki su mi doprinosi?',
           answer:
-            'Ako je obrt **druga djelatnost** (uz zaposlenje), plaćaš manje doprinosa jer ti firma već plaća MIO i HZZO.\n\n**Za 2026. godinu:**\n- Osnovica: 797,20€\n- MIO I stup (15%): 119,58€\n- MIO II stup (5%): 39,86€\n- HZZO: **ne plaćaš** — osiguran si preko poslodavca\n\n**Ukupno: 159,44€/mj** umjesto 290,98€ koliko plaća obrtnik kojemu je obrt jedina djelatnost.\n\nTočan izračun za tvoju situaciju → [kvik.online/alati/kalkulator](https://kvik.online/alati/kalkulator)',
+            'Ako je obrt **druga djelatnost** (uz zaposlenje), plaćaš manje doprinosa jer ti firma već plaća MIO i HZZO.\n\n**Za 2026. godinu:**\n- Osnovica: 797,20€\n- MIO I stup (15%): 119,58€\n- MIO II stup (5%): 39,86€\n- HZZO: **ne plaćaš** — osiguran si preko poslodavca\n\n**Ukupno: 159,44€/mj** umjesto 290,98€ koliko plaća obrtnik kojemu je obrt jedina djelatnost.\n\nTočan izračun za tvoju situaciju → [kvik.online/alati/kalkulator-poreza](https://kvik.online/alati/kalkulator-poreza)',
         },
         {
           id: 'bolovanje',
