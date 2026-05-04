@@ -7,6 +7,7 @@ import ReactMarkdown from 'react-markdown';
 
 import { createClient } from '@/lib/supabase/client';
 
+import { HARDCODED_QA } from './hardcoded-qa-data';
 import { ShareAiResponse } from './share-ai-response';
 
 const GUEST_FREE_QUESTIONS_LS = 'kvik-asistent-guest-questions-used';
@@ -97,12 +98,6 @@ type ChatMessage = {
   role: 'user' | 'assistant';
   content: string;
 };
-
-const STARTER_PROMPTS = [
-  'Koji su moji sljedeći porezni rokovi?',
-  'Koliko iznosi kvartalni porez za 27.500 € primitaka?',
-  'Što trebam predati za PO-SD?',
-];
 
 function lastUserQuestionBefore(messages: ChatMessage[], assistantIndex: number) {
   for (let i = assistantIndex - 1; i >= 0; i -= 1) {
@@ -296,6 +291,20 @@ export default function AsistentPage() {
     }
   };
 
+  /** Brzi odgovori bez /api/chat — share i dalje ide na /api/share/answers (user_id null za goste). */
+  const appendHardcodedExchange = (question: string, answer: string) => {
+    if (isLoading) {
+      return;
+    }
+    setError('');
+    setMessages((previous) => [
+      ...previous,
+      { role: 'user', content: question },
+      { role: 'assistant', content: answer },
+    ]);
+    requestAnimationFrame(() => scrollToBottom());
+  };
+
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     await sendMessage(input);
@@ -377,34 +386,52 @@ export default function AsistentPage() {
         </section>
 
         <section className='rounded-2xl border border-[#1f2a28] bg-[#111716] p-4'>
-          {guestQuotaExhausted ? (
-            <div className='rounded-xl border border-amber-500/30 bg-amber-500/10 p-4 text-center'>
-              <p className='font-body text-sm text-amber-100'>
-                Iskoristio si besplatna pitanja. Registriraj se za neograničen pristup.
-              </p>
-              <Link
-                href='/register'
-                className='font-body mt-3 inline-flex rounded-xl bg-[#0d9488] px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-[#14b8a6]'
-              >
-                Registriraj se →
-              </Link>
+          {/* Brzi odgovori (bez tokena) — iznad vlastitog pitanja / CTA kad je kvota iscrpljena. */}
+          <div className='border-b border-[#253330] pb-5'>
+            <p className='font-body text-xs font-medium uppercase tracking-wide text-[#64756f]'>
+              Brza pitanja (bez AI troška)
+            </p>
+            <div className='mt-4 space-y-6'>
+              {HARDCODED_QA.categories.map((category) => (
+                <div key={category.title}>
+                  <h3 className='font-heading text-sm font-semibold text-[#e2e8e7]'>
+                    {category.title}
+                  </h3>
+                  <div className='mt-2 grid gap-2 sm:grid-cols-2'>
+                    {category.questions.map((item) => (
+                      <button
+                        key={item.id}
+                        type='button'
+                        disabled={isLoading}
+                        onClick={() =>
+                          appendHardcodedExchange(item.question, item.answer)
+                        }
+                        className='font-body rounded-xl border border-[#2a3734] bg-[#0b0f0e] p-3 text-left text-xs leading-snug text-[#d5dfdd] transition hover:border-[#0d9488] disabled:cursor-not-allowed disabled:opacity-60'
+                      >
+                        {item.question}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              ))}
             </div>
-          ) : (
-            <>
-              <div className='mb-3 flex flex-wrap gap-2'>
-                {STARTER_PROMPTS.map((prompt) => (
-                  <button
-                    key={prompt}
-                    type='button'
-                    disabled={isLoading || guestQuotaExhausted}
-                    onClick={() => void sendMessage(prompt)}
-                    className='font-body rounded-lg border border-[#2a3734] px-3 py-2 text-xs text-[#d5dfdd] transition hover:border-[#0d9488] disabled:cursor-not-allowed disabled:opacity-60'
-                  >
-                    {prompt}
-                  </button>
-                ))}
-              </div>
+          </div>
 
+          <div className='mt-5'>
+            {guestQuotaExhausted ? (
+              <div className='rounded-xl border border-amber-500/30 bg-amber-500/10 p-4 text-center'>
+                <p className='font-body text-sm text-amber-100'>
+                  Iskoristio si besplatna pitanja. Registriraj se za neograničen
+                  pristup.
+                </p>
+                <Link
+                  href='/register'
+                  className='font-body mt-3 inline-flex rounded-xl bg-[#0d9488] px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-[#14b8a6]'
+                >
+                  Registriraj se →
+                </Link>
+              </div>
+            ) : (
               <form onSubmit={handleSubmit} className='space-y-3'>
                 <textarea
                   rows={4}
@@ -429,8 +456,8 @@ export default function AsistentPage() {
                   </button>
                 </div>
               </form>
-            </>
-          )}
+            )}
+          </div>
         </section>
       </div>
     </main>
