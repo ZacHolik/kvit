@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { FormEvent, useEffect, useMemo, useState } from 'react';
 
 import { OPCINE, type Opcina } from '@/lib/opcine';
@@ -75,6 +76,59 @@ export default function PostavkePage() {
     locked: boolean;
     amount: number | null;
   }>({ locked: false, amount: null });
+
+  type FiscalCertApi =
+    | { exists: false }
+    | {
+        exists: true;
+        fina_oib: string;
+        valid_from: string;
+        valid_until: string;
+        poslovni_prostor: string;
+        blagajna: string;
+      };
+
+  const [fiscalCert, setFiscalCert] = useState<FiscalCertApi | null>(null);
+  const [fiscalLoading, setFiscalLoading] = useState(true);
+  const [fiscalDeleteConfirm, setFiscalDeleteConfirm] = useState(false);
+  const [fiscalActionLoading, setFiscalActionLoading] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadFiscalCertificate() {
+      try {
+        const res = await fetch('/api/fiscal/certificate');
+        if (cancelled) {
+          return;
+        }
+        if (!res.ok) {
+          setFiscalCert({ exists: false });
+          return;
+        }
+        const data = (await res.json()) as FiscalCertApi | { error?: string };
+        if ('error' in data && data.error === 'Unauthorized') {
+          setFiscalCert({ exists: false });
+          return;
+        }
+        setFiscalCert(data as FiscalCertApi);
+      } catch {
+        if (!cancelled) {
+          setFiscalCert({ exists: false });
+        }
+      } finally {
+        if (!cancelled) {
+          setFiscalLoading(false);
+        }
+      }
+    }
+
+    void loadFiscalCertificate();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   useEffect(() => {
     let cancelled = false;
@@ -281,6 +335,38 @@ export default function PostavkePage() {
 
     setToast({ type: 'success', message: 'Postavke su uspješno spremljene' });
   }
+
+  async function handleRemoveFiscalCertificate() {
+    setFiscalActionLoading(true);
+    setToast(null);
+    try {
+      const res = await fetch('/api/fiscal/certificate', { method: 'DELETE' });
+      const data = (await res.json()) as { success?: boolean; error?: string };
+      if (!res.ok || data.success === false) {
+        setToast({
+          type: 'error',
+          message: data.error ?? 'Brisanje certifikata nije uspjelo.',
+        });
+        return;
+      }
+      setFiscalCert({ exists: false });
+      setFiscalDeleteConfirm(false);
+      setToast({ type: 'success', message: 'FINA certifikat je uklonjen.' });
+    } catch {
+      setToast({ type: 'error', message: 'Mrežna greška pri uklanjanju certifikata.' });
+    } finally {
+      setFiscalActionLoading(false);
+    }
+  }
+
+  const fiscalExpiresSoon =
+    fiscalCert?.exists === true
+      ? (() => {
+          const until = new Date(fiscalCert.valid_until);
+          const days = (until.getTime() - Date.now()) / (1000 * 60 * 60 * 24);
+          return days >= 0 && days < 30;
+        })()
+      : false;
 
   return (
     <main className='min-h-screen bg-[#0b0f0e] px-4 py-8 text-[#e2e8e7] sm:px-6 lg:px-8'>
@@ -682,6 +768,89 @@ export default function PostavkePage() {
             {isSaving ? 'Spremam...' : 'Spremi postavke'}
           </button>
         </form>
+
+        {/* Fiskalizacija — certifikat (GET /api/fiscal/certificate na mountu) */}
+        <section className='space-y-4 rounded-2xl border border-[#1f2a28] bg-[#111716] p-5 sm:p-6'>
+          <h2 className='font-heading text-lg'>Fiskalizacija</h2>
+          {fiscalLoading ? (
+            <p className='font-body text-sm text-[#94a3a0]'>Učitavam status...</p>
+          ) : fiscalCert?.exists ? (
+            <div className='space-y-4 font-body text-sm text-[#b9c7c4]'>
+              <div className='flex items-center gap-2'>
+                <span className='h-2 w-2 rounded-full bg-emerald-400' aria-hidden />
+                <span className='text-[#e2e8e7]'>Aktivno</span>
+              </div>
+              <p>
+                OIB:{' '}
+                <span className='font-medium text-[#e2e8e7]'>{fiscalCert.fina_oib}</span>
+              </p>
+              <p>
+                Vrijedi do:{' '}
+                <span className='font-medium text-[#e2e8e7]'>
+                  {new Date(fiscalCert.valid_until).toLocaleDateString('hr-HR', {
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: 'numeric',
+                  })}
+                </span>
+                {fiscalExpiresSoon ? (
+                  <span className='ml-2 font-semibold text-red-300'>Uskoro istječe!</span>
+                ) : null}
+              </p>
+              <p>
+                Poslovni prostor:{' '}
+                <span className='text-[#e2e8e7]'>{fiscalCert.poslovni_prostor}</span>
+                {' · '}
+                Blagajna: <span className='text-[#e2e8e7]'>{fiscalCert.blagajna}</span>
+              </p>
+              {fiscalDeleteConfirm ? (
+                <div className='flex flex-wrap items-center gap-3 rounded-xl border border-[#2a3734] bg-[#0b0f0e] p-4'>
+                  <span className='text-[#e2e8e7]'>Sigurno ukloniti certifikat?</span>
+                  <button
+                    type='button'
+                    disabled={fiscalActionLoading}
+                    onClick={() => void handleRemoveFiscalCertificate()}
+                    className='rounded-lg bg-red-600 px-3 py-2 text-xs font-semibold text-white transition hover:bg-red-500 disabled:opacity-50'
+                  >
+                    {fiscalActionLoading ? 'Uklanjam...' : 'Da, ukloni'}
+                  </button>
+                  <button
+                    type='button'
+                    disabled={fiscalActionLoading}
+                    onClick={() => setFiscalDeleteConfirm(false)}
+                    className='rounded-lg border border-[#2a3734] px-3 py-2 text-xs text-[#b9c7c4] transition hover:bg-[#1f2a28]'
+                  >
+                    Odustani
+                  </button>
+                </div>
+              ) : (
+                <button
+                  type='button'
+                  onClick={() => setFiscalDeleteConfirm(true)}
+                  className='font-body rounded-xl border border-red-500/40 bg-red-500/10 px-4 py-2 text-sm font-semibold text-red-200 transition hover:bg-red-500/20'
+                >
+                  Ukloni certifikat
+                </button>
+              )}
+            </div>
+          ) : (
+            <div className='space-y-4 font-body text-sm'>
+              <div className='flex items-center gap-2 text-[#b9c7c4]'>
+                <span className='h-2 w-2 rounded-full bg-amber-400' aria-hidden />
+                <span>Nije postavljeno</span>
+              </div>
+              <p className='text-[#94a3a0]'>
+                Postavi FINA certifikat za fiskalizaciju računa.
+              </p>
+              <Link
+                href='/postavke/fiskalizacija'
+                className='inline-flex rounded-xl bg-[#0d9488] px-4 py-2 font-semibold text-white transition hover:bg-[#14b8a6]'
+              >
+                Postavi certifikat →
+              </Link>
+            </div>
+          )}
+        </section>
       </div>
     </main>
   );
