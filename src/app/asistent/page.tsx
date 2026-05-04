@@ -314,6 +314,14 @@ export default function AsistentPage() {
     <main className='min-h-screen bg-[#0b0f0e] px-4 py-8 text-[#e2e8e7] sm:px-6 lg:px-8'>
       <div className='mx-auto flex w-full max-w-4xl flex-col gap-5'>
         <header className='rounded-2xl border border-[#1f2a28] bg-[#111716] p-5 sm:p-6'>
+          {!isLoggedIn ? (
+            <Link
+              href='/'
+              className='font-heading inline-flex items-center rounded-lg border border-[#2a3734] bg-[#0b0f0e] px-3 py-1.5 text-xs tracking-[0.18em] text-[#d5dfdd] transition hover:border-[#0d9488]'
+            >
+              KVIK
+            </Link>
+          ) : null}
           <div className='flex flex-wrap items-start justify-between gap-3'>
             <div>
               <p className='font-body text-sm text-[#94a3a0]'>AI podrška za paušalce</p>
@@ -369,6 +377,13 @@ export default function AsistentPage() {
                       : 'bg-[#0b0f0e] text-[#d5dfdd] border border-[#253330]'
                   }`}
                 >
+                  {showShare ? (
+                    <ShareAiResponse
+                      question={userQ}
+                      answer={message.content}
+                      variant='highlight'
+                    />
+                  ) : null}
                   {message.role === 'user' ? (
                     <span className='whitespace-pre-wrap'>{message.content}</span>
                   ) : message.content ? (
@@ -378,6 +393,23 @@ export default function AsistentPage() {
                   ) : null}
                   {showShare ? (
                     <ShareAiResponse question={userQ} answer={message.content} />
+                  ) : null}
+                  {showShare && !isLoggedIn ? (
+                    <div className='mt-3 rounded-xl border border-[#2a3734] bg-[#101515] p-3'>
+                      <p className='font-body text-xs text-[#b9c7c4]'>
+                        Ovakve odgovore i sređene knjigovodstvene papire za paušalce
+                        možeš imati svaki dan.
+                        <br />
+                        Iskoristi promociju! Uhvati cijenu za KVIK 5,99€/mj —
+                        zauvijek.
+                      </p>
+                      <a
+                        href='https://kvik.online/register'
+                        className='font-body mt-3 inline-flex rounded-lg border border-[#3b4b47] bg-[#1a2321] px-3 py-2 text-xs font-semibold text-[#e2e8e7] transition hover:border-[#0d9488]'
+                      >
+                        Zaključaj cijenu →
+                      </a>
+                    </div>
                   ) : null}
                 </article>
               );

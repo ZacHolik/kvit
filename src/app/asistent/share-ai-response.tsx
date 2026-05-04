@@ -7,10 +7,15 @@ const SHARE_ORIGIN = 'https://kvik.online';
 type Props = {
   question: string;
   answer: string;
+  variant?: 'default' | 'highlight';
 };
 
 /** Sloj 1: dijeljenje ispod AI odgovora na /asistent. */
-export function ShareAiResponse({ question, answer }: Props) {
+export function ShareAiResponse({
+  question,
+  answer,
+  variant = 'default',
+}: Props) {
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
 
@@ -75,12 +80,30 @@ export function ShareAiResponse({ question, answer }: Props) {
     }
   }, [createShare]);
 
+  const isHighlight = variant === 'highlight';
+
   return (
-    <div className='mt-3 border-t border-[#253330] pt-3'>
-      <p className='font-body text-xs text-[#94a3a0]'>Ovaj odgovor je besplatan.</p>
-      <p className='font-body mt-1 text-sm text-[#b9c7c4]'>
-        Imaš prijatelja koji se muči s porezom?
-      </p>
+    <div
+      className={
+        isHighlight
+          ? 'mt-2 rounded-xl border border-[#0d9488]/50 bg-[#0d9488]/15 p-3'
+          : 'mt-3 border-t border-[#253330] pt-3'
+      }
+    >
+      {isHighlight ? (
+        <p className='font-body text-sm text-[#d9fffa]'>
+          Mali klik, velika pomoć.
+          <br />
+          Proslijedi nekome kome bi ovaj odgovor baš sad dobro došao.
+        </p>
+      ) : (
+        <>
+          <p className='font-body text-xs text-[#94a3a0]'>Ovaj odgovor je besplatan.</p>
+          <p className='font-body mt-1 text-sm text-[#b9c7c4]'>
+            Imaš prijatelja koji se muči s porezom?
+          </p>
+        </>
+      )}
       <div className='mt-3 flex flex-wrap gap-2'>
         <button
           type='button'
