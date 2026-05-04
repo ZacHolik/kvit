@@ -387,7 +387,9 @@ export default function AsistentPage() {
                   {message.role === 'user' ? (
                     <span className='whitespace-pre-wrap'>{message.content}</span>
                   ) : message.content ? (
-                    <AssistantMessageContent content={message.content} />
+                    <div className={showShare ? 'mt-3' : undefined}>
+                      <AssistantMessageContent content={message.content} />
+                    </div>
                   ) : isLoading ? (
                     'Pišem odgovor...'
                   ) : null}
@@ -395,8 +397,8 @@ export default function AsistentPage() {
                     <ShareAiResponse question={userQ} answer={message.content} />
                   ) : null}
                   {showShare && !isLoggedIn ? (
-                    <div className='mt-3 rounded-xl border border-[#2a3734] bg-[#101515] p-3'>
-                      <p className='font-body text-xs text-[#b9c7c4]'>
+                    <div className='mt-4 rounded-2xl border border-[#2a3734] bg-gradient-to-br from-[#101515] to-[#0b0f0e] p-4'>
+                      <p className='font-body text-sm leading-relaxed text-[#c8d3d1]'>
                         Ovakve odgovore i sređene knjigovodstvene papire za paušalce
                         možeš imati svaki dan.
                         <br />
@@ -405,7 +407,7 @@ export default function AsistentPage() {
                       </p>
                       <a
                         href='https://kvik.online/register'
-                        className='font-body mt-3 inline-flex rounded-lg border border-[#3b4b47] bg-[#1a2321] px-3 py-2 text-xs font-semibold text-[#e2e8e7] transition hover:border-[#0d9488]'
+                        className='font-body mt-4 inline-flex items-center justify-center rounded-xl bg-[#14b8a6] px-4 py-2.5 text-sm font-semibold text-[#042f2e] shadow-[0_8px_20px_rgba(20,184,166,0.28)] transition hover:-translate-y-0.5 hover:bg-[#2dd4bf]'
                       >
                         Zaključaj cijenu →
                       </a>

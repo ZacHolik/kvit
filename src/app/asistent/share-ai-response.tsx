@@ -86,12 +86,12 @@ export function ShareAiResponse({
     <div
       className={
         isHighlight
-          ? 'mt-2 rounded-xl border border-[#0d9488]/50 bg-[#0d9488]/15 p-3'
-          : 'mt-3 border-t border-[#253330] pt-3'
+          ? 'mt-2 rounded-2xl border border-[#0d9488]/60 bg-gradient-to-br from-[#0d9488]/25 to-[#0f172a]/45 p-4 shadow-[0_8px_24px_rgba(13,148,136,0.15)]'
+          : 'mt-4 border-t border-[#253330] pt-4'
       }
     >
       {isHighlight ? (
-        <p className='font-body text-sm text-[#d9fffa]'>
+        <p className='font-body text-sm leading-relaxed text-[#d9fffa] sm:text-[15px]'>
           Mali klik, velika pomoć.
           <br />
           Proslijedi nekome kome bi ovaj odgovor baš sad dobro došao.
@@ -104,12 +104,12 @@ export function ShareAiResponse({
           </p>
         </>
       )}
-      <div className='mt-3 flex flex-wrap gap-2'>
+      <div className='mt-4 flex flex-wrap gap-2'>
         <button
           type='button'
           disabled={busy}
           onClick={() => void onWhatsApp()}
-          className='font-body rounded-lg border border-[#2a3734] bg-[#111716] px-3 py-2 text-xs font-medium text-[#d5dfdd] transition hover:border-[#0d9488] disabled:opacity-50'
+          className='font-body inline-flex items-center justify-center rounded-xl border border-[#0d9488]/70 bg-[#14b8a6] px-3.5 py-2.5 text-xs font-semibold text-[#042f2e] shadow-[0_6px_18px_rgba(20,184,166,0.28)] transition hover:-translate-y-0.5 hover:bg-[#2dd4bf] disabled:cursor-not-allowed disabled:opacity-60'
         >
           📱 Pošalji na WhatsApp
         </button>
@@ -117,7 +117,7 @@ export function ShareAiResponse({
           type='button'
           disabled={busy}
           onClick={() => void onEmail()}
-          className='font-body rounded-lg border border-[#2a3734] bg-[#111716] px-3 py-2 text-xs font-medium text-[#d5dfdd] transition hover:border-[#0d9488] disabled:opacity-50'
+          className='font-body inline-flex items-center justify-center rounded-xl border border-[#0d9488]/70 bg-[#14b8a6] px-3.5 py-2.5 text-xs font-semibold text-[#042f2e] shadow-[0_6px_18px_rgba(20,184,166,0.28)] transition hover:-translate-y-0.5 hover:bg-[#2dd4bf] disabled:cursor-not-allowed disabled:opacity-60'
         >
           📧 Pošalji emailom
         </button>
@@ -125,7 +125,7 @@ export function ShareAiResponse({
           type='button'
           disabled={busy}
           onClick={() => void onCopy()}
-          className='font-body rounded-lg border border-[#2a3734] bg-[#111716] px-3 py-2 text-xs font-medium text-[#d5dfdd] transition hover:border-[#0d9488] disabled:opacity-50'
+          className='font-body inline-flex items-center justify-center rounded-xl border border-[#0d9488]/70 bg-[#14b8a6] px-3.5 py-2.5 text-xs font-semibold text-[#042f2e] shadow-[0_6px_18px_rgba(20,184,166,0.28)] transition hover:-translate-y-0.5 hover:bg-[#2dd4bf] disabled:cursor-not-allowed disabled:opacity-60'
         >
           🔗 Kopiraj link
         </button>
