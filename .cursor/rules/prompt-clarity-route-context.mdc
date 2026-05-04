@@ -1,0 +1,14 @@
+# Prompt Clarity: Route Context First
+
+When writing prompts or implementation requests, always name the exact page/route and whether the request applies to:
+- landing demo (`/`)
+- assistant app page (`/asistent`)
+- both
+
+Reason: we had a mismatch where feedback referenced the landing AI demo while the implementation was done on `/asistent`.
+
+Required prompt checklist:
+1. Exact route(s) and expected URL in browser.
+2. Guest vs logged-in behavior for each route.
+3. Whether component is production flow or marketing/demo block.
+4. Screenshot source route (if screenshot is attached).

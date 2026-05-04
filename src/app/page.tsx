@@ -3,6 +3,8 @@
 import Link from 'next/link';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
+import { HARDCODED_QA } from './asistent/hardcoded-qa-data';
+import { ShareAiResponse } from './asistent/share-ai-response';
 import { EarlyAdopterHeroNote } from './early-adopter-hero-note';
 import { KVIK_LANDING_CSS } from './kvik-landing-css';
 
@@ -119,6 +121,13 @@ const AI_GENERIC =
 const AI_GENERIC_CUSTOM =
   'Odlično pitanje! Unutar Kvik aplikacije AI asistent odgovori na sve detalje. Registriraj se besplatno i isprobaj. 🚀';
 
+const LANDING_QA = HARDCODED_QA.categories.flatMap((category) =>
+  category.questions.map((item) => ({
+    question: item.question,
+    answer: item.answer,
+  })),
+);
+
 const FAQ_ITEMS: { q: string; a: string }[] = [
   {
     q: 'Moram li imati tehničko znanje?',
@@ -143,7 +152,7 @@ const FAQ_ITEMS: { q: string; a: string }[] = [
 ];
 
 type AiMessage =
-  | { id: string; kind: 'ai'; html: string }
+  | { id: string; kind: 'ai'; html: string; share?: { question: string; answer: string } }
   | { id: string; kind: 'user'; text: string }
   | { id: string; kind: 'typing' };
 
@@ -173,16 +182,19 @@ export default function LandingPage() {
 
   const askAI = useCallback((q: string) => {
     const typingId = uid();
+    const matched = LANDING_QA.find((item) => item.question === q);
     setAiMessages((prev) => [
       ...prev,
       { id: uid(), kind: 'user', text: q },
       { id: typingId, kind: 'typing' },
     ]);
     window.setTimeout(() => {
-      const html = AI_ANSWERS[q] ?? AI_GENERIC_CUSTOM;
+      const html = matched?.answer ?? AI_ANSWERS[q] ?? AI_GENERIC_CUSTOM;
       setAiMessages((prev) => [
         ...prev.filter((m) => m.id !== typingId),
-        { id: uid(), kind: 'ai', html },
+        matched
+          ? { id: uid(), kind: 'ai', html, share: { question: q, answer: matched.answer } }
+          : { id: uid(), kind: 'ai', html },
       ]);
     }, 1100);
   }, []);
@@ -509,43 +521,55 @@ export default function LandingPage() {
                   }
                   return (
                     <div key={m.id} className='msg msg-ai'>
+                      {m.share ? (
+                        <ShareAiResponse
+                          question={m.share.question}
+                          answer={m.share.answer}
+                          variant='highlight'
+                        />
+                      ) : null}
                       <div
                         className='bubble'
                         dangerouslySetInnerHTML={{ __html: m.html }}
                       />
+                      {m.share ? (
+                        <>
+                          <ShareAiResponse
+                            question={m.share.question}
+                            answer={m.share.answer}
+                          />
+                          <div className='mt-3 rounded-xl border border-[#2a3734] bg-[#101515] p-3'>
+                            <p className='text-xs text-[#b9c7c4]'>
+                              Ovakve odgovore i sređene knjigovodstvene papire za
+                              paušalce možeš imati svaki dan.
+                              <br />
+                              Iskoristi promociju! Uhvati cijenu za KVIK 5,99€/mj —
+                              zauvijek.
+                            </p>
+                            <a
+                              href='https://kvik.online/register'
+                              className='mt-3 inline-flex rounded-lg border border-[#3b4b47] bg-[#1a2321] px-3 py-2 text-xs font-semibold text-[#e2e8e7] transition hover:border-[#0d9488]'
+                            >
+                              Zaključaj cijenu →
+                            </a>
+                          </div>
+                        </>
+                      ) : null}
                     </div>
                   );
                 })}
               </div>
               <div className='quick-btns'>
-                <button
-                  type='button'
-                  className='qb'
-                  onClick={() => askAI('Kada moram platiti doprinose?')}
-                >
-                  Kada platiti doprinose?
-                </button>
-                <button
-                  type='button'
-                  className='qb'
-                  onClick={() => askAI('Jesam li obveznik fiskalizacije?')}
-                >
-                  Fiskalizacija?
-                </button>
-                <button
-                  type='button'
-                  className='qb'
-                  onClick={() => askAI('Kako ispuniti PO-SD obrazac?')}
-                >
-                  Kako PO-SD?
-                </button>
-                <button
-                  type='button'
-                  className='qb'
-                  onClick={() => askAI('Koliko mogu zaraditi bez PDV-a?')}
-                >
-                  Limit bez PDV?
-                </button>
+                {LANDING_QA.map((item) => (
+                  <button
+                    key={item.question}
+                    type='button'
+                    className='qb'
+                    onClick={() => askAI(item.question)}
+                  >
+                    {item.question}
+                  </button>
+                ))}
               </div>
               <div className='ai-input-row'>
                 <input
@@ -564,8 +588,8 @@ export default function LandingPage() {
                 </button>
               </div>
               <div className='ai-footnote'>
-                Ovo nije chatbot. Ovo je tvoj AI knjigovođa koji zna sve o
-                hrvatskom poreznom sustavu.
+                Demo prikaz za landing. Puni asistent s istim pitanjima je na{' '}
+                <Link href='/asistent'>/asistent</Link>.
               </div>
             </div>
           </div>
