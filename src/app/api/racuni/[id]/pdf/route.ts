@@ -26,7 +26,7 @@ export async function GET(
     supabase
       .from('racuni')
       .select(
-        'id, broj_racuna, datum, datum_placanja, nacin_placanja, status, tip_racuna, popust_racun, rok_placanja, datum_dospijeca, dostava_iznos, dostava_opis, ukupni_iznos, napomena, barkod_enabled, kupci(naziv, oib, adresa, email)',
+        'id, broj_racuna, datum, datum_placanja, nacin_placanja, status, tip_racuna, popust_racun, rok_placanja, datum_dospijeca, dostava_iznos, dostava_opis, ukupni_iznos, napomena, barkod_enabled, zki, jir, kupci(naziv, oib, adresa, email)',
       )
       .eq('id', params.id)
       .eq('user_id', user.id)
@@ -122,7 +122,7 @@ export async function GET(
       grad: profil?.grad ?? null,
       iban: profil?.iban ?? null,
     },
-    paymentBarcode: barcodeMatrix
+      paymentBarcode: barcodeMatrix
       ? {
           matrix: barcodeMatrix.rows,
           numCols: barcodeMatrix.numCols,
@@ -133,6 +133,8 @@ export async function GET(
         }
       : null,
     stavke: stavkeZaPdf,
+    zki: racun.zki ?? null,
+    jir: racun.jir ?? null,
   });
 
   const stream = await renderToStream(invoicePdf);

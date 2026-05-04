@@ -1,5 +1,7 @@
 import { NextResponse } from 'next/server';
 
+import { fiscalizeRacun } from '@/lib/fiscalization/fiscalize';
+import type { FiscalizationResult } from '@/lib/fiscalization/types';
 import { normalizeDocumentItems } from '@/lib/invoice-normalize';
 import { opisAutomatskogKprUnosaZaRacun } from '@/lib/kpr-export';
 import { createClient } from '@/lib/supabase/server';
@@ -219,6 +221,52 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: stavkaError.message }, { status: 400 });
   }
 
+  let fiscalResult: FiscalizationResult | undefined;
+
+  const { data: profil } = await supabase
+    .from('profiles')
+    .select('oib')
+    .eq('id', user.id)
+    .maybeSingle();
+
+  const { data: cert } = await supabase
+    .from('fiscal_certificates')
+    .select('id')
+    .eq('user_id', user.id)
+    .eq('is_active', true)
+    .maybeSingle();
+
+  if (cert && profil?.oib?.trim()) {
+    fiscalResult = await fiscalizeRacun({
+      racunId: racun.id,
+      userId: user.id,
+      oib: profil.oib.trim(),
+      brojRacuna: body.brojRacuna,
+      ukupniIznos: ukupno,
+      nacinPlacanja: body.nacinPlacanja,
+    });
+
+    if (fiscalResult.success) {
+      await supabase
+        .from('racuni')
+        .update({
+          zki: fiscalResult.zki,
+          jir: fiscalResult.jir,
+          fiskalizirano_at: new Date().toISOString(),
+        })
+        .eq('id', racun.id)
+        .eq('user_id', user.id);
+    } else {
+      await supabase
+        .from('racuni')
+        .update({
+          fiskalizacija_error: fiscalResult.error ?? 'Nepoznata greška',
+        })
+        .eq('id', racun.id)
+        .eq('user_id', user.id);
+    }
+  }
+
   // TODO: Support multiple KPR entries per invoice for split payments in future.
   if (body.status === 'placeno') {
     const paymentDate = body.datumPlacanja || body.datum;
@@ -239,5 +287,9 @@ export async function POST(request: Request) {
   return NextResponse.json({
     id: racun.id,
     brojRacuna: racun.broj_racuna,
+    fiskalizirano: fiscalResult?.success ?? false,
+    jir: fiscalResult?.jir ?? null,
+    fiskalError:
+      fiscalResult?.success === false ? (fiscalResult.error ?? null) : null,
   });
 }

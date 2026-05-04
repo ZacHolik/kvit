@@ -236,6 +236,17 @@ const styles = StyleSheet.create({
     color: '#333',
     lineHeight: 1.35,
   },
+  fiscalBlock: {
+    marginTop: 20,
+    paddingTop: 8,
+    borderTopWidth: 1,
+    borderTopColor: '#e5e7eb',
+  },
+  fiscalLine: {
+    fontFamily: FF,
+    fontSize: 7,
+    color: '#6b7280',
+  },
   footer: {
     fontFamily: FF,
     marginTop: 'auto',
@@ -297,6 +308,8 @@ export type InvoicePdfData = {
     popust?: number;
     ukupno: number;
   }>;
+  zki?: string | null;
+  jir?: string | null;
 };
 
 function statusLabel(status: string): string {
@@ -363,6 +376,8 @@ export function InvoiceDocument({
   footerText = 'Sukladno članku 90. Zakona o porezu na dodanu vrijednost,\nizdavatelj računa nije u sustavu PDV-a te PDV nije obračunat.',
   paymentBarcode,
   stavke,
+  zki = null,
+  jir = null,
 }: InvoicePdfData) {
   const brojZaPrikaz = formatBrojRacunaZaPdf(brojRacuna);
   const ibanZaPrikaz = profil.iban?.replace(/\s/g, '').trim();
@@ -534,6 +549,13 @@ export function InvoiceDocument({
 
         {napomena ? (
           <Text style={styles.napomena}>Napomena: {napomena}</Text>
+        ) : null}
+
+        {jir ? (
+          <View style={styles.fiscalBlock}>
+            <Text style={styles.fiscalLine}>Fiskalizirano | JIR: {jir}</Text>
+            {zki ? <Text style={styles.fiscalLine}>ZKI: {zki}</Text> : null}
+          </View>
         ) : null}
 
         <Text style={styles.footer}>{footerText}</Text>

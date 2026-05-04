@@ -100,6 +100,10 @@ export default function NoviRacunPage() {
   const supabase = useMemo(() => createClient(), []);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
+  const [saveNotice, setSaveNotice] = useState<{
+    kind: 'success' | 'warning';
+    message: string;
+  } | null>(null);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const [savedCustomers, setSavedCustomers] = useState<SavedCustomer[]>([]);
   const [savedArticles, setSavedArticles] = useState<SavedArticle[]>([]);
@@ -371,6 +375,7 @@ export default function NoviRacunPage() {
 
   async function saveInvoice() {
     setError('');
+    setSaveNotice(null);
 
     const payloadItems = getPayloadItems();
 
@@ -433,8 +438,35 @@ export default function NoviRacunPage() {
       return false;
     }
 
-    router.push('/racuni');
-    router.refresh();
+    const data = (await response.json()) as {
+      id: string;
+      brojRacuna: string;
+      fiskalizirano?: boolean;
+      jir?: string | null;
+      fiskalError?: string | null;
+    };
+
+    setPreviewOpen(false);
+
+    if (data.fiskalError) {
+      setSaveNotice({
+        kind: 'warning',
+        message: `Račun je kreiran, ali fiskalizacija nije uspjela: ${data.fiskalError}`,
+      });
+    } else if (data.fiskalizirano) {
+      setSaveNotice({
+        kind: 'success',
+        message: 'Račun je kreiran i fiskaliziran.',
+      });
+    } else {
+      setSaveNotice({ kind: 'success', message: 'Račun je kreiran.' });
+    }
+
+    window.setTimeout(() => {
+      router.push('/racuni');
+      router.refresh();
+    }, data.fiskalError ? 4500 : 1600);
+
     return true;
   }
 
@@ -1019,6 +1051,18 @@ export default function NoviRacunPage() {
               className='font-body w-full rounded-xl border border-[#2a3734] bg-[#0b0f0e] px-4 py-3 outline-none transition focus:border-[#0d9488]'
             />
           </label>
+
+          {saveNotice ? (
+            <p
+              className={`font-body rounded-lg border p-3 text-sm ${
+                saveNotice.kind === 'warning'
+                  ? 'border-amber-500/40 bg-amber-500/10 text-amber-100'
+                  : 'border-[#0d9488]/40 bg-[#0d9488]/10 text-[#5eead4]'
+              }`}
+            >
+              {saveNotice.message}
+            </p>
+          ) : null}
 
           {error ? (
             <p className='font-body rounded-lg border border-red-500/30 bg-red-500/10 p-3 text-sm text-red-200'>

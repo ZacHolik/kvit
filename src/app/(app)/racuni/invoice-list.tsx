@@ -21,6 +21,9 @@ export type InvoiceRow = {
   ukupni_iznos: number;
   email_poslano_at: string | null;
   email_poslano_na: string | null;
+  jir: string | null;
+  fiskalizirano_at: string | null;
+  fiskalizacija_error: string | null;
   kupci: {
     naziv: string;
     email: string | null;
@@ -112,6 +115,7 @@ export function InvoiceList({ invoices, nazivObrta }: InvoiceListProps) {
               <th className='px-4 py-3 font-medium'>Status</th>
               <th className='px-4 py-3 font-medium'>Način</th>
               <th className='px-4 py-3 font-medium'>Email</th>
+              <th className='px-4 py-3 font-medium'>Fiskal</th>
               <th className='px-4 py-3 font-medium'>Akcije</th>
             </tr>
           </thead>
@@ -159,6 +163,25 @@ export function InvoiceList({ invoices, nazivObrta }: InvoiceListProps) {
                     )}
                   </td>
                   <td className='px-4 py-4'>
+                    {racun.jir ? (
+                      <span
+                        title={`JIR: ${racun.jir}`}
+                        className='inline-flex rounded-full border border-[#0d9488]/40 bg-[#0d9488]/10 px-2.5 py-1 text-xs font-semibold text-[#5eead4]'
+                      >
+                        Fiskalizirano
+                      </span>
+                    ) : racun.fiskalizacija_error ? (
+                      <span
+                        title={racun.fiskalizacija_error}
+                        className='inline-flex rounded-full border border-red-500/40 bg-red-500/10 px-2.5 py-1 text-xs font-semibold text-red-200'
+                      >
+                        Nije fiskalizirano
+                      </span>
+                    ) : (
+                      <span className='text-[#64756f]'>-</span>
+                    )}
+                  </td>
+                  <td className='px-4 py-4'>
                     <div className='flex flex-wrap items-center gap-2'>
                       <a
                         href={`/api/racuni/${racun.id}/pdf`}
@@ -189,7 +212,7 @@ export function InvoiceList({ invoices, nazivObrta }: InvoiceListProps) {
             })}
             {filteredInvoices.length === 0 ? (
               <tr>
-                <td colSpan={8} className='px-4 py-8 text-center text-sm text-[#94a3a0]'>
+                <td colSpan={9} className='px-4 py-8 text-center text-sm text-[#94a3a0]'>
                   Nema računa za odabrane filtere.
                 </td>
               </tr>

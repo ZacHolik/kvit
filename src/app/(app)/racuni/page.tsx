@@ -19,7 +19,7 @@ export default async function RacuniPage() {
     supabase
       .from('racuni')
       .select(
-        'id, broj_racuna, datum, nacin_placanja, status, ukupni_iznos, email_poslano_at, email_poslano_na, kupci(naziv, email)',
+        'id, broj_racuna, datum, nacin_placanja, status, ukupni_iznos, email_poslano_at, email_poslano_na, zki, jir, fiskalizirano_at, fiskalizacija_error, kupci(naziv, email)',
       )
       .eq('user_id', user.id)
       .order('datum', { ascending: false }),
