@@ -543,7 +543,7 @@ export default function LandingPage() {
                               Ovakve odgovore i sređene knjigovodstvene papire za
                               paušalce možeš imati svaki dan.
                               <br />
-                              Iskoristi promociju! Uhvati cijenu za KVIK 5,99€/mj —
+                              Iskoristi promociju! Uhvati cijenu za KVIK 5,60€/mj —
                               zauvijek.
                             </p>
                             <a
@@ -597,7 +597,7 @@ export default function LandingPage() {
 
         <section className='section section--tight-top'>
           <div className='section-tag'>Lansiranje</div>
-          <div className='section-title'>Pridruži se među prvima.</div>
+          <div className='section-title'>Iskoristi period promocije!</div>
           <EarlyAdopterHeroNote layout='section' />
         </section>
 
@@ -660,6 +660,9 @@ export default function LandingPage() {
                 {yearly ? '5.60€' : '7€'}
                 <sub>/mj</sub>
               </div>
+              {yearly ? (
+                <div className='price-desc'>Early adopter cijena — zaključana zauvijek</div>
+              ) : null}
               <div className='price-desc'>Za aktivne obrtnike</div>
               <ul className='price-features'>
                 <li>Neograničeni računi</li>

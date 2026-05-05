@@ -54,7 +54,7 @@ alter table public.profiles
   add column if not exists pro_expires_at timestamptz;
 
 comment on column public.profiles.price_locked is 'Sloj 3: true kad 3 prijatelja aktiviraju Kvik (referral_activations).';
-comment on column public.profiles.locked_price is 'Sloj 3: zaključana cijena (npr. 5.99).';
+comment on column public.profiles.locked_price is 'Sloj 3: zaključana cijena (npr. 5.60).';
 comment on column public.profiles.pro_expires_at is 'Sloj 2: PRO pristup do datuma (trial / nagrada).';
 
 alter table public.user_referral_codes enable row level security;

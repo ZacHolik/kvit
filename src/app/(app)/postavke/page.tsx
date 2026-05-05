@@ -380,7 +380,7 @@ export default function PostavkePage() {
 
         {priceLockBanner.locked ? (
           <section className='rounded-2xl border border-[#0d9488]/35 bg-[#0d9488]/10 p-4 font-body text-sm text-[#b9c7c4]'>
-            ✅ Cijena zaključana — {priceLockBanner.amount ?? 5.99}€/mj zauvijek (early
+            ✅ Cijena zaključana — {priceLockBanner.amount ?? 5.6}€/mj zauvijek (early
             adopter referral).
           </section>
         ) : null}

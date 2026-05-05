@@ -72,7 +72,7 @@ export async function POST(request: Request) {
   if (distinct >= 3) {
     await admin
       .from('profiles')
-      .update({ price_locked: true, locked_price: 5.99 })
+      .update({ price_locked: true, locked_price: 5.6 })
       .eq('id', referrerId);
   }
 

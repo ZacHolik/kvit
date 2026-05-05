@@ -216,8 +216,8 @@ export default function TermsPage() {
                   <strong>Free plan:</strong> do 3 računa mjesečno, besplatno.
                 </li>
                 <li>
-                  <strong>Paušalist:</strong> 5,99 €/mj kod godišnje naplate ili
-                  7,99 €/mj kod mjesečne naplate.
+                  <strong>Paušalist:</strong> 5,60 €/mj kod godišnje naplate ili
+                  7,00 €/mj kod mjesečne naplate.
                 </li>
                 <li>
                   <strong>Paušalist PRO:</strong> 9,99 €/mj.

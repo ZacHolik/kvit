@@ -402,7 +402,7 @@ export default function AsistentPage() {
                         Ovakve odgovore i sređene knjigovodstvene papire za paušalce
                         možeš imati svaki dan.
                         <br />
-                        Iskoristi promociju! Uhvati cijenu za KVIK 5,99€/mj —
+                        Iskoristi promociju! Uhvati cijenu za KVIK 5,60€/mj —
                         zauvijek.
                       </p>
                       <a

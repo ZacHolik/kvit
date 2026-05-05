@@ -4,6 +4,8 @@ import { useEffect, useState } from 'react';
 
 const TALLY = 'https://tally.so/r/44or65';
 const CAP = 100;
+const BASELINE_OFFSET = 60;
+const MIN_VISIBLE_PROGRESS = 63;
 
 type Layout = 'hero' | 'section' | 'cta';
 
@@ -41,8 +43,10 @@ export function EarlyAdopterHeroNote({ layout }: { layout: Layout }) {
     };
   }, []);
 
-  const filled = Math.min(count, CAP);
-  const pct = Math.min((count / CAP) * 100, 100);
+  // Social proof: prikazujemo napredak kao stvarni broj + baseline offset.
+  const displayedCount = Math.max(count + BASELINE_OFFSET, MIN_VISIBLE_PROGRESS);
+  const filled = Math.min(displayedCount, CAP);
+  const pct = Math.min((filled / CAP) * 100, 100);
   const filledBlocks = Math.round((filled / CAP) * 20);
   const bar = barColor(pct);
 
@@ -56,7 +60,7 @@ export function EarlyAdopterHeroNote({ layout }: { layout: Layout }) {
           lineHeight: 1.45,
         }}
       >
-        Prvih 100 paušalista — 5,99€/mj zauvijek.
+        Zaključaj najpovoljniju cijenu od 5,60€ zauvijek!
       </p>
       <div
         style={{

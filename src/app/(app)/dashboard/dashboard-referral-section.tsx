@@ -76,7 +76,7 @@ export function DashboardReferralSection() {
     <>
       <section className='rounded-2xl border border-[#1f2a28] bg-[#111716] p-5 sm:p-6'>
         <h2 className='font-heading text-xl text-[#e2e8e7]'>
-          🔒 Zaključaj 5,99€/mj — zauvijek
+          🔒 Zaključaj 5,60€/mj — zauvijek
         </h2>
         <p className='font-body mt-2 text-sm text-[#b9c7c4]'>
           Dovedi 3 prijatelja koji koriste Kvik → zadrži early adopter cijenu i nakon isteka
@@ -84,7 +84,7 @@ export function DashboardReferralSection() {
         </p>
         {summary?.priceLocked ? (
           <p className='font-body mt-4 rounded-lg border border-[#0d9488]/40 bg-[#0d9488]/10 px-4 py-3 text-sm font-medium text-[#5eead4]'>
-            ✅ Cijena zaključana — {summary.lockedPrice ?? 5.99}€/mj zauvijek
+            ✅ Cijena zaključana — {summary.lockedPrice ?? 5.6}€/mj zauvijek
           </p>
         ) : (
           <>
