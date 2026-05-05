@@ -1,6 +1,11 @@
 # Kvik Audits
 
-This folder stores timestamped inventory/audit snapshots for the Kvik app.
+This folder stores all timestamped inventory/audit snapshots for the Kvik app.
+
+## Folder Structure
+- `/audits/` = svi vremenski auditi (`YYYY-MM-DD_HH-MM_kvik-audit.md`).
+- `/audits/2026-05-05_PRE_FISKAL_AUDIT.md` = snapshot prije fiskalizacije.
+- `/docs/` = tehnicka dokumentacija (npr. rebranding, arhitekturni dokumenti).
 
 ## Run A New Audit
 Paste this prompt into Cursor:
