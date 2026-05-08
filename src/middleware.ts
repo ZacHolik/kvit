@@ -56,6 +56,9 @@ function isPublicPath(pathname: string) {
   if (pathname === '/privacy' || pathname === '/uvjeti') {
     return true;
   }
+  if (pathname === '/provjera' || pathname.startsWith('/provjera/')) {
+    return true;
+  }
   if (pathname === '/share' || pathname.startsWith('/share/')) {
     return true;
   }

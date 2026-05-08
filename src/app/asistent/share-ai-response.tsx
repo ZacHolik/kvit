@@ -80,6 +80,34 @@ export function ShareAiResponse({
     }
   }, [createShare]);
 
+  const onSystemShare = useCallback(async () => {
+    const id = await createShare();
+    if (!id) {
+      return;
+    }
+    const link = `${SHARE_ORIGIN}/share/${id}`;
+    const shareData = {
+      title: 'Odgovor Kvik AI asistenta',
+      text: 'Pogledaj odgovor na porezno pitanje:',
+      url: link,
+    };
+    if (typeof navigator !== 'undefined' && navigator.share) {
+      try {
+        await navigator.share(shareData);
+      } catch (e) {
+        if ((e as Error)?.name !== 'AbortError') {
+          setError('Dijeljenje nije uspjelo; pokušaj Kopiraj link.');
+        }
+      }
+    } else {
+      try {
+        await navigator.clipboard.writeText(link);
+      } catch {
+        setError('Web Share nije dostupan; pokušaj Kopiraj link.');
+      }
+    }
+  }, [createShare]);
+
   const isHighlight = variant === 'highlight';
 
   return (
@@ -129,6 +157,16 @@ export function ShareAiResponse({
         >
           🔗 Kopiraj link
         </button>
+        {typeof navigator !== 'undefined' && typeof navigator.share === 'function' ? (
+          <button
+            type='button'
+            disabled={busy}
+            onClick={() => void onSystemShare()}
+            className='font-body inline-flex items-center justify-center rounded-xl border border-[#2a3734] bg-[#111716] px-3.5 py-2.5 text-xs font-semibold text-[#d5dfdd] transition hover:border-[#0d9488]/60 disabled:cursor-not-allowed disabled:opacity-60'
+          >
+            Podijeli…
+          </button>
+        ) : null}
       </div>
       {error ? (
         <p className='font-body mt-2 text-xs text-red-300'>{error}</p>
