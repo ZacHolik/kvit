@@ -2,7 +2,7 @@
  * CIS SOAP klijent za fiskalizaciju 1.0
  * Komunikacija s Poreznom upravom (CIS = Centralni informacijski sustav).
  *
- * Endpoint: cistest / cis.porezna-uprava.hr :8449 (konstante; CIS_URL env u zasebnom commitu).
+ * Endpoint: CIS_URL env ako je postavljen; inače test/prod na :8449.
  *
  * Potpis: XML-DSig nad SOAP Body (Exclusive C14N + SHA1 digest, RSA-SHA1 nad SignedInfo),
  * wsse:BinarySecurityToken + KeyInfo s SecurityTokenReference (spec. v2.5 / WS-Security).
@@ -15,10 +15,19 @@ import { SignedXml } from 'xml-crypto';
 import { decryptCertificate } from './encryption';
 import type { CISResponse, RacunZaCIS } from './types';
 
-const CIS_TEST_URL =
+const CIS_DEFAULT_TEST =
   'https://cistest.apis-it.hr:8449/FiskalizacijaServiceTest';
-const CIS_PROD_URL =
+const CIS_DEFAULT_PROD =
   'https://cis.porezna-uprava.hr:8449/FiskalizacijaService';
+
+/** CIS SOAP endpoint (override za staging s test CIS-om). */
+export function resolveCisUrl(mode: 'test' | 'production'): string {
+  const fromEnv = process.env.CIS_URL?.trim();
+  if (fromEnv) {
+    return fromEnv;
+  }
+  return mode === 'production' ? CIS_DEFAULT_PROD : CIS_DEFAULT_TEST;
+}
 
 export type CISCertificateData = {
   encryptedP12: string;
@@ -255,7 +264,7 @@ export async function sendRacunToCIS(
   certData: CISCertificateData,
   mode: 'test' | 'production' = 'test',
 ): Promise<CISResponse & Partial<CISCallMeta>> {
-  const url = mode === 'production' ? CIS_PROD_URL : CIS_TEST_URL;
+  const url = resolveCisUrl(mode);
   const messageId = generateMessageId();
   const started = Date.now();
 
