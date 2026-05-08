@@ -373,7 +373,7 @@ export function InvoiceDocument({
   kupacAdresa,
   kupacEmail,
   profil,
-  footerText = 'Sukladno članku 90. Zakona o porezu na dodanu vrijednost,\nizdavatelj računa nije u sustavu PDV-a te PDV nije obračunat.',
+  footerText = 'Sukladno članku 90. Zakona o porezu na dodanu vrijednost,\nizdavatelj računa nije u sustavu PDV-a te PDV nije obračunat.\nIzrađeno u Kvik — kvik.online/probaj',
   paymentBarcode,
   stavke,
   zki = null,

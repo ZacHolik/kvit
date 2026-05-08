@@ -11,6 +11,7 @@ import { HARDCODED_QA } from './hardcoded-qa-data';
 import { ShareAiResponse } from './share-ai-response';
 
 const GUEST_FREE_QUESTIONS_LS = 'kvik-asistent-guest-questions-used';
+const GUEST_FREE_DAY_LS = 'kvik-asistent-guest-questions-day';
 
 const ASSISTANT_MD_COMPONENTS: Components = {
   p: ({ children }) => (
@@ -112,6 +113,13 @@ function readGuestQuestionCount(): number {
   if (typeof window === 'undefined') {
     return 0;
   }
+  const today = new Date().toISOString().slice(0, 10);
+  const savedDay = window.localStorage.getItem(GUEST_FREE_DAY_LS);
+  if (savedDay !== today) {
+    window.localStorage.setItem(GUEST_FREE_DAY_LS, today);
+    window.localStorage.setItem(GUEST_FREE_QUESTIONS_LS, '0');
+    return 0;
+  }
   const raw = window.localStorage.getItem(GUEST_FREE_QUESTIONS_LS);
   const n = Number.parseInt(raw ?? '0', 10);
   if (!Number.isFinite(n) || n < 0) {
@@ -197,7 +205,7 @@ export default function AsistentPage() {
       const used = readGuestQuestionCount();
       if (used >= 3) {
         setError(
-          'Iskoristio si besplatna pitanja. Registriraj se za neograničen pristup.',
+          'Iskoristio si 3 besplatna pitanja danas. Uhvati neograničen pristup savjetniku za 5,60€/mj. Bonus: Knjigovodstveni servis za paušalce za cijenu dvije kave u kafiću!!',
         );
         return;
       }
@@ -342,7 +350,7 @@ export default function AsistentPage() {
           </div>
           {authReady && !isLoggedIn ? (
             <p className='font-body mt-3 text-xs text-[#94a3a0]'>
-              Besplatno do 3 pitanja po pregledniku (sessija).{' '}
+              Besplatno do 3 pitanja dnevno.{' '}
               {guestQuestionsUsed >= 3 ? null : (
                 <span>
                   Iskorišteno: {guestQuestionsUsed} / 3
@@ -399,14 +407,13 @@ export default function AsistentPage() {
                   {showShare && !isLoggedIn ? (
                     <div className='mt-4 rounded-2xl border border-[#2a3734] bg-gradient-to-br from-[#101515] to-[#0b0f0e] p-4'>
                       <p className='font-body text-sm leading-relaxed text-[#c8d3d1]'>
-                        Ovakve odgovore i sređene knjigovodstvene papire za paušalce
-                        možeš imati svaki dan.
+                        Ovakve odgovore i komplet knjigovodstveni servis za
+                        paušalce možeš imati za 5,60€/mj — zauvijek.
                         <br />
-                        Iskoristi promociju! Uhvati cijenu za KVIK 5,60€/mj —
-                        zauvijek.
+                        Iskoristi promotivni period!!
                       </p>
                       <a
-                        href='https://kvik.online/register'
+                        href='https://tally.so/r/44or65'
                         className='font-body mt-4 inline-flex items-center justify-center rounded-xl bg-[#14b8a6] px-4 py-2.5 text-sm font-semibold text-[#042f2e] shadow-[0_8px_20px_rgba(20,184,166,0.28)] transition hover:-translate-y-0.5 hover:bg-[#2dd4bf]'
                       >
                         Zaključaj cijenu →
@@ -455,11 +462,12 @@ export default function AsistentPage() {
             {guestQuotaExhausted ? (
               <div className='rounded-xl border border-amber-500/30 bg-amber-500/10 p-4 text-center'>
                 <p className='font-body text-sm text-amber-100'>
-                  Iskoristio si besplatna pitanja. Registriraj se za neograničen
-                  pristup.
+                  Iskoristio si 3 besplatna pitanja danas. Uhvati neograničen
+                  pristup savjetniku za 5,60€/mj. Bonus: Knjigovodstveni servis za
+                  paušalce za cijenu dvije kave u kafiću!!
                 </p>
                 <Link
-                  href='/register'
+                  href='/registracija'
                   className='font-body mt-3 inline-flex rounded-xl bg-[#0d9488] px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-[#14b8a6]'
                 >
                   Registriraj se →

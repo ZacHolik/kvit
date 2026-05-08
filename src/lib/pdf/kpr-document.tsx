@@ -1,4 +1,4 @@
-import { Document, Page, StyleSheet, Text, View } from '@react-pdf/renderer';
+import { Document, Link, Page, StyleSheet, Text, View } from '@react-pdf/renderer';
 
 import { formatDatumHr, formatIznosEurHr } from '@/lib/format-hr';
 
@@ -68,6 +68,7 @@ const styles = StyleSheet.create({
     fontSize: 8,
     fontWeight: 'bold',
   },
+  powered: { marginTop: 14, fontSize: 8, color: '#999' },
 });
 
 export type KprProfilPdf = {
@@ -132,6 +133,9 @@ export function KprDocument({
             <Text style={styles.colNum}>{formatIznosEurHr(item.ukupno)}</Text>
           </View>
         ))}
+        <Link src='https://kvik.online/probaj' style={styles.powered}>
+          Izrađeno u Kvik — kvik.online/probaj
+        </Link>
       </Page>
     </Document>
   );

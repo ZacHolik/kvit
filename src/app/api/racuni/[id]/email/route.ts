@@ -169,7 +169,9 @@ export async function POST(
       subject:
         body.subject?.trim() ||
         `Račun broj ${racun.broj_racuna} - ${profil?.naziv_obrta ?? 'Kvik'}`,
-      text: body.message?.trim() || 'U prilogu se nalazi vaš račun.',
+      text:
+        body.message?.trim() ||
+        'U prilogu se nalazi vaš račun.\n\nIzrađeno u Kvik — https://kvik.online/probaj',
       attachments: [
         {
           filename,

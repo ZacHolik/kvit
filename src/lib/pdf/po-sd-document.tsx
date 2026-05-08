@@ -1,4 +1,4 @@
-import { Document, Page, StyleSheet, Text, View } from '@react-pdf/renderer';
+import { Document, Link, Page, StyleSheet, Text, View } from '@react-pdf/renderer';
 
 import { formatIznosEurHr } from '@/lib/format-hr';
 
@@ -88,6 +88,7 @@ const styles = StyleSheet.create({
     paddingBottom: 5,
     color: '#555',
   },
+  powered: { marginTop: 10, fontSize: 8, color: '#999' },
 });
 
 export type PoSdPdfPayload = {
@@ -241,6 +242,9 @@ export function PoSdDocument({
           porezne stope koje su zamijenile prirez od 2024. ne primjenjuju se na
           paušalno oporezivanje.
         </Text>
+        <Link src='https://kvik.online/probaj' style={styles.powered}>
+          Izrađeno u Kvik — kvik.online/probaj
+        </Link>
       </Page>
     </Document>
   );

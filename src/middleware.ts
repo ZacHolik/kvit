@@ -30,8 +30,6 @@ function requiresCompletedProfile(pathname: string) {
     '/kupci',
     '/stavke',
     '/kpr',
-    '/po-sd',
-    '/asistent',
     '/postavke',
   ] as const;
   return roots.some(
@@ -50,6 +48,9 @@ function isPublicPath(pathname: string) {
     return true;
   }
   if (pathname === '/asistent' || pathname.startsWith('/asistent/')) {
+    return true;
+  }
+  if (pathname === '/po-sd' || pathname.startsWith('/po-sd/')) {
     return true;
   }
   if (pathname === '/privacy' || pathname === '/uvjeti') {

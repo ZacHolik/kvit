@@ -82,7 +82,8 @@ export async function GET(
         grad: profil?.grad ?? null,
         iban: profil?.iban ?? null,
       },
-      footerText: 'Ponuda nije fiskalizirani račun. Iznosi su informativni do prihvaćanja ponude.',
+      footerText:
+        'Ponuda nije fiskalizirani račun. Iznosi su informativni do prihvaćanja ponude.\nIzrađeno u Kvik — kvik.online/probaj',
       stavke: stavkeZaPdf,
     }),
   );

@@ -6,7 +6,6 @@ import { getSiteUrl } from '@/lib/vodici-config';
 
 import { AlatiBreadcrumb } from '../_components/alati-breadcrumb';
 import { ToolRefTracker } from '../_components/tool-ref-tracker';
-import { CtaRegister } from '../_components/cta-register';
 import { jsonLdSafe } from '../_components/json-ld';
 
 import { PlacanjeDoprinosaTool } from './placanje-doprinosa-tool';
@@ -86,11 +85,6 @@ export default function PlacanjeDoprinosaPage({
             </li>
           </ul>
         </section>
-        <CtaRegister
-          title='Registriraj se da spremiš profil i ponavljaš generiranje bez ograničenja.'
-          body='Uz PRO dolazi i podsjetnik za doprinose.'
-          buttonLabel='Registriraj se →'
-        />
       </article>
     </>
   );

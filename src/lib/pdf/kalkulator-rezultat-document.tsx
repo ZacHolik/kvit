@@ -1,4 +1,4 @@
-import { Document, Page, StyleSheet, Text, View } from '@react-pdf/renderer';
+import { Document, Link, Page, StyleSheet, Text, View } from '@react-pdf/renderer';
 
 import type { PausalBracket } from '@/lib/alati/pausal-brackets';
 
@@ -7,6 +7,7 @@ const styles = StyleSheet.create({
   h1: { fontSize: 16, marginBottom: 12, fontFamily: 'Helvetica-Bold' },
   row: { marginBottom: 6 },
   label: { color: '#444' },
+  powered: { marginTop: 18, fontSize: 8, color: '#999' },
 });
 
 type Props = {
@@ -53,6 +54,9 @@ export function KalkulatorRezultatDocument({ income, bracket }: Props) {
             Informativni izvještaj iz Kvik alata. Nije porezno rješenje.
           </Text>
         </View>
+        <Link src='https://kvik.online/probaj' style={styles.powered}>
+          Izrađeno u Kvik — kvik.online/probaj
+        </Link>
       </Page>
     </Document>
   );

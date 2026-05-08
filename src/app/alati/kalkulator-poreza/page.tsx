@@ -6,7 +6,6 @@ import { getSiteUrl } from '@/lib/vodici-config';
 
 import { AlatiBreadcrumb } from '../_components/alati-breadcrumb';
 import { ToolRefTracker } from '../_components/tool-ref-tracker';
-import { CtaRegister } from '../_components/cta-register';
 import { jsonLdSafe } from '../_components/json-ld';
 
 import { PausalTaxCalculator } from './pausal-tax-calculator';
@@ -142,11 +141,6 @@ export default function KalkulatorPorezaPage({
           </ul>
         </section>
 
-        <CtaRegister
-          title='Kvik automatski prati tvoj razred i šalje podsjetnike za kvartalni porez.'
-          body='Manje ručnog proračuna — više vremena za posao.'
-          buttonLabel='Registriraj se besplatno →'
-        />
       </article>
     </>
   );

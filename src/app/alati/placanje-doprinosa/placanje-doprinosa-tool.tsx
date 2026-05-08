@@ -4,6 +4,9 @@ import Link from 'next/link';
 import { createElement, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import { ValueGateExportModal } from '@/app/alati/_components/value-gate-export-modal';
+import { ShareResult } from '@/app/alati/_components/share-result';
+import { PostValueCta } from '@/app/alati/_components/post-value-cta';
+import { PoweredByKvikBadge } from '@/app/alati/_components/powered-by-kvik-badge';
 
 import {
   buildHub30EurCode,
@@ -40,6 +43,7 @@ export function PlacanjeDoprinosaTool(props?: { toolReferralParam?: string | nul
   const [gateModalOpen, setGateModalOpen] = useState(false);
   const [myReferralCode, setMyReferralCode] = useState<string | null>(null);
   const [pdfBusy, setPdfBusy] = useState(false);
+  const [resultReady, setResultReady] = useState(false);
 
   useEffect(() => {
     if (typeof window === 'undefined') {
@@ -118,6 +122,7 @@ export function PlacanjeDoprinosaTool(props?: { toolReferralParam?: string | nul
       -1,
       typeof window !== 'undefined' ? window.devicePixelRatio : 1,
     );
+    setResultReady(true);
   }, [hubCode]);
 
   useEffect(() => {
@@ -272,6 +277,16 @@ export function PlacanjeDoprinosaTool(props?: { toolReferralParam?: string | nul
             <dd className='text-[#e2e8e7]'>HR01 · {oib.replace(/\s/g, '') || '—'}</dd>
           </div>
         </dl>
+        {resultReady ? (
+          <>
+            <PoweredByKvikBadge />
+            <ShareResult
+              pageTitle='Kalkulator doprinosa'
+              pageUrl='https://kvik.online/alati/doprinosi'
+            />
+            <PostValueCta />
+          </>
+        ) : null}
       </div>
 
       <div className='rounded-2xl border border-[#1f2a28] bg-[#111716] p-5 text-center sm:p-6'>

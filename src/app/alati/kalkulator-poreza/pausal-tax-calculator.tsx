@@ -11,6 +11,9 @@ import {
   pausalBracketForIncome,
 } from '@/lib/alati/pausal-brackets';
 import { ValueGateExportModal } from '@/app/alati/_components/value-gate-export-modal';
+import { ShareResult } from '@/app/alati/_components/share-result';
+import { PostValueCta } from '@/app/alati/_components/post-value-cta';
+import { PoweredByKvikBadge } from '@/app/alati/_components/powered-by-kvik-badge';
 import { useAlatiSession, useKprYearTotal } from '@/hooks/use-alati-session';
 
 const eur = new Intl.NumberFormat('hr-HR', {
@@ -43,6 +46,7 @@ export function PausalTaxCalculator(props?: { toolReferralParam?: string | null 
   const [gateModalOpen, setGateModalOpen] = useState(false);
   const [myReferralCode, setMyReferralCode] = useState<string | null>(null);
   const [pdfBusy, setPdfBusy] = useState(false);
+  const [hasValue, setHasValue] = useState(false);
 
   const [income, setIncome] = useState(20_000);
   const bracket = useMemo(() => pausalBracketForIncome(income), [income]);
@@ -53,6 +57,7 @@ export function PausalTaxCalculator(props?: { toolReferralParam?: string | null 
       return;
     }
     setIncome(Math.min(PAUSAL_MAX_INCOME, Math.max(0, n)));
+    setHasValue(true);
   }
 
   function applyKpr() {
@@ -207,6 +212,7 @@ export function PausalTaxCalculator(props?: { toolReferralParam?: string | null 
             const raw = e.target.value;
             if (raw === '') {
               setIncome(0);
+              setHasValue(true);
               return;
             }
             const n = Number.parseFloat(raw.replace(/\s/g, '').replace(',', '.'));
@@ -360,6 +366,16 @@ export function PausalTaxCalculator(props?: { toolReferralParam?: string | null 
 
         {bracket ? (
           <div className='mt-6 border-t border-[#1f2a28] pt-6'>
+            {hasValue ? (
+              <>
+                <PoweredByKvikBadge />
+                <ShareResult
+                  pageTitle='Kalkulator paušalnog poreza'
+                  pageUrl='https://kvik.online/alati/kalkulator'
+                />
+                <PostValueCta />
+              </>
+            ) : null}
             {signedIn && !isProAccess ? (
               <div className='rounded-xl border border-[#0d9488]/25 bg-[#0b0f0e] p-4'>
                 <p className='font-body text-sm font-medium text-[#e2e8e7]'>Želiš PDF export?</p>
