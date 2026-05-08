@@ -138,6 +138,11 @@ export async function POST(request: Request) {
       : null;
   const ukupno = Math.max(meduzbroj - popustRacunIznos + dostavaIznos, 0);
 
+  const brojRacunaRaw = body.brojRacuna?.trim() ?? '';
+  if (!brojRacunaRaw) {
+    return NextResponse.json({ error: 'Broj računa je obavezan.' }, { status: 400 });
+  }
+
   const { data: existingKupac } = await supabase
     .from('kupci')
     .select('id')
@@ -174,12 +179,41 @@ export async function POST(request: Request) {
 
   await Promise.all(items.map((item) => upsertCatalogItem(supabase, user.id, item)));
 
+  const [{ data: profil }, { data: fiscalCert }] = await Promise.all([
+    supabase.from('profiles').select('oib').eq('id', user.id).maybeSingle(),
+    supabase
+      .from('fiscal_certificates')
+      .select('id, poslovni_prostor, blagajna')
+      .eq('user_id', user.id)
+      .eq('is_active', true)
+      .maybeSingle(),
+  ]);
+
+  let brojRacunaZaUnos = brojRacunaRaw;
+  if (fiscalCert && profil?.oib?.trim()) {
+    const pp = String(fiscalCert.poslovni_prostor ?? '').trim();
+    const nu = String(fiscalCert.blagajna ?? '').trim();
+    const datumD = new Date(`${body.datum.slice(0, 10)}T12:00:00`);
+    const godina = Number.isFinite(datumD.getTime())
+      ? datumD.getFullYear()
+      : new Date().getFullYear();
+    const { data: nextNum, error: rpcErr } = await supabase.rpc('bump_invoice_counter', {
+      p_user_id: user.id,
+      p_poslovni_prostor: pp,
+      p_blagajna: nu,
+      p_godina: godina,
+    });
+    if (!rpcErr && nextNum != null) {
+      brojRacunaZaUnos = `${nextNum}/${pp}/${nu}`;
+    }
+  }
+
   const { data: racun, error: racunError } = await supabase
     .from('racuni')
     .insert({
       user_id: user.id,
       kupac_id: kupac.id,
-      broj_racuna: body.brojRacuna,
+      broj_racuna: brojRacunaZaUnos,
       datum: body.datum,
       datum_placanja: body.datumPlacanja || null,
       nacin_placanja: body.nacinPlacanja,
@@ -223,25 +257,12 @@ export async function POST(request: Request) {
 
   let fiscalResult: FiscalizationResult | undefined;
 
-  const { data: profil } = await supabase
-    .from('profiles')
-    .select('oib')
-    .eq('id', user.id)
-    .maybeSingle();
-
-  const { data: cert } = await supabase
-    .from('fiscal_certificates')
-    .select('id')
-    .eq('user_id', user.id)
-    .eq('is_active', true)
-    .maybeSingle();
-
-  if (cert && profil?.oib?.trim()) {
+  if (fiscalCert && profil?.oib?.trim()) {
     fiscalResult = await fiscalizeRacun({
       racunId: racun.id,
       userId: user.id,
       oib: profil.oib.trim(),
-      brojRacuna: body.brojRacuna,
+      brojRacuna: racun.broj_racuna,
       ukupniIznos: ukupno,
       nacinPlacanja: body.nacinPlacanja,
     });
@@ -276,8 +297,8 @@ export async function POST(request: Request) {
       user_id: user.id,
       racun_id: racun.id,
       datum: paymentDate,
-      broj_temeljnice: body.brojRacuna,
-      opis: opisAutomatskogKprUnosaZaRacun(body.brojRacuna),
+      broj_temeljnice: racun.broj_racuna,
+      opis: opisAutomatskogKprUnosaZaRacun(racun.broj_racuna),
       iznos_gotovina: isCash ? ukupno : 0,
       iznos_bezgotovinsko: isCash ? 0 : ukupno,
       ukupno,
