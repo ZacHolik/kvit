@@ -121,6 +121,11 @@ export default function PoSdObrazacPage() {
         računima i bankovnim izvodima. Zato mnogi paušalisti prvo srede digitalni KPR
         u Kviku, pa tek onda prelaze na PO-SD generiran iz istih podataka.
       </p>
+      <p>
+        PO-SD ne pokriva fiskalizaciju niti eRačune — to su zasebni digitalni obvezi koje mnogi
+        miješaju s godišnjim obrascima; ako si u dilemi oko rokova, pročitaj{' '}
+        <Link href={vodiciHref('fiskalizacija-20')}>Fiskalizacija 2.0 za paušaliste</Link>.
+      </p>
 
       <h2 id='rok'>Rok predaje</h2>
       <p>

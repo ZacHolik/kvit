@@ -131,6 +131,12 @@ export default function KprKnjigaPrometaPage() {
         korekciju, i to mora biti vidljivo u tragovima — ne briši nasumično redove bez
         dokumentacije.
       </p>
+      <p>
+        Knjižno storno nije isto što i fiskalni storno u CIS-u kad je račun već poslan na
+        fiskalizaciju — tada pratiš i tehnički postupak u programu. Više o digitalnim računima i
+        rokovima imaš u vodiču{' '}
+        <Link href={vodiciHref('fiskalizacija-20')}>Fiskalizacija 2.0 za paušaliste</Link>.
+      </p>
 
       <h2 id='gotovina'>Gotovina i bezgotovina</h2>
       <p>

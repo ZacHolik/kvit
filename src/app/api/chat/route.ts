@@ -515,6 +515,58 @@ Interni akt je prvi korak prije izdavanja prvog računa. U izvoru je jasno naved
 
 ---
 
+### FISKALIZACIJA 1.0 — GOTOVINSKI RAČUNI
+
+Paušalisti su "mali obveznici fiskalizacije" (čl. 3. st. 3. Zakona o fiskalizaciji).
+Ako naplaćuješ u gotovini (uključujući kartice, čekove, virman na licu mjesta) — moraš provoditi fiskalizaciju.
+
+Dva puta:
+1. Uvezana knjiga računa (ovjerena u Poreznoj upravi PRIJE korištenja) — bez elektroničkog sustava
+2. Elektronički sustav (poput Kvika) — FINA certifikat obvezan, automatska fiskalizacija
+
+FINA certifikat: .p12 datoteka, 39,82€ + PDV za 5 godina. Demo besplatan. Portal: mojcert.fina.hr
+UPOZORENJE: Lozinku certifikata možeš obnoviti samo u prvoj godini! Nakon toga — novi certifikat.
+
+Interni akt: dokument koji propisuje numeriranje računa, poslovne prostore i operatere.
+NE šalje se Poreznoj upravi — čuva se u poslovnom prostoru. Generiraj besplatno u Kviku: https://kvik.online/alati/interni-akt
+
+Format broja računa: X/PP/NU (npr. 1/PP1/1, 2/PP1/1...). Kreće od 1 svake godine.
+
+JIR = Jedinstveni identifikator računa. UUID koji CIS (Porezna) vraća kad fiskalizira račun.
+ZKI = Zaštitni kod izdavatelja. Backup kod koji Kvik izračuna lokalno. Koristi se kad nema interneta.
+
+Prekid veze: račun se izdaje sa ZKI-jem bez JIR-a. Kvik mora naknadno poslati u roku 48 sati.
+Kvar naplatnog uređaja: koristi uvezanu knjigu računa, rok 5 dana za popravak (čl. 22. st. 3-4).
+
+Što NIJE gotovina: kompenzacija, cesija, asignacija = bezgotovinsko plaćanje, oznaka "T".
+
+### FISKALIZACIJA 2.0 — eRACUNI
+
+Rokovi za paušaliste:
+- Od 1.1.2026.: ZAPRIMANJE eRačuna obvezno (besplatno kroz MIKROeRACUN u ePoreznoj)
+- Od 1.1.2027.: IZDAVANJE eRačuna obvezno
+
+MIKROeRACUN: besplatna aplikacija Porezne uprave za zaprimanje i slanje eRačuna.
+Uvjeti: korisnik ePorezne, NIJE PDV obveznik, NIJE javni naručitelj.
+
+Informacijski posrednik: servis koji u tvoje ime šalje i zaprima eRačune.
+Odabireš u ePoreznoj → FiskAplikacija → Administracija → potvrda pristupne točke.
+BEZ POTVRDE: eRačuni ti NEĆE biti dostavljeni!
+
+Format: UBL 2.1 XML prema EU normi EN 16931 + hrvatska ekstenzija. NE PDF.
+Arhiviranje: min. 6 godina, isključivo elektronički. XML je izvornik.
+
+### KAZNE ZA FISKALIZACIJU
+
+Za obrtnike paušaliste (Zakon o fiskalizaciji, NN 114/23):
+- Izbjegavanje fiskalizacije: 3.980€ — 39.810€ (čl. 34. st. 3)
+- Računi bez propisanih podataka: 1.320€ — 39.810€ (čl. 34.a st. 2)
+- Nenabava FINA certifikata: 660€ — 26.540€ (čl. 35. st. 2)
+- Neuspostava veze u roku 2 dana: 660€ — 26.540€ (čl. 35. st. 2)
+- Kupac ne čuva račun: 26€ — 265€ (čl. 35.a)
+
+---
+
 === KRAJ KNOWLEDGE BASE ===`;
 
 type ChatMessage = {

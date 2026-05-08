@@ -309,23 +309,23 @@ export const VODICI_ENTRIES: VodiciEntry[] = [
   // =========================================================================
   {
     slug: 'fiskalizacija-20',
-    title: 'Fiskalizacija 2.0 za paušaliste – vodič 2026.',
+    title: 'Fiskalizacija 2.0 za paušaliste — što se mijenja i do kad?',
     shortTitle: 'Fiskalizacija 2.0',
     description:
-      'Fiskalizacija 2.0 za paušaliste: transakcijski računi, eRačuni, rokovi B2C i B2B te kako se pripremiti bez stresa.',
-    readingMinutes: 12,
+      'Sve o eRačunima, rokovima i obvezama za paušalne obrtnike — praktični vodič bez birokracije.',
+    readingMinutes: 14,
     category: 'fiskalizacija',
-    primaryKeyword: 'fiskalizacija 2.0 paušalisti',
+    primaryKeyword: 'fiskalizacija 2.0 paušalni obrt eračun 2026 2027',
   },
   {
     slug: 'fina-certifikat-fiskalizacija',
-    title: 'FINA certifikat za fiskalizaciju — kako nabaviti i koliko košta',
+    title: 'FINA certifikat za fiskalizaciju — korak po korak',
     shortTitle: 'FINA certifikat fiskalizacija',
     description:
-      'Certilia vs FINA PKI, što trebaš za nabavu, cijene i obnova, tko ne treba certifikat i što nakon instalacije (ZKI, JIR).',
-    readingMinutes: 8,
+      'Kako nabaviti FINA certifikat za fiskalizaciju, koliko košta i kako ga uploadati u Kvik.',
+    readingMinutes: 10,
     category: 'fiskalizacija',
-    primaryKeyword: 'FINA certifikat fiskalizacija paušalni obrt',
+    primaryKeyword: 'FINA certifikat fiskalizacija paušalni obrt cijena',
   },
   {
     slug: 'kpr-online-generator',

@@ -35,4 +35,10 @@ export const alatiLetterStyles = StyleSheet.create({
     fontSize: 8,
     color: '#555',
   },
+  kvikLine: {
+    marginTop: 10,
+    fontSize: 7,
+    color: '#999999',
+    textAlign: 'center',
+  },
 });

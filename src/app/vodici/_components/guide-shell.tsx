@@ -17,6 +17,8 @@ type GuideShellProps = {
   subtitle: string;
   readingMinutes: number;
   metaDescription: string;
+  /** ISO YYYY-MM-DD za JSON-LD dateModified; default ostaje za starije stranice. */
+  articleDateModified?: string;
   toc: GuideTocItem[];
   children: React.ReactNode;
   faq: GuideFaqItem[];
@@ -34,6 +36,7 @@ export function GuideShell({
   subtitle,
   readingMinutes,
   metaDescription,
+  articleDateModified,
   toc,
   children,
   faq,
@@ -43,7 +46,7 @@ export function GuideShell({
   const base = getSiteUrl();
   const pageUrl = `${base}/vodici/${slug}`;
   const published = '2026-04-11';
-  const modified = '2026-04-11';
+  const modified = articleDateModified ?? '2026-04-11';
 
   const breadcrumbLd = {
     '@context': 'https://schema.org',

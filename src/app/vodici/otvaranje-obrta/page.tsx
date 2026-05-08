@@ -194,6 +194,13 @@ export default function OtvaranjeObrtaPage() {
         gradiš naviku koja štedi sate pri PO-SD-u.
       </p>
       <p>
+        Prije prvog računa složi <Link href='/alati/interni-akt'>interni akt</Link> (oznake
+        prostora/uređaja i numeracija), a ako ćeš naplaćivati gotovinom ili karticom na licu
+        mjesta, pripremi i digitalnu fiskalizaciju: vodič{' '}
+        <Link href={vodiciHref('fiskalizacija-20')}>Fiskalizacija 2.0</Link> i{' '}
+        <Link href={vodiciHref('fina-certifikat-fiskalizacija')}>FINA certifikat</Link>.
+      </p>
+      <p>
         Za dublje čitanje otvori sve vodiče u rubrici:{' '}
         {otherGuides.map((e, i) => (
           <span key={e.slug}>

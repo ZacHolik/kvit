@@ -92,5 +92,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: 'monthly',
       priority: 0.72,
     },
+    {
+      url: `${base}/provjera`,
+      lastModified,
+      changeFrequency: 'monthly',
+      priority: 0.75,
+    },
   ];
 }

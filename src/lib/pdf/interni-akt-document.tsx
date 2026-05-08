@@ -28,6 +28,7 @@ export function InterniAktDocument(fields: InterniAktPdfFields) {
           Predložak je informativan. Prilagodi tekst svojoj situaciji i po potrebi
           provjeri s odvjetnikom ili računovođom prije donošenja.
         </Text>
+        <Text style={styles.kvikLine}>Generirano u Kvik — kvik.online</Text>
       </Page>
     </Document>
   );

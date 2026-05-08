@@ -157,6 +157,14 @@ export default function IzdavanjeRacunaPage() {
         nego što račun smatraš konačnim. Ako si do sada slao Word ili Excel klijentima,
         vrijeme je za <Link href='/register'>digitalno rješenje</Link> poput Kvika.
       </p>
+      <p>
+        Za nabavu i upload certifikata koristi vodič{' '}
+        <Link href={vodiciHref('fina-certifikat-fiskalizacija')}>
+          FINA certifikat za fiskalizaciju
+        </Link>
+        , a za cjelinu eRačuna i rokove pogledaj{' '}
+        <Link href={vodiciHref('fiskalizacija-20')}>Fiskalizacija 2.0 za paušaliste</Link>.
+      </p>
 
       <h2 id='eracun'>eRačun za firme</h2>
       <p>

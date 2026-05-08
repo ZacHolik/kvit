@@ -269,9 +269,10 @@ const styles = StyleSheet.create({
   },
   kvikBrandLine: {
     fontFamily: FF,
-    marginTop: 8,
+    marginTop: 6,
     fontSize: 7,
     color: '#999999',
+    textAlign: 'center',
   },
 });
 
@@ -391,7 +392,7 @@ export function InvoiceDocument({
   kupacAdresa,
   kupacEmail,
   profil,
-  footerText = 'Sukladno članku 90. Zakona o porezu na dodanu vrijednost,\nizdavatelj računa nije u sustavu PDV-a te PDV nije obračunat.\nIzrađeno u Kvik — kvik.online/probaj',
+  footerText = 'Sukladno članku 90. Zakona o porezu na dodanu vrijednost,\nizdavatelj računa nije u sustavu PDV-a te PDV nije obračunat.',
   paymentBarcode,
   stavke,
   zki = null,

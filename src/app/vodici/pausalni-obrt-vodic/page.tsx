@@ -201,6 +201,16 @@ export default function PauzalniObrtVodicPage() {
         IBAN ako ga koristiš, te napomena o neobračunatom PDV-u kada si izvan sustava.
         Račune treba čuvati godinama u skladu s propisima o arhiviranju.
       </p>
+      <p>
+        Za digitalnu fiskalizaciju gotovine treba ti FINA aplikativni certifikat — vidi{' '}
+        <Link href={vodiciHref('fina-certifikat-fiskalizacija')}>
+          FINA certifikat za fiskalizaciju
+        </Link>{' '}
+        i cijeli plan za eRačune u{' '}
+        <Link href={vodiciHref('fiskalizacija-20')}>Fiskalizacija 2.0 za paušaliste</Link>; kratku
+        provjeru znanja možeš napraviti na{' '}
+        <Link href='/provjera'>/provjera</Link>.
+      </p>
 
       <h2 id='usporedba'>Paušalni obrt i d.o.o.</h2>
       <p>
