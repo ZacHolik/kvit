@@ -1,4 +1,4 @@
-import { Document, Page, Rect, StyleSheet, Svg, Text, View } from '@react-pdf/renderer';
+import { Document, Image, Page, Rect, StyleSheet, Svg, Text, View } from '@react-pdf/renderer';
 
 import { formatDatumHr, formatIznosEurHr } from '@/lib/format-hr';
 
@@ -247,6 +247,16 @@ const styles = StyleSheet.create({
     fontSize: 7,
     color: '#6b7280',
   },
+  fiscalQrRow: {
+    marginTop: 10,
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    alignItems: 'flex-start',
+  },
+  fiscalQrImg: {
+    width: 85,
+    height: 85,
+  },
   footer: {
     fontFamily: FF,
     marginTop: 'auto',
@@ -310,6 +320,8 @@ export type InvoicePdfData = {
   }>;
   zki?: string | null;
   jir?: string | null;
+  /** PNG data URL (fiskalni QR za poreznu) — samo kad postoji JIR. */
+  fiscalQrPngDataUrl?: string | null;
 };
 
 function statusLabel(status: string): string {
@@ -378,6 +390,7 @@ export function InvoiceDocument({
   stavke,
   zki = null,
   jir = null,
+  fiscalQrPngDataUrl = null,
 }: InvoicePdfData) {
   const brojZaPrikaz = formatBrojRacunaZaPdf(brojRacuna);
   const ibanZaPrikaz = profil.iban?.replace(/\s/g, '').trim();
@@ -555,6 +568,11 @@ export function InvoiceDocument({
           <View style={styles.fiscalBlock}>
             <Text style={styles.fiscalLine}>Fiskalizirano | JIR: {jir}</Text>
             {zki ? <Text style={styles.fiscalLine}>ZKI: {zki}</Text> : null}
+            {fiscalQrPngDataUrl ? (
+              <View style={styles.fiscalQrRow}>
+                <Image style={styles.fiscalQrImg} src={fiscalQrPngDataUrl} />
+              </View>
+            ) : null}
           </View>
         ) : null}
 

@@ -6,6 +6,7 @@ import {
   formatBrojRacunaZaPdf,
   InvoiceDocument,
 } from '@/lib/pdf/invoice-document';
+import { fiscalQrPngDataUrl } from '@/lib/fiscalization/fiscal-qr';
 import { generatePdf417Matrix } from '@/lib/pdf/pdf417-matrix';
 import { createClient } from '@/lib/supabase/server';
 
@@ -26,7 +27,7 @@ export async function GET(
     supabase
       .from('racuni')
       .select(
-        'id, broj_racuna, datum, datum_placanja, nacin_placanja, status, tip_racuna, popust_racun, rok_placanja, datum_dospijeca, dostava_iznos, dostava_opis, ukupni_iznos, napomena, barkod_enabled, zki, jir, kupci(naziv, oib, adresa, email)',
+        'id, broj_racuna, datum, datum_placanja, nacin_placanja, status, tip_racuna, popust_racun, rok_placanja, datum_dospijeca, dostava_iznos, dostava_opis, ukupni_iznos, napomena, barkod_enabled, zki, jir, fiskalizirano_at, kupci(naziv, oib, adresa, email)',
       )
       .eq('id', params.id)
       .eq('user_id', user.id)
@@ -93,6 +94,19 @@ export async function GET(
   const popustRacun = Number(racun.popust_racun ?? 0);
   const popustRacunIznos = meduzbroj * (popustRacun / 100);
 
+  const jirVal = racun.jir?.trim() ?? '';
+  let fiscalQrPng: string | null = null;
+  if (jirVal) {
+    const fiskAt = racun.fiskalizirano_at
+      ? new Date(racun.fiskalizirano_at as string)
+      : new Date(`${String(racun.datum).slice(0, 10)}T12:00:00`);
+    fiscalQrPng = await fiscalQrPngDataUrl(
+      jirVal,
+      fiskAt,
+      Number(racun.ukupni_iznos),
+    );
+  }
+
   const invoicePdf = InvoiceDocument({
     brojRacuna: racun.broj_racuna,
     datum: racun.datum,
@@ -135,6 +149,7 @@ export async function GET(
     stavke: stavkeZaPdf,
     zki: racun.zki ?? null,
     jir: racun.jir ?? null,
+    fiscalQrPngDataUrl: fiscalQrPng,
   });
 
   const stream = await renderToStream(invoicePdf);
