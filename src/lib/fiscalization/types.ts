@@ -69,6 +69,9 @@ export type CISResponse = {
   zki?: string;
   error?: string;
   rawResponse?: string;
+  /** Potpuni SOAP XML (sadrži token — sanitiziraj prije loga u bazu). */
+  requestXml?: string;
+  durationMs?: number;
 };
 
 export type FiscalizationResult = {

@@ -10,7 +10,7 @@
 import { createClient } from '@/lib/supabase/server';
 
 import { decryptPassword } from './encryption';
-import { sendRacunToCIS } from './cis';
+import { sanitizeCisRequestForLog, sendRacunToCIS } from './cis';
 import type { FiscalizationResult, NacinPlacanja } from './types';
 import { formatDatVrijemeZaCIS, formatIznosZaCIS, generateZki } from './zki';
 
@@ -180,6 +180,10 @@ export async function fiscalizeRacun(
     cisResult.success,
     cisResult.error ?? null,
     cisResult.rawResponse,
+    typeof cisResult.requestXml === 'string' && cisResult.requestXml.length > 0
+      ? sanitizeCisRequestForLog(cisResult.requestXml)
+      : null,
+    cisResult.durationMs ?? null,
   );
 
   if (!cisResult.success) {
@@ -201,14 +205,18 @@ async function logFiscalResult(
   success: boolean,
   errorMessage: string | null,
   rawResponse?: string,
+  cisRequestSanitized?: string | null,
+  durationMs?: number | null,
 ) {
   await supabase.from('fiscal_logs').insert({
     user_id: input.userId,
     racun_id: input.racunId,
     zki,
     jir,
+    cis_request: cisRequestSanitized ?? null,
     cis_response: rawResponse ?? null,
     success,
     error_message: errorMessage,
+    duration_ms: durationMs ?? null,
   });
 }
