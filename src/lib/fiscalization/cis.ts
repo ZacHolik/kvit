@@ -2,28 +2,23 @@
  * CIS SOAP klijent za fiskalizaciju 1.0
  * Komunikacija s Poreznom upravom (CIS = Centralni informacijski sustav).
  *
- * Endpoints:
- * TEST: https://cistest.apis-it.hr:8449/FiskalizacijaServiceTest
- * PROD: https://cis.porezna-uprava.hr:8449/FiskalizacijaService
+ * Endpoint: cistest / cis.porezna-uprava.hr :8449 (konstante; CIS_URL env u zasebnom commitu).
  *
- * Standard: SOAP 1.1 s WS-Security (XML potpis)
+ * Potpis: XML-DSig nad SOAP Body (Exclusive C14N + SHA1 digest, RSA-SHA1 nad SignedInfo),
+ * wsse:BinarySecurityToken + KeyInfo s SecurityTokenReference (spec. v2.5 / WS-Security).
  */
 
-import { createSign } from 'crypto';
 import forge from 'node-forge';
 import { create } from 'xmlbuilder2';
+import { SignedXml } from 'xml-crypto';
 
 import { decryptCertificate } from './encryption';
 import type { CISResponse, RacunZaCIS } from './types';
 
-// Paket je u projektu za kanonski XML-DSig / WS-Security (vidi NAPOMENE u zadatku).
-import { SignedXml } from 'xml-crypto';
-
-/** Rezervirano za kanonski potpis tijela poruke (xml-crypto). */
-export const XmlCryptoSignedXml = SignedXml;
-
-const CIS_TEST_URL = 'https://cistest.apis-it.hr:8449/FiskalizacijaServiceTest';
-const CIS_PROD_URL = 'https://cis.porezna-uprava.hr:8449/FiskalizacijaService';
+const CIS_TEST_URL =
+  'https://cistest.apis-it.hr:8449/FiskalizacijaServiceTest';
+const CIS_PROD_URL =
+  'https://cis.porezna-uprava.hr:8449/FiskalizacijaService';
 
 export type CISCertificateData = {
   encryptedP12: string;
@@ -32,10 +27,17 @@ export type CISCertificateData = {
   p12Password?: string;
 };
 
+export type CISCallMeta = {
+  /** Trajanje HTTP poziva u ms. */
+  durationMs: number;
+  /** Potpuni SOAP XML poslan na CIS (za log — sanitiziraj prije spremanja u bazu). */
+  requestXml: string;
+};
+
 function loadP12KeyAndCert(
   p12Buffer: Buffer,
   p12Password: string,
-): { privateKeyPem: string; certDerB64: string } {
+): { privateKeyPem: string; certDerB64: string; certPem: string } {
   const p12Der = forge.util.createBuffer(p12Buffer.toString('binary'));
   const p12Asn1 = forge.asn1.fromDer(p12Der);
   const p12 = forge.pkcs12.pkcs12FromAsn1(p12Asn1, p12Password);
@@ -47,6 +49,7 @@ function loadP12KeyAndCert(
         forge.asn1.toDer(forge.pki.certificateToAsn1(certBag)).getBytes(),
       )
     : '';
+  const certPem = certBag ? forge.pki.certificateToPem(certBag) : '';
 
   const shrouded = p12.getBags({ bagType: forge.pki.oids.pkcs8ShroudedKeyBag });
   const shroudedKey = shrouded[forge.pki.oids.pkcs8ShroudedKeyBag]?.[0]?.key;
@@ -54,6 +57,7 @@ function loadP12KeyAndCert(
     return {
       privateKeyPem: forge.pki.privateKeyToPem(shroudedKey),
       certDerB64: certDer,
+      certPem,
     };
   }
 
@@ -65,11 +69,13 @@ function loadP12KeyAndCert(
   return {
     privateKeyPem: forge.pki.privateKeyToPem(privateKeyForge),
     certDerB64: certDer,
+    certPem,
   };
 }
 
 /**
- * Gradi SOAP envelope za RacunZahtjev prema specifikaciji.
+ * Gradi SOAP envelope (bez potpisa). Security: Timestamp + BinarySecurityToken.
+ * Potpis (ds:Signature) dodaje signSoapEnvelope pomoću xml-crypto.
  */
 function buildSoapEnvelope(racun: RacunZaCIS, messageId: string): string {
   const now = new Date();
@@ -80,13 +86,13 @@ function buildSoapEnvelope(racun: RacunZaCIS, messageId: string): string {
     .ele('soapenv:Envelope', {
       'xmlns:soapenv': 'http://schemas.xmlsoap.org/soap/envelope/',
       'xmlns:tns': 'http://www.apis-it.hr/fin/2012/types/f73',
+      'xmlns:wsu':
+        'http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd',
     })
     .ele('soapenv:Header')
     .ele('wsse:Security', {
       'xmlns:wsse':
         'http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd',
-      'xmlns:wsu':
-        'http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd',
       'soapenv:mustUnderstand': '1',
     })
     .ele('wsu:Timestamp', { 'wsu:Id': 'Timestamp' })
@@ -154,8 +160,70 @@ function buildSoapEnvelope(racun: RacunZaCIS, messageId: string): string {
 }
 
 /**
- * Generira UUID v4 za messageId.
+ * Umeće BinarySecurityToken u prvi wsse:Security (nakon Timestamp).
  */
+function insertBinarySecurityToken(
+  envelopeXml: string,
+  certDerB64: string,
+): string {
+  const token = `<wsse:BinarySecurityToken EncodingType="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-soap-message-security-1.0#Base64Binary" ValueType="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-x509-token-profile-1.0#X509v3" wsu:Id="X509Token" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd">${certDerB64}</wsse:BinarySecurityToken>`;
+  const closeTs = '</wsu:Timestamp>';
+  const idx = envelopeXml.indexOf(closeTs);
+  if (idx === -1) {
+    throw new Error('SOAP: Timestamp nije pronađen za umetanje certifikata.');
+  }
+  return (
+    envelopeXml.slice(0, idx + closeTs.length) +
+    token +
+    envelopeXml.slice(idx + closeTs.length)
+  );
+}
+
+/**
+ * Potpisuje SOAP envelope: referenca na soapenv:Body, Exclusive C14N, SHA1, RSA-SHA1.
+ */
+function signSoapEnvelope(
+  envelopeXml: string,
+  privateKeyPem: string,
+  certPem: string,
+): string {
+  const sig = new SignedXml({
+    privateKey: privateKeyPem,
+    publicCert: certPem,
+    signatureAlgorithm: 'http://www.w3.org/2000/09/xmldsig#rsa-sha1',
+    canonicalizationAlgorithm: 'http://www.w3.org/2001/10/xml-exc-c14n#',
+    idMode: 'wssecurity',
+    getKeyInfoContent: () =>
+      '<wsse:SecurityTokenReference xmlns:wsse="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd">' +
+      '<wsse:Reference URI="#X509Token" ValueType="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-x509-token-profile-1.0#X509v3"/>' +
+      '</wsse:SecurityTokenReference>',
+  });
+
+  sig.addReference({
+    xpath:
+      "//*[local-name(.)='Body' and namespace-uri(.)='http://schemas.xmlsoap.org/soap/envelope/']",
+    transforms: ['http://www.w3.org/2001/10/xml-exc-c14n#'],
+    digestAlgorithm: 'http://www.w3.org/2000/09/xmldsig#sha1',
+  });
+
+  sig.computeSignature(envelopeXml, {
+    location: {
+      reference: "//*[local-name(.)='BinarySecurityToken']",
+      action: 'after',
+    },
+  });
+
+  return sig.getSignedXml();
+}
+
+/** Za fiscal_logs: ukloni sadržaj BinarySecurityToken (DER base64). */
+export function sanitizeCisRequestForLog(xml: string): string {
+  return xml.replace(
+    /(<wsse:BinarySecurityToken[^>]*>)([\s\S]*?)(<\/wsse:BinarySecurityToken>)/i,
+    '$1[REDACTED]$3',
+  );
+}
+
 function generateMessageId(): string {
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
     const r = (Math.random() * 16) | 0;
@@ -164,17 +232,11 @@ function generateMessageId(): string {
   });
 }
 
-/**
- * Parsira CIS SOAP odgovor i izvlači JIR.
- */
 function parseJirFromResponse(responseXml: string): string | null {
   const match = /<(?:tns:)?Jir>([^<]+)<\/(?:tns:)?Jir>/i.exec(responseXml);
   return match?.[1]?.trim() ?? null;
 }
 
-/**
- * Parsira grešku iz CIS SOAP odgovora.
- */
 function parseErrorFromResponse(responseXml: string): string | null {
   const match =
     /<(?:tns:)?PorukaGreske>([^<]+)<\/(?:tns:)?PorukaGreske>/i.exec(responseXml);
@@ -192,9 +254,10 @@ export async function sendRacunToCIS(
   racun: RacunZaCIS,
   certData: CISCertificateData,
   mode: 'test' | 'production' = 'test',
-): Promise<CISResponse> {
+): Promise<CISResponse & Partial<CISCallMeta>> {
   const url = mode === 'production' ? CIS_PROD_URL : CIS_TEST_URL;
   const messageId = generateMessageId();
+  const started = Date.now();
 
   try {
     const p12Buffer = decryptCertificate(
@@ -204,18 +267,23 @@ export async function sendRacunToCIS(
     );
 
     const password = certData.p12Password ?? '';
-    const { privateKeyPem, certDerB64 } = loadP12KeyAndCert(p12Buffer, password);
-
-    const soapXml = buildSoapEnvelope(racun, messageId);
-
-    const signer = createSign('SHA1');
-    signer.update(soapXml, 'utf8');
-    const signature = signer.sign(privateKeyPem, 'base64');
-
-    const signedXml = soapXml.replace(
-      '</wsse:Security>',
-      `<wsse:BinarySecurityToken ValueType="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-x509-token-profile-1.0#X509v3" EncodingType="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-soap-message-security-1.0#Base64Binary" wsu:Id="X509Token" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd">${certDerB64}</wsse:BinarySecurityToken><ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#"><ds:SignatureValue>${signature}</ds:SignatureValue></ds:Signature></wsse:Security>`,
+    const { privateKeyPem, certDerB64, certPem } = loadP12KeyAndCert(
+      p12Buffer,
+      password,
     );
+
+    if (!certDerB64 || !certPem) {
+      return {
+        success: false,
+        error: 'X.509 certifikat nije pronađen u .p12 datoteci.',
+        durationMs: Date.now() - started,
+        requestXml: '',
+      };
+    }
+
+    const envelope = buildSoapEnvelope(racun, messageId);
+    const withToken = insertBinarySecurityToken(envelope, certDerB64);
+    const signedXml = signSoapEnvelope(withToken, privateKeyPem, certPem);
 
     const response = await fetch(url, {
       method: 'POST',
@@ -228,12 +296,15 @@ export async function sendRacunToCIS(
     });
 
     const responseText = await response.text();
+    const durationMs = Date.now() - started;
 
     if (!response.ok) {
       return {
         success: false,
         error: `CIS HTTP greška: ${response.status}`,
         rawResponse: responseText,
+        durationMs,
+        requestXml: signedXml,
       };
     }
 
@@ -244,6 +315,8 @@ export async function sendRacunToCIS(
         jir,
         zki: racun.zki,
         rawResponse: responseText,
+        durationMs,
+        requestXml: signedXml,
       };
     }
 
@@ -252,9 +325,16 @@ export async function sendRacunToCIS(
       success: false,
       error: errorMsg ?? 'CIS nije vratio JIR ni grešku.',
       rawResponse: responseText,
+      durationMs,
+      requestXml: signedXml,
     };
   } catch (err) {
     const message = err instanceof Error ? err.message : 'Nepoznata greška.';
-    return { success: false, error: message };
+    return {
+      success: false,
+      error: message,
+      durationMs: Date.now() - started,
+      requestXml: '',
+    };
   }
 }
