@@ -3,8 +3,8 @@
  * Komunikacija s Poreznom upravom (CIS = Centralni informacijski sustav).
  *
  * Endpoints:
- * TEST: https://cistest.apis-it.hr:443/FiskalizacijaService
- * PROD: https://cis.porezna-uprava.hr:443/FiskalizacijaService
+ * TEST: https://cistest.apis-it.hr:8449/FiskalizacijaServiceTest
+ * PROD: https://cis.porezna-uprava.hr:8449/FiskalizacijaService
  *
  * Standard: SOAP 1.1 s WS-Security (XML potpis)
  */
@@ -22,8 +22,8 @@ import { SignedXml } from 'xml-crypto';
 /** Rezervirano za kanonski potpis tijela poruke (xml-crypto). */
 export const XmlCryptoSignedXml = SignedXml;
 
-const CIS_TEST_URL = 'https://cistest.apis-it.hr:443/FiskalizacijaService';
-const CIS_PROD_URL = 'https://cis.porezna-uprava.hr:443/FiskalizacijaService';
+const CIS_TEST_URL = 'https://cistest.apis-it.hr:8449/FiskalizacijaServiceTest';
+const CIS_PROD_URL = 'https://cis.porezna-uprava.hr:8449/FiskalizacijaService';
 
 export type CISCertificateData = {
   encryptedP12: string;
