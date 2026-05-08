@@ -347,3 +347,43 @@ export async function sendRacunToCIS(
     };
   }
 }
+
+/**
+ * Echo zahtjev — bez potpisa; provjera dostupnosti CIS-a.
+ */
+export async function echoCIS(
+  mode: 'test' | 'production' = 'test',
+): Promise<{ ok: boolean; message: string; durationMs: number }> {
+  const url = resolveCisUrl(mode);
+  const body =
+    '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:fis="http://www.apis-it.hr/fin/2012/types/f73">' +
+    '<soapenv:Body><fis:EchoRequest>Test</fis:EchoRequest></soapenv:Body></soapenv:Envelope>';
+  const started = Date.now();
+  try {
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'text/xml;charset=UTF-8',
+        SOAPAction: '"Echo"',
+      },
+      body,
+      signal: AbortSignal.timeout(10000),
+    });
+    const text = await response.text();
+    const durationMs = Date.now() - started;
+    if (!response.ok) {
+      return {
+        ok: false,
+        message: `HTTP ${response.status}`,
+        durationMs,
+      };
+    }
+    if (/EchoResponse/i.test(text) && !/soapenv:Fault/i.test(text)) {
+      return { ok: true, message: 'CIS odgovorio.', durationMs };
+    }
+    return { ok: false, message: 'Neočekivan odgovor.', durationMs };
+  } catch (e) {
+    const msg = e instanceof Error ? e.message : 'Greška mreže.';
+    return { ok: false, message: msg, durationMs: Date.now() - started };
+  }
+}

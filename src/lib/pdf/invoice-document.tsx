@@ -576,6 +576,7 @@ export function InvoiceDocument({
             {zki ? <Text style={styles.fiscalLine}>ZKI: {zki}</Text> : null}
             {fiscalQrPngDataUrl ? (
               <View style={styles.fiscalQrRow}>
+                {/* eslint-disable-next-line jsx-a11y/alt-text -- @react-pdf Image nema alt prop */}
                 <Image style={styles.fiscalQrImg} src={fiscalQrPngDataUrl} />
               </View>
             ) : null}

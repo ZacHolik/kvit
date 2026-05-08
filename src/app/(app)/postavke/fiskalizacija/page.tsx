@@ -5,6 +5,7 @@ import {
   type ChangeEvent,
   type DragEvent,
   useCallback,
+  useEffect,
   useMemo,
   useState,
 } from 'react';
@@ -48,8 +49,41 @@ export default function FiskalizacijaWizardPage() {
   const [toast, setToast] = useState<{ type: 'success' | 'error'; message: string } | null>(
     null,
   );
+  const [cisEcho, setCisEcho] = useState<{
+    ok: boolean;
+    message: string;
+    loading: boolean;
+  } | null>(null);
 
   const progressPct = useMemo(() => (step / 6) * 100, [step]);
+
+  const pollCisEcho = useCallback(async () => {
+    setCisEcho({ ok: false, message: '', loading: true });
+    try {
+      const res = await fetch('/api/fiscal/echo');
+      const data = (await res.json()) as { ok?: boolean; message?: string };
+      setCisEcho({
+        ok: Boolean(data.ok),
+        message: data.message ?? (data.ok ? 'CIS dostupan.' : 'CIS nedostupan.'),
+        loading: false,
+      });
+    } catch {
+      setCisEcho({
+        ok: false,
+        message: 'Greška pri pozivu Echo.',
+        loading: false,
+      });
+    }
+  }, []);
+
+  useEffect(() => {
+    if (step < 4 || step > 6) {
+      return;
+    }
+    void pollCisEcho();
+    const t = window.setInterval(() => void pollCisEcho(), 60_000);
+    return () => window.clearInterval(t);
+  }, [step, pollCisEcho]);
 
   const pickFile = useCallback((file: File | null) => {
     if (!file) {
@@ -196,6 +230,24 @@ export default function FiskalizacijaWizardPage() {
         <header className='rounded-2xl border border-[#1f2a28] bg-[#111716] p-5 sm:p-6'>
           <p className='font-body text-sm text-[#94a3a0]'>Postavke · Fiskalizacija</p>
           <h1 className='font-heading mt-2 text-2xl sm:text-3xl'>FINA certifikat</h1>
+          {step >= 4 && step <= 6 ? (
+            <div
+              className={`mt-4 rounded-xl border px-3 py-2 text-sm ${
+                cisEcho?.loading
+                  ? 'border-[#2a3734] text-[#94a3a0]'
+                  : cisEcho?.ok
+                    ? 'border-[#0d9488]/40 bg-[#0d9488]/10 text-[#5eead4]'
+                    : 'border-red-500/40 bg-red-500/10 text-red-200'
+              }`}
+            >
+              <span className='font-semibold'>CIS (Echo): </span>
+              {cisEcho?.loading
+                ? 'Provjera…'
+                : cisEcho
+                  ? `${cisEcho.ok ? 'Dostupan' : 'Nedostupan'} — ${cisEcho.message}`
+                  : '—'}
+            </div>
+          ) : null}
         </header>
 
         {toast ? (
