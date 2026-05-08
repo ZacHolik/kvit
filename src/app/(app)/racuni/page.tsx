@@ -15,7 +15,7 @@ export default async function RacuniPage() {
     redirect('/login');
   }
 
-  const [{ data: racuni }, { data: profil }] = await Promise.all([
+  const [{ data: racuni }, { data: profil }, { data: retryRows }] = await Promise.all([
     supabase
       .from('racuni')
       .select(
@@ -28,7 +28,16 @@ export default async function RacuniPage() {
       .select('naziv_obrta')
       .eq('id', user.id)
       .maybeSingle(),
+    supabase
+      .from('fiscal_retry_queue')
+      .select('racun_id')
+      .eq('user_id', user.id)
+      .eq('status', 'pending'),
   ]);
+
+  const pendingRetryRacunIds = new Set(
+    (retryRows ?? []).map((r) => r.racun_id as string),
+  );
 
   const invoiceRows = ((racuni ?? []) as unknown as Array<
     Omit<InvoiceRow, 'kupci'> & {
@@ -60,6 +69,7 @@ export default async function RacuniPage() {
         <InvoiceList
           invoices={invoiceRows}
           nazivObrta={profil?.naziv_obrta ?? 'Kvik'}
+          pendingRetryRacunIds={Array.from(pendingRetryRacunIds)}
         />
       </div>
     </main>

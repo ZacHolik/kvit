@@ -7,6 +7,8 @@
  * ako je success: false.
  */
 
+import type { SupabaseClient } from '@supabase/supabase-js';
+
 import { createClient } from '@/lib/supabase/server';
 
 import { decryptPassword } from './encryption';
@@ -84,10 +86,13 @@ type FiscalCertRow = {
  * 4. Zabilježi u fiscal_logs
  * 5. Vrati rezultat
  */
-export async function fiscalizeRacun(
+/**
+ * Ista logika kao fiscalizeRacun, s eksplicitnim Supabase klijentom (npr. service role u cronu).
+ */
+export async function fiscalizeRacunWithClient(
+  supabase: SupabaseClient,
   input: FiscalizeRacunInput,
 ): Promise<FiscalizationResult> {
-  const supabase = createClient();
   const mode = process.env.NODE_ENV === 'production' ? 'production' : 'test';
 
   const { data: cert, error: certError } = await supabase
@@ -187,6 +192,11 @@ export async function fiscalizeRacun(
   );
 
   if (!cisResult.success) {
+    await enqueueFiscalRetryRow(supabase, {
+      racunId: input.racunId,
+      userId: input.userId,
+      errorMessage: cisResult.error ?? null,
+    });
     return {
       success: false,
       error: cisResult.error ?? 'CIS greška.',
@@ -197,8 +207,14 @@ export async function fiscalizeRacun(
   return { success: true, zki, jir: cisResult.jir };
 }
 
+export async function fiscalizeRacun(
+  input: FiscalizeRacunInput,
+): Promise<FiscalizationResult> {
+  return fiscalizeRacunWithClient(createClient(), input);
+}
+
 async function logFiscalResult(
-  supabase: ReturnType<typeof createClient>,
+  supabase: SupabaseClient,
   input: FiscalizeRacunInput,
   zki: string | null,
   jir: string | null,
@@ -218,5 +234,35 @@ async function logFiscalResult(
     success,
     error_message: errorMessage,
     duration_ms: durationMs ?? null,
+  });
+}
+
+const RETRY_FIRST_BACKOFF_MS = 5 * 60 * 1000;
+
+async function enqueueFiscalRetryRow(
+  supabase: SupabaseClient,
+  params: {
+    racunId: string;
+    userId: string;
+    errorMessage: string | null;
+  },
+): Promise<void> {
+  const { data: dup } = await supabase
+    .from('fiscal_retry_queue')
+    .select('id')
+    .eq('racun_id', params.racunId)
+    .eq('status', 'pending')
+    .maybeSingle();
+  if (dup) {
+    return;
+  }
+  const nextAt = new Date(Date.now() + RETRY_FIRST_BACKOFF_MS).toISOString();
+  await supabase.from('fiscal_retry_queue').insert({
+    racun_id: params.racunId,
+    user_id: params.userId,
+    attempt_count: 0,
+    next_attempt_at: nextAt,
+    status: 'pending',
+    error_message: params.errorMessage ?? 'CIS greška',
   });
 }

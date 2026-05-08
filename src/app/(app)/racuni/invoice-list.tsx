@@ -1,5 +1,6 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
 import { useMemo, useState } from 'react';
 
 import {
@@ -33,6 +34,8 @@ export type InvoiceRow = {
 type InvoiceListProps = {
   invoices: InvoiceRow[];
   nazivObrta: string;
+  /** Računi s pending redom za ponovni CIS pokušaj. */
+  pendingRetryRacunIds?: string[];
 };
 
 const PAYMENT_LABELS: Record<string, string> = {
@@ -41,7 +44,57 @@ const PAYMENT_LABELS: Record<string, string> = {
   kartica: 'Kartica',
 };
 
-export function InvoiceList({ invoices, nazivObrta }: InvoiceListProps) {
+function FiscalRetryActions({ racunId }: { racunId: string }) {
+  const router = useRouter();
+  const [busy, setBusy] = useState(false);
+  const [msg, setMsg] = useState('');
+
+  async function retry() {
+    setBusy(true);
+    setMsg('');
+    try {
+      const res = await fetch('/api/fiscal/retry', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ racunId }),
+      });
+      const data = (await res.json()) as { ok?: boolean; message?: string };
+      if (res.ok && data.ok) {
+        router.refresh();
+      } else {
+        setMsg(data.message ?? 'Pokušaj nije uspio.');
+      }
+    } catch {
+      setMsg('Mrežna greška.');
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  return (
+    <div className='mt-1 flex flex-col items-end gap-1'>
+      <span className='inline-flex rounded-full border border-amber-500/40 bg-amber-500/10 px-2 py-0.5 text-[10px] font-semibold text-amber-200'>
+        Čeka fiskalizaciju
+      </span>
+      <button
+        type='button'
+        disabled={busy}
+        onClick={() => void retry()}
+        className='font-body rounded border border-amber-500/50 px-2 py-1 text-[10px] text-amber-100 transition hover:bg-amber-500/10 disabled:opacity-50'
+      >
+        {busy ? '…' : 'Pokušaj ponovo'}
+      </button>
+      {msg ? <span className='max-w-[8rem] text-[10px] text-red-300'>{msg}</span> : null}
+    </div>
+  );
+}
+
+export function InvoiceList({
+  invoices,
+  nazivObrta,
+  pendingRetryRacunIds = [],
+}: InvoiceListProps) {
+  const retrySet = useMemo(() => new Set(pendingRetryRacunIds), [pendingRetryRacunIds]);
   const [search, setSearch] = useState('');
   const [status, setStatus] = useState('svi');
   const [payment, setPayment] = useState('svi');
@@ -171,12 +224,19 @@ export function InvoiceList({ invoices, nazivObrta }: InvoiceListProps) {
                         Fiskalizirano
                       </span>
                     ) : racun.fiskalizacija_error ? (
-                      <span
-                        title={racun.fiskalizacija_error}
-                        className='inline-flex rounded-full border border-red-500/40 bg-red-500/10 px-2.5 py-1 text-xs font-semibold text-red-200'
-                      >
-                        Nije fiskalizirano
-                      </span>
+                      <div className='flex flex-col items-end gap-1'>
+                        <span
+                          title={racun.fiskalizacija_error}
+                          className='inline-flex rounded-full border border-red-500/40 bg-red-500/10 px-2.5 py-1 text-xs font-semibold text-red-200'
+                        >
+                          Nije fiskalizirano
+                        </span>
+                        {retrySet.has(racun.id) ? (
+                          <FiscalRetryActions racunId={racun.id} />
+                        ) : null}
+                      </div>
+                    ) : retrySet.has(racun.id) ? (
+                      <FiscalRetryActions racunId={racun.id} />
                     ) : (
                       <span className='text-[#64756f]'>-</span>
                     )}

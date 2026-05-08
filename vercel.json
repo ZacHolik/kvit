@@ -2,6 +2,12 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": "nextjs",
   "regions": ["fra1"],
+  "crons": [
+    {
+      "path": "/api/fiscal/retry/cron",
+      "schedule": "*/30 * * * *"
+    }
+  ],
   "functions": {
     "src/app/api/racuni/route.ts": {
       "maxDuration": 30
