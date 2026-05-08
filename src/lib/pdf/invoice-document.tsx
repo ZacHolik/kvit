@@ -267,6 +267,12 @@ const styles = StyleSheet.create({
     color: '#444',
     lineHeight: 1.4,
   },
+  kvikBrandLine: {
+    fontFamily: FF,
+    marginTop: 8,
+    fontSize: 7,
+    color: '#999999',
+  },
 });
 
 export type InvoiceProfilPdf = {
@@ -577,6 +583,9 @@ export function InvoiceDocument({
         ) : null}
 
         <Text style={styles.footer}>{footerText}</Text>
+        <Text style={styles.kvikBrandLine}>
+          Ovaj račun izrađen u Kvik — kvik.online/probaj
+        </Text>
       </Page>
     </Document>
   );
