@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
+import { ShareResult } from '@/app/alati/_components/share-result';
 import { useAlatiSession } from '@/hooks/use-alati-session';
 
 function todayHr(): string {
@@ -27,6 +28,7 @@ export function InterniAktTool() {
   const [djelatnost, setDjelatnost] = useState('');
   const [pravila, setPravila] = useState(DEFAULT_PRAVILA);
   const [busy, setBusy] = useState(false);
+  const [pdfWasGenerated, setPdfWasGenerated] = useState(false);
 
   useEffect(() => {
     if (!prof) {
@@ -63,6 +65,7 @@ export function InterniAktTool() {
         />,
         'interni-akt-pausalni-obrt.pdf',
       );
+      setPdfWasGenerated(true);
     } finally {
       setBusy(false);
     }
@@ -146,6 +149,13 @@ export function InterniAktTool() {
           {busy ? 'Generiram…' : 'Preuzmi PDF'}
         </button>
       </div>
+
+      {pdfWasGenerated ? (
+        <ShareResult
+          pageTitle='Generiraj besplatno interni akt za fiskalizaciju'
+          pageUrl='https://kvik.online/alati/interni-akt'
+        />
+      ) : null}
     </div>
   );
 }

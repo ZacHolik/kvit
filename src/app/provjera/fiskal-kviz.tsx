@@ -3,6 +3,8 @@
 import Link from 'next/link';
 import { useMemo, useState } from 'react';
 
+import { ShareResult } from '@/app/alati/_components/share-result';
+
 type Q = {
   id: string;
   prompt: string;
@@ -164,22 +166,28 @@ export function FiskalKviz() {
       </div>
 
       {showResult && allAnswered ? (
-        <div className='rounded-2xl border border-[#1f2a28] bg-[#0c1211] p-5 text-sm text-[#b9c7c4]'>
-          <p>
-            Ovo je edukativni kviz, ne pravni test. Za detalje i iznimke uvijek provjeri službene
-            izvore i svog savjetnika. Nastavi čitanje na{' '}
-            <Link href='/vodici/fiskalizacija-20' className='text-[#0d9488] hover:underline'>
-              Fiskalizacija 2.0 za paušaliste
-            </Link>{' '}
-            i{' '}
-            <Link
-              href='/vodici/fina-certifikat-fiskalizacija'
-              className='text-[#0d9488] hover:underline'
-            >
-              FINA certifikat korak po korak
-            </Link>
-            .
-          </p>
+        <div className='space-y-4'>
+          <div className='rounded-2xl border border-[#1f2a28] bg-[#0c1211] p-5 text-sm text-[#b9c7c4]'>
+            <p>
+              Ovo je edukativni kviz, ne pravni test. Za detalje i iznimke uvijek provjeri službene
+              izvore i svog savjetnika. Nastavi čitanje na{' '}
+              <Link href='/vodici/fiskalizacija-20' className='text-[#0d9488] hover:underline'>
+                Fiskalizacija 2.0 za paušaliste
+              </Link>{' '}
+              i{' '}
+              <Link
+                href='/vodici/fina-certifikat-fiskalizacija'
+                className='text-[#0d9488] hover:underline'
+              >
+                FINA certifikat korak po korak
+              </Link>
+              .
+            </p>
+          </div>
+          <ShareResult
+            pageTitle='Provjeri jesi li spreman za fiskalizaciju — 30 sekundi'
+            pageUrl='https://kvik.online/provjera'
+          />
         </div>
       ) : null}
     </div>
