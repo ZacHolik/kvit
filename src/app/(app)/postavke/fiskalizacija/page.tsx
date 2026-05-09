@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { PpNuSection } from '@/app/(app)/postavke/fiskalizacija/pp-nu-section';
 import {
   type ChangeEvent,
   type DragEvent,
@@ -535,6 +536,8 @@ export default function FiskalizacijaWizardPage() {
             </div>
           ) : null}
         </section>
+
+        <PpNuSection />
 
         <p className='text-center font-body text-xs text-[#94a3a0]'>
           <Link href='/postavke' className='underline decoration-[#2a3734] hover:text-[#b9c7c4]'>

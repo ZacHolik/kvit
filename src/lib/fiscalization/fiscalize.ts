@@ -13,6 +13,7 @@ import { createClient } from '@/lib/supabase/server';
 
 import { decryptPassword } from './encryption';
 import { sanitizeCisRequestForLog, sendRacunToCIS } from './cis';
+import { resolvePpNuForFiscal } from './resolve-pp-nu';
 import type { FiscalizationResult, NacinPlacanja } from './types';
 import { formatDatVrijemeZaCIS, formatIznosZaCIS, generateZki } from './zki';
 
@@ -126,12 +127,24 @@ export async function fiscalizeRacunWithClient(
     };
   }
 
+  const resolved = await resolvePpNuForFiscal(supabase, input.userId, {
+    poslovni_prostor: certRow.poslovni_prostor,
+    blagajna: certRow.blagajna,
+  });
+  if ('error' in resolved) {
+    return {
+      success: false,
+      error: resolved.error,
+      code: 'NO_PP_NU',
+    };
+  }
+
   const datVrijeme = formatDatVrijemeZaCIS(input.datum ?? new Date());
   const iznosUkupno = formatIznosZaCIS(input.ukupniIznos);
   const { brOznRac, brOznPosPr, brOznUr } = parsesBrojRacunaKomponente(
     input.brojRacuna,
-    certRow.poslovni_prostor,
-    certRow.blagajna,
+    resolved.poslovniProstor,
+    resolved.blagajna,
   );
 
   const certData = {

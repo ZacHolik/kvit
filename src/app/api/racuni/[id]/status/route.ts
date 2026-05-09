@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 
 import { fiscalizeRacun } from '@/lib/fiscalization/fiscalize';
+import { resolvePpNuForFiscal } from '@/lib/fiscalization/resolve-pp-nu';
 import { opisAutomatskogKprUnosaZaRacun } from '@/lib/kpr-export';
 import { createClient } from '@/lib/supabase/server';
 
@@ -141,8 +142,15 @@ export async function PATCH(
 
     let brojRacunaStorno: string;
     if (fiscalCert) {
-      const pp = String(fiscalCert.poslovni_prostor ?? '').trim();
-      const nu = String(fiscalCert.blagajna ?? '').trim();
+      const resolved = await resolvePpNuForFiscal(supabase, user.id, {
+        poslovni_prostor: String(fiscalCert.poslovni_prostor ?? ''),
+        blagajna: String(fiscalCert.blagajna ?? ''),
+      });
+      if ('error' in resolved) {
+        return NextResponse.json({ error: resolved.error }, { status: 400 });
+      }
+      const pp = resolved.poslovniProstor;
+      const nu = resolved.blagajna;
       const datumD = new Date(`${datumStorno}T12:00:00`);
       const godina = Number.isFinite(datumD.getTime())
         ? datumD.getFullYear()

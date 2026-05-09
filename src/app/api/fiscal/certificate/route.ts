@@ -8,6 +8,7 @@ import { NextResponse } from 'next/server';
 
 import { validateCertificate } from '@/lib/fiscalization/certificate';
 import { encryptCertificate, encryptPassword } from '@/lib/fiscalization/encryption';
+import { syncCertPpNuToTables } from '@/lib/fiscalization/sync-cert-pp-nu';
 import { createClient } from '@/lib/supabase/server';
 
 type ActiveCertRow = {
@@ -142,6 +143,8 @@ export async function POST(request: Request) {
         { status: 500 },
       );
     }
+
+    await syncCertPpNuToTables(supabase, user.id, poslovniProstor, blagajna);
 
     return NextResponse.json({
       success: true,
