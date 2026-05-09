@@ -1,4 +1,4 @@
-import { Document, Image, Page, Rect, StyleSheet, Svg, Text, View } from '@react-pdf/renderer';
+import { Document, Image, Page, StyleSheet, Text, View } from '@react-pdf/renderer';
 
 import { formatDatumHr, formatIznosEurHr } from '@/lib/format-hr';
 
@@ -229,6 +229,23 @@ const styles = StyleSheet.create({
     fontSize: 8,
     color: '#333',
   },
+  hub3QrRow: {
+    marginTop: 8,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  hub3QrImg: {
+    width: 168,
+    height: 168,
+  },
+  hub3QrHint: {
+    fontFamily: FF,
+    marginTop: 6,
+    fontSize: 7,
+    color: '#555',
+    textAlign: 'center',
+  },
   napomena: {
     fontFamily: FF,
     marginTop: 12,
@@ -310,10 +327,9 @@ export type InvoicePdfData = {
   kupacEmail: string | null;
   profil: InvoiceProfilPdf;
   footerText?: string;
+  /** HUB-3 plaćanje: PNG QR (isti payload kao PDF417) — pouzdanije u @react-pdf od SVG matrice. */
   paymentBarcode?: {
-    matrix: number[][];
-    numCols: number;
-    numRows: number;
+    hub3QrPngDataUrl: string;
     iban: string;
     amountEur: number;
     reference: string;
@@ -525,38 +541,14 @@ export function InvoiceDocument({
 
         {paymentBarcode ? (
           <View style={styles.barcodeWrap}>
-            <Text style={styles.barcodeTitle}>Barkod za plaćanje</Text>
-            <Svg
-              width={400}
-              height={120}
-              viewBox={`0 0 ${paymentBarcode.numCols} ${paymentBarcode.numRows}`}
-            >
-              {paymentBarcode.matrix.flatMap((row, rowIndex) => {
-                const rects: React.ReactElement[] = [];
-                let start: number | null = null;
-                row.forEach((cell, colIndex) => {
-                  if (cell === 1 && start === null) {
-                    start = colIndex;
-                  }
-                  const atEnd = colIndex === row.length - 1;
-                  if ((cell !== 1 || atEnd) && start !== null) {
-                    const end = cell === 1 && atEnd ? colIndex + 1 : colIndex;
-                    rects.push(
-                      <Rect
-                        key={`${rowIndex}-${start}`}
-                        x={start}
-                        y={rowIndex}
-                        width={end - start}
-                        height={1}
-                        fill='#000'
-                      />,
-                    );
-                    start = null;
-                  }
-                });
-                return rects;
-              })}
-            </Svg>
+            <Text style={styles.barcodeTitle}>Plaćanje (HUB-3)</Text>
+            <View style={styles.hub3QrRow}>
+              {/* eslint-disable-next-line jsx-a11y/alt-text -- @react-pdf Image nema alt prop */}
+              <Image style={styles.hub3QrImg} src={paymentBarcode.hub3QrPngDataUrl} />
+            </View>
+            <Text style={styles.hub3QrHint}>
+              Skeniraj QR u mobilnoj aplikaciji banke (isti podaci kao PDF417 HUB-3).
+            </Text>
             <Text style={styles.barcodeMeta}>IBAN: {paymentBarcode.iban}</Text>
             <Text style={styles.barcodeMeta}>
               Iznos: {formatIznosEurHr(paymentBarcode.amountEur)}

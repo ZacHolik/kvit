@@ -17,6 +17,27 @@ const AUTH_PUBLIC_PREFIXES = [
 ] as const;
 
 /**
+ * Javne rute (matcher funkcije) — sinkronizirano s isPublicPath().
+ * Uključuje /provjera, vodice, alate, asistenta, statičke datoteke, /api, itd.
+ */
+const PUBLIC_PATH_RULES: ReadonlyArray<(pathname: string) => boolean> = [
+  (p) => p === '/',
+  (p) => p === '/vodici' || p.startsWith('/vodici/'),
+  (p) => p === '/alati' || p.startsWith('/alati/'),
+  (p) => p === '/asistent' || p.startsWith('/asistent/'),
+  (p) => p === '/po-sd' || p.startsWith('/po-sd/'),
+  (p) => p === '/privacy' || p === '/uvjeti',
+  (p) => p === '/provjera' || p.startsWith('/provjera/'),
+  (p) => p === '/share' || p.startsWith('/share/'),
+  (p) => p === '/r' || p.startsWith('/r/'),
+  (p) => p === '/manifest.json',
+  (p) => p === '/sitemap.xml',
+  (p) => p === '/robots.txt',
+  (p) => p === '/sw.js' || /^\/workbox-[\w.-]+\.js$/.test(p),
+  (p) => p.startsWith('/api/'),
+];
+
+/**
  * Session required for all routes except: `/` (landing), `/vodici`, `/alati`,
  * `/asistent` (gosti + besplatna pitanja), auth flows below, `/api/*`, PWA manifest.
  * Ostatak app UI-ja: `/dashboard`, `/racuni`, … `/postavke` (zahtijevaju prijavu).
@@ -38,46 +59,7 @@ function requiresCompletedProfile(pathname: string) {
 }
 
 function isPublicPath(pathname: string) {
-  if (pathname === '/') {
-    return true;
-  }
-  if (pathname === '/vodici' || pathname.startsWith('/vodici/')) {
-    return true;
-  }
-  if (pathname === '/alati' || pathname.startsWith('/alati/')) {
-    return true;
-  }
-  if (pathname === '/asistent' || pathname.startsWith('/asistent/')) {
-    return true;
-  }
-  if (pathname === '/po-sd' || pathname.startsWith('/po-sd/')) {
-    return true;
-  }
-  if (pathname === '/privacy' || pathname === '/uvjeti') {
-    return true;
-  }
-  if (pathname === '/provjera' || pathname.startsWith('/provjera/')) {
-    return true;
-  }
-  if (pathname === '/share' || pathname.startsWith('/share/')) {
-    return true;
-  }
-  if (pathname === '/r' || pathname.startsWith('/r/')) {
-    return true;
-  }
-  if (pathname === '/manifest.json') {
-    return true;
-  }
-  if (pathname === '/sitemap.xml') {
-    return true;
-  }
-  if (pathname === '/robots.txt') {
-    return true;
-  }
-  if (pathname === '/sw.js' || /^\/workbox-[\w.-]+\.js$/.test(pathname)) {
-    return true;
-  }
-  if (pathname.startsWith('/api/')) {
+  if (PUBLIC_PATH_RULES.some((rule) => rule(pathname))) {
     return true;
   }
   return AUTH_PUBLIC_PREFIXES.some(
@@ -89,7 +71,7 @@ export async function middleware(request: NextRequest) {
   const url = request.nextUrl.clone();
   const pathname = url.pathname;
 
-  /** Javna ruta — bez Supabase getUser (brži odgovor; vidi isPublicPath). */
+  /** /provjera: bez Supabase getUser (brži cold start na edgeu). */
   if (pathname === '/provjera' || pathname.startsWith('/provjera/')) {
     return NextResponse.next();
   }

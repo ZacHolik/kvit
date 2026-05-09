@@ -2,12 +2,15 @@ import type { MetadataRoute } from 'next';
 
 import { CANONICAL_SITE_ORIGIN, VODICI_ENTRIES } from '@/lib/vodici-config';
 
+/** Svjež sitemap na Vercelu (izbjegava zastarjeli statički cache bez /provjera). */
+export const dynamic = 'force-dynamic';
+
 export default function sitemap(): MetadataRoute.Sitemap {
   /** Uvijek apex domena — neovisno o NEXT_PUBLIC_APP_URL (npr. app.kvik.online). */
   const base = CANONICAL_SITE_ORIGIN;
   const lastModified = new Date();
 
-  return [
+  const entries: MetadataRoute.Sitemap = [
     {
       url: `${base}/`,
       lastModified,
@@ -99,4 +102,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.8,
     },
   ];
+
+  const provjeraInReturn = entries.some((e) => String(e.url).includes('/provjera'));
+  console.log('[sitemap] provjera entry inside returned array:', provjeraInReturn);
+
+  return entries;
 }

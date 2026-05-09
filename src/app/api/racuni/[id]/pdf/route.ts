@@ -1,13 +1,13 @@
 import { renderToStream } from '@react-pdf/renderer';
 import { NextResponse } from 'next/server';
 
-import { buildHub30EurCode } from '@/lib/alati/hub3-eur';
+import { normalizeHub3PozivNaBroj } from '@/lib/alati/hub3-eur';
 import {
   formatBrojRacunaZaPdf,
   InvoiceDocument,
 } from '@/lib/pdf/invoice-document';
+import { buildInvoicePaymentHub3Block } from '@/lib/pdf/build-invoice-payment-hub3';
 import { fiscalQrPngDataUrl } from '@/lib/fiscalization/fiscal-qr';
-import { generatePdf417Matrix } from '@/lib/pdf/pdf417-matrix';
 import { createClient } from '@/lib/supabase/server';
 
 export async function GET(
@@ -64,10 +64,11 @@ export async function GET(
     racun.barkod_enabled === true &&
     racun.nacin_placanja === 'ziro' &&
     iban.length > 0;
-  const reference = `HR00 ${formatBrojRacunaZaPdf(racun.broj_racuna)}`;
-  const barcodeMatrix = shouldRenderBarcode
-    ? generatePdf417Matrix(
-        buildHub30EurCode({
+  const brojPdf = formatBrojRacunaZaPdf(racun.broj_racuna);
+  const reference = `HR00 ${brojPdf}`;
+  const paymentBarcode = shouldRenderBarcode
+    ? await buildInvoicePaymentHub3Block(
+        {
           iznosEur: Number(racun.ukupni_iznos),
           platiteljIme: kupac?.naziv ?? '',
           platiteljAdresa1: kupac?.adresa ?? '',
@@ -77,10 +78,12 @@ export async function GET(
           primateljAdresa2: '',
           iban,
           model: 'HR00',
-          pozivNaBroj: formatBrojRacunaZaPdf(racun.broj_racuna),
+          pozivNaBroj: normalizeHub3PozivNaBroj(brojPdf),
           sifraNamjene: 'OTHR',
-          opis: `Račun ${formatBrojRacunaZaPdf(racun.broj_racuna)}`,
-        }),
+          opis: `Račun ${brojPdf}`,
+        },
+        { iban, amountEur: Number(racun.ukupni_iznos), reference },
+        'api/racuni/[id]/pdf',
       )
     : null;
   const stavkeZaPdf = (stavke ?? []).map((stavka) => ({
@@ -136,16 +139,7 @@ export async function GET(
       grad: profil?.grad ?? null,
       iban: profil?.iban ?? null,
     },
-      paymentBarcode: barcodeMatrix
-      ? {
-          matrix: barcodeMatrix.rows,
-          numCols: barcodeMatrix.numCols,
-          numRows: barcodeMatrix.numRows,
-          iban,
-          amountEur: Number(racun.ukupni_iznos),
-          reference,
-        }
-      : null,
+      paymentBarcode,
     stavke: stavkeZaPdf,
     zki: racun.zki ?? null,
     jir: racun.jir ?? null,

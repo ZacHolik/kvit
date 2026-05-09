@@ -29,11 +29,12 @@ export function generatePdf417Matrix(code: string): Pdf417Matrix | null {
     },
   };
 
+  /** ecl 4 = jači error correction od automatskog (-1), bolje za štampu/alat. */
   generator.draw(
     code,
     fakeCanvas as unknown as HTMLCanvasElement,
     2,
-    -1,
+    4,
     1,
     '#000',
   );

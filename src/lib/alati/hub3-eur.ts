@@ -33,6 +33,15 @@ function line(s: string, max = 30): string {
   return t;
 }
 
+/**
+ * Za HR00 poziv na broj u HUB3 u praksi se u payload šalju znamenke (max 22).
+ * Npr. broj računa "1-2026" → "12026".
+ */
+export function normalizeHub3PozivNaBroj(raw: string): string {
+  const digits = raw.replace(/\D/g, '').slice(0, 22);
+  return digits.length > 0 ? digits : '0';
+}
+
 export function buildHub30EurCode(input: Hub3EurInput): string {
   const rows = [
     'HRVHUB30',

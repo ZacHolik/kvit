@@ -7,6 +7,9 @@ import { FiskalKviz } from './fiskal-kviz';
 
 const url = `${CANONICAL_SITE_ORIGIN}/provjera`;
 
+/** Izbjegava zastarjeli statički HTML na CDN-u ako se ruta dodala kasnije. */
+export const dynamic = 'force-dynamic';
+
 export const metadata: Metadata = {
   title: 'Provjera znanja — fiskalizacija i eRačuni',
   description:
