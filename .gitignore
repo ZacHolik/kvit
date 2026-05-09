@@ -38,3 +38,4 @@ next-env.d.ts
 # next-pwa (generated at build)
 /public/sw.js
 /public/workbox-*.js
+supabase/.temp/
