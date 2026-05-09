@@ -25,6 +25,10 @@ export type InvoiceRow = {
   jir: string | null;
   fiskalizirano_at: string | null;
   fiskalizacija_error: string | null;
+  tip_dokumenta?: 'racun' | 'storno' | string;
+  storniran_od?: string | null;
+  /** Broj izvornog računa kad je tip_dokumenta === 'storno'. */
+  storno_original_broj?: string | null;
   kupci: {
     naziv: string;
     email: string | null;
@@ -182,14 +186,38 @@ export function InvoiceList({
                   ? `Poslano na ${racun.email_poslano_na} ${sentAt}`
                   : undefined;
 
-              const isStornirano = racun.status === 'stornirano';
-              const rowClass = isStornirano
+              const tipDok = racun.tip_dokumenta ?? 'racun';
+              const isStornoDoc = tipDok === 'storno';
+              const isOriginalStorniran =
+                racun.status === 'stornirano' && !isStornoDoc;
+              const rowClass = isOriginalStorniran
                 ? 'text-sm text-red-200 line-through decoration-red-400/80'
-                : 'text-sm';
+                : isStornoDoc
+                  ? 'text-sm text-rose-100'
+                  : 'text-sm';
 
               return (
                 <tr key={racun.id} className={rowClass}>
-                  <td className='px-4 py-4'>{racun.broj_racuna}</td>
+                  <td className='px-4 py-4'>
+                    <div className='flex flex-col gap-1'>
+                      <span>{racun.broj_racuna}</span>
+                      {isStornoDoc ? (
+                        <span className='inline-flex w-fit rounded border border-red-500/50 bg-red-500/15 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-red-200'>
+                          Storno
+                        </span>
+                      ) : null}
+                      {isStornoDoc && racun.storno_original_broj ? (
+                        <span className='text-[11px] text-[#94a3a0]'>
+                          Storno od: #{racun.storno_original_broj}
+                        </span>
+                      ) : null}
+                      {isOriginalStorniran ? (
+                        <span className='inline-flex w-fit rounded border border-red-500/40 bg-red-500/10 px-2 py-0.5 text-[10px] font-semibold text-red-200'>
+                          Storniran
+                        </span>
+                      ) : null}
+                    </div>
+                  </td>
                   <td className='px-4 py-4'>{racun.kupci?.naziv ?? '-'}</td>
                   <td className='px-4 py-4'>{formatDatumHr(racun.datum)}</td>
                   <td className='px-4 py-4'>
@@ -251,10 +279,10 @@ export function InvoiceList({
                       >
                         PDF
                       </a>
-                      {racun.status === 'izdano' ? (
+                      {racun.status === 'izdano' && !isStornoDoc ? (
                         <MarkAsPaidButton racunId={racun.id} />
                       ) : null}
-                      {racun.status === 'izdano' ? (
+                      {racun.status === 'izdano' && !isStornoDoc ? (
                         <StornoInvoiceButton
                           racunId={racun.id}
                           brojRacuna={racun.broj_racuna}

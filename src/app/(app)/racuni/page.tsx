@@ -19,7 +19,7 @@ export default async function RacuniPage() {
     supabase
       .from('racuni')
       .select(
-        'id, broj_racuna, datum, nacin_placanja, status, ukupni_iznos, email_poslano_at, email_poslano_na, zki, jir, fiskalizirano_at, fiskalizacija_error, kupci(naziv, email)',
+        'id, broj_racuna, datum, nacin_placanja, status, ukupni_iznos, email_poslano_at, email_poslano_na, zki, jir, fiskalizirano_at, fiskalizacija_error, tip_dokumenta, storniran_od, kupci(naziv, email)',
       )
       .eq('user_id', user.id)
       .order('datum', { ascending: false }),
@@ -39,13 +39,37 @@ export default async function RacuniPage() {
     (retryRows ?? []).map((r) => r.racun_id as string),
   );
 
-  const invoiceRows = ((racuni ?? []) as unknown as Array<
-    Omit<InvoiceRow, 'kupci'> & {
+  const rawRows = (racuni ?? []) as unknown as Array<
+    Omit<InvoiceRow, 'kupci' | 'storno_original_broj'> & {
       kupci: InvoiceRow['kupci'] | InvoiceRow['kupci'][];
+      tip_dokumenta?: string | null;
+      storniran_od?: string | null;
     }
-  >).map((racun) => ({
+  >;
+
+  const stornoRefIds = rawRows
+    .map((r) => r.storniran_od)
+    .filter((id): id is string => Boolean(id));
+  let brojByOriginalId = new Map<string, string>();
+  if (stornoRefIds.length > 0) {
+    const { data: origRows } = await supabase
+      .from('racuni')
+      .select('id, broj_racuna')
+      .eq('user_id', user.id)
+      .in('id', stornoRefIds);
+    brojByOriginalId = new Map(
+      (origRows ?? []).map((o) => [o.id as string, o.broj_racuna as string]),
+    );
+  }
+
+  const invoiceRows = rawRows.map((racun) => ({
     ...racun,
     kupci: Array.isArray(racun.kupci) ? (racun.kupci[0] ?? null) : racun.kupci,
+    tip_dokumenta: racun.tip_dokumenta ?? 'racun',
+    storniran_od: racun.storniran_od ?? null,
+    storno_original_broj: racun.storniran_od
+      ? brojByOriginalId.get(racun.storniran_od) ?? null
+      : null,
   }));
 
   return (

@@ -27,7 +27,7 @@ export async function GET(
     supabase
       .from('racuni')
       .select(
-        'id, broj_racuna, datum, datum_placanja, nacin_placanja, status, tip_racuna, popust_racun, rok_placanja, datum_dospijeca, dostava_iznos, dostava_opis, ukupni_iznos, napomena, barkod_enabled, zki, jir, fiskalizirano_at, kupci(naziv, oib, adresa, email)',
+        'id, broj_racuna, datum, datum_placanja, nacin_placanja, status, tip_racuna, tip_dokumenta, popust_racun, rok_placanja, datum_dospijeca, dostava_iznos, dostava_opis, ukupni_iznos, napomena, barkod_enabled, zki, jir, fiskalizirano_at, kupci(naziv, oib, adresa, email)',
       )
       .eq('id', params.id)
       .eq('user_id', user.id)
@@ -60,16 +60,18 @@ export async function GET(
     '-',
   );
   const iban = profil?.iban?.replace(/\s/g, '').trim() ?? '';
+  const ukupnoNum = Number(racun.ukupni_iznos);
   const shouldRenderBarcode =
     racun.barkod_enabled === true &&
     racun.nacin_placanja === 'ziro' &&
-    iban.length > 0;
+    iban.length > 0 &&
+    ukupnoNum > 0;
   const brojPdf = formatBrojRacunaZaPdf(racun.broj_racuna);
   const reference = `HR00 ${brojPdf}`;
   const paymentBarcode = shouldRenderBarcode
     ? await buildInvoicePaymentHub3Block(
         {
-          iznosEur: Number(racun.ukupni_iznos),
+          iznosEur: ukupnoNum,
           platiteljIme: kupac?.naziv ?? '',
           platiteljAdresa1: kupac?.adresa ?? '',
           platiteljAdresa2: '',
@@ -82,7 +84,7 @@ export async function GET(
           sifraNamjene: 'OTHR',
           opis: `Račun ${brojPdf}`,
         },
-        { iban, amountEur: Number(racun.ukupni_iznos), reference },
+        { iban, amountEur: ukupnoNum, reference },
         'api/racuni/[id]/pdf',
       )
     : null;
@@ -106,11 +108,15 @@ export async function GET(
     fiscalQrPng = await fiscalQrPngDataUrl(
       jirVal,
       fiskAt,
-      Number(racun.ukupni_iznos),
+      Math.abs(ukupnoNum),
     );
   }
 
+  const tipDok = (racun as { tip_dokumenta?: string | null }).tip_dokumenta ?? 'racun';
+  const documentTitle = tipDok === 'storno' ? 'STORNO RAČUN' : 'Račun';
+
   const invoicePdf = InvoiceDocument({
+    documentTitle,
     brojRacuna: racun.broj_racuna,
     datum: racun.datum,
     datumPlacanja: racun.datum_placanja,
@@ -119,7 +125,7 @@ export async function GET(
     tipRacuna: racun.tip_racuna,
     rokPlacanja: racun.rok_placanja,
     datumDospijeca: racun.datum_dospijeca,
-    ukupniIznos: Number(racun.ukupni_iznos),
+    ukupniIznos: ukupnoNum,
     meduzbroj,
     popustRacun,
     popustRacunIznos,
