@@ -19,23 +19,49 @@ function parseEurInput(raw: string): number {
   return Number.isFinite(n) && n >= 0 ? n : 0;
 }
 
+/**
+ * Uklanja vodeće nule u cjelobrojnom dijelu (npr. "052" → "52").
+ * Zadržava jednu nulu ispred decimala ("0,5", "0.25").
+ */
+function stripMoneyLeadingZeros(v: string): string {
+  if (v === '' || v === ',' || v === '.') {
+    return v;
+  }
+  const m = /^(\d*)([.,])(\d*)$/.exec(v);
+  if (m) {
+    let intPart = m[1].replace(/^0+/, '');
+    const sep = m[2];
+    const decPart = m[3];
+    if (intPart === '') {
+      intPart = '0';
+    }
+    return `${intPart}${sep}${decPart}`;
+  }
+  if (/^\d+$/.test(v)) {
+    return v.replace(/^0+/, '');
+  }
+  return v;
+}
+
 /** Znamenke + najviše jedan decimalni separator (korak unosa, uključ. prazno). */
 function trySetMoney(setter: (v: string) => void, raw: string) {
-  const v = raw.replace(/\s/g, '').replace(/[^\d.,]/g, '');
+  let v = raw.replace(/\s/g, '').replace(/[^\d.,]/g, '');
   if (v === '') {
     setter('');
     return;
   }
-  if (/^\d*([.,]\d*)?$/.test(v)) {
-    setter(v);
+  if (!/^\d*([.,]\d*)?$/.test(v)) {
+    return;
   }
+  v = stripMoneyLeadingZeros(v);
+  setter(v);
 }
 
 export function PoSdTool() {
   const defaultGodina = new Date().getFullYear() - 1;
   const [godinaStr, setGodinaStr] = useState(String(defaultGodina));
-  const [gotovinaStr, setGotovinaStr] = useState('0');
-  const [bezgotovinskoStr, setBezgotovinskoStr] = useState('0');
+  const [gotovinaStr, setGotovinaStr] = useState('');
+  const [bezgotovinskoStr, setBezgotovinskoStr] = useState('');
   const [generated, setGenerated] = useState(false);
 
   const godina =
@@ -71,6 +97,11 @@ export function PoSdTool() {
                 const v = e.target.value.replace(/\D/g, '').slice(0, 4);
                 setGodinaStr(v);
               }}
+              onFocus={() => {
+                if (godinaStr === '0') {
+                  setGodinaStr('');
+                }
+              }}
               onBlur={() => {
                 if (godinaStr === '') {
                   setGodinaStr(String(defaultGodina));
@@ -85,14 +116,15 @@ export function PoSdTool() {
               type='text'
               inputMode='decimal'
               autoComplete='off'
+              placeholder='0'
               value={gotovinaStr}
               onChange={(e) => trySetMoney(setGotovinaStr, e.target.value)}
-              onBlur={() => {
-                if (gotovinaStr === '' || gotovinaStr === ',' || gotovinaStr === '.') {
-                  setGotovinaStr('0');
+              onFocus={() => {
+                if (gotovinaStr === '0') {
+                  setGotovinaStr('');
                 }
               }}
-              className='mt-2 w-full rounded-xl border border-[#2a3734] bg-[#0b0f0e] px-3 py-2 text-[#e2e8e7]'
+              className='mt-2 w-full rounded-xl border border-[#2a3734] bg-[#0b0f0e] px-3 py-2 text-[#e2e8e7] placeholder:text-[#64748b]'
             />
           </label>
           <label className='text-sm text-[#b9c7c4]'>
@@ -101,18 +133,15 @@ export function PoSdTool() {
               type='text'
               inputMode='decimal'
               autoComplete='off'
+              placeholder='0'
               value={bezgotovinskoStr}
               onChange={(e) => trySetMoney(setBezgotovinskoStr, e.target.value)}
-              onBlur={() => {
-                if (
-                  bezgotovinskoStr === '' ||
-                  bezgotovinskoStr === ',' ||
-                  bezgotovinskoStr === '.'
-                ) {
-                  setBezgotovinskoStr('0');
+              onFocus={() => {
+                if (bezgotovinskoStr === '0') {
+                  setBezgotovinskoStr('');
                 }
               }}
-              className='mt-2 w-full rounded-xl border border-[#2a3734] bg-[#0b0f0e] px-3 py-2 text-[#e2e8e7]'
+              className='mt-2 w-full rounded-xl border border-[#2a3734] bg-[#0b0f0e] px-3 py-2 text-[#e2e8e7] placeholder:text-[#64748b]'
             />
           </label>
         </div>
