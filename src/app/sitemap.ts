@@ -93,10 +93,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.72,
     },
     {
-      url: `${base}/provjera`,
-      lastModified,
+      url: 'https://kvik.online/provjera',
+      lastModified: new Date(),
       changeFrequency: 'monthly',
-      priority: 0.75,
+      priority: 0.8,
     },
   ];
 }

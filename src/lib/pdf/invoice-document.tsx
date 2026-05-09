@@ -527,8 +527,8 @@ export function InvoiceDocument({
           <View style={styles.barcodeWrap}>
             <Text style={styles.barcodeTitle}>Barkod za plaćanje</Text>
             <Svg
-              width={260}
-              height={78}
+              width={400}
+              height={120}
               viewBox={`0 0 ${paymentBarcode.numCols} ${paymentBarcode.numRows}`}
             >
               {paymentBarcode.matrix.flatMap((row, rowIndex) => {
@@ -586,7 +586,7 @@ export function InvoiceDocument({
 
         <Text style={styles.footer}>{footerText}</Text>
         <Text style={styles.kvikBrandLine}>
-          Ovaj račun izrađen u Kvik — kvik.online/probaj
+          Ovaj račun izrađen u Kvik — https://kvik.online/probaj
         </Text>
       </Page>
     </Document>

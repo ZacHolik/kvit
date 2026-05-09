@@ -89,6 +89,11 @@ export async function middleware(request: NextRequest) {
   const url = request.nextUrl.clone();
   const pathname = url.pathname;
 
+  /** Javna ruta — bez Supabase getUser (brži odgovor; vidi isPublicPath). */
+  if (pathname === '/provjera' || pathname.startsWith('/provjera/')) {
+    return NextResponse.next();
+  }
+
   /**
    * Supabase email potvrda često redirecta na Site URL root (?code=…&state=…)
    * umjesto na /auth/callback — proslijedi u naš handler + default next.
