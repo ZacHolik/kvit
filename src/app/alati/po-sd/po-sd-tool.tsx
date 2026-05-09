@@ -155,7 +155,10 @@ export function PoSdTool() {
             </div>
           </dl>
           <PoweredByKvikBadge />
-          <ShareResult pageTitle='PO-SD generator' pageUrl='https://kvik.online/po-sd' />
+          <ShareResult
+            pageTitle='PO-SD generator'
+            pageUrl='https://kvik.online/alati/po-sd'
+          />
           <PostValueCta />
         </section>
       ) : null}

@@ -19,13 +19,13 @@ const AUTH_PUBLIC_PREFIXES = [
 /**
  * Javne rute (matcher funkcije) — sinkronizirano s isPublicPath().
  * Uključuje /provjera, vodice, alate, asistenta, statičke datoteke, /api, itd.
+ * Napomena: /po-sd nije javan — neprijavljeni se šalju na /alati/po-sd (v. isječak ispod).
  */
 const PUBLIC_PATH_RULES: ReadonlyArray<(pathname: string) => boolean> = [
   (p) => p === '/',
   (p) => p === '/vodici' || p.startsWith('/vodici/'),
   (p) => p === '/alati' || p.startsWith('/alati/'),
   (p) => p === '/asistent' || p.startsWith('/asistent/'),
-  (p) => p === '/po-sd' || p.startsWith('/po-sd/'),
   (p) => p === '/privacy' || p === '/uvjeti',
   (p) => p === '/provjera' || p.startsWith('/provjera/'),
   (p) => p === '/share' || p.startsWith('/share/'),
@@ -143,6 +143,19 @@ export async function middleware(request: NextRequest) {
   const {
     data: { user },
   } = await supabase.auth.getUser();
+
+  /**
+   * /po-sd u aplikaciji = KPR pregled (samo prijavljeni). Gosti idu na javni generator.
+   * (Bez ovoga next.config redirect je blokirao app rutu i svi su vidjeli samo stari javni alat.)
+   */
+  if (
+    !user &&
+    (pathname === '/po-sd' || pathname.startsWith('/po-sd/'))
+  ) {
+    const dest = request.nextUrl.clone();
+    dest.pathname = '/alati/po-sd';
+    return NextResponse.redirect(dest);
+  }
 
   if (!user && !isPublicPath(pathname)) {
     const loginUrl = request.nextUrl.clone();

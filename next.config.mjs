@@ -18,9 +18,16 @@ const nextConfig = {
     return [
       { source: '/alati/kalkulator', destination: '/alati/kalkulator-poreza', permanent: true },
       { source: '/alati/doprinosi', destination: '/alati/placanje-doprinosa', permanent: true },
-      { source: '/po-sd', destination: '/alati/po-sd', permanent: false },
       { source: '/probaj', destination: '/alati/kalkulator', permanent: false },
       { source: '/registracija', destination: '/register', permanent: false },
+    ];
+  },
+  async headers() {
+    return [
+      {
+        source: '/alati/po-sd',
+        headers: [{ key: 'Cache-Control', value: 'no-store, must-revalidate' }],
+      },
     ];
   },
   images: {

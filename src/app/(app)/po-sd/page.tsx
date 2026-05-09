@@ -218,6 +218,10 @@ export default async function PoSdPage({
                 <dd className='text-right text-[#e2e8e7]'>{razred.label}</dd>
               </div>
               <div className='flex justify-between gap-4'>
+                <dt className='text-[#94a3a0]'>Porez mjesečno (procjena)</dt>
+                <dd>{formatIznosEurHr(razred.porezKvartalnoEur / 3)}</dd>
+              </div>
+              <div className='flex justify-between gap-4'>
                 <dt className='text-[#94a3a0]'>Porez po kvartalu (procjena)</dt>
                 <dd>{formatIznosEurHr(razred.porezKvartalnoEur)}</dd>
               </div>
