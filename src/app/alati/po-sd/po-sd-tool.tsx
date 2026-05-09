@@ -9,14 +9,48 @@ import { PostValueCta } from '../_components/post-value-cta';
 import { PoweredByKvikBadge } from '../_components/powered-by-kvik-badge';
 import { ShareResult } from '../_components/share-result';
 
+/** Dopušta prazan unos tijekom tipkanja; prazno ili nevaljano → 0 za izračun. */
+function parseEurInput(raw: string): number {
+  const t = raw.trim().replace(/\s/g, '').replace(',', '.');
+  if (t === '' || t === '.') {
+    return 0;
+  }
+  const n = Number(t);
+  return Number.isFinite(n) && n >= 0 ? n : 0;
+}
+
+/** Znamenke + najviše jedan decimalni separator (korak unosa, uključ. prazno). */
+function trySetMoney(setter: (v: string) => void, raw: string) {
+  const v = raw.replace(/\s/g, '').replace(/[^\d.,]/g, '');
+  if (v === '') {
+    setter('');
+    return;
+  }
+  if (/^\d*([.,]\d*)?$/.test(v)) {
+    setter(v);
+  }
+}
+
 export function PoSdTool() {
-  const [godina, setGodina] = useState(new Date().getFullYear() - 1);
-  const [gotovina, setGotovina] = useState(0);
-  const [bezgotovinsko, setBezgotovinsko] = useState(0);
+  const defaultGodina = new Date().getFullYear() - 1;
+  const [godinaStr, setGodinaStr] = useState(String(defaultGodina));
+  const [gotovinaStr, setGotovinaStr] = useState('0');
+  const [bezgotovinskoStr, setBezgotovinskoStr] = useState('0');
   const [generated, setGenerated] = useState(false);
+
+  const godina =
+    godinaStr === ''
+      ? defaultGodina
+      : Math.min(2100, Math.max(1970, parseInt(godinaStr, 10) || defaultGodina));
+
+  const gotovina = parseEurInput(gotovinaStr);
+  const bezgotovinsko = parseEurInput(bezgotovinskoStr);
 
   const ukupno = Math.max(0, gotovina) + Math.max(0, bezgotovinsko);
   const razred = useMemo(() => getPausalRazred2026(ukupno), [ukupno]);
+  const porezKvartalno = razred?.porezKvartalnoEur ?? 0;
+  const porezMjesecno = porezKvartalno / 3;
+  const porezGodisnje = razred?.porezGodisnjeEur ?? porezKvartalno * 4;
 
   return (
     <div className='space-y-6'>
@@ -29,27 +63,55 @@ export function PoSdTool() {
           <label className='text-sm text-[#b9c7c4]'>
             Godina
             <input
-              type='number'
-              value={godina}
-              onChange={(e) => setGodina(Number(e.target.value))}
+              type='text'
+              inputMode='numeric'
+              autoComplete='off'
+              value={godinaStr}
+              onChange={(e) => {
+                const v = e.target.value.replace(/\D/g, '').slice(0, 4);
+                setGodinaStr(v);
+              }}
+              onBlur={() => {
+                if (godinaStr === '') {
+                  setGodinaStr(String(defaultGodina));
+                }
+              }}
               className='mt-2 w-full rounded-xl border border-[#2a3734] bg-[#0b0f0e] px-3 py-2 text-[#e2e8e7]'
             />
           </label>
           <label className='text-sm text-[#b9c7c4]'>
             Gotovina (€)
             <input
-              type='number'
-              value={gotovina}
-              onChange={(e) => setGotovina(Number(e.target.value))}
+              type='text'
+              inputMode='decimal'
+              autoComplete='off'
+              value={gotovinaStr}
+              onChange={(e) => trySetMoney(setGotovinaStr, e.target.value)}
+              onBlur={() => {
+                if (gotovinaStr === '' || gotovinaStr === ',' || gotovinaStr === '.') {
+                  setGotovinaStr('0');
+                }
+              }}
               className='mt-2 w-full rounded-xl border border-[#2a3734] bg-[#0b0f0e] px-3 py-2 text-[#e2e8e7]'
             />
           </label>
           <label className='text-sm text-[#b9c7c4]'>
             Bezgotovinsko (€)
             <input
-              type='number'
-              value={bezgotovinsko}
-              onChange={(e) => setBezgotovinsko(Number(e.target.value))}
+              type='text'
+              inputMode='decimal'
+              autoComplete='off'
+              value={bezgotovinskoStr}
+              onChange={(e) => trySetMoney(setBezgotovinskoStr, e.target.value)}
+              onBlur={() => {
+                if (
+                  bezgotovinskoStr === '' ||
+                  bezgotovinskoStr === ',' ||
+                  bezgotovinskoStr === '.'
+                ) {
+                  setBezgotovinskoStr('0');
+                }
+              }}
               className='mt-2 w-full rounded-xl border border-[#2a3734] bg-[#0b0f0e] px-3 py-2 text-[#e2e8e7]'
             />
           </label>
@@ -80,8 +142,16 @@ export function PoSdTool() {
               <dd>{razred?.label ?? '—'}</dd>
             </div>
             <div className='flex justify-between gap-4'>
+              <dt>Porez mjesečno (procjena)</dt>
+              <dd>{formatIznosEurHr(porezMjesecno)}</dd>
+            </div>
+            <div className='flex justify-between gap-4'>
               <dt>Porez kvartalno (procjena)</dt>
-              <dd>{formatIznosEurHr(razred?.porezKvartalnoEur ?? 0)}</dd>
+              <dd>{formatIznosEurHr(porezKvartalno)}</dd>
+            </div>
+            <div className='flex justify-between gap-4'>
+              <dt>Porez godišnje (procjena)</dt>
+              <dd>{formatIznosEurHr(porezGodisnje)}</dd>
             </div>
           </dl>
           <PoweredByKvikBadge />
