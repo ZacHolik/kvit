@@ -120,9 +120,8 @@ export function ShareAiResponse({
     >
       {isHighlight ? (
         <p className='font-body text-sm leading-relaxed text-[#d9fffa] sm:text-[15px]'>
-          Mali klik, velika pomoć.
-          <br />
-          Proslijedi nekome kome bi ovaj odgovor baš sad dobro došao.
+          Kad si ti bio izgubljen, volio bi da ti je netko ovo poslao. Sad možeš
+          ti biti ta osoba.
         </p>
       ) : (
         <>

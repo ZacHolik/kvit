@@ -109,6 +109,22 @@ function lastUserQuestionBefore(messages: ChatMessage[], assistantIndex: number)
   return null;
 }
 
+/** Deep link /asistent#<id> — id mora odgovarati `HardcodedQuestion.id` u hardcoded-qa-data. */
+function findHardcodedQaByHashId(raw: string): { question: string; answer: string } | null {
+  const slug = raw.replace(/^#/, '').trim();
+  if (!slug) {
+    return null;
+  }
+  for (const cat of HARDCODED_QA.categories) {
+    for (const item of cat.questions) {
+      if (item.id === slug) {
+        return { question: item.question, answer: item.answer };
+      }
+    }
+  }
+  return null;
+}
+
 function readGuestQuestionCount(): number {
   if (typeof window === 'undefined') {
     return 0;
@@ -313,6 +329,40 @@ export default function AsistentPage() {
     requestAnimationFrame(() => scrollToBottom());
   };
 
+  /** URL hash → jedan hardkodirani exchange (idempotentno za Strict Mode). */
+  useEffect(() => {
+    if (typeof window === 'undefined') {
+      return;
+    }
+    const slug = window.location.hash.replace(/^#/, '').trim();
+    if (!slug) {
+      return;
+    }
+    const pair = findHardcodedQaByHashId(slug);
+    if (!pair) {
+      return;
+    }
+    setError('');
+    setMessages((previous) => {
+      const n = previous.length;
+      if (
+        n >= 2 &&
+        previous[n - 2]?.role === 'user' &&
+        previous[n - 2]?.content === pair.question &&
+        previous[n - 1]?.role === 'assistant' &&
+        previous[n - 1]?.content === pair.answer
+      ) {
+        return previous;
+      }
+      return [
+        ...previous,
+        { role: 'user', content: pair.question },
+        { role: 'assistant', content: pair.answer },
+      ];
+    });
+    requestAnimationFrame(() => scrollToBottom());
+  }, []);
+
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     await sendMessage(input);
@@ -407,10 +457,8 @@ export default function AsistentPage() {
                   {showShare && !isLoggedIn ? (
                     <div className='mt-4 rounded-2xl border border-[#2a3734] bg-gradient-to-br from-[#101515] to-[#0b0f0e] p-4'>
                       <p className='font-body text-sm leading-relaxed text-[#c8d3d1]'>
-                        Ovakve odgovore i komplet knjigovodstveni servis za
-                        paušalce možeš imati za 5,60€/mj — zauvijek.
-                        <br />
-                        Iskoristi promotivni period!!
+                        Ovakve odgovore možeš imati svaki dan — bez kopanja po
+                        zakonima. 5,99€/mj — zauvijek.
                       </p>
                       <a
                         href='https://tally.so/r/44or65'
