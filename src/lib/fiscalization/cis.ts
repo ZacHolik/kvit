@@ -15,7 +15,7 @@ import { SignedXml } from 'xml-crypto';
 import { decryptCertificate } from './encryption';
 import type { CISResponse, RacunZaCIS } from './types';
 
-const CIS_TEST_URL = 'https://cistest.apis-it.hr/FiskalizacijaServiceTest';
+const CIS_TEST_URL = 'https://cistest.porezna-uprava.hr/FiskalizacijaServiceTest';
 const CIS_DEFAULT_PROD =
   'https://cis.porezna-uprava.hr:8449/FiskalizacijaService';
 
@@ -349,7 +349,7 @@ export async function sendRacunToCIS(
 
 /**
  * Echo zahtjev — bez potpisa; provjera dostupnosti CIS **test (demo)** okoline.
- * Uvijek `cistest.apis-it.hr/FiskalizacijaServiceTest` (ne CIS_URL / ne prod),
+ * Uvijek `cistest.porezna-uprava.hr/FiskalizacijaServiceTest` (ne CIS_URL / ne prod),
  * kako UI „CIS dostupan“ ne bi slučajno pingao produkciju.
  */
 export async function echoCIS(): Promise<{
