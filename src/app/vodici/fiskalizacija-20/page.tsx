@@ -129,12 +129,12 @@ export default function Fiskalizacija20Page() {
         <Link href={vodiciHref('izdavanje-racuna')} className='text-[#0d9488] hover:underline'>
           izdavanje računa
         </Link>
-        , digitalne obveze i ono što stvarno moraš kliknuti u ePoreznoj prije nego što štopirka
-        otkuca. Za širi okvir obrta pogledaj i{' '}
+        , digitalne obveze i ono što stvarno moraš kliknuti u ePoreznoj prije nego štoperica
+        počne otkucavati. Za šire informacije o obrtu i svemu oko njega pogledaj i{' '}
         <Link href={vodiciHref('pausalni-obrt-vodic')} className='text-[#0d9488] hover:underline'>
           paušalni obrt 2026.
         </Link>
-        , a za numeraciju i poslovne oznake besplatno složi{' '}
+        , a za numeraciju i poslovne oznake besplatno kreiraj {' '}
         <Link href='/alati/interni-akt' className='text-[#0d9488] hover:underline'>
           interni akt
         </Link>{' '}
