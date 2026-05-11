@@ -17,6 +17,8 @@ export type CertificateInfo = {
 type SubjectAttr = {
   name?: string;
   shortName?: string;
+  /** OID polja (npr. organizationIdentifier = 2.5.4.97). */
+  type?: string;
   value?: unknown;
 };
 
@@ -54,15 +56,31 @@ export function validateCertificate(
     let oib: string | undefined;
 
     for (const attr of subject.attributes) {
-      if (attr.name === 'commonName' || attr.shortName === 'CN') {
-        const match = /\((\d{11})\)/.exec(attributeValue(attr));
+      const a = attr as SubjectAttr;
+
+      if (
+        a.name === 'organizationIdentifier' ||
+        a.shortName === 'organizationIdentifier' ||
+        a.type === '2.5.4.97'
+      ) {
+        const val = attributeValue(a);
+        const oibMatch = /HR(\d{11})/.exec(val) ?? /(\d{11})/.exec(val);
+        if (oibMatch) {
+          oib = oibMatch[1];
+          break;
+        }
+      }
+
+      if (a.name === 'commonName' || a.shortName === 'CN') {
+        const match = /\((\d{11})\)/.exec(attributeValue(a));
         if (match) {
           oib = match[1];
           break;
         }
       }
-      if (attr.name === 'serialNumber' && /^\d{11}$/.test(attributeValue(attr))) {
-        oib = attributeValue(attr);
+
+      if (a.name === 'serialNumber' && /^\d{11}$/.test(attributeValue(a))) {
+        oib = attributeValue(a);
         break;
       }
     }
