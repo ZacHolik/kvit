@@ -349,12 +349,16 @@ export async function sendRacunToCIS(
 }
 
 /**
- * Echo zahtjev — bez potpisa; provjera dostupnosti CIS-a.
+ * Echo zahtjev — bez potpisa; provjera dostupnosti CIS **test (demo)** okoline.
+ * Uvijek `cistest.apis-it.hr:8449/FiskalizacijaServiceTest` (ne CIS_URL / ne prod),
+ * kako UI „CIS dostupan“ ne bi slučajno pingao produkciju.
  */
-export async function echoCIS(
-  mode: 'test' | 'production' = 'test',
-): Promise<{ ok: boolean; message: string; durationMs: number }> {
-  const url = resolveCisUrl(mode);
+export async function echoCIS(): Promise<{
+  ok: boolean;
+  message: string;
+  durationMs: number;
+}> {
+  const url = CIS_DEFAULT_TEST;
   const body =
     '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:fis="http://www.apis-it.hr/fin/2012/types/f73">' +
     '<soapenv:Body><fis:EchoRequest>Test</fis:EchoRequest></soapenv:Body></soapenv:Envelope>';

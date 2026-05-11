@@ -4,7 +4,8 @@ import { echoCIS } from '@/lib/fiscalization/cis';
 import { createClient } from '@/lib/supabase/server';
 
 /**
- * GET /api/fiscal/echo — provjera dostupnosti CIS-a (Echo, bez certifikata).
+ * GET /api/fiscal/echo — provjera dostupnosti CIS **demo test** (cistest Echo SOAP),
+ * bez certifikata. URL: https://cistest.apis-it.hr:8449/FiskalizacijaServiceTest
  */
 export async function GET() {
   const supabase = createClient();
@@ -15,7 +16,6 @@ export async function GET() {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
-  const mode = process.env.NODE_ENV === 'production' ? 'production' : 'test';
-  const result = await echoCIS(mode);
+  const result = await echoCIS();
   return NextResponse.json(result);
 }
