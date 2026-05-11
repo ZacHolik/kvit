@@ -2,7 +2,7 @@
  * CIS SOAP klijent za fiskalizaciju 1.0
  * Komunikacija s Poreznom upravom (CIS = Centralni informacijski sustav).
  *
- * Endpoint: CIS_URL env ako je postavljen; inače test/prod na :8449.
+ * Endpoint: CIS_URL env ako je postavljen; inače test na :443, prod na :8449.
  *
  * Potpis: XML-DSig nad SOAP Body (Exclusive C14N + SHA1 digest, RSA-SHA1 nad SignedInfo),
  * wsse:BinarySecurityToken + KeyInfo s SecurityTokenReference (spec. v2.5 / WS-Security).
@@ -15,8 +15,7 @@ import { SignedXml } from 'xml-crypto';
 import { decryptCertificate } from './encryption';
 import type { CISResponse, RacunZaCIS } from './types';
 
-const CIS_DEFAULT_TEST =
-  'https://cistest.apis-it.hr:8449/FiskalizacijaServiceTest';
+const CIS_TEST_URL = 'https://cistest.apis-it.hr:443/FiskalizacijaServiceTest';
 const CIS_DEFAULT_PROD =
   'https://cis.porezna-uprava.hr:8449/FiskalizacijaService';
 
@@ -26,7 +25,7 @@ export function resolveCisUrl(mode: 'test' | 'production'): string {
   if (fromEnv) {
     return fromEnv;
   }
-  return mode === 'production' ? CIS_DEFAULT_PROD : CIS_DEFAULT_TEST;
+  return mode === 'production' ? CIS_DEFAULT_PROD : CIS_TEST_URL;
 }
 
 export type CISCertificateData = {
@@ -350,7 +349,7 @@ export async function sendRacunToCIS(
 
 /**
  * Echo zahtjev — bez potpisa; provjera dostupnosti CIS **test (demo)** okoline.
- * Uvijek `cistest.apis-it.hr:8449/FiskalizacijaServiceTest` (ne CIS_URL / ne prod),
+ * Uvijek `cistest.apis-it.hr:443/FiskalizacijaServiceTest` (ne CIS_URL / ne prod),
  * kako UI „CIS dostupan“ ne bi slučajno pingao produkciju.
  */
 export async function echoCIS(): Promise<{
@@ -358,7 +357,7 @@ export async function echoCIS(): Promise<{
   message: string;
   durationMs: number;
 }> {
-  const url = CIS_DEFAULT_TEST;
+  const url = CIS_TEST_URL;
   const body =
     '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:fis="http://www.apis-it.hr/fin/2012/types/f73">' +
     '<soapenv:Body><fis:EchoRequest>Test</fis:EchoRequest></soapenv:Body></soapenv:Envelope>';
