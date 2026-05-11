@@ -2,7 +2,7 @@
  * CIS SOAP klijent za fiskalizaciju 1.0
  * Komunikacija s Poreznom upravom (CIS = Centralni informacijski sustav).
  *
- * Endpoint: CIS_URL env ako je postavljen; inače test (HTTPS default), prod na :8449.
+ * Endpoint: CIS_URL env ako je postavljen; inače test/prod na :8449 (FINA spec. v2.6).
  *
  * Potpis: XML-DSig nad SOAP Body (Exclusive C14N + SHA1 digest, RSA-SHA1 nad SignedInfo),
  * wsse:BinarySecurityToken + KeyInfo s SecurityTokenReference (spec. v2.5 / WS-Security).
@@ -15,7 +15,7 @@ import { SignedXml } from 'xml-crypto';
 import { decryptCertificate } from './encryption';
 import type { CISResponse, RacunZaCIS } from './types';
 
-const CIS_TEST_URL = 'https://cistest.porezna-uprava.hr/FiskalizacijaServiceTest';
+const CIS_TEST_URL = 'https://cistest.apis-it.hr:8449/FiskalizacijaServiceTest';
 const CIS_DEFAULT_PROD =
   'https://cis.porezna-uprava.hr:8449/FiskalizacijaService';
 
@@ -349,7 +349,7 @@ export async function sendRacunToCIS(
 
 /**
  * Echo zahtjev — bez potpisa; provjera dostupnosti CIS **test (demo)** okoline.
- * Uvijek `cistest.porezna-uprava.hr/FiskalizacijaServiceTest` (ne CIS_URL / ne prod),
+ * Uvijek `cistest.apis-it.hr:8449/FiskalizacijaServiceTest` (ne CIS_URL / ne prod),
  * kako UI „CIS dostupan“ ne bi slučajno pingao produkciju.
  */
 export async function echoCIS(): Promise<{
