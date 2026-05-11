@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { FormEvent, useCallback, useEffect, useMemo, useState } from 'react';
 
+import { formatDatumHr, formatIznosEurHr } from '@/lib/format-hr';
 import { OPCINE, type Opcina } from '@/lib/opcine';
 import { createClient } from '@/lib/supabase/client';
 
@@ -62,6 +63,18 @@ function addressFromParts(form: ProfileForm) {
   return [street, cityLine].filter(Boolean).join(', ');
 }
 
+/** Sprint 3: opis retka u povijesti naplate (interval iz Stripe webhooka). */
+function billingOpis(interval: string | null): string {
+  const base = 'Kvik Paušalist';
+  if (interval === 'year') {
+    return `${base} — Godišnje`;
+  }
+  if (interval === 'month') {
+    return `${base} — Mjesečno`;
+  }
+  return `${base} — Probno`;
+}
+
 export default function PostavkePage() {
   const supabase = useMemo(() => createClient(), []);
   const [form, setForm] = useState<ProfileForm>(EMPTY_FORM);
@@ -93,7 +106,7 @@ export default function PostavkePage() {
   const [fiscalDeleteConfirm, setFiscalDeleteConfirm] = useState(false);
   const [fiscalActionLoading, setFiscalActionLoading] = useState(false);
 
-  // ── Subscription state ────────────────────────────────────────────────────
+  // ── Subscription state (stripe_subscription_id: Sprint 3 plan sync nakon checkouta) ──
   type SubRow = {
     plan: string;
     status: string;
@@ -101,10 +114,23 @@ export default function PostavkePage() {
     current_period_end: string | null;
     cancel_at_period_end: boolean | null;
     stripe_customer_id: string | null;
+    stripe_subscription_id: string | null;
   };
   const [sub, setSub] = useState<SubRow | null>(null);
   const [subLoading, setSubLoading] = useState(true);
   const [portalLoading, setPortalLoading] = useState(false);
+  const [checkoutSuccess, setCheckoutSuccess] = useState(false);
+
+  type BillingEventRow = {
+    id: string;
+    created_at: string;
+    amount_eur: number;
+    interval: string | null;
+    status: string;
+    invoice_id: string | null;
+  };
+  const [billingEvents, setBillingEvents] = useState<BillingEventRow[]>([]);
+  const [billingLoading, setBillingLoading] = useState(true);
 
   const openPortal = useCallback(async () => {
     setPortalLoading(true);
@@ -161,29 +187,101 @@ export default function PostavkePage() {
   }, []);
 
   useEffect(() => {
-    let cancelled = false;
+    if (typeof window === 'undefined') {
+      return;
+    }
+    const p = new URLSearchParams(window.location.search);
+    setCheckoutSuccess(p.get('checkout') === 'success');
+  }, []);
 
-    async function loadSubscription() {
-      const sb = createClient();
-      const { data: { user } } = await sb.auth.getUser();
-      if (!user || cancelled) {
-        setSubLoading(false);
+  const loadSubscription = useCallback(
+    async (opts?: { silent?: boolean }) => {
+      if (!opts?.silent) {
+        setSubLoading(true);
+      }
+      try {
+        const {
+          data: { user },
+        } = await supabase.auth.getUser();
+        if (!user) {
+          setSub(null);
+          return;
+        }
+        const { data } = await supabase
+          .from('subscriptions')
+          .select(
+            'plan, status, interval, current_period_end, cancel_at_period_end, stripe_customer_id, stripe_subscription_id',
+          )
+          .eq('user_id', user.id)
+          .maybeSingle();
+        setSub(data as SubRow | null);
+      } finally {
+        if (!opts?.silent) {
+          setSubLoading(false);
+        }
+      }
+    },
+    [supabase],
+  );
+
+  useEffect(() => {
+    void loadSubscription();
+  }, [loadSubscription]);
+
+  /** Sprint 3: polling dok webhook ne upiše stripe_subscription_id nakon checkouta. */
+  useEffect(() => {
+    if (!checkoutSuccess || sub?.stripe_subscription_id) {
+      return;
+    }
+    let n = 0;
+    const id = window.setInterval(() => {
+      n += 1;
+      if (n > 15) {
+        window.clearInterval(id);
         return;
       }
-      const { data } = await sb
-        .from('subscriptions')
-        .select('plan, status, interval, current_period_end, cancel_at_period_end, stripe_customer_id')
-        .eq('user_id', user.id)
-        .maybeSingle();
-      if (!cancelled) {
-        setSub(data as SubRow | null);
-        setSubLoading(false);
-      }
-    }
+      void loadSubscription({ silent: true });
+    }, 2000);
+    return () => window.clearInterval(id);
+  }, [checkoutSuccess, sub?.stripe_subscription_id, loadSubscription]);
 
-    void loadSubscription();
-    return () => { cancelled = true; };
-  }, []);
+  const loadBillingEvents = useCallback(async () => {
+    setBillingLoading(true);
+    try {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (!user) {
+        setBillingEvents([]);
+        return;
+      }
+      const { data, error } = await supabase
+        .from('billing_events')
+        .select('id, created_at, amount_eur, interval, status, invoice_id')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false });
+      if (error) {
+        setBillingEvents([]);
+        return;
+      }
+      setBillingEvents((data ?? []) as BillingEventRow[]);
+    } finally {
+      setBillingLoading(false);
+    }
+  }, [supabase]);
+
+  useEffect(() => {
+    void loadBillingEvents();
+  }, [loadBillingEvents]);
+
+  useEffect(() => {
+    if (sub?.stripe_subscription_id) {
+      void loadBillingEvents();
+    }
+  }, [sub?.stripe_subscription_id, loadBillingEvents]);
+
+  const isActivating =
+    checkoutSuccess && !subLoading && !sub?.stripe_subscription_id;
 
   useEffect(() => {
     let cancelled = false;
@@ -827,6 +925,13 @@ export default function PostavkePage() {
         {/* ── Pretplata ─────────────────────────────────────────────────── */}
         <section className='space-y-4 rounded-2xl border border-[#1f2a28] bg-[#111716] p-5 sm:p-6'>
           <h2 className='font-heading text-lg'>Pretplata</h2>
+          {isActivating ? (
+            <div className='rounded-xl border border-[#0d9488]/40 bg-[#0d9488]/10 p-4'>
+              <p className='font-body text-sm text-[#5eead4]'>
+                ⏳ Pretplata se aktivira... Osvježite stranicu za trenutak.
+              </p>
+            </div>
+          ) : null}
           {subLoading ? (
             <p className='font-body text-sm text-[#94a3a0]'>Učitavam...</p>
           ) : sub?.plan === 'pausalist' && (sub.status === 'active' || sub.status === 'trialing') ? (
@@ -909,6 +1014,82 @@ export default function PostavkePage() {
               >
                 Pogledaj planove →
               </Link>
+            </div>
+          )}
+        </section>
+
+        {/* Sprint 3: povijest naplata (billing_events) */}
+        <section className='space-y-4 rounded-2xl border border-[#1f2a28] bg-[#111716] p-5 sm:p-6'>
+          <h2 className='font-heading text-lg'>Povijest naplate</h2>
+          {billingLoading ? (
+            <p className='font-body text-sm text-[#94a3a0]'>Učitavam...</p>
+          ) : billingEvents.length === 0 ? (
+            <p className='font-body text-sm text-[#94a3a0]'>Još nema plaćanja.</p>
+          ) : (
+            <div className='overflow-x-auto'>
+              <table className='w-full min-w-[640px] border-collapse font-body text-left text-sm text-[#b9c7c4]'>
+                <thead>
+                  <tr className='border-b border-[#2a3734] text-xs uppercase tracking-wide text-[#94a3a0]'>
+                    <th className='py-2 pr-3 font-medium'>Datum</th>
+                    <th className='py-2 pr-3 font-medium'>Opis</th>
+                    <th className='py-2 pr-3 font-medium'>Iznos</th>
+                    <th className='py-2 pr-3 font-medium'>Status</th>
+                    <th className='py-2 font-medium'>Račun</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {billingEvents.map((ev) => {
+                    const amt =
+                      typeof ev.amount_eur === 'string'
+                        ? Number.parseFloat(ev.amount_eur)
+                        : ev.amount_eur;
+                    const badge =
+                      ev.status === 'paid' ? (
+                        <span className='inline-flex rounded-full bg-emerald-500/20 px-2 py-0.5 text-xs font-medium text-emerald-300'>
+                          Plaćeno
+                        </span>
+                      ) : ev.status === 'failed' ? (
+                        <span className='inline-flex rounded-full bg-red-500/20 px-2 py-0.5 text-xs font-medium text-red-300'>
+                          Neuspješno
+                        </span>
+                      ) : ev.status === 'refunded' ? (
+                        <span className='inline-flex rounded-full bg-amber-500/20 px-2 py-0.5 text-xs font-medium text-amber-200'>
+                          Povrat
+                        </span>
+                      ) : (
+                        <span className='inline-flex rounded-full bg-amber-500/20 px-2 py-0.5 text-xs font-medium text-amber-200'>
+                          U tijeku
+                        </span>
+                      );
+                    return (
+                      <tr key={ev.id} className='border-b border-[#1f2a28]'>
+                        <td className='py-3 pr-3 align-middle text-[#e2e8e7]'>
+                          {formatDatumHr(ev.created_at)}
+                        </td>
+                        <td className='py-3 pr-3 align-middle'>{billingOpis(ev.interval)}</td>
+                        <td className='py-3 pr-3 align-middle tabular-nums text-[#e2e8e7]'>
+                          {formatIznosEurHr(Number.isFinite(amt) ? amt : 0)}
+                        </td>
+                        <td className='py-3 pr-3 align-middle'>{badge}</td>
+                        <td className='py-3 align-middle'>
+                          {ev.invoice_id ? (
+                            <a
+                              href={`/api/racuni/${ev.invoice_id}/pdf`}
+                              target='_blank'
+                              rel='noopener noreferrer'
+                              className='font-medium text-[#5eead4] underline decoration-[#0d9488]/50 underline-offset-2 hover:text-[#99f6e4]'
+                            >
+                              PDF
+                            </a>
+                          ) : (
+                            <span className='text-[#64748b]'>—</span>
+                          )}
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
             </div>
           )}
         </section>

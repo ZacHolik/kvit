@@ -16,6 +16,12 @@
 import { NextResponse } from 'next/server';
 import type Stripe from 'stripe';
 
+import { formatDatumHr, formatIznosEurHr } from '@/lib/format-hr';
+import {
+  createBillingRacunForStripe,
+  renderRacunPdfBuffer,
+} from '@/lib/stripe/billing-racun-pdf';
+import { PLANS } from '@/lib/stripe/plans';
 import { stripe } from '@/lib/stripe/client';
 import { createServiceRoleClient } from '@/lib/supabase/service-role';
 
@@ -23,32 +29,94 @@ export const dynamic = 'force-dynamic';
 
 // ─── Email helper (Resend) ───────────────────────────────────────────────────
 
-async function sendEmail(to: string, subject: string, html: string) {
+type EmailAttachment = { filename: string; content: Buffer };
+
+async function sendEmail(
+  to: string,
+  subject: string,
+  html: string,
+  attachments?: EmailAttachment[],
+) {
   const key = process.env.RESEND_API_KEY;
-  if (!key) return;
+  if (!key || !to?.trim()) {
+    return;
+  }
+  const payload: Record<string, unknown> = {
+    from: process.env.RESEND_FROM_EMAIL ?? 'Kvik <noreply@kvik.online>',
+    to: [to.trim()],
+    subject,
+    html,
+  };
+  if (attachments?.length) {
+    payload.attachments = attachments.map((a) => ({
+      filename: a.filename,
+      content: a.content.toString('base64'),
+    }));
+  }
   await fetch('https://api.resend.com/emails', {
     method: 'POST',
     headers: {
       Authorization: `Bearer ${key}`,
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({
-      from: process.env.RESEND_FROM_EMAIL ?? 'Kvik <noreply@kvik.online>',
-      to: [to],
-      subject,
-      html,
-    }),
+    body: JSON.stringify(payload),
   }).catch((err) => console.error('Resend webhook email error', err));
 }
 
 function formatPeriod(start: number, end: number) {
-  const fmt = (ts: number) =>
-    new Date(ts * 1000).toLocaleDateString('hr-HR', {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric',
-    });
-  return `${fmt(start)} – ${fmt(end)}`;
+  return `${formatDatumHr(new Date(start * 1000))} – ${formatDatumHr(new Date(end * 1000))}`;
+}
+
+/** Period za email: prvo invoice polja, zatim subscription item (Stripe API v22). */
+async function getBillingPeriodLabel(
+  invoice: Stripe.Invoice,
+  subscriptionId: string | null,
+): Promise<string> {
+  let start = invoice.period_start;
+  let end = invoice.period_end;
+  if ((!start || !end) && subscriptionId) {
+    try {
+      const s = await stripe.subscriptions.retrieve(subscriptionId);
+      const it = s.items.data[0];
+      if (it?.current_period_start) {
+        start = it.current_period_start;
+      }
+      if (it?.current_period_end) {
+        end = it.current_period_end;
+      }
+    } catch {
+      /* ignore */
+    }
+  }
+  if (start && end) {
+    return formatPeriod(start, end);
+  }
+  return '';
+}
+
+async function sendWelcomeSubscriptionEmail(opts: {
+  to: string;
+  userName: string;
+  plan: string;
+  amount: number;
+  isTrial: boolean;
+}) {
+  const trialNote = opts.isTrial
+    ? '<p>Uključeno je <strong>probno razdoblje</strong>; prva naplata slijedi nakon isteka proba.</p>'
+    : '';
+  await sendEmail(
+    opts.to,
+    'Dobrodošli u Kvik Paušalist',
+    `
+      <p>Pozdrav ${opts.userName},</p>
+      <p>Hvala na pretplati na <strong>${opts.plan}</strong>.</p>
+      <p>Plan: ${formatIznosEurHr(opts.amount)} / mj</p>
+      ${trialNote}
+      <p><a href="https://kvik.online/postavke">Postavke pretplate →</a></p>
+      <hr/>
+      <p style="font-size:12px;color:#999;">Kvik · <a href="https://kvik.online">kvik.online</a></p>
+    `,
+  );
 }
 
 // ─── DB helper: resolve user_id from subscriptions table ────────────────────
@@ -89,7 +157,15 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
     return;
   }
 
-  const subscriptionId = session.subscription as string;
+  const subscriptionId =
+    typeof session.subscription === 'string'
+      ? session.subscription
+      : session.subscription?.id;
+  if (!subscriptionId) {
+    console.error('webhook checkout.session.completed: no subscription', session.id);
+    return;
+  }
+
   const sub = await stripe.subscriptions.retrieve(subscriptionId);
 
   // stripe@22: period dates are on the subscription item, not top-level
@@ -119,12 +195,46 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
     },
     { onConflict: 'user_id' },
   );
+
+  const to =
+    session.customer_details?.email?.trim() ??
+    session.customer_email?.trim() ??
+    '';
+  const { data: profil } =
+    (await admin
+      ?.from('profiles')
+      .select('naziv_obrta')
+      .eq('id', userId)
+      .maybeSingle()) ?? { data: null };
+  const userName =
+    (profil as { naziv_obrta?: string } | null)?.naziv_obrta?.trim() || 'Korisnik';
+  const interval =
+    item?.price?.recurring?.interval === 'year' ? 'year' : 'month';
+  const amount =
+    interval === 'year'
+      ? PLANS.pausalist.displayPriceYearlyPerMonth
+      : PLANS.pausalist.displayPriceMonthly;
+  const isTrial = Boolean(sub.trial_end);
+
+  try {
+    await sendWelcomeSubscriptionEmail({
+      to,
+      userName,
+      plan: 'Paušalist',
+      amount,
+      isTrial,
+    });
+  } catch (e) {
+    console.error('welcome email checkout', e);
+  }
 }
 
 async function handlePaymentSucceeded(invoice: Stripe.Invoice) {
   const admin = createServiceRoleClient();
+  if (!admin) {
+    return;
+  }
 
-  // stripe@22: subscription context is at invoice.parent?.subscription_details
   const subDetails = invoice.parent?.type === 'subscription_details'
     ? invoice.parent.subscription_details
     : null;
@@ -148,22 +258,22 @@ async function handlePaymentSucceeded(invoice: Stripe.Invoice) {
     return;
   }
 
-  // Interval iz subscription item (dohvati sub ako imamo ID)
-  let lineInterval: string | null = null;
+  let lineInterval: 'month' | 'year' | null = null;
   if (subId) {
     try {
       const sub = await stripe.subscriptions.retrieve(subId);
-      lineInterval = sub.items.data[0]?.price?.recurring?.interval ?? null;
+      const int = sub.items.data[0]?.price?.recurring?.interval;
+      lineInterval = int === 'year' || int === 'month' ? int : null;
     } catch {
-      // ne blokira snimanje billing eventa
+      /* ignore */
     }
   }
 
-  await admin?.from('billing_events').upsert(
+  await admin.from('billing_events').upsert(
     {
       user_id: userId,
       stripe_invoice_id: invoice.id,
-      stripe_payment_intent_id: null, // not top-level in new API
+      stripe_payment_intent_id: null,
       amount_eur: (invoice.amount_paid ?? 0) / 100,
       interval: lineInterval,
       status: 'paid',
@@ -171,31 +281,111 @@ async function handlePaymentSucceeded(invoice: Stripe.Invoice) {
     { onConflict: 'stripe_invoice_id' },
   );
 
-  // Email potvrda
-  if (invoice.customer_email) {
-    const { data: profile } = await admin
-      ?.from('profiles')
-      .select('naziv_obrta')
-      .eq('id', userId)
-      .maybeSingle() ?? { data: null };
-    const name = (profile as { naziv_obrta?: string } | null)?.naziv_obrta ?? '';
-    const amount = ((invoice.amount_paid ?? 0) / 100).toFixed(2).replace('.', ',');
-    const period = invoice.period_start && invoice.period_end
-      ? formatPeriod(invoice.period_start, invoice.period_end)
-      : '';
+  const { data: bev } = await admin
+    .from('billing_events')
+    .select('invoice_id')
+    .eq('stripe_invoice_id', invoice.id)
+    .maybeSingle();
 
-    await sendEmail(
-      invoice.customer_email,
-      `Kvik — Potvrda plaćanja ${amount} EUR`,
-      `
+  if ((bev as { invoice_id?: string | null } | null)?.invoice_id) {
+    return;
+  }
+
+  const emailTo = invoice.customer_email?.trim() ?? '';
+  const amountEur = (invoice.amount_paid ?? 0) / 100;
+  const paidTs = invoice.status_transitions?.paid_at ?? invoice.created;
+  const datumIso = new Date(paidTs * 1000)
+    .toISOString()
+    .slice(0, 10);
+
+  let racunId: string | null = null;
+  if (amountEur > 0) {
+    try {
+      racunId = await createBillingRacunForStripe(admin, {
+        userId,
+        stripeInvoiceId: invoice.id,
+        amountEur,
+        interval: lineInterval,
+        datum: datumIso,
+      });
+    } catch (e) {
+      console.error('billing racun create', e);
+    }
+  }
+
+  let attachments: EmailAttachment[] | undefined;
+  if (racunId && amountEur > 0) {
+    try {
+      const buf = await renderRacunPdfBuffer(admin, racunId, userId);
+      if (buf) {
+        attachments = [{ filename: `racun-${invoice.id}.pdf`, content: buf }];
+      }
+    } catch (e) {
+      console.error('pdf buffer subscription payment', e);
+    }
+  }
+
+  const periodLabel = await getBillingPeriodLabel(invoice, subId);
+
+  if (emailTo) {
+    try {
+      const { data: profile } = await admin
+        .from('profiles')
+        .select('naziv_obrta')
+        .eq('id', userId)
+        .maybeSingle();
+      const name = (profile as { naziv_obrta?: string } | null)?.naziv_obrta ?? '';
+      const amtStr = formatIznosEurHr(amountEur);
+
+      await sendEmail(
+        emailTo,
+        `Kvik — Potvrda plaćanja ${amtStr}`,
+        `
         <p>Pozdrav${name ? ` ${name}` : ''},</p>
-        <p>Uspješno smo naplatili <strong>${amount} EUR</strong>${period ? ` za period ${period}` : ''}.</p>
-        <p>R1 račun je u pripremi i dobit ćete ga emailom uskoro.</p>
+        <p>Uspješno smo naplatili <strong>${amtStr}</strong>${periodLabel ? ` za period ${periodLabel}` : ''}.</p>
+        <p>${attachments?.length ? 'Račun u privitku (PDF).' : 'Račun bit će dostupan u Postavkama.'}</p>
         <p><a href="https://kvik.online/postavke">Upravljajte pretplatom →</a></p>
         <hr/>
         <p style="font-size:12px;color:#999;">Kvik · <a href="https://kvik.online">kvik.online</a></p>
       `,
-    );
+        attachments,
+      );
+    } catch (e) {
+      console.error('payment confirmation email', e);
+    }
+  }
+
+  if (racunId) {
+    try {
+      await admin
+        .from('billing_events')
+        .update({ invoice_id: racunId })
+        .eq('stripe_invoice_id', invoice.id);
+    } catch (e) {
+      console.error('billing_events invoice_id update', e);
+    }
+  }
+}
+
+async function handleChargeRefunded(charge: Stripe.Charge) {
+  const admin = createServiceRoleClient();
+  if (!admin) {
+    return;
+  }
+  // Stripe Charge.invoice postoji na API-ju; tipovi paketa ponekad zaostaju.
+  const inv = (charge as Stripe.Charge & { invoice?: string | Stripe.Invoice | null })
+    .invoice;
+  const invId = typeof inv === 'string' ? inv : inv?.id;
+  if (!invId) {
+    return;
+  }
+  try {
+    await admin
+      .from('billing_events')
+      .update({ status: 'refunded' })
+      .eq('stripe_invoice_id', invId);
+  } catch (e) {
+    console.error('charge.refunded billing update', e);
   }
 }
 
@@ -326,7 +516,7 @@ export async function POST(request: Request) {
   const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
   if (!webhookSecret || !process.env.STRIPE_SECRET_KEY) {
     console.error('Stripe webhook: missing env vars');
-    return NextResponse.json({ error: 'Misconfigured' }, { status: 500 });
+    return NextResponse.json({ received: true, warning: 'misconfigured' });
   }
 
   const rawBody = await request.text();
@@ -361,6 +551,9 @@ export async function POST(request: Request) {
         break;
       case 'customer.subscription.deleted':
         await handleSubscriptionDeleted(event.data.object as Stripe.Subscription);
+        break;
+      case 'charge.refunded':
+        await handleChargeRefunded(event.data.object as Stripe.Charge);
         break;
       default:
         break;

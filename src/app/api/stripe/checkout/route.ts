@@ -95,7 +95,7 @@ export async function POST(request: Request) {
       metadata: { user_id: user.id },
       ...(withTrial && { trial_period_days: 7 }),
     },
-    success_url: `${appUrl}/dashboard?checkout=success`,
+    success_url: `${appUrl}/postavke?checkout=success`,
     cancel_url: `${appUrl}/#cijene`,
     allow_promotion_codes: true,
     locale: 'hr',
