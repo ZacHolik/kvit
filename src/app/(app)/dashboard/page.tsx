@@ -9,6 +9,9 @@ import { DashboardReferralSection } from './dashboard-referral-section';
 const PAUSAL_LIMIT = 60000;
 export const dynamic = 'force-dynamic';
 
+// Passed by Next.js for pages with ?query=params
+type SearchParams = Promise<Record<string, string | string[] | undefined>>;
+
 function getNextDeadline(referenceDate = new Date()) {
   const year = referenceDate.getFullYear();
   const month = referenceDate.getMonth();
@@ -40,7 +43,12 @@ function getNextDeadline(referenceDate = new Date()) {
   };
 }
 
-export default async function DashboardPage() {
+export default async function DashboardPage(props: {
+  searchParams: SearchParams;
+}) {
+  const searchParams = await props.searchParams;
+  const checkoutSuccess = searchParams.checkout === 'success';
+
   const supabase = createClient();
 
   const {
@@ -132,6 +140,17 @@ export default async function DashboardPage() {
   return (
     <main className='min-h-screen bg-[#0b0f0e] px-4 py-8 text-[#e2e8e7] sm:px-6 lg:px-8'>
       <div className='mx-auto flex w-full max-w-5xl flex-col gap-6'>
+        {checkoutSuccess && (
+          <div className='rounded-2xl border border-[#0d9488]/40 bg-[#0d9488]/10 p-5'>
+            <p className='font-heading text-base font-semibold text-[#5eead4]'>
+              🎉 Pretplata je aktivirana! Dobrodošli u Kvik Premium.
+            </p>
+            <p className='font-body mt-1 text-sm text-[#94a3a0]'>
+              R1 račun ćete primiti emailom u roku od nekoliko minuta.
+            </p>
+          </div>
+        )}
+
         <header className='rounded-2xl border border-[#1f2a28] bg-[#111716] p-5 sm:p-6'>
           <p className='font-body text-sm text-[#94a3a0]'>Kvik dashboard</p>
           <h1 className='font-heading mt-2 text-2xl sm:text-3xl'>

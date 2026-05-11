@@ -4,28 +4,38 @@
  * Server-side:  import { stripe } from '@/lib/stripe/client'
  * Client-side:  import { getStripeJs } from '@/lib/stripe/client'
  *
- * `stripe` (server) is a singleton to avoid creating a new instance on every
- * hot-reload in dev. Safe to import from API routes and Server Actions.
+ * `stripe` is a lazy Proxy — the real Stripe instance is only created on
+ * first property access, so importing this module never throws at build time
+ * even when STRIPE_SECRET_KEY is absent.
  */
 
 import Stripe from 'stripe';
 
-// ─── Server-side Stripe client (Node.js runtime only) ───────────────────────
+// ─── Server-side Stripe client ───────────────────────────────────────────────
 
-const globalForStripe = globalThis as typeof globalThis & { _stripe?: Stripe };
+const g = globalThis as typeof globalThis & { _stripe?: Stripe };
 
-if (!globalForStripe._stripe) {
-  if (!process.env.STRIPE_SECRET_KEY) {
-    throw new Error('Missing env var: STRIPE_SECRET_KEY');
+function getStripeInstance(): Stripe {
+  if (!g._stripe) {
+    const key = process.env.STRIPE_SECRET_KEY;
+    if (!key) throw new Error('Missing env var: STRIPE_SECRET_KEY');
+    g._stripe = new Stripe(key, {
+      apiVersion: '2026-04-22.dahlia',
+      typescript: true,
+    });
   }
-  globalForStripe._stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
-    // pin to the API version that matches stripe@22
-    apiVersion: '2026-04-22.dahlia',
-    typescript: true,
-  });
+  return g._stripe;
 }
 
-export const stripe: Stripe = globalForStripe._stripe;
+// Proxy so callers can use `stripe.customers.create(...)` normally,
+// but the actual instance is created lazily.
+export const stripe = new Proxy({} as Stripe, {
+  get(_target, prop: string | symbol) {
+    const instance = getStripeInstance();
+    const value = (instance as unknown as Record<string | symbol, unknown>)[prop];
+    return typeof value === 'function' ? value.bind(instance) : value;
+  },
+});
 
 // ─── Client-side Stripe.js (lazy-loaded via @stripe/stripe-js) ──────────────
 
@@ -35,7 +45,6 @@ let stripeJsPromise: Promise<StripeJs | null> | null = null;
 
 export function getStripeJs(): Promise<StripeJs | null> {
   if (stripeJsPromise) return stripeJsPromise;
-
   stripeJsPromise = import('@stripe/stripe-js').then(({ loadStripe }) => {
     const key = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
     if (!key) {
@@ -44,6 +53,5 @@ export function getStripeJs(): Promise<StripeJs | null> {
     }
     return loadStripe(key);
   });
-
   return stripeJsPromise;
 }

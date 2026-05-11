@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { FormEvent, useEffect, useMemo, useState } from 'react';
+import { FormEvent, useCallback, useEffect, useMemo, useState } from 'react';
 
 import { OPCINE, type Opcina } from '@/lib/opcine';
 import { createClient } from '@/lib/supabase/client';
@@ -93,6 +93,36 @@ export default function PostavkePage() {
   const [fiscalDeleteConfirm, setFiscalDeleteConfirm] = useState(false);
   const [fiscalActionLoading, setFiscalActionLoading] = useState(false);
 
+  // ── Subscription state ────────────────────────────────────────────────────
+  type SubRow = {
+    plan: string;
+    status: string;
+    interval: string | null;
+    current_period_end: string | null;
+    cancel_at_period_end: boolean | null;
+    stripe_customer_id: string | null;
+  };
+  const [sub, setSub] = useState<SubRow | null>(null);
+  const [subLoading, setSubLoading] = useState(true);
+  const [portalLoading, setPortalLoading] = useState(false);
+
+  const openPortal = useCallback(async () => {
+    setPortalLoading(true);
+    try {
+      const res = await fetch('/api/stripe/portal', { method: 'POST' });
+      const data = (await res.json()) as { url?: string; error?: string };
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        setToast({ type: 'error', message: data.error ?? 'Greška pri otvaranju portala.' });
+      }
+    } catch {
+      setToast({ type: 'error', message: 'Mrežna greška.' });
+    } finally {
+      setPortalLoading(false);
+    }
+  }, []);
+
   useEffect(() => {
     let cancelled = false;
 
@@ -128,6 +158,31 @@ export default function PostavkePage() {
     return () => {
       cancelled = true;
     };
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadSubscription() {
+      const sb = createClient();
+      const { data: { user } } = await sb.auth.getUser();
+      if (!user || cancelled) {
+        setSubLoading(false);
+        return;
+      }
+      const { data } = await sb
+        .from('subscriptions')
+        .select('plan, status, interval, current_period_end, cancel_at_period_end, stripe_customer_id')
+        .eq('user_id', user.id)
+        .maybeSingle();
+      if (!cancelled) {
+        setSub(data as SubRow | null);
+        setSubLoading(false);
+      }
+    }
+
+    void loadSubscription();
+    return () => { cancelled = true; };
   }, []);
 
   useEffect(() => {
@@ -768,6 +823,95 @@ export default function PostavkePage() {
             {isSaving ? 'Spremam...' : 'Spremi postavke'}
           </button>
         </form>
+
+        {/* ── Pretplata ─────────────────────────────────────────────────── */}
+        <section className='space-y-4 rounded-2xl border border-[#1f2a28] bg-[#111716] p-5 sm:p-6'>
+          <h2 className='font-heading text-lg'>Pretplata</h2>
+          {subLoading ? (
+            <p className='font-body text-sm text-[#94a3a0]'>Učitavam...</p>
+          ) : sub?.plan === 'pausalist' && (sub.status === 'active' || sub.status === 'trialing') ? (
+            <div className='space-y-4 font-body text-sm text-[#b9c7c4]'>
+              <div className='flex items-center gap-2'>
+                <span className='h-2 w-2 rounded-full bg-emerald-400' aria-hidden />
+                <span className='font-medium text-[#e2e8e7]'>
+                  Kvik Paušalist
+                  {sub.status === 'trialing' && (
+                    <span className='ml-2 rounded-full bg-[#0d9488]/20 px-2 py-0.5 text-xs text-[#5eead4]'>
+                      Probno
+                    </span>
+                  )}
+                </span>
+              </div>
+              {sub.interval && (
+                <p>
+                  Plan:{' '}
+                  <span className='text-[#e2e8e7]'>
+                    {sub.interval === 'year' ? 'Godišnji (5,60€/mj)' : 'Mjesečni (7€/mj)'}
+                  </span>
+                </p>
+              )}
+              {sub.current_period_end && (
+                <p>
+                  {sub.cancel_at_period_end ? 'Ističe' : 'Sljedeća naplata'}:{' '}
+                  <span className='text-[#e2e8e7]'>
+                    {new Date(sub.current_period_end).toLocaleDateString('hr-HR', {
+                      day: '2-digit',
+                      month: '2-digit',
+                      year: 'numeric',
+                    })}
+                  </span>
+                  {sub.cancel_at_period_end && (
+                    <span className='ml-2 text-amber-300'>Otkazano — aktivan do kraja perioda</span>
+                  )}
+                </p>
+              )}
+              {sub.stripe_customer_id && (
+                <button
+                  type='button'
+                  disabled={portalLoading}
+                  onClick={() => void openPortal()}
+                  className='inline-flex rounded-xl bg-[#0d9488] px-4 py-2 font-semibold text-white transition hover:bg-[#14b8a6] disabled:cursor-not-allowed disabled:opacity-60'
+                >
+                  {portalLoading ? 'Otvarum...' : 'Upravljaj pretplatom →'}
+                </button>
+              )}
+            </div>
+          ) : sub?.status === 'past_due' ? (
+            <div className='space-y-3 font-body text-sm'>
+              <div className='flex items-center gap-2 text-amber-300'>
+                <span className='h-2 w-2 rounded-full bg-amber-400' aria-hidden />
+                <span>Plaćanje nije uspjelo</span>
+              </div>
+              <p className='text-[#b9c7c4]'>
+                Molimo ažurirajte podatke platne kartice kako bi nastavili koristiti Kvik.
+              </p>
+              <button
+                type='button'
+                disabled={portalLoading}
+                onClick={() => void openPortal()}
+                className='inline-flex rounded-xl bg-amber-500 px-4 py-2 font-semibold text-white transition hover:bg-amber-400 disabled:opacity-60'
+              >
+                {portalLoading ? 'Otvarum...' : 'Ažuriraj platnu karticu →'}
+              </button>
+            </div>
+          ) : (
+            <div className='space-y-3 font-body text-sm'>
+              <div className='flex items-center gap-2 text-[#b9c7c4]'>
+                <span className='h-2 w-2 rounded-full bg-[#94a3a0]' aria-hidden />
+                <span>Besplatni plan</span>
+              </div>
+              <p className='text-[#94a3a0]'>
+                Nadogradite na Paušalist — 7 dana besplatno, bez kartice.
+              </p>
+              <Link
+                href='/#cijene'
+                className='inline-flex rounded-xl bg-[#0d9488] px-4 py-2 font-semibold text-white transition hover:bg-[#14b8a6]'
+              >
+                Pogledaj planove →
+              </Link>
+            </div>
+          )}
+        </section>
 
         {/* Fiskalizacija — certifikat (GET /api/fiscal/certificate na mountu) */}
         <section className='space-y-4 rounded-2xl border border-[#1f2a28] bg-[#111716] p-5 sm:p-6'>
