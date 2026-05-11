@@ -5,7 +5,7 @@ import { createClient } from '@/lib/supabase/server';
 
 /**
  * GET /api/fiscal/echo — provjera dostupnosti CIS **demo test** (cistest Echo SOAP),
- * bez certifikata. URL: https://cistest.apis-it.hr:443/FiskalizacijaServiceTest
+ * bez certifikata. URL: https://cistest.apis-it.hr/FiskalizacijaServiceTest
  */
 export async function GET() {
   const supabase = createClient();
