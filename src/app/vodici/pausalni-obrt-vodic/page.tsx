@@ -74,6 +74,14 @@ export default function PauzalniObrtVodicPage() {
         { href: vodiciHref('pausalni-obrt-vs-doo'), title: 'Paušalni obrt vs d.o.o.' },
         { href: vodiciHref('prikriveni-radni-odnos'), title: 'Prikriveni radni odnos' },
         { href: vodiciHref('pausalni-obrt-za-it-freelancere'), title: 'Paušalni obrt za IT freelancere' },
+        {
+          href: vodiciHref('pdv-facebook-oglasavanje'),
+          title: 'PDV za Facebook oglašavanje – vodič za paušaliste',
+        },
+        {
+          href: vodiciHref('rad-s-pola-radnog-vremena-pausalni-obrt'),
+          title: 'Rad s pola radnog vremena uz paušalni obrt',
+        },
         { href: vodiciHref('fiskalizacija-20'), title: 'Fiskalizacija 2.0 za paušaliste' },
         { href: vodiciHref('po-sd-obrazac'), title: 'PO-SD obrazac – kako ispuniti' },
       ]}
@@ -147,9 +155,10 @@ export default function PauzalniObrtVodicPage() {
         određenih djelatnosti (npr. slobodna zanimanja koja ne mogu kroz paušal prema
         zakonu) i manje fleksibilnosti kad posao jako naraste — tada je često
         racionalnije prijeći na drugi oblik. Također, od 2026. pausalisti su u
-        fokusu <Link href={vodiciHref('fiskalizacija-20')}>fiskalizacije 2.0</Link>{' '}
-        za transakcijske račune i zaprimanje eRačuna, što treba ugraditi u svakodnevni
-        rad.
+        fokusu <Link href={vodiciHref('fiskalizacija-20')}>fiskalizacije 2.0</Link> za
+        transakcijske račune i zaprimanje eRačuna. Uz to, sve češće imaju obveze na
+        strane usluge poput oglasa — vidi i{' '}
+        <Link href={vodiciHref('pdv-facebook-oglasavanje')}>PDV za Facebook oglašavanje</Link>.
       </p>
 
       <h2 id='tko-moze'>Tko može otvoriti paušalni obrt?</h2>
@@ -232,7 +241,12 @@ export default function PauzalniObrtVodicPage() {
         ako djelatnost više ne ispunjava uvjete ili želiš preći u zaposlenje kao
         primarni izvor prihoda, treba planirati formalne korake kod Porezne i obrtnog
         registra. Svaka promjena ima porezne i kadrovsko-pravne posljedice — pripremi
-        ih unaprijed.
+        ih unaprijed. Ako planiraš privremeno smanjiti opterećenje zbog roditeljskih ili
+        zdravstvenih razloga, usporedi i{' '}
+        <Link href={vodiciHref('rad-s-pola-radnog-vremena-pausalni-obrt')}>
+          rad s pola radnog vremena uz paušalni obrt
+        </Link>
+        .
       </p>
       <p>
         Za praktičan rad od računa do KPR-a i PO-SD-a isprobaj{' '}

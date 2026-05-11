@@ -95,6 +95,16 @@ export const VODICI_ENTRIES: VodiciEntry[] = [
     primaryKeyword: 'doprinosi paušalni obrt uz posao',
   },
   {
+    slug: 'rad-s-pola-radnog-vremena-pausalni-obrt',
+    title: 'Rad s pola radnog vremena uz paušalni obrt – vodič 2026.',
+    shortTitle: 'Rad s pola radnog vremena',
+    description:
+      'Kako koristiti rad s polovicom radnog vremena kao paušalist: HZZO procedura, doprinosi, razlika prema mirovanju i vođenje obrta.',
+    readingMinutes: 12,
+    category: 'osnove',
+    primaryKeyword: 'rad pola radnog vremena paušalni obrt',
+  },
+  {
     slug: 'rokovi-placanja',
     title: 'Rokovi plaćanja paušalni obrt 2026. – svi rokovi',
     shortTitle: 'Rokovi plaćanja',
@@ -302,6 +312,16 @@ export const VODICI_ENTRIES: VodiciEntry[] = [
     readingMinutes: 10,
     category: 'porezi',
     primaryKeyword: 'PDV ID broj paušalni obrt',
+  },
+  {
+    slug: 'pdv-facebook-oglasavanje',
+    title: 'PDV za Facebook oglašavanje – vodič za paušaliste 2026.',
+    shortTitle: 'PDV za Facebook oglašavanje',
+    description:
+      'Facebook i Instagram oglasi za paušaliste: reverse charge, PDV ID, PDV-S prijava, rokovi i česte greške.',
+    readingMinutes: 12,
+    category: 'porezi',
+    primaryKeyword: 'PDV Facebook oglašavanje paušalni obrt',
   },
 
   // =========================================================================

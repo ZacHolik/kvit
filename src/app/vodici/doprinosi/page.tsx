@@ -72,6 +72,10 @@ export default function DoprinosiPage() {
       related={[
         { href: vodiciHref('po-sd-obrazac'), title: 'PO-SD obrazac' },
         { href: vodiciHref('pausalni-obrt-vodic'), title: 'Paušalni obrt 2026.' },
+        {
+          href: vodiciHref('rad-s-pola-radnog-vremena-pausalni-obrt'),
+          title: 'Rad s pola radnog vremena uz paušalni obrt',
+        },
         { href: vodiciHref('pausalni-obrt-za-it-freelancere'), title: 'Paušalni obrt za IT freelancere' },
         { href: vodiciHref('prikriveni-radni-odnos'), title: 'Prikriveni radni odnos' },
         { href: vodiciHref('otvaranje-obrta'), title: 'Otvaranje obrta' },
@@ -167,6 +171,14 @@ export default function DoprinosiPage() {
         statusa. U takvim slučajevima individualni savjet štedi novac. Za taj scenarij
         pročitaj i{' '}
         <Link href={vodiciHref('doprinosi-uz-posao')}>doprinosi uz zaposlenje</Link>.
+      </p>
+      <p>
+        Ako koristiš posebna prava kroz HZZO (npr. rad s polovicom radnog vremena), iznosi
+        i osnova doprinosa mogu se razlikovati od standardnog modela. Za taj slučaj pogledaj{' '}
+        <Link href={vodiciHref('rad-s-pola-radnog-vremena-pausalni-obrt')}>
+          rad s pola radnog vremena uz paušalni obrt
+        </Link>
+        .
       </p>
 
       <h2 id='planiranje'>Planiranje cashflowa</h2>

@@ -72,6 +72,10 @@ export default function PauzalniObrtZaItFreelancerePage() {
       related={[
         { href: vodiciHref('pausalni-obrt-vs-doo'), title: 'Paušalni obrt vs d.o.o.' },
         { href: vodiciHref('prikriveni-radni-odnos'), title: 'Prikriveni radni odnos' },
+        {
+          href: vodiciHref('pdv-facebook-oglasavanje'),
+          title: 'PDV za Facebook oglašavanje – vodič za paušaliste',
+        },
         { href: vodiciHref('fiskalizacija-20'), title: 'Fiskalizacija 2.0 za paušaliste' },
         { href: vodiciHref('doprinosi'), title: 'Doprinosi za paušalni obrt' },
       ]}
@@ -178,7 +182,9 @@ export default function PauzalniObrtZaItFreelancerePage() {
         statusu klijenta — kad nisi u PDV-u, često koristiš klasičnu napomenu o
         neobračunu PDV-a, ali kad uđeš u sustav, scenarij se mijenja. Prije
         većih godišnjih ugovora dobro je provjeriti situaciju s poreznim
-        savjetnikom jer greška na inozemnom lancu skuplje košta ispravak.
+        savjetnikom jer greška na inozemnom lancu skuplje košta ispravak. Ako ulažeš
+        u oglase prema stranim platformama, pogledaj i vodič{' '}
+        <Link href={vodiciHref('pdv-facebook-oglasavanje')}>PDV za Facebook oglašavanje</Link>.
       </p>
 
       <h2 id='troskovi'>Koji su troškovi (doprinosi, porez)</h2>
