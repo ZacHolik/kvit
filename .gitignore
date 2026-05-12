@@ -20,6 +20,10 @@
 .DS_Store
 *.pem
 
+# FINA CIS CA kopije u certs/ (README ostaje u repou)
+certs/*
+!certs/README.md
+
 # debug
 npm-debug.log*
 yarn-debug.log*

@@ -8,9 +8,10 @@
  * wsse:BinarySecurityToken + KeyInfo s SecurityTokenReference (spec. v2.5 / WS-Security).
  */
 
-import https from 'https';
 import { readFileSync } from 'fs';
+import { join } from 'path';
 
+import { Agent, fetch as undiciFetch } from 'undici';
 import forge from 'node-forge';
 import { create } from 'xmlbuilder2';
 import { SignedXml } from 'xml-crypto';
@@ -30,6 +31,28 @@ export function resolveCisUrl(mode: 'test' | 'production'): string {
   }
   return mode === 'production' ? CIS_DEFAULT_PROD : CIS_TEST_URL;
 }
+
+function getFinaAgent(): Agent {
+  const b64 = process.env.FINA_CA_CERT_BASE64?.trim();
+  if (b64) {
+    const ca = Buffer.from(b64, 'base64').toString('utf8');
+    return new Agent({ connect: { ca } });
+  }
+
+  const certPath =
+    process.env.FINA_CA_CERT_PATH?.trim() ??
+    join(process.cwd(), 'certs', 'fina_full_chain.pem');
+
+  try {
+    const ca = readFileSync(certPath, 'utf8');
+    return new Agent({ connect: { ca } });
+  } catch {
+    return new Agent({});
+  }
+}
+
+/** Singleton: puni CA lanac za CIS (FINA demo / vlastiti chain). */
+const finaAgent = getFinaAgent();
 
 export type CISCertificateData = {
   encryptedP12: string;
@@ -254,76 +277,6 @@ function parseErrorFromResponse(responseXml: string): string | null {
   return match?.[1]?.trim() ?? null;
 }
 
-/** PEM ili DER lanci za TLS provjeru CIS hosta (lokalno: datoteka, Vercel: base64). */
-function loadFinaCaCert(): string | Buffer | undefined {
-  const certPath = process.env.FINA_CA_CERT_PATH?.trim();
-  if (certPath) {
-    return readFileSync(certPath);
-  }
-  const b64 = process.env.FINA_CA_CERT_BASE64?.trim();
-  if (b64) {
-    return Buffer.from(b64, 'base64');
-  }
-  return undefined;
-}
-
-/**
- * HTTPS POST s opcijskim `ca` (FINA chain). Bez CA koristi zadani trust store Nodea.
- */
-function httpsPost(
-  url: string,
-  body: string,
-  headers: Record<string, string>,
-  timeoutMs: number,
-): Promise<{ status: number; text: string }> {
-  const ca = loadFinaCaCert();
-  const u = new URL(url);
-  const port =
-    u.port !== '' ? Number.parseInt(u.port, 10) : u.protocol === 'https:' ? 443 : 80;
-
-  const mergedHeaders: Record<string, string> = {
-    ...headers,
-    'Content-Length': String(Buffer.byteLength(body, 'utf8')),
-  };
-
-  const options: https.RequestOptions = {
-    hostname: u.hostname,
-    port,
-    path: `${u.pathname}${u.search}`,
-    method: 'POST',
-    headers: mergedHeaders,
-    ...(ca !== undefined ? { ca } : {}),
-  };
-
-  return new Promise((resolve, reject) => {
-    const req = https.request(options, (res) => {
-      const chunks: Buffer[] = [];
-      res.on('data', (chunk: Buffer) => {
-        chunks.push(chunk);
-      });
-      res.on('end', () => {
-        clearTimeout(timer);
-        resolve({
-          status: res.statusCode ?? 0,
-          text: Buffer.concat(chunks).toString('utf8'),
-        });
-      });
-    });
-
-    const timer = setTimeout(() => {
-      req.destroy(new Error(`CIS timeout nakon ${timeoutMs} ms`));
-    }, timeoutMs);
-
-    req.on('error', (err) => {
-      clearTimeout(timer);
-      reject(err);
-    });
-
-    req.write(body, 'utf8');
-    req.end();
-  });
-}
-
 /**
  * Šalje račun na CIS i vraća JIR.
  *
@@ -366,21 +319,24 @@ export async function sendRacunToCIS(
     const withToken = insertBinarySecurityToken(envelope, certDerB64);
     const signedXml = signSoapEnvelope(withToken, privateKeyPem, certPem);
 
-    const { status, text: responseText } = await httpsPost(
-      url,
-      signedXml,
-      {
+    const response = await undiciFetch(url, {
+      method: 'POST',
+      headers: {
         'Content-Type': 'text/xml;charset=UTF-8',
         SOAPAction: '"RacunZahtjev"',
       },
-      15000,
-    );
+      body: signedXml,
+      signal: AbortSignal.timeout(15000),
+      dispatcher: finaAgent,
+    });
+
+    const responseText = await response.text();
     const durationMs = Date.now() - started;
 
-    if (status < 200 || status >= 300) {
+    if (!response.ok) {
       return {
         success: false,
-        error: `CIS HTTP greška: ${status}`,
+        error: `CIS HTTP greška: ${response.status}`,
         rawResponse: responseText,
         durationMs,
         requestXml: signedXml,
@@ -434,7 +390,7 @@ export async function echoCIS(): Promise<{
     '<soapenv:Body><fis:EchoRequest>Test</fis:EchoRequest></soapenv:Body></soapenv:Envelope>';
   const started = Date.now();
   try {
-    const response = await fetch(url, {
+    const response = await undiciFetch(url, {
       method: 'POST',
       headers: {
         'Content-Type': 'text/xml;charset=UTF-8',
@@ -442,6 +398,7 @@ export async function echoCIS(): Promise<{
       },
       body,
       signal: AbortSignal.timeout(10000),
+      dispatcher: finaAgent,
     });
     const text = await response.text();
     const durationMs = Date.now() - started;
