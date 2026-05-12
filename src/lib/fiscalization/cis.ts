@@ -150,7 +150,7 @@ function buildSoapEnvelope(racun: RacunZaCIS, messageId: string): string {
     .up()
     .up()
     .up()
-    .ele('soapenv:Body')
+    .ele('soapenv:Body', { 'wsu:Id': 'Body' })
     .ele('tns:RacunZahtjev')
     .ele('tns:Zaglavlje')
     .ele('tns:IdPoruke')
@@ -163,9 +163,6 @@ function buildSoapEnvelope(racun: RacunZaCIS, messageId: string): string {
     .ele('tns:Racun')
     .ele('tns:Oib')
     .txt(racun.oib)
-    .up()
-    .ele('tns:UspostavljenoOsiguranje')
-    .txt(racun.uspostavljenoOsiguranje ? 'true' : 'false')
     .up()
     .ele('tns:DatVrijeme')
     .txt(racun.datVrijeme)
@@ -195,6 +192,9 @@ function buildSoapEnvelope(racun: RacunZaCIS, messageId: string): string {
     .up()
     .ele('tns:NakDost')
     .txt('false')
+    .up()
+    .ele('tns:UspostavljenoOsiguranje')
+    .txt(racun.uspostavljenoOsiguranje ? 'true' : 'false')
     .up()
     .up()
     .up()
@@ -329,12 +329,13 @@ export async function sendRacunToCIS(
     const envelope = buildSoapEnvelope(racun, messageId);
     const withToken = insertBinarySecurityToken(envelope, certDerB64);
     const signedXml = signSoapEnvelope(withToken, privateKeyPem, certPem);
+    console.log('[CIS] SOAP XML:', signedXml.substring(0, 3000));
 
     const response = await undiciFetch(url, {
       method: 'POST',
       headers: {
         'Content-Type': 'text/xml;charset=UTF-8',
-        SOAPAction: '"RacunZahtjev"',
+        SOAPAction: '"http://www.apis-it.hr/fin/2012/types/f73/RacunZahtjev"',
       },
       body: signedXml,
       signal: AbortSignal.timeout(15000),
@@ -342,6 +343,8 @@ export async function sendRacunToCIS(
     });
 
     const responseText = await response.text();
+    console.log('[CIS] HTTP Status:', response.status);
+    console.log('[CIS] Response Body:', responseText);
     const durationMs = Date.now() - started;
 
     if (!response.ok) {
