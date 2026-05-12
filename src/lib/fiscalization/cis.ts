@@ -33,6 +33,17 @@ export function resolveCisUrl(mode: 'test' | 'production'): string {
 }
 
 function getFinaAgent(): Agent {
+  console.log('[FINA] CWD:', process.cwd());
+  console.log(
+    '[FINA] CERT PATH:',
+    process.env.FINA_CA_CERT_PATH ??
+      join(process.cwd(), 'certs', 'fina_full_chain.pem'),
+  );
+  console.log(
+    '[FINA] CERT BASE64:',
+    process.env.FINA_CA_CERT_BASE64 ? 'SET' : 'NOT SET',
+  );
+
   const b64 = process.env.FINA_CA_CERT_BASE64?.trim();
   if (b64) {
     const ca = Buffer.from(b64, 'base64').toString('utf8');
