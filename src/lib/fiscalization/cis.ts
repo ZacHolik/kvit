@@ -1,6 +1,6 @@
 /**
- * CIS SOAP klijent — FIX s004: inclusiveNamespacesPrefixList="tns"
- * Enveloped XMLDSig na tns:RacunZahtjev, Exclusive C14N s tns prefix uključenim.
+ * CIS SOAP klijent — FIX za s004: URI="#RacunZahtjev" umjesto URI=""
+ * Tri nezavisna LLM-a (Gemini, ChatGPT, Grok) konzistentno identificirala problem.
  */
 import { readFileSync } from 'fs';
 import { join } from 'path';
@@ -12,7 +12,8 @@ import { decryptCertificate } from './encryption';
 import type { CISResponse, RacunZaCIS } from './types';
 
 const CIS_TEST_URL = 'https://cistest.apis-it.hr:8449/FiskalizacijaServiceTest';
-const CIS_DEFAULT_PROD = 'https://cis.porezna-uprava.hr:8449/FiskalizacijaService';
+const CIS_DEFAULT_PROD =
+  'https://cis.porezna-uprava.hr:8449/FiskalizacijaService';
 
 export function resolveCisUrl(mode: 'test' | 'production'): string {
   const fromEnv = process.env.CIS_URL?.trim();
@@ -84,25 +85,21 @@ function signRacunZahtjev(zahtjevXml: string, privateKeyPem: string, certDerB64:
     privateKey: privateKeyPem,
     signatureAlgorithm: 'http://www.w3.org/2000/09/xmldsig#rsa-sha1',
     canonicalizationAlgorithm: 'http://www.w3.org/2001/10/xml-exc-c14n#',
-    inclusiveNamespacesPrefixList: 'tns',
     getKeyInfoContent: () => '<X509Data><X509Certificate>' + certDerB64 + '</X509Certificate></X509Data>',
   });
 
   sig.addReference({
-    xpath: "//*[local-name(.)='RacunZahtjev']",
+    xpath: "//*[@Id='RacunZahtjev']",
     transforms: [
       'http://www.w3.org/2000/09/xmldsig#enveloped-signature',
       'http://www.w3.org/2001/10/xml-exc-c14n#',
     ],
     digestAlgorithm: 'http://www.w3.org/2000/09/xmldsig#sha1',
-    uri: '',
-    isEmptyUri: true,
-    inclusiveNamespacesPrefixList: ['tns'],
+    uri: '#RacunZahtjev',
   });
 
   sig.computeSignature(zahtjevXml, {
-    location: { reference: "//*[local-name(.)='Racun']", action: 'after' },
-    existingPrefixes: { tns: 'http://www.apis-it.hr/fin/2012/types/f73' },
+    location: { reference: "//*[local-name(.)='RacunZahtjev']", action: 'append' },
   });
 
   return sig.getSignedXml();
@@ -168,9 +165,7 @@ export async function sendRacunToCIS(
     const response = await undiciFetch(url, {
       method: 'POST',
       headers: { 'Content-Type': 'text/xml;charset=UTF-8', SOAPAction: '' },
-      body: soapXml,
-      signal: AbortSignal.timeout(15000),
-      dispatcher: finaAgent,
+      body: soapXml, signal: AbortSignal.timeout(15000), dispatcher: finaAgent,
     });
     const responseText = await response.text();
     const durationMs = Date.now() - started;
@@ -195,11 +190,7 @@ export async function sendRacunToCIS(
     }
 
     console.log('[CIS] ❌ Nema JIR-a.');
-    return {
-      success: false,
-      error: allErrors.length ? allErrors.join(' | ') : 'CIS nije vratio JIR ni grešku.',
-      rawResponse: responseText, durationMs, requestXml: soapXml,
-    };
+    return { success: false, error: allErrors.length ? allErrors.join(' | ') : 'CIS nije vratio JIR ni grešku.', rawResponse: responseText, durationMs, requestXml: soapXml };
   } catch (err) {
     const message = err instanceof Error ? err.message : 'Nepoznata greška.';
     console.log('[CIS] ❌ EXCEPTION:', message);
@@ -213,11 +204,8 @@ export async function echoCIS(): Promise<{ ok: boolean; message: string; duratio
   const started = Date.now();
   try {
     const response = await undiciFetch(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'text/xml;charset=UTF-8', SOAPAction: '' },
-      body,
-      signal: AbortSignal.timeout(10000),
-      dispatcher: finaAgent,
+      method: 'POST', headers: { 'Content-Type': 'text/xml;charset=UTF-8', SOAPAction: '' },
+      body, signal: AbortSignal.timeout(10000), dispatcher: finaAgent,
     });
     const text = await response.text();
     const durationMs = Date.now() - started;
