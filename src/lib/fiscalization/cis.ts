@@ -76,8 +76,6 @@ function buildRacunZahtjevXml(racun: RacunZaCIS, messageId: string): string {
       .ele('tns:OibOper').txt(racun.oibOper).up()
       .ele('tns:ZastKod').txt(racun.zki ?? '').up()
       .ele('tns:NakDost').txt('false').up()
-      .ele('tns:ParagonBrRac').txt('').up()
-      .ele('tns:SpecNamj').txt('').up()
     .up()
     .up()
     .end({ prettyPrint: false });
