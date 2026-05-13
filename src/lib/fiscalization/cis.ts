@@ -63,6 +63,7 @@ function buildRacunZahtjevXml(racun: RacunZaCIS, messageId: string): string {
     .up()
     .ele('tns:Racun')
       .ele('tns:Oib').txt(racun.oib).up()
+      .ele('tns:USustPdv').txt('false').up()
       .ele('tns:DatVrijeme').txt(racun.datVrijeme).up()
       .ele('tns:OznRac')
         .ele('tns:BrOznRac').txt(racun.brOznRac).up()
