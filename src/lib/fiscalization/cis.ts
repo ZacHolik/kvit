@@ -69,7 +69,7 @@ function buildRacunZahtjevXml(racun: RacunZaCIS, messageId: string): string {
       .ele('tns:BrRac')
         .ele('tns:BrOznRac').txt(racun.brOznRac).up()
         .ele('tns:OznPosPr').txt(racun.brOznPosPr).up()
-        .ele('tns:OznNapUr').txt(racun.brOznUr).up()
+        .ele('tns:OznNapUr').txt('1').up()
       .up()
       .ele('tns:IznosUkupno').txt(racun.iznosUkupno).up()
       .ele('tns:NacinPlac').txt(racun.nacinPlac).up()
