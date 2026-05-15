@@ -52,7 +52,17 @@ function readRegistrationSourceFromUrl(): string | undefined {
     return undefined;
   }
   const src = new URLSearchParams(window.location.search).get('src')?.trim().toLowerCase() ?? '';
-  return src === 'gate' ? 'tool_gate' : undefined;
+  if (!src) return undefined;
+  // legacy: 'gate' → 'tool_gate'; all other values passed through as-is
+  return src === 'gate' ? 'tool_gate' : src;
+}
+
+function readUtmSourceFromUrl(): string | undefined {
+  if (typeof window === 'undefined') {
+    return undefined;
+  }
+  const utm = new URLSearchParams(window.location.search).get('utm_source')?.trim().toLowerCase() ?? '';
+  return utm || undefined;
 }
 
 export default function RegisterPage() {
@@ -135,6 +145,7 @@ export default function RegisterPage() {
           shareAnswerId: readShareAnswerIdFromUrl(),
           referralFriendCode: readReferralFriendCodeFromUrl(),
           registrationSource: readRegistrationSourceFromUrl(),
+          utmSource: readUtmSourceFromUrl(),
         }),
       });
     } catch {

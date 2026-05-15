@@ -458,7 +458,7 @@ export default function AsistentPage() {
                     <div className='mt-4 rounded-2xl border border-[#2a3734] bg-gradient-to-br from-[#101515] to-[#0b0f0e] p-4'>
                       <p className='font-body text-sm leading-relaxed text-[#c8d3d1]'>
                         Ovakve odgovore možeš imati svaki dan — bez kopanja po
-                        zakonima. 5,99€/mj — zauvijek.
+                        zakonima. 5,60€/mj — zauvijek.
                       </p>
                       <a
                         href='https://tally.so/r/44or65'

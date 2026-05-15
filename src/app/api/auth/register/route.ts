@@ -23,6 +23,8 @@ type RegisterBody = {
   referralFriendCode?: string;
   /** Sloj 2: nagrada PRO tjedan refereru kad se prijatelj registrira s value gate linka. */
   registrationSource?: string;
+  /** UTM tracking — ?utm_source= query param. */
+  utmSource?: string;
 };
 
 const REF_CODE_RE = /^[a-z0-9]{6}$/;
@@ -143,6 +145,9 @@ export async function POST(request: NextRequest) {
       ? body.registrationSource.trim().toLowerCase()
       : '';
 
+  const utmSource =
+    typeof body.utmSource === 'string' ? body.utmSource.trim().toLowerCase() : '';
+
   const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
     email,
     password,
@@ -186,6 +191,17 @@ export async function POST(request: NextRequest) {
         });
       }
     }
+  }
+
+  // Persist UTM / signup source to profiles for analytics
+  if (admin && newUserId && (registrationSource || utmSource)) {
+    await admin
+      .from('profiles')
+      .update({
+        ...(registrationSource ? { signup_source: registrationSource } : {}),
+        ...(utmSource ? { utm_source: utmSource } : {}),
+      })
+      .eq('id', newUserId);
   }
 
   if (

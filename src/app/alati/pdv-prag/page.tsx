@@ -6,11 +6,12 @@ import { getSiteUrl } from '@/lib/vodici-config';
 
 import { AlatiBreadcrumb } from '../_components/alati-breadcrumb';
 import { CtaRegister } from '../_components/cta-register';
+import { PoweredByKvikBadge } from '../_components/powered-by-kvik-badge';
 import { jsonLdSafe } from '../_components/json-ld';
 
 import { PdvPragCalculator } from './pdv-prag-calculator';
 
-const TITLE = 'Kalkulator PDV praga – paušalni obrt 2026.';
+const TITLE = 'Kalkulator PDV praga 2026 — paušalni obrt | Kvik';
 const DESC =
   'Provjeri koliko si blizu PDV praga od 60.000€. Unesi dosadašnje prihode i vidi upozorenje na vrijeme.';
 
@@ -20,11 +21,12 @@ export const metadata: Metadata = {
   keywords: [
     'PDV prag kalkulator',
     'PDV prag paušalni obrt',
-    'PDV prag',
-    'paušalni obrt',
+    'PDV prag 60000',
+    'paušalni obrt PDV',
   ],
+  alternates: { canonical: 'https://kvik.online/alati/pdv-prag' },
   openGraph: {
-    title: `${TITLE} | Kvik`,
+    title: TITLE,
     description: DESC,
     url: `${getSiteUrl()}/alati/pdv-prag`,
     siteName: 'Kvik',
@@ -100,7 +102,9 @@ export default function PdvPragPage() {
           title='Kvik ti pokazuje PDV prag u realnom vremenu na dashboardu — uvijek znaš gdje si.'
           body='Prati primitke i prag bez ručnog proračuna u tablicama.'
           buttonLabel='Isprobaj besplatno →'
+          utmSrc='pdv-prag'
         />
+        <PoweredByKvikBadge />
       </article>
     </>
   );

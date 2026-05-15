@@ -5,21 +5,29 @@ import Script from 'next/script';
 import { getSiteUrl } from '@/lib/vodici-config';
 
 import { AlatiBreadcrumb } from '../_components/alati-breadcrumb';
+import { CtaRegister } from '../_components/cta-register';
+import { PoweredByKvikBadge } from '../_components/powered-by-kvik-badge';
 import { ToolRefTracker } from '../_components/tool-ref-tracker';
 import { jsonLdSafe } from '../_components/json-ld';
 
 import { PausalTaxCalculator } from './pausal-tax-calculator';
 
-const TITLE = 'Kalkulator paušalnog poreza 2026 — razredi i obveze';
+const TITLE = 'Kalkulator poreza 2026 za paušalce | Kvik';
 const DESC =
   'Izračunaj paušalni porez za 2026. godinu. Unesi godišnji prihod i odmah vidi porezni razred, kvartalnu i godišnju obvezu.';
 
 export const metadata: Metadata = {
   title: TITLE,
   description: DESC,
-  keywords: ['kalkulator paušalnog poreza 2026', 'paušalni porez', 'porezni razred'],
+  keywords: [
+    'kalkulator paušalnog poreza 2026',
+    'paušalni porez',
+    'porezni razred',
+    'kalkulator poreza paušalac',
+  ],
+  alternates: { canonical: 'https://kvik.online/alati/kalkulator-poreza' },
   openGraph: {
-    title: `${TITLE} | Kvik`,
+    title: TITLE,
     description: DESC,
     url: `${getSiteUrl()}/alati/kalkulator-poreza`,
     siteName: 'Kvik',
@@ -141,6 +149,13 @@ export default function KalkulatorPorezaPage({
           </ul>
         </section>
 
+        <CtaRegister
+          title='Kvik prati tvoj porezni razred automatski.'
+          body='KPR, PO-SD i porezni razred na jednom mjestu — bez Excela.'
+          buttonLabel='Isprobaj besplatno →'
+          utmSrc='kalkulator'
+        />
+        <PoweredByKvikBadge />
       </article>
     </>
   );

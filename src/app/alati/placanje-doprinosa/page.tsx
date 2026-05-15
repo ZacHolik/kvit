@@ -5,21 +5,30 @@ import Script from 'next/script';
 import { getSiteUrl } from '@/lib/vodici-config';
 
 import { AlatiBreadcrumb } from '../_components/alati-breadcrumb';
+import { CtaRegister } from '../_components/cta-register';
+import { PoweredByKvikBadge } from '../_components/powered-by-kvik-badge';
 import { ToolRefTracker } from '../_components/tool-ref-tracker';
 import { jsonLdSafe } from '../_components/json-ld';
 
 import { PlacanjeDoprinosaTool } from './placanje-doprinosa-tool';
 
-const TITLE = 'Plaćanje doprinosa — uplatnica i 2D barkod (demo)';
+const TITLE = 'Kalkulator doprinosa 2026 + barkod uplate | Kvik';
 const DESC =
-  'Unesi OIB, općinu i razred: prikažemo uplatne podatke i PDF417 barkod (HUB-3, ilustrativni primatelj). Gost: jedna generacija. PRO: email podsjetnik 14. u mjesecu.';
+  'Unesi OIB, općinu i razred: prikažemo uplatne podatke i PDF417 barkod (HUB-3). Besplatni alat za paušalne obrtnike.';
 
 export const metadata: Metadata = {
   title: TITLE,
   description: DESC,
-  keywords: ['plaćanje doprinosa', 'uplatnica doprinosa', '2D barkod uplatnica'],
+  keywords: [
+    'plaćanje doprinosa',
+    'uplatnica doprinosa',
+    '2D barkod uplatnica',
+    'kalkulator doprinosa 2026',
+    'doprinosi paušalni obrt',
+  ],
+  alternates: { canonical: 'https://kvik.online/alati/placanje-doprinosa' },
   openGraph: {
-    title: `${TITLE} | Kvik`,
+    title: TITLE,
     description: DESC,
     url: `${getSiteUrl()}/alati/placanje-doprinosa`,
     siteName: 'Kvik',
@@ -85,6 +94,14 @@ export default function PlacanjeDoprinosaPage({
             </li>
           </ul>
         </section>
+
+        <CtaRegister
+          title='Kvik šalje podsjetnik za doprinose 3 dana unaprijed.'
+          body='Nikad više zakašnjela uplata — automatski podsjetnici za svaki rok.'
+          buttonLabel='Isprobaj besplatno →'
+          utmSrc='doprinosi'
+        />
+        <PoweredByKvikBadge />
       </article>
     </>
   );

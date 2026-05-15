@@ -1,23 +1,14 @@
 export function PoweredByKvikBadge() {
   return (
-    <a
-      href='https://kvik.online/probaj'
-      target='_blank'
-      rel='noopener noreferrer'
-      style={{
-        display: 'inline-flex',
-        alignItems: 'center',
-        gap: '6px',
-        padding: '6px 12px',
-        borderRadius: '6px',
-        background: '#f8f9fa',
-        color: '#6b7280',
-        fontSize: '12px',
-        textDecoration: 'none',
-        marginTop: '16px',
-      }}
-    >
-      Izrađeno u <strong style={{ color: '#2563eb' }}>Kvik</strong>
-    </a>
+    <div className='mt-10 text-center sm:text-right'>
+      <a
+        href='https://kvik.online'
+        target='_blank'
+        rel='noopener noreferrer'
+        className='text-xs text-[#94a3a0] underline-offset-4 transition hover:text-[#0d9488] hover:underline'
+      >
+        Izrađeno u Kvik · kvik.online
+      </a>
+    </div>
   );
 }

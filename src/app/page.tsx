@@ -29,27 +29,18 @@ const LANDING_RESPONSIVE_CSS = `
 #kvik-landing .hero{overflow-x:hidden}
 #kvik-landing .hero-left{min-width:0}
 @media(min-width:641px){
-  #kvik-landing .nav-login{
+  #kvik-landing .nav-login-text{
     display:inline-flex;
     align-items:center;
-    justify-content:center;
-    box-sizing:border-box;
-    border:1px solid var(--teal);
-    background:transparent;
-    color:var(--text);
-    padding:0.55rem 0.9rem;
-    border-radius:8px;
+    color:#94a3a0;
     font-size:0.9rem;
     font-weight:500;
-    line-height:1.2;
     text-decoration:none;
     white-space:nowrap;
-    transition:color 0.2s,border-color 0.2s,background 0.2s;
+    transition:color 0.2s;
   }
-  #kvik-landing .nav-login:hover{
-    color:var(--teal3);
-    border-color:var(--teal2);
-    background:rgba(13,148,136,0.08);
+  #kvik-landing .nav-login-text:hover{
+    color:#e2e8e7;
   }
 }
 @keyframes kvikEarlyAdopterPulse{
@@ -79,7 +70,7 @@ const LANDING_RESPONSIVE_CSS = `
     gap:0.75rem;
     align-items:stretch;
   }
-  #kvik-landing .nav-login,
+  #kvik-landing .nav-login-text,
   #kvik-landing .nav-cta{
     flex:1;
     min-width:0;
@@ -96,15 +87,14 @@ const LANDING_RESPONSIVE_CSS = `
     text-decoration:none;
     transition:color 0.2s,border-color 0.2s,background 0.2s;
   }
-  #kvik-landing .nav-login{
-    border:1px solid var(--teal);
+  #kvik-landing .nav-login-text{
+    border:1px solid #2a3734;
     background:transparent;
-    color:var(--text);
+    color:#94a3a0;
   }
-  #kvik-landing .nav-login:hover{
-    color:var(--teal3);
-    border-color:var(--teal2);
-    background:rgba(13,148,136,0.08);
+  #kvik-landing .nav-login-text:hover{
+    color:#e2e8e7;
+    border-color:#94a3a0;
   }
   #kvik-landing .nav-cta{
     border:none;
@@ -267,116 +257,156 @@ export default function LandingPage() {
               <Link href='/vodici'>Vodiči</Link>
             </li>
             <li>
-              <a href='#prednosti'>Prednosti</a>
+              <Link href='/alati'>Alati</Link>
             </li>
             <li>
-              <a href='#kako-radi'>Kako radi</a>
+              <Link href='/fiskalizacija'>Fiskalizacija</Link>
             </li>
             <li>
-              <a href='#cijene'>Cijene</a>
+              <Link href='/cijene'>Cijene</Link>
             </li>
             <li>
-              <a href='#faq'>FAQ</a>
+              <Link href='/asistent'>AI Asistent</Link>
             </li>
           </ul>
           <div className='nav-actions'>
-            <Link href='/login' className='nav-login'>
+            <Link href='/login' className='nav-login-text'>
               Imam račun
             </Link>
-            <a
-              href={TALLY}
-              target='_blank'
-              rel='noopener noreferrer'
-              className='nav-cta'
-            >
-              Isprobaj besplatno
-            </a>
+            <Link href='/register' className='nav-cta'>
+              Registriraj se besplatno →
+            </Link>
           </div>
         </nav>
 
-        <div className='hero'>
-          <div className='hero-left'>
+        <div className='hero' style={{ textAlign: 'center' }}>
+          <div style={{ maxWidth: '860px', margin: '0 auto' }}>
             <div className='hero-badge'>
               <span className='badge-flag'>🇭🇷</span>
               Napravljeno za hrvatske paušaliste
               <span className='badge-dot' />
             </div>
             <h1>
-              Paušalni obrt
-              <br />
-              bez <em>glavobolje.</em>
+              Paušalni obrt bez <em>glavobolje.</em>
             </h1>
-            <p className='hero-sub'>
-              Jedina aplikacija koja te vodi korak po korak kroz sve obveze
-              paušalnog obrta. Bez papirologije, bez stresa, bez kazni.
+            <p className='hero-sub' style={{ maxWidth: '580px', margin: '1.25rem auto 0' }}>
+              Računi, fiskalizacija, KPR i PO-SD — sve na jednom mjestu.
+              Počni besplatno, bez kreditne kartice.
             </p>
-            <div className='hero-ctas'>
-              <a
-                href={TALLY}
-                target='_blank'
-                rel='noopener noreferrer'
-                className='btn-primary'
+
+            {/* 3 interaktivne kartice */}
+            <div
+              style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fit, minmax(230px, 1fr))',
+                gap: '1rem',
+                marginTop: '2.5rem',
+                textAlign: 'left',
+              }}
+            >
+              <Link
+                href='/alati/kalkulator-poreza'
+                style={{
+                  display: 'block',
+                  background: '#111716',
+                  border: '1px solid #1f2a28',
+                  borderRadius: '16px',
+                  padding: '1.5rem',
+                  textDecoration: 'none',
+                  transition: 'border-color 150ms',
+                }}
+                onMouseEnter={(e) => {
+                  (e.currentTarget as HTMLAnchorElement).style.borderColor = '#14b8a6';
+                }}
+                onMouseLeave={(e) => {
+                  (e.currentTarget as HTMLAnchorElement).style.borderColor = '#1f2a28';
+                }}
               >
-                Prijavi se na listu →
-              </a>
-              <a href='#kako-radi' className='btn-ghost'>
-                Kako radi
-              </a>
+                <div style={{ fontSize: '1.75rem', marginBottom: '0.75rem' }}>🧮</div>
+                <h3 style={{ color: '#e2e8e7', fontWeight: 700, fontSize: '1rem', marginBottom: '0.4rem' }}>
+                  Izračunaj porez 2026
+                </h3>
+                <p style={{ color: '#94a3a0', fontSize: '0.875rem', lineHeight: 1.5, margin: 0 }}>
+                  Koliko ćeš platiti poreza ove godine?
+                </p>
+              </Link>
+
+              {/* istaknuta kartica — PO-SD */}
+              <Link
+                href='/alati/po-sd'
+                style={{
+                  display: 'block',
+                  background: 'rgba(13,148,136,0.10)',
+                  border: '1px solid #0d9488',
+                  borderRadius: '16px',
+                  padding: '1.5rem',
+                  textDecoration: 'none',
+                  boxShadow: '0 0 24px rgba(13,148,136,0.18)',
+                  transition: 'border-color 150ms',
+                }}
+                onMouseEnter={(e) => {
+                  (e.currentTarget as HTMLAnchorElement).style.borderColor = '#14b8a6';
+                }}
+                onMouseLeave={(e) => {
+                  (e.currentTarget as HTMLAnchorElement).style.borderColor = '#0d9488';
+                }}
+              >
+                <div style={{ fontSize: '1.75rem', marginBottom: '0.75rem' }}>📄</div>
+                <h3 style={{ color: '#e2e8e7', fontWeight: 700, fontSize: '1rem', marginBottom: '0.4rem' }}>
+                  Generiraj PO-SD
+                </h3>
+                <p style={{ color: '#94a3a0', fontSize: '0.875rem', lineHeight: 1.5, margin: 0 }}>
+                  Procijeni razred i pripremi PO-SD obrazac.
+                </p>
+              </Link>
+
+              <Link
+                href='/asistent'
+                style={{
+                  display: 'block',
+                  background: '#111716',
+                  border: '1px solid #1f2a28',
+                  borderRadius: '16px',
+                  padding: '1.5rem',
+                  textDecoration: 'none',
+                  transition: 'border-color 150ms',
+                }}
+                onMouseEnter={(e) => {
+                  (e.currentTarget as HTMLAnchorElement).style.borderColor = '#14b8a6';
+                }}
+                onMouseLeave={(e) => {
+                  (e.currentTarget as HTMLAnchorElement).style.borderColor = '#1f2a28';
+                }}
+              >
+                <div style={{ fontSize: '1.75rem', marginBottom: '0.75rem' }}>🤖</div>
+                <h3 style={{ color: '#e2e8e7', fontWeight: 700, fontSize: '1rem', marginBottom: '0.4rem' }}>
+                  Pitaj AI asistenta
+                </h3>
+                <p style={{ color: '#94a3a0', fontSize: '0.875rem', lineHeight: 1.5, margin: 0 }}>
+                  Odgovori na porezna pitanja odmah.
+                </p>
+              </Link>
             </div>
+
+            {/* trust bar */}
+            <div
+              style={{
+                display: 'flex',
+                flexWrap: 'wrap',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '1.5rem',
+                marginTop: '2rem',
+                fontSize: '0.85rem',
+                color: '#94a3a0',
+              }}
+            >
+              <span>✓ Besplatno bez registracije</span>
+              <span>✓ Fiskalizacija uključena</span>
+              <span>✓ 0€ aktivacija</span>
+            </div>
+
             <EarlyAdopterHeroNote layout='hero' />
-          </div>
-          <div className='hero-right'>
-            <div className='phone-wrap'>
-              <div className='phone'>
-                <div className='phone-notch'>
-                  <span className='time'>9:41</span>
-                  <div className='icons'>
-                    <div className='signal'>
-                      <span />
-                      <span />
-                      <span />
-                      <span />
-                    </div>
-                    <div className='battery'>
-                      <div className='battery-fill' />
-                    </div>
-                  </div>
-                </div>
-                <div className='phone-screen'>
-                  <div className='phone-header'>
-                    <span className='phone-header-title'>Novi račun</span>
-                    <span className='kpr-badge'>KPR ažuriran</span>
-                  </div>
-                  <div className='phone-form'>
-                    <div className='form-group'>
-                      <label>Kupac</label>
-                      <div className='form-input'>Studio Kreativ d.o.o.</div>
-                    </div>
-                    <div className='form-group'>
-                      <label>Usluga</label>
-                      <div className='form-input'>Izrada web stranice</div>
-                    </div>
-                    <div className='form-row'>
-                      <div className='form-group'>
-                        <label>Iznos</label>
-                        <div className='form-input'>750,00 €</div>
-                      </div>
-                      <div className='form-group'>
-                        <label>Datum</label>
-                        <div className='form-input'>09.04.2026</div>
-                        <div className='deadline-badge'>
-                          ⚠ Rok: 15. u mj.
-                        </div>
-                      </div>
-                    </div>
-                    <a href={TALLY} className='phone-btn' target='_blank' rel='noopener noreferrer'>
-                      Izdaj račun →
-                    </a>
-                  </div>
-                  <div className='fisk-badge'>Fiskalizacija automatska</div>
-                </div>
-              </div>
-            </div>
           </div>
         </div>
 

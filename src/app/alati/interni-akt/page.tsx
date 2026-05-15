@@ -6,20 +6,27 @@ import { getSiteUrl } from '@/lib/vodici-config';
 
 import { AlatiBreadcrumb } from '../_components/alati-breadcrumb';
 import { CtaRegister } from '../_components/cta-register';
+import { PoweredByKvikBadge } from '../_components/powered-by-kvik-badge';
 import { jsonLdSafe } from '../_components/json-ld';
 
 import { InterniAktTool } from './interni-akt-tool';
 
-const TITLE = 'Interni akt za paušalni obrt — predložak i PDF';
+const TITLE = 'Generator internog akta za paušalce 2026 | Kvik';
 const DESC =
   'Uredi interni akt paušalnog obrta online i preuzmi PDF. Besplatno za goste; prijavljeni korisnici dobiju automatsko popunjavanje iz profila.';
 
 export const metadata: Metadata = {
   title: TITLE,
   description: DESC,
-  keywords: ['interni akt paušalni obrt', 'interni akt obrt', 'predložak internog akta'],
+  keywords: [
+    'interni akt paušalni obrt',
+    'interni akt obrt',
+    'predložak internog akta',
+    'interni akt 2026',
+  ],
+  alternates: { canonical: 'https://kvik.online/alati/interni-akt' },
   openGraph: {
-    title: `${TITLE} | Kvik`,
+    title: TITLE,
     description: DESC,
     url: `${getSiteUrl()}/alati/interni-akt`,
     siteName: 'Kvik',
@@ -79,7 +86,9 @@ export default function InterniAktPage() {
           title='Kvik drži profil, KPR i račune na jednom mjestu.'
           body='Manje kopiranja u obrasce — više vremena za klijente.'
           buttonLabel='Registriraj se besplatno →'
+          utmSrc='interni-akt'
         />
+        <PoweredByKvikBadge />
       </article>
     </>
   );
