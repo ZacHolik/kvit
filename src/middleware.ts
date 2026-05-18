@@ -73,6 +73,11 @@ export async function middleware(request: NextRequest) {
   const url = request.nextUrl.clone();
   const pathname = url.pathname;
 
+  /** Statičke datoteke iz public/images (npr. lineup.webp) — bez auth redirecta. */
+  if (pathname.startsWith('/images/')) {
+    return NextResponse.next();
+  }
+
   /** /provjera: bez Supabase getUser (brži cold start na edgeu). */
   if (pathname === '/provjera' || pathname.startsWith('/provjera/')) {
     return NextResponse.next();
@@ -184,5 +189,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/((?!_next/static|_next/image|favicon.ico).*)'],
+  matcher: ['/((?!_next/static|_next/image|favicon.ico|images).*)'],
 };
