@@ -21,7 +21,6 @@ async function startCheckout(trial: boolean) {
 
 import { HARDCODED_QA } from './asistent/hardcoded-qa-data';
 import { ShareAiResponse } from './asistent/share-ai-response';
-import { EarlyAdopterHeroNote } from './early-adopter-hero-note';
 import { KVIK_LANDING_CSS } from './kvik-landing-css';
 
 const TALLY = 'https://tally.so/r/44or65';
@@ -42,13 +41,6 @@ const LANDING_RESPONSIVE_CSS = `
   #kvik-landing .nav-login-text:hover{
     color:#e2e8e7;
   }
-}
-@keyframes kvikEarlyAdopterPulse{
-  0%,100%{opacity:1;filter:brightness(1)}
-  50%{opacity:0.88;filter:brightness(1.12)}
-}
-#kvik-landing .early-adopter-bar-fill{
-  animation:kvikEarlyAdopterPulse 1.35s ease-in-out infinite;
 }
 @media(max-width:640px){
   #kvik-landing nav{
@@ -792,8 +784,6 @@ export default function LandingPage() {
               <span>✓ Fiskalizacija uključena</span>
               <span>✓ 0€ aktivacija</span>
             </div>
-
-            <EarlyAdopterHeroNote layout='hero' />
           </div>
 
           {/* Desna strana: "Vodič u akciji" phone mockup */}
@@ -1017,7 +1007,7 @@ export default function LandingPage() {
                               href='https://kvik.online/register'
                               className='mt-4 inline-flex items-center justify-center rounded-xl bg-[#14b8a6] px-4 py-2.5 text-sm font-semibold text-[#042f2e] shadow-[0_8px_20px_rgba(20,184,166,0.28)] transition hover:-translate-y-0.5 hover:bg-[#2dd4bf]'
                             >
-                              Zaključaj cijenu →
+                              Registracija →
                             </a>
                           </div>
                         </>
@@ -1060,12 +1050,6 @@ export default function LandingPage() {
               </div>
             </div>
           </div>
-        </section>
-
-        <section className='section section--tight-top'>
-          <div className='section-tag'>Lansiranje</div>
-          <div className='section-title'>Iskoristi period promocije!</div>
-          <EarlyAdopterHeroNote layout='section' />
         </section>
 
         <section className='section' id='cijene'>
@@ -1312,7 +1296,6 @@ export default function LandingPage() {
             >
               Počni besplatno →
             </a>
-            <EarlyAdopterHeroNote layout='cta' />
           </div>
         </div>
 
