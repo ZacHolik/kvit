@@ -166,6 +166,292 @@ function uid() {
   return `${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
 }
 
+// ─── Animated phone mockup screen ───────────────────────────────────────────
+
+const ALERTS = [
+  {
+    title: 'Rok za PO-SD predaju: još 12 dana',
+    sub: 'Tvoj razred: 3 (19.901 – 30.600 €)',
+    btn: 'Pregledaj PO-SD',
+  },
+  {
+    title: 'Doprinosi za Q2: uplata do 30.6.',
+    sub: 'Iznos: 290,98 € · HUB-3A barkod spreman',
+    btn: 'Preuzmi uplatnicu',
+  },
+  {
+    title: 'Približavaš se PDV pragu',
+    sub: 'Promet 2026: 52.340 € / 60.000 € (87%)',
+    btn: 'Pogledaj projekciju',
+  },
+];
+
+const KPR_MSGS = [
+  {
+    title: 'Automatski KPR ažuriran',
+    sub: 'Račun #7 za Studio Kreativ d.o.o. — 750,00 € dodan u KPR',
+  },
+  {
+    title: 'Storno obrađen',
+    sub: 'Račun #4 storniran — KPR automatski korigiran',
+  },
+  {
+    title: 'KPR zaključen za Q1 2026.',
+    sub: 'PDF izvještaj spremljen · Ukupno: 21.892,60 €',
+  },
+];
+
+const AI_QA = [
+  {
+    q: 'Plaćam li turističku članarinu?',
+    a: 'Kao IT freelancer u Zagrebu — da, 150 €/god.',
+    a2: 'Rok: 31.1.2027. · Kvik te podsjeća.',
+  },
+  {
+    q: 'Kad moram predati PO-SD?',
+    a: 'Do 15.1.2027. za godinu 2026.',
+    a2: 'Kvik te podsjeća 30 dana ranije.',
+  },
+  {
+    q: 'Trebam li interni akt?',
+    a: 'Da, ako koristiš blagajnu za gotovinu.',
+    a2: 'Generiraj ga u Kviku — 2 klika.',
+  },
+];
+
+function PhoneMockupScreen() {
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setActiveIndex((prev) => (prev + 1) % 3);
+    }, 4000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const S = {
+    screen: {
+      background: '#111716',
+      borderRadius: '20px',
+      overflow: 'hidden',
+      display: 'flex',
+      flexDirection: 'column' as const,
+    },
+    statusBar: {
+      padding: '12px 14px 10px',
+      borderBottom: '1px solid #1f2a28',
+    },
+    dot: {
+      width: '7px',
+      height: '7px',
+      borderRadius: '50%',
+      background: '#0d9488',
+      flexShrink: 0,
+    } as React.CSSProperties,
+    notifWrap: {
+      padding: '10px 12px',
+      display: 'flex',
+      flexDirection: 'column' as const,
+      gap: '8px',
+    },
+    alertCard: {
+      background: 'rgba(13,148,136,0.08)',
+      border: '1px solid rgba(13,148,136,0.25)',
+      borderRadius: '12px',
+      padding: '10px 12px',
+    },
+    kprCard: {
+      background: 'rgba(13,148,136,0.06)',
+      border: '1px solid rgba(13,148,136,0.12)',
+      borderRadius: '12px',
+      padding: '10px 12px',
+    },
+    aiCard: {
+      background: '#0b0f0e',
+      border: '1px solid #1f2a28',
+      borderRadius: '12px',
+      padding: '10px 12px',
+    },
+    relativeMin: {
+      position: 'relative' as const,
+      minHeight: '74px',
+    },
+    relativeMinKpr: {
+      position: 'relative' as const,
+      minHeight: '46px',
+    },
+    relativeMinAi: {
+      position: 'relative' as const,
+      minHeight: '66px',
+    },
+    bottomNav: {
+      padding: '10px 12px',
+      borderTop: '1px solid #1f2a28',
+      marginTop: 'auto',
+      display: 'flex',
+      justifyContent: 'space-around' as const,
+    },
+  };
+
+  const fadeStyle = (i: number): React.CSSProperties => ({
+    position: 'absolute',
+    inset: 0,
+    opacity: i === activeIndex ? 1 : 0,
+    pointerEvents: i === activeIndex ? 'auto' : 'none',
+    transition: 'opacity 0.5s ease-in-out',
+  });
+
+  return (
+    <div style={S.screen}>
+      {/* STATUS BAR — statičan */}
+      <div style={S.statusBar}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <span style={{ fontSize: '13px', fontWeight: 600, color: '#e2e8e7' }}>Kvik</span>
+          <span style={{ fontSize: '11px', color: '#0d9488' }}>9:41</span>
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginTop: '6px' }}>
+          <span style={S.dot} />
+          <span style={{ fontSize: '10px', color: '#94a3a0' }}>
+            KPR sinkroniziran · 3 računa ovaj mjesec
+          </span>
+        </div>
+      </div>
+
+      {/* NOTIFIKACIJE */}
+      <div style={S.notifWrap}>
+
+        {/* ALERT sekcija — rotira */}
+        <div style={S.alertCard}>
+          <div style={{ display: 'flex', alignItems: 'flex-start', gap: '7px' }}>
+            <span style={{ fontSize: '14px', lineHeight: 1, color: '#fbbf24', flexShrink: 0 }}>⚠</span>
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <div style={S.relativeMin}>
+                {ALERTS.map((alert, i) => (
+                  <div key={i} style={fadeStyle(i)}>
+                    <p style={{ fontSize: '11px', fontWeight: 600, color: '#e2e8e7', margin: '0 0 3px' }}>
+                      {alert.title}
+                    </p>
+                    <p style={{ fontSize: '10px', color: '#94a3a0', margin: '0 0 8px' }}>
+                      {alert.sub}
+                    </p>
+                    <span
+                      style={{
+                        display: 'inline-block',
+                        background: '#0d9488',
+                        color: '#fff',
+                        fontSize: '10px',
+                        fontWeight: 600,
+                        padding: '4px 10px',
+                        borderRadius: '7px',
+                        whiteSpace: 'nowrap',
+                      }}
+                    >
+                      {alert.btn}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* KPR sekcija — rotira */}
+        <div style={S.kprCard}>
+          <div style={{ display: 'flex', alignItems: 'flex-start', gap: '7px' }}>
+            <span style={{ fontSize: '12px', lineHeight: 1, color: '#0d9488', flexShrink: 0 }}>★</span>
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <div style={S.relativeMinKpr}>
+                {KPR_MSGS.map((msg, i) => (
+                  <div key={i} style={fadeStyle(i)}>
+                    <p style={{ fontSize: '11px', fontWeight: 600, color: '#e2e8e7', margin: '0 0 3px' }}>
+                      {msg.title}
+                    </p>
+                    <p style={{ fontSize: '10px', color: '#94a3a0', margin: 0 }}>
+                      {msg.sub}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* AI sekcija — rotira */}
+        <div style={S.aiCard}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '7px', marginBottom: '8px' }}>
+            <div
+              style={{
+                width: '20px',
+                height: '20px',
+                borderRadius: '50%',
+                background: '#0d9488',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                flexShrink: 0,
+              }}
+            >
+              <span style={{ fontSize: '9px', color: '#fff', fontWeight: 700 }}>AI</span>
+            </div>
+            <span style={{ fontSize: '11px', fontWeight: 600, color: '#0d9488' }}>Kvik AI asistent</span>
+          </div>
+          <div style={S.relativeMinAi}>
+            {AI_QA.map((qa, i) => (
+              <div key={i} style={fadeStyle(i)}>
+                {/* pitanje */}
+                <div
+                  style={{
+                    background: '#111716',
+                    border: '1px solid #1f2a28',
+                    borderRadius: '9px',
+                    padding: '6px 9px',
+                    marginBottom: '6px',
+                  }}
+                >
+                  <p style={{ fontSize: '10px', color: '#94a3a0', margin: 0 }}>{qa.q}</p>
+                </div>
+                {/* odgovor */}
+                <div
+                  style={{
+                    background: 'rgba(13,148,136,0.08)',
+                    border: '1px solid rgba(13,148,136,0.15)',
+                    borderRadius: '9px',
+                    padding: '6px 9px',
+                  }}
+                >
+                  <p style={{ fontSize: '10px', color: '#e2e8e7', margin: '0 0 3px' }}>{qa.a}</p>
+                  <p style={{ fontSize: '10px', color: '#94a3a0', margin: 0 }}>{qa.a2}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* BOTTOM NAV — statičan */}
+      <div style={S.bottomNav}>
+        {(
+          [
+            { icon: '📄', label: 'Računi', active: false },
+            { icon: '📒', label: 'KPR', active: false },
+            { icon: '💬', label: 'AI', active: true },
+            { icon: '⚙️', label: 'Postavke', active: false },
+          ] as { icon: string; label: string; active: boolean }[]
+        ).map(({ icon, label, active }) => (
+          <div key={label} style={{ textAlign: 'center' }}>
+            <div style={{ fontSize: '16px' }}>{icon}</div>
+            <p style={{ fontSize: '8px', color: active ? '#0d9488' : '#94a3a0', margin: '3px 0 0' }}>
+              {label}
+            </p>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+
 export default function LandingPage() {
   const [yearly, setYearly] = useState(false);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
@@ -431,187 +717,8 @@ export default function LandingPage() {
                     margin: '0 auto 10px',
                   }}
                 />
-                {/* screen */}
-                <div
-                  style={{
-                    background: '#111716',
-                    borderRadius: '20px',
-                    overflow: 'hidden',
-                    display: 'flex',
-                    flexDirection: 'column',
-                  }}
-                >
-                  {/* status bar */}
-                  <div
-                    style={{
-                      padding: '12px 14px 10px',
-                      borderBottom: '1px solid #1f2a28',
-                    }}
-                  >
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                      <span style={{ fontSize: '13px', fontWeight: 600, color: '#e2e8e7' }}>Kvik</span>
-                      <span style={{ fontSize: '11px', color: '#0d9488' }}>9:41</span>
-                    </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginTop: '6px' }}>
-                      <span
-                        style={{
-                          width: '7px',
-                          height: '7px',
-                          borderRadius: '50%',
-                          background: '#0d9488',
-                          flexShrink: 0,
-                        }}
-                      />
-                      <span style={{ fontSize: '10px', color: '#94a3a0' }}>
-                        KPR sinkroniziran · 3 računa ovaj mjesec
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* obavijesti */}
-                  <div style={{ padding: '10px 12px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-
-                    {/* PO-SD upozorenje */}
-                    <div
-                      style={{
-                        background: 'rgba(13,148,136,0.08)',
-                        border: '1px solid rgba(13,148,136,0.25)',
-                        borderRadius: '12px',
-                        padding: '10px 12px',
-                      }}
-                    >
-                      <div style={{ display: 'flex', alignItems: 'flex-start', gap: '7px' }}>
-                        <span style={{ fontSize: '14px', lineHeight: 1, color: '#fbbf24', flexShrink: 0 }}>⚠</span>
-                        <div>
-                          <p style={{ fontSize: '11px', fontWeight: 600, color: '#e2e8e7', margin: '0 0 3px' }}>
-                            Rok za PO-SD predaju: još 12 dana
-                          </p>
-                          <p style={{ fontSize: '10px', color: '#94a3a0', margin: '0 0 8px' }}>
-                            Tvoj razred: 3 (19.901 – 30.600 €)
-                          </p>
-                          <span
-                            style={{
-                              display: 'inline-block',
-                              background: '#0d9488',
-                              color: '#fff',
-                              fontSize: '10px',
-                              fontWeight: 600,
-                              padding: '4px 10px',
-                              borderRadius: '7px',
-                            }}
-                          >
-                            Pregledaj PO-SD
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* KPR automatski */}
-                    <div
-                      style={{
-                        background: 'rgba(13,148,136,0.06)',
-                        border: '1px solid rgba(13,148,136,0.12)',
-                        borderRadius: '12px',
-                        padding: '10px 12px',
-                      }}
-                    >
-                      <div style={{ display: 'flex', alignItems: 'flex-start', gap: '7px' }}>
-                        <span style={{ fontSize: '12px', lineHeight: 1, color: '#0d9488', flexShrink: 0 }}>★</span>
-                        <div>
-                          <p style={{ fontSize: '11px', fontWeight: 600, color: '#e2e8e7', margin: '0 0 3px' }}>
-                            Automatski KPR ažuriran
-                          </p>
-                          <p style={{ fontSize: '10px', color: '#94a3a0', margin: 0 }}>
-                            Račun #7 za Studio Kreativ d.o.o. — 750,00 € dodan u KPR
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* AI asistent */}
-                    <div
-                      style={{
-                        background: '#0b0f0e',
-                        border: '1px solid #1f2a28',
-                        borderRadius: '12px',
-                        padding: '10px 12px',
-                      }}
-                    >
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '7px', marginBottom: '8px' }}>
-                        <div
-                          style={{
-                            width: '20px',
-                            height: '20px',
-                            borderRadius: '50%',
-                            background: '#0d9488',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            flexShrink: 0,
-                          }}
-                        >
-                          <span style={{ fontSize: '9px', color: '#fff', fontWeight: 700 }}>AI</span>
-                        </div>
-                        <span style={{ fontSize: '11px', fontWeight: 600, color: '#0d9488' }}>Kvik AI asistent</span>
-                      </div>
-                      {/* pitanje */}
-                      <div
-                        style={{
-                          background: '#111716',
-                          border: '1px solid #1f2a28',
-                          borderRadius: '9px',
-                          padding: '6px 9px',
-                          marginBottom: '6px',
-                        }}
-                      >
-                        <p style={{ fontSize: '10px', color: '#94a3a0', margin: 0 }}>
-                          Plaćam li turističku članarinu?
-                        </p>
-                      </div>
-                      {/* odgovor */}
-                      <div
-                        style={{
-                          background: 'rgba(13,148,136,0.08)',
-                          border: '1px solid rgba(13,148,136,0.15)',
-                          borderRadius: '9px',
-                          padding: '6px 9px',
-                        }}
-                      >
-                        <p style={{ fontSize: '10px', color: '#e2e8e7', margin: '0 0 3px' }}>
-                          Kao IT freelancer u Zagrebu — da, 150 €/god.
-                        </p>
-                        <p style={{ fontSize: '10px', color: '#94a3a0', margin: 0 }}>
-                          Rok: 31.1.2027. · Kvik te podsjeća.
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* bottom nav */}
-                  <div
-                    style={{
-                      padding: '10px 12px',
-                      borderTop: '1px solid #1f2a28',
-                      marginTop: 'auto',
-                      display: 'flex',
-                      justifyContent: 'space-around',
-                    }}
-                  >
-                    {[
-                      { icon: '📄', label: 'Računi', active: false },
-                      { icon: '📒', label: 'KPR', active: false },
-                      { icon: '💬', label: 'AI', active: true },
-                      { icon: '⚙️', label: 'Postavke', active: false },
-                    ].map(({ icon, label, active }) => (
-                      <div key={label} style={{ textAlign: 'center' }}>
-                        <div style={{ fontSize: '16px' }}>{icon}</div>
-                        <p style={{ fontSize: '8px', color: active ? '#0d9488' : '#94a3a0', margin: '3px 0 0' }}>
-                          {label}
-                        </p>
-                      </div>
-                    ))}
-                  </div>
-                </div>
+                {/* screen — animated "Vodič u akciji" */}
+                <PhoneMockupScreen />
               </div>
             </div>
           </div>
