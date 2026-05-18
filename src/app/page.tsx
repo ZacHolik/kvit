@@ -219,165 +219,224 @@ const AI_QA = [
   },
 ];
 
+// Scroll-window heights (px) — each message slot must fit within these bounds.
+// button area is always reserved (minHeight) so layout never shifts mid-type.
+const AH = 84; // alert: title + sub + button
+const KH = 52; // KPR: title + sub (sub can wrap to 2 lines)
+const QH = 82; // AI: q-bubble + a-bubble (header is static, outside scroll)
+
+const SLIDE_MS = 380; // duration of translateY scroll animation
+const TYPE_MS = 14; // ms per character (telex speed)
+const HOLD_MS = 2000; // pause after all text typed before scrolling
+
 function PhoneMockupScreen() {
-  const [activeIndex, setActiveIndex] = useState(0);
+  const [cur, setCur] = useState(0);
+  const [sliding, setSliding] = useState(false);
+  const [chars, setChars] = useState(0);
 
+  const nxt = (cur + 1) % 3;
+
+  // Build ordered text segments for the CURRENT message — typewriter types
+  // through all of them sequentially.
+  const a = ALERTS[cur];
+  const k = KPR_MSGS[cur];
+  const q = AI_QA[cur];
+  // seg[0]=alertTitle, [1]=alertSub, [2]=kprTitle, [3]=kprSub,
+  // [4]=aiQ, [5]=aiA, [6]=aiA2
+  const segs = [a.title, a.sub, k.title, k.sub, q.q, q.a, q.a2];
+  const offs: number[] = [0];
+  segs.forEach((s) => offs.push(offs[offs.length - 1] + s.length));
+  const totalChars = offs[segs.length];
+
+  // How many chars of segment i are visible
+  const show = (i: number) =>
+    segs[i].slice(0, Math.max(0, Math.min(chars - offs[i], segs[i].length)));
+
+  // Is cursor currently inside segment i?
+  const isCur = (i: number) => chars > offs[i] && chars < offs[i + 1];
+
+  // Alert button appears only after its sub is fully typed
+  const btnVis = chars >= offs[2];
+
+  // Phase 1 — typing
   useEffect(() => {
-    const interval = setInterval(() => {
-      setActiveIndex((prev) => (prev + 1) % 3);
-    }, 4000);
-    return () => clearInterval(interval);
-  }, []);
+    if (sliding) return;
+    if (chars < totalChars) {
+      const t = setTimeout(() => setChars((c) => c + 1), TYPE_MS);
+      return () => clearTimeout(t);
+    }
+    // All text revealed — hold, then trigger scroll
+    const t = setTimeout(() => setSliding(true), HOLD_MS);
+    return () => clearTimeout(t);
+  }, [chars, sliding, totalChars]);
 
-  const S = {
-    screen: {
-      background: '#111716',
-      borderRadius: '20px',
-      overflow: 'hidden',
-      display: 'flex',
-      flexDirection: 'column' as const,
-    },
-    statusBar: {
-      padding: '12px 14px 10px',
-      borderBottom: '1px solid #1f2a28',
-    },
-    dot: {
-      width: '7px',
-      height: '7px',
-      borderRadius: '50%',
-      background: '#0d9488',
-      flexShrink: 0,
-    } as React.CSSProperties,
-    notifWrap: {
-      padding: '10px 12px',
-      display: 'flex',
-      flexDirection: 'column' as const,
-      gap: '8px',
-    },
-    alertCard: {
-      background: 'rgba(13,148,136,0.08)',
-      border: '1px solid rgba(13,148,136,0.25)',
-      borderRadius: '12px',
-      padding: '10px 12px',
-    },
-    kprCard: {
-      background: 'rgba(13,148,136,0.06)',
-      border: '1px solid rgba(13,148,136,0.12)',
-      borderRadius: '12px',
-      padding: '10px 12px',
-    },
-    aiCard: {
-      background: '#0b0f0e',
-      border: '1px solid #1f2a28',
-      borderRadius: '12px',
-      padding: '10px 12px',
-    },
-    relativeMin: {
-      position: 'relative' as const,
-      minHeight: '74px',
-    },
-    relativeMinKpr: {
-      position: 'relative' as const,
-      minHeight: '46px',
-    },
-    relativeMinAi: {
-      position: 'relative' as const,
-      minHeight: '66px',
-    },
-    bottomNav: {
-      padding: '10px 12px',
-      borderTop: '1px solid #1f2a28',
-      marginTop: 'auto',
-      display: 'flex',
-      justifyContent: 'space-around' as const,
-    },
-  };
+  // Phase 2 — scroll completes, advance to next message
+  useEffect(() => {
+    if (!sliding) return;
+    const t = setTimeout(() => {
+      setCur((c) => (c + 1) % 3);
+      setChars(0);
+      setSliding(false);
+    }, SLIDE_MS + 60);
+    return () => clearTimeout(t);
+  }, [sliding]);
 
-  const fadeStyle = (i: number): React.CSSProperties => ({
-    position: 'absolute',
-    inset: 0,
-    opacity: i === activeIndex ? 1 : 0,
-    pointerEvents: i === activeIndex ? 'auto' : 'none',
-    transition: 'opacity 0.5s ease-in-out',
+  // Scroll stack: translateY(-Hpx) slides current out, next in.
+  // Transition only while sliding; instant reset when cur changes.
+  const stackStyle = (h: number): React.CSSProperties => ({
+    transform: sliding ? `translateY(-${h}px)` : 'translateY(0)',
+    transition: sliding ? `transform ${SLIDE_MS}ms cubic-bezier(0.4,0,0.2,1)` : 'none',
   });
 
+  // Blinking block cursor shown at the active typing position
+  const Cursor = () => (
+    <span style={{ color: '#0d9488', fontWeight: 400, fontSize: '11px' }}>▍</span>
+  );
+
+  const btnStyle: React.CSSProperties = {
+    display: 'inline-block',
+    background: '#0d9488',
+    color: '#fff',
+    fontSize: '10px',
+    fontWeight: 600,
+    padding: '4px 10px',
+    borderRadius: '7px',
+    whiteSpace: 'nowrap',
+  };
+
   return (
-    <div style={S.screen}>
-      {/* STATUS BAR — statičan */}
-      <div style={S.statusBar}>
+    <div
+      style={{
+        background: '#111716',
+        borderRadius: '20px',
+        overflow: 'hidden',
+        display: 'flex',
+        flexDirection: 'column',
+      }}
+    >
+      {/* ── HEADER BAR — static ─────────────────────────────── */}
+      <div style={{ padding: '12px 14px 10px', borderBottom: '1px solid #1f2a28' }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <span style={{ fontSize: '13px', fontWeight: 600, color: '#e2e8e7' }}>Kvik</span>
           <span style={{ fontSize: '11px', color: '#0d9488' }}>9:41</span>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginTop: '6px' }}>
-          <span style={S.dot} />
+          <span
+            style={{
+              width: '7px',
+              height: '7px',
+              borderRadius: '50%',
+              background: '#0d9488',
+              flexShrink: 0,
+            }}
+          />
           <span style={{ fontSize: '10px', color: '#94a3a0' }}>
             KPR sinkroniziran · 3 računa ovaj mjesec
           </span>
         </div>
       </div>
 
-      {/* NOTIFIKACIJE */}
-      <div style={S.notifWrap}>
+      {/* ── NOTIFICATION CARDS ──────────────────────────────── */}
+      <div style={{ padding: '10px 12px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
 
-        {/* ALERT sekcija — rotira */}
-        <div style={S.alertCard}>
+        {/* ALERT card */}
+        <div
+          style={{
+            background: 'rgba(13,148,136,0.08)',
+            border: '1px solid rgba(13,148,136,0.25)',
+            borderRadius: '12px',
+            padding: '10px 12px',
+          }}
+        >
           <div style={{ display: 'flex', alignItems: 'flex-start', gap: '7px' }}>
-            <span style={{ fontSize: '14px', lineHeight: 1, color: '#fbbf24', flexShrink: 0 }}>⚠</span>
-            <div style={{ flex: 1, minWidth: 0 }}>
-              <div style={S.relativeMin}>
-                {ALERTS.map((alert, i) => (
-                  <div key={i} style={fadeStyle(i)}>
-                    <p style={{ fontSize: '11px', fontWeight: 600, color: '#e2e8e7', margin: '0 0 3px' }}>
-                      {alert.title}
-                    </p>
-                    <p style={{ fontSize: '10px', color: '#94a3a0', margin: '0 0 8px' }}>
-                      {alert.sub}
-                    </p>
-                    <span
-                      style={{
-                        display: 'inline-block',
-                        background: '#0d9488',
-                        color: '#fff',
-                        fontSize: '10px',
-                        fontWeight: 600,
-                        padding: '4px 10px',
-                        borderRadius: '7px',
-                        whiteSpace: 'nowrap',
-                      }}
-                    >
-                      {alert.btn}
-                    </span>
+            <span style={{ fontSize: '14px', lineHeight: 1, color: '#fbbf24', flexShrink: 0, marginTop: '1px' }}>
+              ⚠
+            </span>
+            {/* scroll window — clips overflow, AH = visible slot height */}
+            <div style={{ flex: 1, minWidth: 0, overflow: 'hidden', height: `${AH}px` }}>
+              <div style={stackStyle(AH)}>
+                {/* slot 0 — current message (being typed) */}
+                <div style={{ height: `${AH}px` }}>
+                  <p style={{ fontSize: '11px', fontWeight: 600, color: '#e2e8e7', margin: '0 0 3px' }}>
+                    {show(0)}
+                    {isCur(0) && <Cursor />}
+                  </p>
+                  <p style={{ fontSize: '10px', color: '#94a3a0', margin: '0 0 8px', minHeight: '14px' }}>
+                    {show(1)}
+                    {isCur(1) && <Cursor />}
+                  </p>
+                  {/* button area always reserves space so layout is stable */}
+                  <div style={{ minHeight: '22px' }}>
+                    {btnVis && <span style={btnStyle}>{a.btn}</span>}
                   </div>
-                ))}
+                </div>
+                {/* slot 1 — next message (pre-rendered below, scrolls in) */}
+                <div style={{ height: `${AH}px` }}>
+                  <p style={{ fontSize: '11px', fontWeight: 600, color: '#e2e8e7', margin: '0 0 3px' }}>
+                    {ALERTS[nxt].title}
+                  </p>
+                  <p style={{ fontSize: '10px', color: '#94a3a0', margin: '0 0 8px' }}>
+                    {ALERTS[nxt].sub}
+                  </p>
+                  <div style={{ minHeight: '22px' }}>
+                    <span style={btnStyle}>{ALERTS[nxt].btn}</span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         </div>
 
-        {/* KPR sekcija — rotira */}
-        <div style={S.kprCard}>
+        {/* KPR card */}
+        <div
+          style={{
+            background: 'rgba(13,148,136,0.06)',
+            border: '1px solid rgba(13,148,136,0.12)',
+            borderRadius: '12px',
+            padding: '10px 12px',
+          }}
+        >
           <div style={{ display: 'flex', alignItems: 'flex-start', gap: '7px' }}>
-            <span style={{ fontSize: '12px', lineHeight: 1, color: '#0d9488', flexShrink: 0 }}>★</span>
-            <div style={{ flex: 1, minWidth: 0 }}>
-              <div style={S.relativeMinKpr}>
-                {KPR_MSGS.map((msg, i) => (
-                  <div key={i} style={fadeStyle(i)}>
-                    <p style={{ fontSize: '11px', fontWeight: 600, color: '#e2e8e7', margin: '0 0 3px' }}>
-                      {msg.title}
-                    </p>
-                    <p style={{ fontSize: '10px', color: '#94a3a0', margin: 0 }}>
-                      {msg.sub}
-                    </p>
-                  </div>
-                ))}
+            <span style={{ fontSize: '12px', lineHeight: 1, color: '#0d9488', flexShrink: 0, marginTop: '1px' }}>
+              ★
+            </span>
+            <div style={{ flex: 1, minWidth: 0, overflow: 'hidden', height: `${KH}px` }}>
+              <div style={stackStyle(KH)}>
+                {/* current */}
+                <div style={{ height: `${KH}px` }}>
+                  <p style={{ fontSize: '11px', fontWeight: 600, color: '#e2e8e7', margin: '0 0 3px' }}>
+                    {show(2)}
+                    {isCur(2) && <Cursor />}
+                  </p>
+                  <p style={{ fontSize: '10px', color: '#94a3a0', margin: 0 }}>
+                    {show(3)}
+                    {isCur(3) && <Cursor />}
+                  </p>
+                </div>
+                {/* next */}
+                <div style={{ height: `${KH}px` }}>
+                  <p style={{ fontSize: '11px', fontWeight: 600, color: '#e2e8e7', margin: '0 0 3px' }}>
+                    {KPR_MSGS[nxt].title}
+                  </p>
+                  <p style={{ fontSize: '10px', color: '#94a3a0', margin: 0 }}>
+                    {KPR_MSGS[nxt].sub}
+                  </p>
+                </div>
               </div>
             </div>
           </div>
         </div>
 
-        {/* AI sekcija — rotira */}
-        <div style={S.aiCard}>
+        {/* AI card */}
+        <div
+          style={{
+            background: '#0b0f0e',
+            border: '1px solid #1f2a28',
+            borderRadius: '12px',
+            padding: '10px 12px',
+          }}
+        >
+          {/* static header — never scrolls */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '7px', marginBottom: '8px' }}>
             <div
               style={{
@@ -395,10 +454,48 @@ function PhoneMockupScreen() {
             </div>
             <span style={{ fontSize: '11px', fontWeight: 600, color: '#0d9488' }}>Kvik AI asistent</span>
           </div>
-          <div style={S.relativeMinAi}>
-            {AI_QA.map((qa, i) => (
-              <div key={i} style={fadeStyle(i)}>
-                {/* pitanje */}
+
+          {/* scroll window for Q+A bubbles */}
+          <div style={{ overflow: 'hidden', height: `${QH}px` }}>
+            <div style={stackStyle(QH)}>
+              {/* current */}
+              <div style={{ height: `${QH}px` }}>
+                <div
+                  style={{
+                    background: '#111716',
+                    border: '1px solid #1f2a28',
+                    borderRadius: '9px',
+                    padding: '6px 9px',
+                    marginBottom: '6px',
+                    minHeight: '26px',
+                  }}
+                >
+                  <p style={{ fontSize: '10px', color: '#94a3a0', margin: 0 }}>
+                    {show(4)}
+                    {isCur(4) && <Cursor />}
+                  </p>
+                </div>
+                <div
+                  style={{
+                    background: 'rgba(13,148,136,0.08)',
+                    border: '1px solid rgba(13,148,136,0.15)',
+                    borderRadius: '9px',
+                    padding: '6px 9px',
+                    minHeight: '44px',
+                  }}
+                >
+                  <p style={{ fontSize: '10px', color: '#e2e8e7', margin: '0 0 3px' }}>
+                    {show(5)}
+                    {isCur(5) && <Cursor />}
+                  </p>
+                  <p style={{ fontSize: '10px', color: '#94a3a0', margin: 0 }}>
+                    {show(6)}
+                    {isCur(6) && <Cursor />}
+                  </p>
+                </div>
+              </div>
+              {/* next */}
+              <div style={{ height: `${QH}px` }}>
                 <div
                   style={{
                     background: '#111716',
@@ -408,9 +505,8 @@ function PhoneMockupScreen() {
                     marginBottom: '6px',
                   }}
                 >
-                  <p style={{ fontSize: '10px', color: '#94a3a0', margin: 0 }}>{qa.q}</p>
+                  <p style={{ fontSize: '10px', color: '#94a3a0', margin: 0 }}>{AI_QA[nxt].q}</p>
                 </div>
-                {/* odgovor */}
                 <div
                   style={{
                     background: 'rgba(13,148,136,0.08)',
@@ -419,17 +515,25 @@ function PhoneMockupScreen() {
                     padding: '6px 9px',
                   }}
                 >
-                  <p style={{ fontSize: '10px', color: '#e2e8e7', margin: '0 0 3px' }}>{qa.a}</p>
-                  <p style={{ fontSize: '10px', color: '#94a3a0', margin: 0 }}>{qa.a2}</p>
+                  <p style={{ fontSize: '10px', color: '#e2e8e7', margin: '0 0 3px' }}>{AI_QA[nxt].a}</p>
+                  <p style={{ fontSize: '10px', color: '#94a3a0', margin: 0 }}>{AI_QA[nxt].a2}</p>
                 </div>
               </div>
-            ))}
+            </div>
           </div>
         </div>
       </div>
 
-      {/* BOTTOM NAV — statičan */}
-      <div style={S.bottomNav}>
+      {/* ── BOTTOM NAV — static ─────────────────────────────── */}
+      <div
+        style={{
+          padding: '10px 12px',
+          borderTop: '1px solid #1f2a28',
+          marginTop: 'auto',
+          display: 'flex',
+          justifyContent: 'space-around',
+        }}
+      >
         {(
           [
             { icon: '📄', label: 'Računi', active: false },
