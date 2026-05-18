@@ -1278,15 +1278,17 @@ export default function LandingPage() {
 
         <div className='cta-section'>
           <div className='cta-inner'>
-            <h2>Spreman za lakši paušalni obrt?</h2>
-            <p>
-              Pridruži se tisućama obrtnika koji su se riješili stresa s
-              papirologijom.
-            </p>
-            <a
-              href={TALLY}
-              target='_blank'
-              rel='noopener noreferrer'
+            <h2>Bez Kvika podsvjesno se vidiš ovdje.</h2>
+            <div className='mx-auto my-8 max-w-2xl overflow-hidden rounded-xl border border-[#1f2a28]'>
+              <img
+                src='/images/lineup.png'
+                alt='Policijski lineup — sjene osumnjičenika'
+                className='h-auto w-full opacity-60'
+              />
+            </div>
+            <p>Probaj Kvik i oslobodi se stresa zauvijek.</p>
+            <Link
+              href='/register'
               className='btn-primary'
               style={{
                 display: 'inline-flex',
@@ -1294,8 +1296,8 @@ export default function LandingPage() {
                 padding: '1rem 2.5rem',
               }}
             >
-              Počni besplatno →
-            </a>
+              Isprobaj besplatno
+            </Link>
           </div>
         </div>
 
