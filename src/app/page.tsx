@@ -279,8 +279,9 @@ export default function LandingPage() {
           </div>
         </nav>
 
-        <div className='hero' style={{ display: 'block', textAlign: 'center' }}>
-          <div style={{ maxWidth: '860px', margin: '0 auto', width: '100%' }}>
+        <div className='hero'>
+          {/* Lijeva strana: badge, H1, sub, kartice, trust bar */}
+          <div className='hero-left'>
             <div className='hero-badge'>
               <span className='badge-flag'>🇭🇷</span>
               Napravljeno samo za hrvatske paušaliste
@@ -289,7 +290,7 @@ export default function LandingPage() {
             <h1>
               Kvik vodi računa o zakonu.<br />Ti vodi obrt.
             </h1>
-            <p className='hero-sub' style={{ maxWidth: '580px', margin: '1.25rem auto 0' }}>
+            <p className='hero-sub'>
               Automatski KPR, PO-SD i fiskalizacija — bez nagađanja, bez kazni, bez Excel tablica u ponoć.
             </p>
 
@@ -297,12 +298,9 @@ export default function LandingPage() {
             <div
               style={{
                 display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
-                gap: '1rem',
-                marginTop: '2.5rem',
-                maxWidth: '860px',
-                margin: '2.5rem auto 0',
-                textAlign: 'left',
+                gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))',
+                gap: '0.75rem',
+                marginTop: '2rem',
               }}
             >
               <Link
@@ -311,8 +309,8 @@ export default function LandingPage() {
                   display: 'block',
                   background: '#111716',
                   border: '1px solid #1f2a28',
-                  borderRadius: '16px',
-                  padding: '1.5rem',
+                  borderRadius: '14px',
+                  padding: '1rem',
                   textDecoration: 'none',
                   transition: 'border-color 150ms',
                 }}
@@ -323,11 +321,11 @@ export default function LandingPage() {
                   (e.currentTarget as HTMLAnchorElement).style.borderColor = '#1f2a28';
                 }}
               >
-                <div style={{ fontSize: '1.75rem', marginBottom: '0.75rem' }}>🧮</div>
-                <h3 style={{ color: '#e2e8e7', fontWeight: 700, fontSize: '1rem', marginBottom: '0.4rem' }}>
+                <div style={{ fontSize: '1.5rem', marginBottom: '0.5rem' }}>🧮</div>
+                <h3 style={{ color: '#e2e8e7', fontWeight: 700, fontSize: '0.875rem', marginBottom: '0.25rem' }}>
                   Izračunaj porez 2026
                 </h3>
-                <p style={{ color: '#94a3a0', fontSize: '0.875rem', lineHeight: 1.5, margin: 0 }}>
+                <p style={{ color: '#94a3a0', fontSize: '0.8rem', lineHeight: 1.4, margin: 0 }}>
                   Koliko ćeš platiti poreza ove godine?
                 </p>
               </Link>
@@ -339,10 +337,10 @@ export default function LandingPage() {
                   display: 'block',
                   background: 'rgba(13,148,136,0.10)',
                   border: '1px solid #0d9488',
-                  borderRadius: '16px',
-                  padding: '1.5rem',
+                  borderRadius: '14px',
+                  padding: '1rem',
                   textDecoration: 'none',
-                  boxShadow: '0 0 24px rgba(13,148,136,0.18)',
+                  boxShadow: '0 0 20px rgba(13,148,136,0.15)',
                   transition: 'border-color 150ms',
                 }}
                 onMouseEnter={(e) => {
@@ -352,11 +350,11 @@ export default function LandingPage() {
                   (e.currentTarget as HTMLAnchorElement).style.borderColor = '#0d9488';
                 }}
               >
-                <div style={{ fontSize: '1.75rem', marginBottom: '0.75rem' }}>📄</div>
-                <h3 style={{ color: '#e2e8e7', fontWeight: 700, fontSize: '1rem', marginBottom: '0.4rem' }}>
+                <div style={{ fontSize: '1.5rem', marginBottom: '0.5rem' }}>📄</div>
+                <h3 style={{ color: '#e2e8e7', fontWeight: 700, fontSize: '0.875rem', marginBottom: '0.25rem' }}>
                   Generiraj PO-SD
                 </h3>
-                <p style={{ color: '#94a3a0', fontSize: '0.875rem', lineHeight: 1.5, margin: 0 }}>
+                <p style={{ color: '#94a3a0', fontSize: '0.8rem', lineHeight: 1.4, margin: 0 }}>
                   Procijeni razred i pripremi PO-SD obrazac.
                 </p>
               </Link>
@@ -367,8 +365,8 @@ export default function LandingPage() {
                   display: 'block',
                   background: '#111716',
                   border: '1px solid #1f2a28',
-                  borderRadius: '16px',
-                  padding: '1.5rem',
+                  borderRadius: '14px',
+                  padding: '1rem',
                   textDecoration: 'none',
                   transition: 'border-color 150ms',
                 }}
@@ -379,11 +377,11 @@ export default function LandingPage() {
                   (e.currentTarget as HTMLAnchorElement).style.borderColor = '#1f2a28';
                 }}
               >
-                <div style={{ fontSize: '1.75rem', marginBottom: '0.75rem' }}>🤖</div>
-                <h3 style={{ color: '#e2e8e7', fontWeight: 700, fontSize: '1rem', marginBottom: '0.4rem' }}>
+                <div style={{ fontSize: '1.5rem', marginBottom: '0.5rem' }}>🤖</div>
+                <h3 style={{ color: '#e2e8e7', fontWeight: 700, fontSize: '0.875rem', marginBottom: '0.25rem' }}>
                   Pitaj AI asistenta
                 </h3>
-                <p style={{ color: '#94a3a0', fontSize: '0.875rem', lineHeight: 1.5, margin: 0 }}>
+                <p style={{ color: '#94a3a0', fontSize: '0.8rem', lineHeight: 1.4, margin: 0 }}>
                   Odgovori na porezna pitanja odmah.
                 </p>
               </Link>
@@ -394,11 +392,9 @@ export default function LandingPage() {
               style={{
                 display: 'flex',
                 flexWrap: 'wrap',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: '1.5rem',
-                marginTop: '2rem',
-                fontSize: '0.85rem',
+                gap: '1rem',
+                marginTop: '1.5rem',
+                fontSize: '0.82rem',
                 color: '#94a3a0',
               }}
             >
@@ -408,6 +404,216 @@ export default function LandingPage() {
             </div>
 
             <EarlyAdopterHeroNote layout='hero' />
+          </div>
+
+          {/* Desna strana: "Vodič u akciji" phone mockup */}
+          <div className='hero-right'>
+            <div className='phone-wrap'>
+              {/* phone frame */}
+              <div
+                style={{
+                  width: '260px',
+                  background: '#0b0f0e',
+                  borderRadius: '32px',
+                  padding: '12px',
+                  border: '2px solid #1f2a28',
+                  boxShadow:
+                    '0 40px 80px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.03) inset',
+                }}
+              >
+                {/* dynamic island notch */}
+                <div
+                  style={{
+                    width: '80px',
+                    height: '6px',
+                    background: '#1f2a28',
+                    borderRadius: '9999px',
+                    margin: '0 auto 10px',
+                  }}
+                />
+                {/* screen */}
+                <div
+                  style={{
+                    background: '#111716',
+                    borderRadius: '20px',
+                    overflow: 'hidden',
+                    display: 'flex',
+                    flexDirection: 'column',
+                  }}
+                >
+                  {/* status bar */}
+                  <div
+                    style={{
+                      padding: '12px 14px 10px',
+                      borderBottom: '1px solid #1f2a28',
+                    }}
+                  >
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                      <span style={{ fontSize: '13px', fontWeight: 600, color: '#e2e8e7' }}>Kvik</span>
+                      <span style={{ fontSize: '11px', color: '#0d9488' }}>9:41</span>
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginTop: '6px' }}>
+                      <span
+                        style={{
+                          width: '7px',
+                          height: '7px',
+                          borderRadius: '50%',
+                          background: '#0d9488',
+                          flexShrink: 0,
+                        }}
+                      />
+                      <span style={{ fontSize: '10px', color: '#94a3a0' }}>
+                        KPR sinkroniziran · 3 računa ovaj mjesec
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* obavijesti */}
+                  <div style={{ padding: '10px 12px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+
+                    {/* PO-SD upozorenje */}
+                    <div
+                      style={{
+                        background: 'rgba(13,148,136,0.08)',
+                        border: '1px solid rgba(13,148,136,0.25)',
+                        borderRadius: '12px',
+                        padding: '10px 12px',
+                      }}
+                    >
+                      <div style={{ display: 'flex', alignItems: 'flex-start', gap: '7px' }}>
+                        <span style={{ fontSize: '14px', lineHeight: 1, color: '#fbbf24', flexShrink: 0 }}>⚠</span>
+                        <div>
+                          <p style={{ fontSize: '11px', fontWeight: 600, color: '#e2e8e7', margin: '0 0 3px' }}>
+                            Rok za PO-SD predaju: još 12 dana
+                          </p>
+                          <p style={{ fontSize: '10px', color: '#94a3a0', margin: '0 0 8px' }}>
+                            Tvoj razred: 3 (19.901 – 30.600 €)
+                          </p>
+                          <span
+                            style={{
+                              display: 'inline-block',
+                              background: '#0d9488',
+                              color: '#fff',
+                              fontSize: '10px',
+                              fontWeight: 600,
+                              padding: '4px 10px',
+                              borderRadius: '7px',
+                            }}
+                          >
+                            Pregledaj PO-SD
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* KPR automatski */}
+                    <div
+                      style={{
+                        background: 'rgba(13,148,136,0.06)',
+                        border: '1px solid rgba(13,148,136,0.12)',
+                        borderRadius: '12px',
+                        padding: '10px 12px',
+                      }}
+                    >
+                      <div style={{ display: 'flex', alignItems: 'flex-start', gap: '7px' }}>
+                        <span style={{ fontSize: '12px', lineHeight: 1, color: '#0d9488', flexShrink: 0 }}>★</span>
+                        <div>
+                          <p style={{ fontSize: '11px', fontWeight: 600, color: '#e2e8e7', margin: '0 0 3px' }}>
+                            Automatski KPR ažuriran
+                          </p>
+                          <p style={{ fontSize: '10px', color: '#94a3a0', margin: 0 }}>
+                            Račun #7 za Studio Kreativ d.o.o. — 750,00 € dodan u KPR
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* AI asistent */}
+                    <div
+                      style={{
+                        background: '#0b0f0e',
+                        border: '1px solid #1f2a28',
+                        borderRadius: '12px',
+                        padding: '10px 12px',
+                      }}
+                    >
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '7px', marginBottom: '8px' }}>
+                        <div
+                          style={{
+                            width: '20px',
+                            height: '20px',
+                            borderRadius: '50%',
+                            background: '#0d9488',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            flexShrink: 0,
+                          }}
+                        >
+                          <span style={{ fontSize: '9px', color: '#fff', fontWeight: 700 }}>AI</span>
+                        </div>
+                        <span style={{ fontSize: '11px', fontWeight: 600, color: '#0d9488' }}>Kvik AI asistent</span>
+                      </div>
+                      {/* pitanje */}
+                      <div
+                        style={{
+                          background: '#111716',
+                          border: '1px solid #1f2a28',
+                          borderRadius: '9px',
+                          padding: '6px 9px',
+                          marginBottom: '6px',
+                        }}
+                      >
+                        <p style={{ fontSize: '10px', color: '#94a3a0', margin: 0 }}>
+                          Plaćam li turističku članarinu?
+                        </p>
+                      </div>
+                      {/* odgovor */}
+                      <div
+                        style={{
+                          background: 'rgba(13,148,136,0.08)',
+                          border: '1px solid rgba(13,148,136,0.15)',
+                          borderRadius: '9px',
+                          padding: '6px 9px',
+                        }}
+                      >
+                        <p style={{ fontSize: '10px', color: '#e2e8e7', margin: '0 0 3px' }}>
+                          Kao IT freelancer u Zagrebu — da, 150 €/god.
+                        </p>
+                        <p style={{ fontSize: '10px', color: '#94a3a0', margin: 0 }}>
+                          Rok: 31.1.2027. · Kvik te podsjeća.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* bottom nav */}
+                  <div
+                    style={{
+                      padding: '10px 12px',
+                      borderTop: '1px solid #1f2a28',
+                      marginTop: 'auto',
+                      display: 'flex',
+                      justifyContent: 'space-around',
+                    }}
+                  >
+                    {[
+                      { icon: '📄', label: 'Računi', active: false },
+                      { icon: '📒', label: 'KPR', active: false },
+                      { icon: '💬', label: 'AI', active: true },
+                      { icon: '⚙️', label: 'Postavke', active: false },
+                    ].map(({ icon, label, active }) => (
+                      <div key={label} style={{ textAlign: 'center' }}>
+                        <div style={{ fontSize: '16px' }}>{icon}</div>
+                        <p style={{ fontSize: '8px', color: active ? '#0d9488' : '#94a3a0', margin: '3px 0 0' }}>
+                          {label}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
