@@ -283,15 +283,14 @@ export default function LandingPage() {
           <div style={{ maxWidth: '860px', margin: '0 auto' }}>
             <div className='hero-badge'>
               <span className='badge-flag'>🇭🇷</span>
-              Napravljeno za hrvatske paušaliste
+              Napravljeno samo za hrvatske paušaliste
               <span className='badge-dot' />
             </div>
             <h1>
-              Paušalni obrt bez <em>glavobolje.</em>
+              Kvik vodi račun o zakonu, da ti možeš voditi obrt.
             </h1>
             <p className='hero-sub' style={{ maxWidth: '580px', margin: '1.25rem auto 0' }}>
-              Računi, fiskalizacija, KPR i PO-SD — sve na jednom mjestu.
-              Počni besplatno, bez kreditne kartice.
+              Automatski KPR, PO-SD i fiskalizacija — bez nagađanja, bez kazni, bez Excel tablica u ponoć.
             </p>
 
             {/* 3 interaktivne kartice */}
