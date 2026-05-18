@@ -279,8 +279,8 @@ export default function LandingPage() {
           </div>
         </nav>
 
-        <div className='hero' style={{ textAlign: 'center' }}>
-          <div style={{ maxWidth: '860px', margin: '0 auto' }}>
+        <div className='hero' style={{ display: 'block', textAlign: 'center' }}>
+          <div style={{ maxWidth: '860px', margin: '0 auto', width: '100%' }}>
             <div className='hero-badge'>
               <span className='badge-flag'>🇭🇷</span>
               Napravljeno samo za hrvatske paušaliste
@@ -297,9 +297,11 @@ export default function LandingPage() {
             <div
               style={{
                 display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fit, minmax(230px, 1fr))',
+                gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
                 gap: '1rem',
                 marginTop: '2.5rem',
+                maxWidth: '860px',
+                margin: '2.5rem auto 0',
                 textAlign: 'left',
               }}
             >
