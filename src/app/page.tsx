@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import Link from 'next/link';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
@@ -1279,12 +1280,16 @@ export default function LandingPage() {
         <div className='cta-section'>
           <div className='cta-inner'>
             <h2>Bez Kvika podsvjesno se vidiš ovdje.</h2>
-            <div className='mx-auto my-8 flex w-full max-w-2xl flex-col items-center overflow-hidden rounded-xl border border-[#1f2a28]'>
-              <img
-                src='/images/lineup.png'
-                alt='Policijski lineup — sjene osumnjičenika'
-                className='mx-auto h-auto w-full max-w-2xl rounded-xl opacity-60'
-              />
+            <div className='my-8 flex w-full flex-col items-center'>
+              <div className='w-full max-w-2xl'>
+                <Image
+                  src='/images/lineup.webp'
+                  alt='Lineup'
+                  width={640}
+                  height={360}
+                  className='h-auto w-full rounded-xl opacity-60'
+                />
+              </div>
             </div>
             <p>Probaj Kvik i oslobodi se stresa zauvijek.</p>
             <Link
