@@ -222,6 +222,26 @@ export default function RegisterPage() {
               Drugi email
             </button>
           </div>
+
+          <div className='mt-8 border-t border-[#1f2a28] pt-6 text-center'>
+            <p className='text-sm text-[#94a3a0]'>
+              Već imaš Kvik račun? Nismo ti poslali novi link.
+            </p>
+            <div className='mt-4 flex flex-col justify-center gap-3 sm:flex-row'>
+              <Link
+                href='/login'
+                className='inline-flex items-center justify-center rounded-xl border border-[#0d9488] px-5 py-2.5 text-sm font-semibold text-[#0d9488] transition-colors hover:bg-[#0d9488] hover:text-white'
+              >
+                Prijavi se
+              </Link>
+              <Link
+                href='/login'
+                className='inline-flex items-center justify-center px-5 py-2.5 text-sm text-[#94a3a0] underline underline-offset-4 hover:text-[#e2e8e7]'
+              >
+                Zaboravljena lozinka?
+              </Link>
+            </div>
+          </div>
         </section>
       </main>
     );
