@@ -1279,11 +1279,11 @@ export default function LandingPage() {
         <div className='cta-section'>
           <div className='cta-inner'>
             <h2>Bez Kvika podsvjesno se vidiš ovdje.</h2>
-            <div className='mx-auto my-8 max-w-2xl overflow-hidden rounded-xl border border-[#1f2a28]'>
+            <div className='mx-auto my-8 flex w-full max-w-2xl flex-col items-center overflow-hidden rounded-xl border border-[#1f2a28]'>
               <img
                 src='/images/lineup.png'
                 alt='Policijski lineup — sjene osumnjičenika'
-                className='h-auto w-full opacity-60'
+                className='mx-auto h-auto w-full max-w-2xl rounded-xl opacity-60'
               />
             </div>
             <p>Probaj Kvik i oslobodi se stresa zauvijek.</p>
