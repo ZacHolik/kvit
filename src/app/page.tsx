@@ -671,7 +671,7 @@ export default function LandingPage() {
               <span className='badge-dot' />
             </div>
             <h1>
-              Kvik vodi računa o zakonu.<br />Ti vodi obrt.
+              Kvik vodi računa o zakonu.<br />Ti samo vodi obrt.
             </h1>
             <p className='hero-sub'>
               Automatski KPR, PO-SD i fiskalizacija — bez nagađanja, bez kazni, bez Excel tablica u ponoć.
