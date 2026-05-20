@@ -27,10 +27,10 @@ export function VodiciNav() {
             </a>
           </li>
         </ul>
-        <div className='flex flex-wrap items-center gap-2 sm:gap-3'>
+        <div className='flex flex-wrap items-center gap-3 sm:gap-4'>
           <Link
             href='/login'
-            className='rounded-lg border border-[#0d9488]/60 px-3 py-2 text-sm font-medium text-[#d5dfdd] transition hover:border-[#0d9488] hover:bg-[#0d9488]/10'
+            className='rounded-lg border border-[#0d9488]/60 px-4 py-2.5 text-sm font-medium text-[#d5dfdd] transition hover:border-[#0d9488] hover:bg-[#0d9488]/10'
           >
             Imam Kvik!
           </Link>

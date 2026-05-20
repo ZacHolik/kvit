@@ -28,20 +28,31 @@ const TALLY = 'https://tally.so/r/44or65';
 const LANDING_RESPONSIVE_CSS = `
 #kvik-landing .hero{overflow-x:hidden}
 #kvik-landing .hero-left{min-width:0}
-@media(min-width:641px){
-  #kvik-landing .nav-login-text{
-    display:inline-flex;
-    align-items:center;
-    color:#94a3a0;
-    font-size:0.9rem;
-    font-weight:500;
-    text-decoration:none;
-    white-space:nowrap;
-    transition:color 0.2s;
-  }
-  #kvik-landing .nav-login-text:hover{
-    color:#e2e8e7;
-  }
+/* Imam Kvik! — outline gumb na svim breakpointima (mobil override ispod) */
+#kvik-landing .nav-actions{
+  gap:1rem;
+}
+#kvik-landing .nav-login-text{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  box-sizing:border-box;
+  padding:0.5rem 1rem;
+  border:1px solid #2a3734;
+  border-radius:8px;
+  background:transparent;
+  color:#94a3a0;
+  font-size:0.9rem;
+  font-weight:500;
+  line-height:1.2;
+  text-decoration:none;
+  white-space:nowrap;
+  transition:color 0.2s,border-color 0.2s,background 0.2s;
+}
+#kvik-landing .nav-login-text:hover{
+  color:#e2e8e7;
+  border-color:#94a3a0;
+  background:rgba(148,163,160,0.06);
 }
 @media(max-width:640px){
   #kvik-landing nav{
@@ -60,7 +71,7 @@ const LANDING_RESPONSIVE_CSS = `
     flex-direction:row;
     width:100%;
     max-width:100%;
-    gap:0.75rem;
+    gap:1rem;
     align-items:stretch;
   }
   #kvik-landing .nav-login-text,
