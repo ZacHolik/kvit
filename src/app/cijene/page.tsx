@@ -39,10 +39,6 @@ const FAQ_ITEMS = [
 export default function CijenePage() {
   const [yearly, setYearly] = useState(false);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
-  const [proWaitlistEmail, setProWaitlistEmail] = useState('');
-  const [proWaitlistSent, setProWaitlistSent] = useState(false);
-  const [proWaitlistLoading, setProWaitlistLoading] = useState(false);
-
   return (
     <main className='min-h-screen bg-[#0b0f0e] px-4 py-16 text-[#e2e8e7] sm:px-6 lg:px-8'>
       <div className='mx-auto max-w-5xl'>
@@ -96,7 +92,7 @@ export default function CijenePage() {
         </div>
 
         {/* Plan kartice */}
-        <div className='grid gap-6 sm:grid-cols-3'>
+        <div className='mx-auto grid max-w-4xl gap-6 sm:grid-cols-2'>
           {/* Besplatno */}
           <div className='flex flex-col rounded-2xl border border-[#1f2a28] bg-[#111716] p-6'>
             <div className='mb-4 flex items-start justify-between'>
@@ -186,85 +182,17 @@ export default function CijenePage() {
               Isprobaj 7 dana besplatno →
             </button>
           </div>
-
-          {/* PRO */}
-          <div className='flex flex-col rounded-2xl border border-[#1f2a28] bg-[#111716] p-6'>
-            <div className='mb-4'>
-              <p className='text-xs font-medium uppercase tracking-widest text-[#94a3a0]'>
-                Za ozbiljne
-              </p>
-              <p className='mt-1 text-xl font-bold text-[#e2e8e7]'>Paušalist PRO</p>
-            </div>
-            <div className='mb-1'>
-              <span className='text-4xl font-bold text-[#e2e8e7]'>
-                {yearly ? '9,60€' : '12€'}
-              </span>
-              <span className='ml-1 text-sm text-[#94a3a0]'>/mj</span>
-            </div>
-            <p className='mb-6 text-sm text-[#94a3a0]'>Za ozbiljne obrtnike</p>
-            <ul className='mb-8 flex-1 space-y-2.5 text-sm text-[#b9c7c4]'>
-              {[
-                'Sve iz Paušalist plana',
-                'Portal za računovođu (read-only)',
-                'Slanje i zaprimanje eRačuna (F2.0)',
-                'Export za računovođu (ZIP)',
-                'Prioritetna podrška',
-                'API pristup (za integracije)',
-              ].map((f) => (
-                <li key={f} className='flex items-start gap-2'>
-                  <span className='mt-0.5 text-[#94a3a0]'>✓</span>
-                  {f}
-                </li>
-              ))}
-            </ul>
-            <button
-              type='button'
-              disabled
-              className='mb-4 block w-full cursor-not-allowed rounded-xl border border-[#2a3734] py-3 text-center text-sm font-semibold text-[#94a3a0] opacity-50'
-            >
-              Uskoro dostupno
-            </button>
-            {proWaitlistSent ? (
-              <p className='text-center text-xs text-[#14b8a6]'>
-                ✓ Prijavili ste se! Javit ćemo se.
-              </p>
-            ) : (
-              <div>
-                <p className='mb-2 text-xs text-[#94a3a0]'>
-                  Obavijesti me kad bude dostupno
-                </p>
-                <div className='flex gap-2'>
-                  <input
-                    type='email'
-                    value={proWaitlistEmail}
-                    onChange={(e) => setProWaitlistEmail(e.target.value)}
-                    placeholder='email@example.com'
-                    className='min-w-0 flex-1 rounded-lg border border-[#2a3734] bg-[#0b0f0e] px-3 py-2 text-xs text-[#e2e8e7] outline-none transition focus:border-[#0d9488]'
-                  />
-                  <button
-                    type='button'
-                    disabled={proWaitlistLoading || !proWaitlistEmail}
-                    onClick={() => {
-                      if (!proWaitlistEmail) return;
-                      setProWaitlistLoading(true);
-                      void fetch('/api/waitlist/pro', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ email: proWaitlistEmail }),
-                      }).then(() => {
-                        setProWaitlistSent(true);
-                        setProWaitlistLoading(false);
-                      });
-                    }}
-                    className='whitespace-nowrap rounded-lg bg-[#0d9488] px-3 py-2 text-xs font-semibold text-white transition hover:bg-[#14b8a6] disabled:cursor-not-allowed disabled:opacity-50'
-                  >
-                    {proWaitlistLoading ? '...' : 'Prijavi se'}
-                  </button>
-                </div>
-              </div>
-            )}
-          </div>
         </div>
+
+        <p className='mx-auto mt-8 max-w-2xl text-center text-sm text-[#94a3a0]'>
+          Trebaš PRO plan (F2.0 eRačuni, portal za računovođu, API)?{' '}
+          <Link
+            href='/pro-uskoro'
+            className='font-semibold text-[#0d9488] underline underline-offset-4 hover:text-[#14b8a6]'
+          >
+            Pridruži se waitlisti →
+          </Link>
+        </p>
 
         {/* Zašto Kvik */}
         <section className='mt-16 max-w-3xl mx-auto'>

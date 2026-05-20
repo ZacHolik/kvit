@@ -25,6 +25,8 @@ const AUTH_PUBLIC_PREFIXES = [
  */
 const PUBLIC_PATH_RULES: ReadonlyArray<(pathname: string) => boolean> = [
   (p) => p === '/',
+  (p) => p === '/cijene',
+  (p) => p === '/pro-uskoro',
   (p) => p === '/vodici' || p.startsWith('/vodici/'),
   (p) => p === '/alati' || p.startsWith('/alati/'),
   (p) => p === '/asistent' || p.startsWith('/asistent/'),

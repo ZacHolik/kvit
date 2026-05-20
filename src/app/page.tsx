@@ -101,6 +101,17 @@ const LANDING_RESPONSIVE_CSS = `
     overflow-wrap:anywhere;
   }
 }
+#kvik-landing .pricing-grid.pricing-grid--twocols{
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  max-width:56rem;
+  margin-left:auto;
+  margin-right:auto;
+}
+@media(max-width:900px){
+  #kvik-landing .pricing-grid.pricing-grid--twocols{
+    grid-template-columns:1fr;
+  }
+}
 `;
 
 const AI_ANSWERS: Record<string, string> = {
@@ -552,9 +563,6 @@ function PhoneMockupScreen() {
 export default function LandingPage() {
   const [yearly, setYearly] = useState(false);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
-  const [proWaitlistEmail, setProWaitlistEmail] = useState('');
-  const [proWaitlistSent, setProWaitlistSent] = useState(false);
-  const [proWaitlistLoading, setProWaitlistLoading] = useState(false);
   const [aiMessages, setAiMessages] = useState<AiMessage[]>([
     {
       id: 'welcome',
@@ -1079,7 +1087,7 @@ export default function LandingPage() {
               Uštedi 20%
             </span>
           </div>
-          <div className='pricing-grid'>
+          <div className='pricing-grid pricing-grid--twocols'>
             {/* --- Besplatni plan --- */}
             <div className='price-card'>
               <div className='price-tier'>Za početak</div>
@@ -1139,113 +1147,26 @@ export default function LandingPage() {
                 Isprobaj 7 dana besplatno →
               </button>
             </div>
-
-            {/* --- Paušalist PRO (coming soon) --- */}
-            <div className='price-card'>
-              <div className='price-tier'>Za ozbiljne</div>
-              <div className='price-name'>Paušalist PRO</div>
-              <div className='price-amount'>
-                <sup />
-                {yearly ? '9.60€' : '12€'}
-                <sub>/mj</sub>
-              </div>
-              <div className='price-desc'>Za ozbiljne obrtnike</div>
-              <ul className='price-features'>
-                <li>Sve iz Paušalist plana</li>
-                <li>Portal za računovođu (read-only pristup)</li>
-                <li>Slanje i zaprimanje eRačuna (F2.0)</li>
-                <li>Export za računovođu (ZIP)</li>
-                <li>Prioritetna podrška</li>
-                <li>API pristup (za integracije)</li>
-              </ul>
-              <button
-                type='button'
-                disabled
-                className='price-btn price-btn-outline'
-                style={{ opacity: 0.5, cursor: 'not-allowed' }}
-              >
-                Uskoro dostupno
-              </button>
-              {/* PRO waitlist */}
-              <div style={{ marginTop: '1rem' }}>
-                {proWaitlistSent ? (
-                  <p
-                    style={{
-                      fontSize: '0.82rem',
-                      color: 'var(--teal3)',
-                      textAlign: 'center',
-                    }}
-                  >
-                    ✓ Prijavili ste se! Javit ćemo se.
-                  </p>
-                ) : (
-                  <>
-                    <p
-                      style={{
-                        fontSize: '0.78rem',
-                        color: 'var(--text3)',
-                        marginBottom: '0.5rem',
-                      }}
-                    >
-                      Obavijesti me kad bude dostupno
-                    </p>
-                    <div style={{ display: 'flex', gap: '0.4rem' }}>
-                      <input
-                        type='email'
-                        value={proWaitlistEmail}
-                        onChange={(e) => setProWaitlistEmail(e.target.value)}
-                        placeholder='email@example.com'
-                        style={{
-                          flex: 1,
-                          background: 'var(--bg3)',
-                          border: '1px solid var(--border2)',
-                          borderRadius: '8px',
-                          padding: '0.45rem 0.75rem',
-                          fontSize: '0.82rem',
-                          color: 'var(--text)',
-                          outline: 'none',
-                          minWidth: 0,
-                        }}
-                      />
-                      <button
-                        type='button'
-                        disabled={proWaitlistLoading || !proWaitlistEmail}
-                        style={{
-                          background: 'var(--teal)',
-                          color: '#fff',
-                          border: 'none',
-                          borderRadius: '8px',
-                          padding: '0.45rem 0.85rem',
-                          fontSize: '0.82rem',
-                          cursor:
-                            proWaitlistLoading || !proWaitlistEmail
-                              ? 'not-allowed'
-                              : 'pointer',
-                          opacity:
-                            proWaitlistLoading || !proWaitlistEmail ? 0.6 : 1,
-                          whiteSpace: 'nowrap',
-                        }}
-                        onClick={() => {
-                          if (!proWaitlistEmail) return;
-                          setProWaitlistLoading(true);
-                          void fetch('/api/waitlist/pro', {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ email: proWaitlistEmail }),
-                          }).then(() => {
-                            setProWaitlistSent(true);
-                            setProWaitlistLoading(false);
-                          });
-                        }}
-                      >
-                        {proWaitlistLoading ? '...' : 'Prijavi se'}
-                      </button>
-                    </div>
-                  </>
-                )}
-              </div>
-            </div>
           </div>
+
+          <p
+            className='section-sub'
+            style={{ marginTop: '2rem', textAlign: 'center' }}
+          >
+            Trebaš F2.0 eRačune, portal za računovođu ili API?
+            <br />
+            <Link
+              href='/pro-uskoro'
+              style={{
+                color: 'var(--teal3)',
+                fontWeight: 600,
+                textDecoration: 'underline',
+                textUnderlineOffset: '4px',
+              }}
+            >
+              Pridruži se PRO waitlisti →
+            </Link>
+          </p>
         </section>
 
         <section className='section' id='faq'>
