@@ -678,64 +678,71 @@ export default function LandingPage() {
               Automatski KPR, PO-SD i fiskalizacija — bez nagađanja, bez kazni, bez Excel tablica u ponoć.
             </p>
 
-            {/* 3 CTA gumba — narančasta podloga, tamni tekst; grid ne smije biti už od sadržaja */}
-            <div className='mt-8 grid w-full grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3'>
+            {/* 3 interaktivne kartice */}
+            <div
+              style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))',
+                gap: '0.75rem',
+                marginTop: '2rem',
+              }}
+            >
               <Link
                 href='/alati/kalkulator-poreza'
-                className='group flex min-h-[140px] w-full min-w-0 flex-col gap-3 rounded-2xl border-2 border-amber-700 bg-amber-500 px-5 py-5 text-left no-underline shadow-lg shadow-black/25 outline-none ring-amber-900/10 transition hover:scale-[1.02] hover:bg-amber-400 hover:shadow-xl active:scale-[0.99] focus-visible:ring-2 focus-visible:ring-amber-200 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0b0f0e]'
+                className='group block rounded-[14px] border border-[#1f2a28] bg-[#111716] p-4 no-underline transition-transform duration-200 hover:scale-105 hover:border-[#14b8a6]'
               >
                 <Calculator
-                  className='h-8 w-8 shrink-0 text-[#0f172a]'
-                  strokeWidth={2.5}
+                  className='mb-2 h-7 w-7 text-amber-500'
+                  strokeWidth={2.25}
                   aria-hidden
                 />
-                <span className='text-lg font-black uppercase leading-tight tracking-wide text-[#0f172a] sm:text-xl'>
+                <h3 className='text-left text-2xl font-bold uppercase leading-tight text-amber-500 md:text-3xl'>
                   IZRAČUNAJ
-                </span>
-                <span className='text-sm font-semibold leading-snug text-[#0f172a]'>
+                </h3>
+                <p className='mb-2 mt-1 text-left text-[0.8rem] leading-snug text-[#e2e8e7]'>
                   svoj porez za 2026.
-                </span>
-                <span className='text-xs leading-snug text-[#0f172a]/80'>
+                </p>
+                <p className='mt-1 text-left text-[0.72rem] leading-snug text-[#94a3a0]'>
                   Koliko ćeš platiti porez ove godine?
-                </span>
+                </p>
               </Link>
 
               <Link
                 href='/alati/po-sd'
-                className='group flex min-h-[140px] w-full min-w-0 flex-col gap-3 rounded-2xl border-2 border-amber-700 bg-amber-500 px-5 py-5 text-left no-underline shadow-lg shadow-black/25 outline-none ring-amber-900/10 transition hover:scale-[1.02] hover:bg-amber-400 hover:shadow-xl active:scale-[0.99] focus-visible:ring-2 focus-visible:ring-amber-200 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0b0f0e]'
+                className='group block rounded-[14px] border border-[#0d9488] bg-[rgba(13,148,136,0.10)] p-4 no-underline shadow-[0_0_20px_rgba(13,148,136,0.15)] transition-transform duration-200 hover:scale-105 hover:border-[#14b8a6]'
               >
-                <span className='text-2xl leading-none' aria-hidden>
+                <div className='mb-2 text-2xl' aria-hidden>
                   📄
-                </span>
-                <span className='text-lg font-black uppercase leading-tight tracking-wide text-[#0f172a] sm:text-xl'>
+                </div>
+                <h3 className='text-left text-2xl font-bold uppercase leading-tight text-amber-500 md:text-3xl'>
                   GENERIRAJ
-                </span>
-                <span className='text-sm font-semibold leading-snug text-[#0f172a]'>
+                </h3>
+                <p className='mb-2 mt-1 text-left text-[0.8rem] leading-snug text-[#e2e8e7]'>
                   svoj PO-SD i uzmi PDF.
-                </span>
-                <span className='text-xs leading-snug text-[#0f172a]/80'>
+                </p>
+                <p className='mt-1 text-left text-[0.72rem] leading-snug text-[#94a3a0]'>
                   Unesi iznose računa i gledaj čaroliju.
-                </span>
+                </p>
               </Link>
 
               <Link
                 href='/asistent'
-                className='group flex min-h-[140px] w-full min-w-0 flex-col gap-3 rounded-2xl border-2 border-amber-700 bg-amber-500 px-5 py-5 text-left no-underline shadow-lg shadow-black/25 outline-none ring-amber-900/10 transition hover:scale-[1.02] hover:bg-amber-400 hover:shadow-xl active:scale-[0.99] focus-visible:ring-2 focus-visible:ring-amber-200 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0b0f0e] sm:col-span-2 lg:col-span-1'
+                className='group block rounded-[14px] border border-[#1f2a28] bg-[#111716] p-4 no-underline transition-transform duration-200 hover:scale-105 hover:border-[#14b8a6]'
               >
                 <Sparkles
-                  className='h-8 w-8 shrink-0 text-[#0f172a]'
-                  strokeWidth={2.5}
+                  className='mb-2 h-7 w-7 text-amber-500'
+                  strokeWidth={2.25}
                   aria-hidden
                 />
-                <span className='text-lg font-black uppercase leading-tight tracking-wide text-[#0f172a] sm:text-xl'>
+                <h3 className='text-left text-2xl font-bold uppercase leading-tight text-amber-500 md:text-3xl'>
                   UPITAJ
-                </span>
-                <span className='text-sm font-semibold leading-snug text-[#0f172a]'>
+                </h3>
+                <p className='mb-2 mt-1 text-left text-[0.8rem] leading-snug text-[#e2e8e7]'>
                   ono što ne znaš:
-                </span>
-                <span className='text-xs leading-snug text-[#0f172a]/80'>
+                </p>
+                <p className='mt-1 text-left text-[0.72rem] leading-snug text-[#94a3a0]'>
                   o fiskalizaciji, kaznama, rokovima... Kvik AI asistent zna.
-                </span>
+                </p>
               </Link>
             </div>
 
