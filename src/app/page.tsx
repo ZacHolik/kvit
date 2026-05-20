@@ -678,62 +678,62 @@ export default function LandingPage() {
               Automatski KPR, PO-SD i fiskalizacija — bez nagađanja, bez kazni, bez Excel tablica u ponoć.
             </p>
 
-            {/* 3 kartice: tamna podloga; samo naslov je narančasti klik-chip (cijela kartica je Link) */}
+            {/* 3 CTA gumba — narančasta podloga, tamni tekst; grid ne smije biti už od sadržaja */}
             <div className='mt-8 grid w-full grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3'>
               <Link
                 href='/alati/kalkulator-poreza'
-                className='group flex min-h-[140px] w-full min-w-0 flex-col gap-3 rounded-2xl border border-[#1f2a28] bg-[#111716] p-5 text-left no-underline shadow-sm outline-none transition duration-200 hover:-translate-y-0.5 hover:border-[#14b8a6] hover:shadow-md focus-visible:ring-2 focus-visible:ring-[#0d9488] focus-visible:ring-offset-2 focus-visible:ring-offset-[#0b0f0e]'
+                className='group flex min-h-[140px] w-full min-w-0 flex-col gap-3 rounded-2xl border-2 border-amber-700 bg-amber-500 px-5 py-5 text-left no-underline shadow-lg shadow-black/25 outline-none ring-amber-900/10 transition hover:scale-[1.02] hover:bg-amber-400 hover:shadow-xl active:scale-[0.99] focus-visible:ring-2 focus-visible:ring-amber-200 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0b0f0e]'
               >
                 <Calculator
-                  className='h-8 w-8 shrink-0 text-[#14b8a6]'
+                  className='h-8 w-8 shrink-0 text-[#0f172a]'
                   strokeWidth={2.5}
                   aria-hidden
                 />
-                <span className='inline-flex w-fit max-w-full rounded-lg bg-amber-500 px-3 py-2 text-sm font-black uppercase tracking-wide text-[#0b0f0e] shadow ring-1 ring-amber-700/30 transition group-hover:bg-amber-400 sm:text-base'>
+                <span className='text-lg font-black uppercase leading-tight tracking-wide text-[#0f172a] sm:text-xl'>
                   IZRAČUNAJ
                 </span>
-                <span className='text-sm font-medium leading-snug text-[#e2e8e7]'>
+                <span className='text-sm font-semibold leading-snug text-[#0f172a]'>
                   svoj porez za 2026.
                 </span>
-                <span className='text-xs leading-relaxed text-[#94a3a0]'>
+                <span className='text-xs leading-snug text-[#0f172a]/80'>
                   Koliko ćeš platiti porez ove godine?
                 </span>
               </Link>
 
               <Link
                 href='/alati/po-sd'
-                className='group flex min-h-[140px] w-full min-w-0 flex-col gap-3 rounded-2xl border border-[#0d9488] bg-[rgba(13,148,136,0.08)] p-5 text-left no-underline shadow-[0_0_20px_rgba(13,148,136,0.12)] outline-none transition duration-200 hover:-translate-y-0.5 hover:border-[#14b8a6] hover:shadow-[0_0_24px_rgba(20,184,166,0.2)] focus-visible:ring-2 focus-visible:ring-[#14b8a6] focus-visible:ring-offset-2 focus-visible:ring-offset-[#0b0f0e]'
+                className='group flex min-h-[140px] w-full min-w-0 flex-col gap-3 rounded-2xl border-2 border-amber-700 bg-amber-500 px-5 py-5 text-left no-underline shadow-lg shadow-black/25 outline-none ring-amber-900/10 transition hover:scale-[1.02] hover:bg-amber-400 hover:shadow-xl active:scale-[0.99] focus-visible:ring-2 focus-visible:ring-amber-200 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0b0f0e]'
               >
                 <span className='text-2xl leading-none' aria-hidden>
                   📄
                 </span>
-                <span className='inline-flex w-fit max-w-full rounded-lg bg-amber-500 px-3 py-2 text-sm font-black uppercase tracking-wide text-[#0b0f0e] shadow ring-1 ring-amber-700/30 transition group-hover:bg-amber-400 sm:text-base'>
+                <span className='text-lg font-black uppercase leading-tight tracking-wide text-[#0f172a] sm:text-xl'>
                   GENERIRAJ
                 </span>
-                <span className='text-sm font-medium leading-snug text-[#e2e8e7]'>
+                <span className='text-sm font-semibold leading-snug text-[#0f172a]'>
                   svoj PO-SD i uzmi PDF.
                 </span>
-                <span className='text-xs leading-relaxed text-[#94a3a0]'>
+                <span className='text-xs leading-snug text-[#0f172a]/80'>
                   Unesi iznose računa i gledaj čaroliju.
                 </span>
               </Link>
 
               <Link
                 href='/asistent'
-                className='group flex min-h-[140px] w-full min-w-0 flex-col gap-3 rounded-2xl border border-[#1f2a28] bg-[#111716] p-5 text-left no-underline shadow-sm outline-none transition duration-200 hover:-translate-y-0.5 hover:border-[#14b8a6] hover:shadow-md focus-visible:ring-2 focus-visible:ring-[#0d9488] focus-visible:ring-offset-2 focus-visible:ring-offset-[#0b0f0e] sm:col-span-2 lg:col-span-1'
+                className='group flex min-h-[140px] w-full min-w-0 flex-col gap-3 rounded-2xl border-2 border-amber-700 bg-amber-500 px-5 py-5 text-left no-underline shadow-lg shadow-black/25 outline-none ring-amber-900/10 transition hover:scale-[1.02] hover:bg-amber-400 hover:shadow-xl active:scale-[0.99] focus-visible:ring-2 focus-visible:ring-amber-200 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0b0f0e] sm:col-span-2 lg:col-span-1'
               >
                 <Sparkles
-                  className='h-8 w-8 shrink-0 text-[#14b8a6]'
+                  className='h-8 w-8 shrink-0 text-[#0f172a]'
                   strokeWidth={2.5}
                   aria-hidden
                 />
-                <span className='inline-flex w-fit max-w-full rounded-lg bg-amber-500 px-3 py-2 text-sm font-black uppercase tracking-wide text-[#0b0f0e] shadow ring-1 ring-amber-700/30 transition group-hover:bg-amber-400 sm:text-base'>
+                <span className='text-lg font-black uppercase leading-tight tracking-wide text-[#0f172a] sm:text-xl'>
                   UPITAJ
                 </span>
-                <span className='text-sm font-medium leading-snug text-[#e2e8e7]'>
+                <span className='text-sm font-semibold leading-snug text-[#0f172a]'>
                   ono što ne znaš:
                 </span>
-                <span className='text-xs leading-relaxed text-[#94a3a0]'>
+                <span className='text-xs leading-snug text-[#0f172a]/80'>
                   o fiskalizaciji, kaznama, rokovima... Kvik AI asistent zna.
                 </span>
               </Link>
