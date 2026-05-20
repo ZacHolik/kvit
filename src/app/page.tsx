@@ -123,6 +123,49 @@ const LANDING_RESPONSIVE_CSS = `
     grid-template-columns:1fr;
   }
 }
+#kvik-landing .hero{
+  grid-template-rows:auto minmax(7rem,1fr);
+  align-items:start;
+}
+#kvik-landing .hero-left,
+#kvik-landing .hero-right{
+  align-self:center;
+}
+#kvik-landing .hero-positioning{
+  grid-column:1 / -1;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  gap:0.85rem;
+  align-self:stretch;
+  padding:0 0.5rem 0;
+}
+#kvik-landing .hero-positioning p{
+  margin:0;
+  max-width:42rem;
+  font-size:0.95rem;
+  line-height:1.65;
+  color:#94a3a0;
+}
+#kvik-landing .hero-positioning p:last-child{
+  max-width:36rem;
+  font-size:0.88rem;
+  color:#7a8a87;
+}
+@media(max-width:640px){
+  #kvik-landing .hero-positioning{
+    padding:0 0.25rem 0;
+    min-height:6rem;
+  }
+  #kvik-landing .hero-positioning p{
+    font-size:0.88rem;
+  }
+  #kvik-landing .hero-positioning p:last-child{
+    font-size:0.82rem;
+  }
+}
 `;
 
 const AI_ANSWERS: Record<string, string> = {
@@ -244,7 +287,118 @@ const SLIDE_MS = 380; // duration of translateY scroll animation
 const TYPE_MS = 14; // ms per character (telex speed)
 const HOLD_MS = 2000; // pause after all text typed before scrolling
 
-function PhoneMockupScreen() {
+const HERO_CTA_CARDS = [
+  {
+    href: '/alati/kalkulator-poreza',
+    icon: '🧮',
+    title: 'Izračunaj porez 2026',
+    sub: 'Koliko ćeš platiti poreza ove godine?',
+  },
+  {
+    href: '/alati/po-sd',
+    icon: '📄',
+    title: 'Generiraj PO-SD',
+    sub: 'Procijeni razred i pripremi PO-SD obrazac.',
+  },
+  {
+    href: '/asistent',
+    icon: '🤖',
+    title: 'Pitaj AI asistenta',
+    sub: 'Odgovori na porezna pitanja odmah.',
+  },
+] as const;
+
+type CardBlend = { from: number; to: number; t: number };
+
+function lerpNum(a: number, b: number, t: number) {
+  return a + (b - a) * t;
+}
+
+function heroCardHighlight(i: number, blend: CardBlend) {
+  if (blend.from === blend.to) {
+    return blend.from === i ? 1 : 0;
+  }
+  if (i === blend.from) {
+    return 1 - blend.t;
+  }
+  if (i === blend.to) {
+    return blend.t;
+  }
+  return 0;
+}
+
+function heroCardSurfaceStyle(highlight: number): React.CSSProperties {
+  const h = Math.max(0, Math.min(1, highlight));
+  return {
+    display: 'block',
+    background:
+      h === 0 ? '#111716' : `rgba(13,148,136,${lerpNum(0, 0.1, h)})`,
+    border: '1px solid',
+    borderColor:
+      h === 0 ? '#1f2a28' : `rgba(${lerpNum(31, 13, h)},${lerpNum(42, 148, h)},${lerpNum(40, 136, h)},1)`,
+    borderRadius: '14px',
+    padding: '1rem',
+    textDecoration: 'none',
+    boxShadow:
+      h > 0.01
+        ? `0 0 ${lerpNum(0, 20, h)}px rgba(13,148,136,${lerpNum(0, 0.15, h)})`
+        : 'none',
+  };
+}
+
+function HeroCtaCards({ blend }: { blend: CardBlend }) {
+  return (
+    <div
+      style={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))',
+        gap: '0.75rem',
+        marginTop: '2rem',
+      }}
+    >
+      {HERO_CTA_CARDS.map((card, index) => {
+        const h = heroCardHighlight(index, blend);
+        return (
+          <Link
+            key={card.href}
+            href={card.href}
+            style={heroCardSurfaceStyle(h)}
+          >
+            <div style={{ fontSize: '1.5rem', marginBottom: '0.5rem' }}>
+              {card.icon}
+            </div>
+            <h3
+              style={{
+                color: '#e2e8e7',
+                fontWeight: 700,
+                fontSize: '0.875rem',
+                marginBottom: '0.25rem',
+              }}
+            >
+              {card.title}
+            </h3>
+            <p
+              style={{
+                color: '#94a3a0',
+                fontSize: '0.8rem',
+                lineHeight: 1.4,
+                margin: 0,
+              }}
+            >
+              {card.sub}
+            </p>
+          </Link>
+        );
+      })}
+    </div>
+  );
+}
+
+function PhoneMockupScreen({
+  onSlideStart,
+}: {
+  onSlideStart?: (from: number, to: number) => void;
+}) {
   const [cur, setCur] = useState(0);
   const [sliding, setSliding] = useState(false);
   const [chars, setChars] = useState(0);
@@ -280,10 +434,13 @@ function PhoneMockupScreen() {
       const t = setTimeout(() => setChars((c) => c + 1), TYPE_MS);
       return () => clearTimeout(t);
     }
-    // All text revealed — hold, then trigger scroll
-    const t = setTimeout(() => setSliding(true), HOLD_MS);
+    // All text revealed — hold, then trigger scroll + card crossfade
+    const t = setTimeout(() => {
+      onSlideStart?.(cur, nxt);
+      setSliding(true);
+    }, HOLD_MS);
     return () => clearTimeout(t);
-  }, [chars, sliding, totalChars]);
+  }, [chars, sliding, totalChars, cur, nxt, onSlideStart]);
 
   // Phase 2 — scroll completes, advance to next message
   useEffect(() => {
@@ -574,6 +731,26 @@ function PhoneMockupScreen() {
 export default function LandingPage() {
   const [yearly, setYearly] = useState(false);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
+  const [cardBlend, setCardBlend] = useState<CardBlend>({
+    from: 0,
+    to: 0,
+    t: 1,
+  });
+
+  const startCardCrossfade = useCallback((from: number, to: number) => {
+    const start = performance.now();
+    const dur = SLIDE_MS;
+    const tick = (now: number) => {
+      const p = Math.min(1, (now - start) / dur);
+      setCardBlend({ from, to, t: p });
+      if (p < 1) {
+        requestAnimationFrame(tick);
+      } else {
+        setCardBlend({ from: to, to, t: 1 });
+      }
+    };
+    requestAnimationFrame(tick);
+  }, []);
   const [aiMessages, setAiMessages] = useState<AiMessage[]>([
     {
       id: 'welcome',
@@ -693,104 +870,14 @@ export default function LandingPage() {
               <span className='badge-dot' />
             </div>
             <h1>
-              Kvik vodi računa o zakonu.<br />Ti samo vodi obrt.
+              Kvik vodi računa o zakonima.<br />Ti samo vodi obrt.
             </h1>
             <p className='hero-sub'>
               Automatski KPR, PO-SD i fiskalizacija — bez nagađanja, bez kazni, bez Excel tablica u ponoć.
             </p>
 
-            {/* 3 interaktivne kartice */}
-            <div
-              style={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))',
-                gap: '0.75rem',
-                marginTop: '2rem',
-              }}
-            >
-              <Link
-                href='/alati/kalkulator-poreza'
-                style={{
-                  display: 'block',
-                  background: '#111716',
-                  border: '1px solid #1f2a28',
-                  borderRadius: '14px',
-                  padding: '1rem',
-                  textDecoration: 'none',
-                  transition: 'border-color 150ms',
-                }}
-                onMouseEnter={(e) => {
-                  (e.currentTarget as HTMLAnchorElement).style.borderColor = '#14b8a6';
-                }}
-                onMouseLeave={(e) => {
-                  (e.currentTarget as HTMLAnchorElement).style.borderColor = '#1f2a28';
-                }}
-              >
-                <div style={{ fontSize: '1.5rem', marginBottom: '0.5rem' }}>🧮</div>
-                <h3 style={{ color: '#e2e8e7', fontWeight: 700, fontSize: '0.875rem', marginBottom: '0.25rem' }}>
-                  Izračunaj porez 2026
-                </h3>
-                <p style={{ color: '#94a3a0', fontSize: '0.8rem', lineHeight: 1.4, margin: 0 }}>
-                  Koliko ćeš platiti poreza ove godine?
-                </p>
-              </Link>
-
-              {/* istaknuta kartica — PO-SD */}
-              <Link
-                href='/alati/po-sd'
-                style={{
-                  display: 'block',
-                  background: 'rgba(13,148,136,0.10)',
-                  border: '1px solid #0d9488',
-                  borderRadius: '14px',
-                  padding: '1rem',
-                  textDecoration: 'none',
-                  boxShadow: '0 0 20px rgba(13,148,136,0.15)',
-                  transition: 'border-color 150ms',
-                }}
-                onMouseEnter={(e) => {
-                  (e.currentTarget as HTMLAnchorElement).style.borderColor = '#14b8a6';
-                }}
-                onMouseLeave={(e) => {
-                  (e.currentTarget as HTMLAnchorElement).style.borderColor = '#0d9488';
-                }}
-              >
-                <div style={{ fontSize: '1.5rem', marginBottom: '0.5rem' }}>📄</div>
-                <h3 style={{ color: '#e2e8e7', fontWeight: 700, fontSize: '0.875rem', marginBottom: '0.25rem' }}>
-                  Generiraj PO-SD
-                </h3>
-                <p style={{ color: '#94a3a0', fontSize: '0.8rem', lineHeight: 1.4, margin: 0 }}>
-                  Procijeni razred i pripremi PO-SD obrazac.
-                </p>
-              </Link>
-
-              <Link
-                href='/asistent'
-                style={{
-                  display: 'block',
-                  background: '#111716',
-                  border: '1px solid #1f2a28',
-                  borderRadius: '14px',
-                  padding: '1rem',
-                  textDecoration: 'none',
-                  transition: 'border-color 150ms',
-                }}
-                onMouseEnter={(e) => {
-                  (e.currentTarget as HTMLAnchorElement).style.borderColor = '#14b8a6';
-                }}
-                onMouseLeave={(e) => {
-                  (e.currentTarget as HTMLAnchorElement).style.borderColor = '#1f2a28';
-                }}
-              >
-                <div style={{ fontSize: '1.5rem', marginBottom: '0.5rem' }}>🤖</div>
-                <h3 style={{ color: '#e2e8e7', fontWeight: 700, fontSize: '0.875rem', marginBottom: '0.25rem' }}>
-                  Pitaj AI asistenta
-                </h3>
-                <p style={{ color: '#94a3a0', fontSize: '0.8rem', lineHeight: 1.4, margin: 0 }}>
-                  Odgovori na porezna pitanja odmah.
-                </p>
-              </Link>
-            </div>
+            {/* 3 interaktivne kartice — naglasak u ritmu mockupa */}
+            <HeroCtaCards blend={cardBlend} />
 
             {/* trust bar */}
             <div
@@ -835,9 +922,21 @@ export default function LandingPage() {
                   }}
                 />
                 {/* screen — animated "Vodič u akciji" */}
-                <PhoneMockupScreen />
+                <PhoneMockupScreen onSlideStart={startCardCrossfade} />
               </div>
             </div>
+          </div>
+
+          {/* positioning — centrirano u preostalom prostoru hero sekcije */}
+          <div className='hero-positioning'>
+            <p>
+              Kvik je jedina aplikacija koja hrvatskom paušalistu govori što smije,
+              što mora i kad — i onda to napravi umjesto njega.
+            </p>
+            <p>
+              Kvik je džepni knjigovođa i kompas kroz zakone i fiskalizaciju za
+              paušalne obrte.
+            </p>
           </div>
         </div>
 
