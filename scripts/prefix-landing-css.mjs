@@ -92,9 +92,9 @@ result = result.replace(
 
 result = result.replace(/#kvik-landing html\{/g, 'html{');
 
-result += `\n#kvik-landing .nav-actions{display:flex;align-items:center;gap:0.75rem;flex-shrink:0}
-#kvik-landing .nav-login{color:var(--text2);text-decoration:none;font-size:0.9rem;font-weight:500;transition:color 0.2s;white-space:nowrap}
-#kvik-landing .nav-login:hover{color:var(--text)}
+result += `\n#kvik-landing .nav-actions{display:flex;align-items:center;gap:1rem;flex-shrink:0}
+#kvik-landing .nav-login-text{display:inline-flex;align-items:center;justify-content:center;box-sizing:border-box;padding:0.5rem 1rem;border:1px solid #94a3a0;border-radius:8px;background:transparent;color:#94a3a0;font-size:0.9rem;font-weight:500;line-height:1.2;text-decoration:none;white-space:nowrap;transition:color 0.2s,border-color 0.2s,background 0.2s}
+#kvik-landing .nav-login-text:hover{color:#e2e8e7;border-color:#c5d0ce;background:rgba(148,163,160,0.08)}
 #kvik-landing .section--tight-top{padding-top:0}
 #kvik-landing .section-sub--accent{color:var(--teal2);font-weight:500}`;
 

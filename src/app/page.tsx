@@ -38,7 +38,7 @@ const LANDING_RESPONSIVE_CSS = `
   justify-content:center;
   box-sizing:border-box;
   padding:0.5rem 1rem;
-  border:1px solid #2a3734;
+  border:1px solid #94a3a0;
   border-radius:8px;
   background:transparent;
   color:#94a3a0;
@@ -672,7 +672,10 @@ export default function LandingPage() {
             </li>
           </ul>
           <div className='nav-actions'>
-            <Link href='/login' className='nav-login-text'>
+            <Link
+              href='/login'
+              className='nav-login-text sm:!inline-flex sm:!items-center sm:!justify-center sm:!box-border sm:!px-4 sm:!py-2 sm:!border sm:!border-solid sm:!border-[#94a3a0] sm:!rounded-lg sm:!bg-transparent sm:!text-[#94a3a0] sm:!text-sm sm:!font-medium sm:!no-underline sm:!whitespace-nowrap sm:transition-colors sm:hover:!border-[#c5d0ce] sm:hover:!bg-[rgba(148,163,160,0.08)] sm:hover:!text-[#e2e8e7]'
+            >
               Imam Kvik!
             </Link>
             <Link href='/register' className='nav-cta'>
