@@ -1,7 +1,6 @@
 'use client';
 
 import Image from 'next/image';
-import { Calculator, Sparkles } from 'lucide-react';
 import Link from 'next/link';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
@@ -689,59 +688,84 @@ export default function LandingPage() {
             >
               <Link
                 href='/alati/kalkulator-poreza'
-                className='group block rounded-[14px] border border-[#1f2a28] bg-[#111716] p-4 no-underline transition-transform duration-200 hover:scale-105 hover:border-[#14b8a6]'
+                style={{
+                  display: 'block',
+                  background: '#111716',
+                  border: '1px solid #1f2a28',
+                  borderRadius: '14px',
+                  padding: '1rem',
+                  textDecoration: 'none',
+                  transition: 'border-color 150ms',
+                }}
+                onMouseEnter={(e) => {
+                  (e.currentTarget as HTMLAnchorElement).style.borderColor = '#14b8a6';
+                }}
+                onMouseLeave={(e) => {
+                  (e.currentTarget as HTMLAnchorElement).style.borderColor = '#1f2a28';
+                }}
               >
-                <Calculator
-                  className='mb-2 h-7 w-7 text-amber-500'
-                  strokeWidth={2.25}
-                  aria-hidden
-                />
-                <h3 className='text-left text-2xl font-bold uppercase leading-tight text-amber-500 md:text-3xl'>
-                  IZRAČUNAJ
+                <div style={{ fontSize: '1.5rem', marginBottom: '0.5rem' }}>🧮</div>
+                <h3 style={{ color: '#e2e8e7', fontWeight: 700, fontSize: '0.875rem', marginBottom: '0.25rem' }}>
+                  Izračunaj porez 2026
                 </h3>
-                <p className='mb-2 mt-1 text-left text-[0.8rem] leading-snug text-[#e2e8e7]'>
-                  svoj porez za 2026.
-                </p>
-                <p className='mt-1 text-left text-[0.72rem] leading-snug text-[#94a3a0]'>
-                  Koliko ćeš platiti porez ove godine?
+                <p style={{ color: '#94a3a0', fontSize: '0.8rem', lineHeight: 1.4, margin: 0 }}>
+                  Koliko ćeš platiti poreza ove godine?
                 </p>
               </Link>
 
+              {/* istaknuta kartica — PO-SD */}
               <Link
                 href='/alati/po-sd'
-                className='group block rounded-[14px] border border-[#0d9488] bg-[rgba(13,148,136,0.10)] p-4 no-underline shadow-[0_0_20px_rgba(13,148,136,0.15)] transition-transform duration-200 hover:scale-105 hover:border-[#14b8a6]'
+                style={{
+                  display: 'block',
+                  background: 'rgba(13,148,136,0.10)',
+                  border: '1px solid #0d9488',
+                  borderRadius: '14px',
+                  padding: '1rem',
+                  textDecoration: 'none',
+                  boxShadow: '0 0 20px rgba(13,148,136,0.15)',
+                  transition: 'border-color 150ms',
+                }}
+                onMouseEnter={(e) => {
+                  (e.currentTarget as HTMLAnchorElement).style.borderColor = '#14b8a6';
+                }}
+                onMouseLeave={(e) => {
+                  (e.currentTarget as HTMLAnchorElement).style.borderColor = '#0d9488';
+                }}
               >
-                <div className='mb-2 text-2xl' aria-hidden>
-                  📄
-                </div>
-                <h3 className='text-left text-2xl font-bold uppercase leading-tight text-amber-500 md:text-3xl'>
-                  GENERIRAJ
+                <div style={{ fontSize: '1.5rem', marginBottom: '0.5rem' }}>📄</div>
+                <h3 style={{ color: '#e2e8e7', fontWeight: 700, fontSize: '0.875rem', marginBottom: '0.25rem' }}>
+                  Generiraj PO-SD
                 </h3>
-                <p className='mb-2 mt-1 text-left text-[0.8rem] leading-snug text-[#e2e8e7]'>
-                  svoj PO-SD i uzmi PDF.
-                </p>
-                <p className='mt-1 text-left text-[0.72rem] leading-snug text-[#94a3a0]'>
-                  Unesi iznose računa i gledaj čaroliju.
+                <p style={{ color: '#94a3a0', fontSize: '0.8rem', lineHeight: 1.4, margin: 0 }}>
+                  Procijeni razred i pripremi PO-SD obrazac.
                 </p>
               </Link>
 
               <Link
                 href='/asistent'
-                className='group block rounded-[14px] border border-[#1f2a28] bg-[#111716] p-4 no-underline transition-transform duration-200 hover:scale-105 hover:border-[#14b8a6]'
+                style={{
+                  display: 'block',
+                  background: '#111716',
+                  border: '1px solid #1f2a28',
+                  borderRadius: '14px',
+                  padding: '1rem',
+                  textDecoration: 'none',
+                  transition: 'border-color 150ms',
+                }}
+                onMouseEnter={(e) => {
+                  (e.currentTarget as HTMLAnchorElement).style.borderColor = '#14b8a6';
+                }}
+                onMouseLeave={(e) => {
+                  (e.currentTarget as HTMLAnchorElement).style.borderColor = '#1f2a28';
+                }}
               >
-                <Sparkles
-                  className='mb-2 h-7 w-7 text-amber-500'
-                  strokeWidth={2.25}
-                  aria-hidden
-                />
-                <h3 className='text-left text-2xl font-bold uppercase leading-tight text-amber-500 md:text-3xl'>
-                  UPITAJ
+                <div style={{ fontSize: '1.5rem', marginBottom: '0.5rem' }}>🤖</div>
+                <h3 style={{ color: '#e2e8e7', fontWeight: 700, fontSize: '0.875rem', marginBottom: '0.25rem' }}>
+                  Pitaj AI asistenta
                 </h3>
-                <p className='mb-2 mt-1 text-left text-[0.8rem] leading-snug text-[#e2e8e7]'>
-                  ono što ne znaš:
-                </p>
-                <p className='mt-1 text-left text-[0.72rem] leading-snug text-[#94a3a0]'>
-                  o fiskalizaciji, kaznama, rokovima... Kvik AI asistent zna.
+                <p style={{ color: '#94a3a0', fontSize: '0.8rem', lineHeight: 1.4, margin: 0 }}>
+                  Odgovori na porezna pitanja odmah.
                 </p>
               </Link>
             </div>
@@ -760,16 +784,6 @@ export default function LandingPage() {
               <span>✓ Besplatno bez registracije</span>
               <span>✓ Fiskalizacija uključena</span>
               <span>✓ 0€ aktivacija</span>
-            </div>
-
-            <div className='mx-auto mt-8 max-w-3xl text-center'>
-              <p className='text-lg text-[#e2e8e7]'>
-                Kvik je jedina aplikacija koja hrvatskom paušalistu govori što smije, što mora
-                i kad — i onda to napravi umjesto njega.
-              </p>
-              <p className='mt-2 text-lg text-[#94a3a0]'>
-                Kvik je džepni knjigovođa i kompas kroz zakone i fiskalizaciju za paušalne obrte.
-              </p>
             </div>
           </div>
 
