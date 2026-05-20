@@ -633,7 +633,7 @@ export default function LandingPage() {
         id='kvik-landing-base-style'
         dangerouslySetInnerHTML={{ __html: KVIK_LANDING_CSS }}
       />
-      {/* Desktop: outline Imam račun; mobile: two-row centered nav + equal-width CTAs */}
+      {/* Desktop: outline login CTA; mobile: two-row centered nav + equal-width CTAs */}
       <style
         id='kvik-landing-responsive-style'
         dangerouslySetInnerHTML={{ __html: LANDING_RESPONSIVE_CSS }}
@@ -662,10 +662,10 @@ export default function LandingPage() {
           </ul>
           <div className='nav-actions'>
             <Link href='/login' className='nav-login-text'>
-              Imam račun
+              Imam Kvik!
             </Link>
             <Link href='/register' className='nav-cta'>
-              Registriraj se besplatno →
+              Priključujem se!
             </Link>
           </div>
         </nav>
