@@ -28,6 +28,36 @@ const TALLY = 'https://tally.so/r/44or65';
 const LANDING_RESPONSIVE_CSS = `
 #kvik-landing .hero{overflow-x:hidden}
 #kvik-landing .hero-left{min-width:0}
+#kvik-landing .hero-sub-block{
+  margin-bottom:2.25rem;
+  max-width:520px;
+}
+#kvik-landing .hero-sub-block .hero-sub{
+  margin-bottom:0.75rem;
+}
+#kvik-landing .hero-sub-cue{
+  display:flex;
+  justify-content:flex-start;
+  align-items:center;
+  color:#14b8a8;
+  opacity:0.9;
+  padding-left:0.15rem;
+  animation:hero-sub-cue-nudge 2.4s ease-in-out infinite;
+}
+@keyframes hero-sub-cue-nudge{
+  0%,100%{transform:translateY(0);opacity:0.65}
+  50%{transform:translateY(5px);opacity:1}
+}
+@media(max-width:900px){
+  #kvik-landing .hero-sub-block{
+    margin-left:auto;
+    margin-right:auto;
+  }
+  #kvik-landing .hero-sub-cue{
+    justify-content:center;
+    padding-left:0;
+  }
+}
 /* Imam Kvik! — outline gumb na svim breakpointima (mobil override ispod) */
 #kvik-landing .nav-actions{
   gap:1rem;
@@ -872,9 +902,44 @@ export default function LandingPage() {
             <h1>
               Kvik vodi računa o zakonima.<br />Ti samo vodi obrt.
             </h1>
-            <p className='hero-sub'>
-              Automatski KPR, PO-SD i fiskalizacija — bez nagađanja, bez kazni, bez Excel tablica u ponoć.
-            </p>
+            <div className='hero-sub-block'>
+              <p className='hero-sub'>
+                Hitro izračunaj svoju trenutnu poreznu obvezu, kreiraj si PO-SD ili
+                saznaj sve o fiskalizaciji od AI asistenta. Klikni na donje gumbe i
+                isprobaj odmah!
+              </p>
+              <div className='hero-sub-cue' aria-hidden='true'>
+                <svg
+                  width='28'
+                  height='32'
+                  viewBox='0 0 28 32'
+                  fill='none'
+                  xmlns='http://www.w3.org/2000/svg'
+                >
+                  <path
+                    d='M14 4v14'
+                    stroke='currentColor'
+                    strokeWidth='1.75'
+                    strokeLinecap='round'
+                  />
+                  <path
+                    d='M8 14l6 6 6-6'
+                    stroke='currentColor'
+                    strokeWidth='1.75'
+                    strokeLinecap='round'
+                    strokeLinejoin='round'
+                  />
+                  <path
+                    d='M10 22l4 4 4-4'
+                    stroke='currentColor'
+                    strokeWidth='1.75'
+                    strokeLinecap='round'
+                    strokeLinejoin='round'
+                    opacity='0.45'
+                  />
+                </svg>
+              </div>
+            </div>
 
             {/* 3 interaktivne kartice — naglasak u ritmu mockupa */}
             <HeroCtaCards blend={cardBlend} />
