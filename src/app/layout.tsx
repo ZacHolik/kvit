@@ -72,6 +72,19 @@ export default function RootLayout({
     <html lang='hr'>
       <body className={`${syne.variable} ${dmSans.variable} antialiased`}>
         {children}
+        {/* Google tag (gtag.js) */}
+        <Script
+          src='https://www.googletagmanager.com/gtag/js?id=G-QC5J0SBEM9'
+          strategy='afterInteractive'
+        />
+        <Script id='google-analytics' strategy='afterInteractive'>
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-QC5J0SBEM9');
+          `}
+        </Script>
         <Script
           id='meta-pixel'
           strategy='afterInteractive'
