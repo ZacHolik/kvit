@@ -85,6 +85,26 @@ export const VODICI_ENTRIES: VodiciEntry[] = [
     primaryKeyword: 'RPO obrazac paušalni obrt',
   },
   {
+    slug: 'prvi-koraci-nakon-obrta',
+    title: 'Prvi koraci nakon dobivanja obrtnice',
+    shortTitle: 'Prvi koraci',
+    description:
+      'Checklista prvih 30 dana: RPO obrazac, banka, doprinosi, fiskalizacija i što moraš napraviti odmah nakon upisa u obrtni registar.',
+    readingMinutes: 12,
+    category: 'osnove',
+    primaryKeyword: 'prvi koraci nakon obrtnice',
+  },
+  {
+    slug: 'bankovni-racun-pausalisti',
+    title: 'Bankovni račun za paušaliste: poslovni vs privatni',
+    shortTitle: 'Bankovni račun',
+    description:
+      'Moraš li odvojiti poslovni i privatni račun? Žiro vs tekući, troškovi, rizici miješanja i kako Porezna gleda na to.',
+    readingMinutes: 10,
+    category: 'osnove',
+    primaryKeyword: 'bankovni račun paušalista',
+  },
+  {
     slug: 'doprinosi-uz-posao',
     title: 'Doprinosi paušalni obrt uz posao 2026.',
     shortTitle: 'Doprinosi uz zaposlenje',
@@ -93,6 +113,16 @@ export const VODICI_ENTRIES: VodiciEntry[] = [
     readingMinutes: 9,
     category: 'osnove',
     primaryKeyword: 'doprinosi paušalni obrt uz posao',
+  },
+  {
+    slug: 'pausalist-uz-posao',
+    title: 'Paušalni obrt uz redovno zaposlenje 9-5',
+    shortTitle: 'Paušalist uz posao',
+    description:
+      'Kompletna procedura od e-Obrtnice do plaćanja doprinosa za paušaliste koji već imaju stalno zaposlenje. Rok 8 dana, duplo osiguranje i pravo na odmor.',
+    readingMinutes: 14,
+    category: 'osnove',
+    primaryKeyword: 'paušalni obrt uz posao',
   },
   {
     slug: 'rad-s-pola-radnog-vremena-pausalni-obrt',
@@ -314,6 +344,16 @@ export const VODICI_ENTRIES: VodiciEntry[] = [
     primaryKeyword: 'PDV ID broj paušalni obrt',
   },
   {
+    slug: 'pausalist-izvan-pdv',
+    title: 'Paušalist izvan PDV sustava',
+    shortTitle: 'Izvan PDV-a',
+    description:
+      'Što znači biti paušalist izvan PDV-a: obveze zaprimanja eRačuna od 1.1.2026., obveze izdavanja od 1.1.2027., napomena na računima i prag 60.000 €.',
+    readingMinutes: 10,
+    category: 'porezi',
+    primaryKeyword: 'paušalist izvan PDV-a',
+  },
+  {
     slug: 'pdv-facebook-oglasavanje',
     title: 'PDV za Facebook oglašavanje – vodič za paušaliste 2026.',
     shortTitle: 'PDV za Facebook oglašavanje',
@@ -338,6 +378,16 @@ export const VODICI_ENTRIES: VodiciEntry[] = [
     primaryKeyword: 'fiskalizacija 2.0 paušalni obrt eračun 2026 2027',
   },
   {
+    slug: 'usporedba-fiskalizacija-1-2',
+    title: 'Usporedba Fiskalizacija 1.0 vs 2.0',
+    shortTitle: 'Fiskalizacija 1.0 vs 2.0',
+    description:
+      'Side-by-side tablica: tko mora, certifikat, cijena, rokovi, eRačuni, JIR, poslovni prostor. Fiskalizacija 1.0 (gotovina) vs 2.0 (B2B/B2G).',
+    readingMinutes: 11,
+    category: 'fiskalizacija',
+    primaryKeyword: 'fiskalizacija 1.0 vs 2.0',
+  },
+  {
     slug: 'fina-certifikat-fiskalizacija',
     title: 'FINA certifikat za fiskalizaciju — korak po korak',
     shortTitle: 'FINA certifikat fiskalizacija',
@@ -358,6 +408,16 @@ export const VODICI_ENTRIES: VodiciEntry[] = [
     primaryKeyword: 'KPR online paušalni obrt',
   },
   {
+    slug: 'knjige-po-djelatnostima',
+    title: 'Koje knjige mora voditi paušalist po djelatnostima',
+    shortTitle: 'Knjige po djelatnostima',
+    description:
+      'KPR za sve + dodatne knjige za ugostiteljstvo, trgovinu, turizam, OPG, graditeljstvo, frizere, prijevoditelje i taxi. Koje su obvezne, koje preporučene.',
+    readingMinutes: 13,
+    category: 'fiskalizacija',
+    primaryKeyword: 'knjige paušalista po djelatnostima',
+  },
+  {
     slug: 'izdavanje-racuna-vodic',
     title: 'Vodič za izdavanje računa – paušalni obrt 2026.',
     shortTitle: 'Vodič za izdavanje računa',
@@ -366,6 +426,16 @@ export const VODICI_ENTRIES: VodiciEntry[] = [
     readingMinutes: 12,
     category: 'fiskalizacija',
     primaryKeyword: 'izdavanje računa paušalni obrt vodič',
+  },
+  {
+    slug: 'fizicke-osobe-placaju-na-racun',
+    title: 'Kada fizičke osobe plaćaju na račun obrta',
+    shortTitle: 'Fizičke osobe na račun',
+    description:
+      'B2C scenarij: paušalist izdaje račun fizičkoj osobi koja plaća na transakcijski račun. Fiskalizacija od 1.1.2026., JIR, ZKI i što je obvezno.',
+    readingMinutes: 9,
+    category: 'fiskalizacija',
+    primaryKeyword: 'fizičke osobe plaćaju na račun obrt',
   },
 ];
 
