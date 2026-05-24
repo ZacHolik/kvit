@@ -57,6 +57,8 @@ export default function BankovniRacunPausalistiPage() {
         { id: 'zasto-odvojiti', label: 'Zašto odvojiti' },
         { id: 'kako-odvojiti', label: 'Kako odvojiti' },
         { id: 'opcije', label: 'Opcije i usporedba' },
+        { id: 'tradicionalne-banke', label: 'Tradicionalne banke' },
+        { id: 'revolut', label: 'Revolut Business' },
         { id: 'jedan-racun', label: 'Ako već miješaš' },
         { id: 'greske', label: 'Česte greške' },
       ]}
@@ -224,74 +226,189 @@ export default function BankovniRacunPausalistiPage() {
       </p>
 
       <h2 id='opcije'>Opcije za bankovni račun — usporedba</h2>
-
-      <h3>Tradicionalne hrvatske banke</h3>
+      <p>
+        Tradicionalne banke daju HR IBAN bez dodatne prijave Poreznoj. Revolut je besplatan
+        i brz, ali litavski IBAN zahtijeva prijavu u roku 30 dana. Usporedi opcije prije
+        otvaranja:
+      </p>
       <div className={tableWrap}>
         <table className='min-w-full border-collapse text-left'>
           <caption className='border-b border-[#1f2a28] px-4 py-3 text-left text-xs text-[#94a3a0]'>
-            Usporedba mjesečnih naknada tradicionalnih banaka (informativno)
+            Usporedba bankovnih opcija za paušaliste (informativno)
           </caption>
           <thead>
             <tr className='border-b border-[#1f2a28] text-[#94a3a0]'>
               <th className='px-3 py-2 font-medium'>Banka</th>
               <th className='px-3 py-2 font-medium'>Mjesečna naknada</th>
-              <th className='px-3 py-2 font-medium'>Napomena</th>
+              <th className='px-3 py-2 font-medium'>Prednosti</th>
+              <th className='px-3 py-2 font-medium'>Nedostaci</th>
             </tr>
           </thead>
           <tbody className='text-[#d5dfdd]'>
             <tr className='border-b border-[#1f2a28]/80'>
               <td className='px-3 py-2'>
-                <strong>PBZ</strong> (eŽiro)
+                <strong>PBZ Sinergo Standard 2.0</strong>
               </td>
-              <td className='px-3 py-2'>0–3 €/mj</td>
-              <td className='px-3 py-2'>Ovisno o broju transakcija</td>
+              <td className='px-3 py-2'>9,95 €/mj</td>
+              <td className='px-3 py-2'>
+                HR IBAN (nema prijave Poreznoj), digitalno bankarstvo, Visa debitna
+              </td>
+              <td className='px-3 py-2'>Mjesečna naknada</td>
             </tr>
             <tr className='border-b border-[#1f2a28]/80'>
               <td className='px-3 py-2'>
                 <strong>Erste</strong>
               </td>
-              <td className='px-3 py-2'>~5 €/mj</td>
-              <td className='px-3 py-2'>Paketi za obrtnike dostupni</td>
+              <td className='px-3 py-2'>~5–10 €/mj</td>
+              <td className='px-3 py-2'>HR IBAN, poznata banka</td>
+              <td className='px-3 py-2'>Provjeri cijene u poslovnici</td>
             </tr>
             <tr className='border-b border-[#1f2a28]/80'>
               <td className='px-3 py-2'>
                 <strong>Zaba</strong>
               </td>
-              <td className='px-3 py-2'>~5 €/mj</td>
-              <td className='px-3 py-2'>Provjeriti u poslovnici</td>
+              <td className='px-3 py-2'>~5–10 €/mj</td>
+              <td className='px-3 py-2'>HR IBAN, široka mreža poslovnica</td>
+              <td className='px-3 py-2'>Provjeri cijene u poslovnici</td>
             </tr>
             <tr>
               <td className='px-3 py-2'>
-                <strong>Raiffeisen</strong>
+                <strong>Revolut Business</strong>
               </td>
-              <td className='px-3 py-2'>~5 €/mj</td>
-              <td className='px-3 py-2'>Paketi za male poduzetnike</td>
+              <td className='px-3 py-2'>0 € (Free plan)</td>
+              <td className='px-3 py-2'>
+                Besplatno, brzo otvaranje, Stripe kompatibilan
+              </td>
+              <td className='px-3 py-2'>
+                Latvijski IBAN, prijava Poreznoj obavezna
+              </td>
             </tr>
           </tbody>
         </table>
       </div>
-      <p>
-        <strong>Napomena:</strong> Točne cijene ovise o paketima i broju transakcija.
-        Provjeri u banci prije otvaranja računa — cjenici često nisu javno objavljeni.
-      </p>
 
-      <h3>Fintech opcije</h3>
+      <h2 id='tradicionalne-banke'>Tradicionalne banke — detaljni pregled</h2>
+
+      <h3>PBZ (Privredna banka Zagreb)</h3>
       <p>
-        <strong>Revolut Business:</strong>
+        <strong>PBZ Sinergo Standard 2.0 paket:</strong>
+      </p>
+      <ul>
+        <li>Mjesečna naknada: 9,95 €/mj</li>
+        <li>
+          Uključeno: transakcijski račun u eurima, PBZ digitalno bankarstvo (mobilna +
+          web app), 1 Visa Business debitna kartica
+        </li>
+        <li>
+          Bonus: BON-2/SOL-2 dokumenti bez dodatne naknade (korisno za državne poticaje
+          ili EU fondove)
+        </li>
+      </ul>
+      <p>
+        <strong>Dokumentacija za otvaranje:</strong>
       </p>
       <ul>
         <li>
-          <strong>Besplatan plan</strong> dostupan (Free tier)
+          Rješenje o upisu u obrtni registar ILI aktualni Izvadak iz obrtnog registra (ne
+          stariji od 6 mjeseci)
+        </li>
+        <li>Osobna iskaznica vlasnika</li>
+        <li>
+          <strong>NAPOMENA:</strong> Obavijest o razvrstavanju prema NKD-u od DZS-a{' '}
+          <strong>NE TREBA</strong> za obrte — to je samo za d.o.o. NKD djelatnost već je
+          vidljiva u izvatku iz obrtnog registra.
+        </li>
+      </ul>
+      <p>
+        <strong>Procedura otvaranja (3 koraka):</strong>
+      </p>
+      <ol>
+        <li>
+          <strong>Email najava:</strong> Pošalji zahtjev i skeniranu dokumentaciju na{' '}
+          poduzeca.sastanci@pbz.hr. U emailu navedi koji paket želiš (npr. Sinergo
+          Standard 2.0).
         </li>
         <li>
-          Potvrđeno od porezne (mišljenje 31.01.2023.) — može biti jedini poslovni račun
-          paušalista
+          <strong>Termin:</strong> Bankar pregleda dokumente, priprema ugovore i javi ti
+          termin za dolazak u poslovnicu.
         </li>
-        <li>Dostupno na revolut.com/hr-HR/business</li>
         <li>
-          <strong>NAPOMENA:</strong> Revolut koristi latvijski IBAN što može utjecati na 2D
-          barkodove za plaćanje — provjeri kompatibilnost prije prebacivanja svih uplate
+          <strong>Potpisivanje:</strong> Dođeš s originalnim dokumentima, potpišeš ugovor
+          i karton depozitnih potpisa. Račun aktivan odmah ili sljedeći radni dan.
         </li>
+      </ol>
+      <p>
+        <strong>Preuzmi gotov predložak pisma za PBZ:</strong>{' '}
+        <Link href='/alati/pismo-banka'>Generator pisma za banku</Link>
+      </p>
+
+      <h3>Erste, Zaba, Raiffeisen</h3>
+      <p>Slična procedura kao PBZ:</p>
+      <ul>
+        <li>
+          <strong>Erste:</strong> Paketi za male poduzetnike, ~5–10 €/mj ovisno o
+          transakcijama
+        </li>
+        <li>
+          <strong>Zaba:</strong> Transakcijski računi za obrtnike, ~5–10 €/mj
+        </li>
+        <li>
+          <strong>Raiffeisen:</strong> Paketi za male poduzetnike, ~5–10 €/mj
+        </li>
+      </ul>
+      <p>
+        <strong>Preporuka:</strong> Provjeri u banci točne cijene prije otvaranja —
+        cjenici često nisu javno objavljeni.
+      </p>
+
+      <h2 id='revolut'>Revolut Business — detaljne informacije</h2>
+      <p>
+        <strong>Službeno sjedište Revolut Europe:</strong>
+      </p>
+      <ul>
+        <li>Vilnius, Litva (Konstitucijos ave. 21B, 08130)</li>
+        <li>Registrirano pri Središnjoj banci Litve</li>
+        <li>
+          Pruža bankarske usluge kroz <strong>Revolut Bank UAB</strong>
+        </li>
+      </ul>
+      <p>
+        <strong>Litavski IBAN — što to znači:</strong>
+      </p>
+      <ul>
+        <li>Revolut dodjeljuje IBAN s LT prefiksom (Litva)</li>
+        <li>
+          <strong>OBAVEZNO:</strong> Prijavi ovaj račun Poreznoj u roku{' '}
+          <strong>30 dana</strong> od otvaranja
+        </li>
+        <li>
+          Prijava: elektronički preko ePorezne portala (eporezna.gov.hr) — Obrazac JOPPD
+          ili prijava ino-računa
+        </li>
+      </ul>
+      <p>
+        <strong>Stripe kompatibilnost:</strong>
+      </p>
+      <ul>
+        <li>Revolut je potpuno podržan u Stripe payouts</li>
+        <li>Isplate (payouts) prema litavskom IBAN-u prolaze bez problema</li>
+        <li>SEPA standard — 1–2 radna dana kao i HR banke</li>
+      </ul>
+      <p>
+        <strong>Prednosti:</strong>
+      </p>
+      <ul>
+        <li>Besplatan osnovni paket</li>
+        <li>Potvrđeno od Porezne (može biti jedini račun paušalista)</li>
+        <li>Brzo otvaranje (online, bez odlaska u poslovnicu)</li>
+      </ul>
+      <p>
+        <strong>Nedostaci:</strong>
+      </p>
+      <ul>
+        <li>Mora se prijaviti Poreznoj (dodatna administracija)</li>
+        <li>Latvijski IBAN može zbuniti neke klijente</li>
+        <li>Problem s 2D barkodovima (korisnici izvještavaju)</li>
       </ul>
       <p>
         <strong>Ostale fintech opcije (Wise, N26...):</strong> Trenutno nema potvrđenih
@@ -382,6 +499,30 @@ export default function BankovniRacunPausalistiPage() {
         <strong>✅ Rješenje:</strong> Pri otvaranju računa <strong>eksplicitno traži da bude
         vođen kao poslovni</strong>. Ako već imaš otvoren tekući, zatraži prebacivanje u
         poslovni status.
+      </p>
+
+      <h3>
+        ❌ &quot;Banka traži Obavijest o razvrstavanju prema NKD-u od DZS-a&quot;
+      </h3>
+      <p>
+        <strong>Problem:</strong> DZS izdaje tu obavijest samo za <strong>d.o.o.</strong>,
+        ne za obrte. Bankar možda koristi unificirani check-list i ne razlikuje obrte od
+        tvrtki.
+      </p>
+      <p>
+        <strong>✅ Rješenje:</strong> U emailu banci napomeni: &quot;Budući da se radi o
+        obrtu, DZS ne izdaje zasebnu Obavijest o razvrstavanju. NKD djelatnost vidljiva
+        je u priloženom Izvatku iz obrtnog registra.&quot;
+      </p>
+
+      <h3>❌ &quot;Otvorio sam Revolut, ali nisam prijavio Poreznoj&quot;</h3>
+      <p>
+        <strong>Problem:</strong> Inozemni račun (litavski IBAN) mora se prijaviti u roku
+        30 dana. Kazna za neprijavu.
+      </p>
+      <p>
+        <strong>✅ Rješenje:</strong> Prijavi odmah preko ePorezne portala (eporezna.gov.hr)
+        — Obrazac JOPPD ili prijava ino-računa.
       </p>
 
       <h2 id='alat'>Korisni alat</h2>
