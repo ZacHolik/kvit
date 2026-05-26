@@ -437,6 +437,16 @@ export const VODICI_ENTRIES: VodiciEntry[] = [
     category: 'fiskalizacija',
     primaryKeyword: 'fizičke osobe plaćaju na račun obrt',
   },
+  {
+    slug: 'pausalist-fakturira-pausalist',
+    title: 'Kako paušalac fakturira paušalcu',
+    shortTitle: 'Paušalist fakturira paušalcu',
+    description:
+      'Vodič za izdavanje računa između dva paušalna obrta: B2B pravila, fiskalizacija, eRačuni, obvezni elementi i KPR evidentiranje.',
+    readingMinutes: 14,
+    category: 'fiskalizacija',
+    primaryKeyword: 'paušalist fakturira paušalcu B2B račun',
+  },
 ];
 
 export function vodiciEntryBySlug(slug: string): VodiciEntry | undefined {
