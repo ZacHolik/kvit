@@ -61,6 +61,13 @@ const TOOLS: {
     badge: 'FREEMIUM',
   },
   {
+    href: '/alati/pismo-banka',
+    icon: '🏦',
+    title: 'Generator pisma za banku',
+    description: 'Generiraj profesionalno pismo za otvaranje poslovnog računa.',
+    badge: 'FREEMIUM',
+  },
+  {
     href: '/alati/checklista',
     icon: '✅',
     title: 'Checklista obveza',
