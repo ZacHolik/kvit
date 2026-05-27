@@ -117,5 +117,20 @@ app.post('/fiscalize', async (req, res) => {
 
 app.get('/health', (_, res) => res.json({ ok: true }));
 
+app.get('/tcp-test', async (req, res) => {
+  const net = await import('net');
+  const socket = new net.Socket();
+  const result = await new Promise((resolve) => {
+    socket.setTimeout(5000);
+    socket.connect(8449, 'cistest.apis-it.hr', () => {
+      socket.destroy();
+      resolve({ connected: true });
+    });
+    socket.on('error', (err) => resolve({ connected: false, error: err.message }));
+    socket.on('timeout', () => resolve({ connected: false, error: 'timeout' }));
+  });
+  res.json(result);
+});
+
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => console.log(`CIS proxy listening on ${PORT}`));
