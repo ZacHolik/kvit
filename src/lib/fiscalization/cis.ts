@@ -28,6 +28,50 @@ export function resolveCisUrl(mode: 'test' | 'production'): string {
   return mode === 'production' ? CIS_PROD_URL : CIS_TEST_URL;
 }
 
+function resolveCisProxyFiscalizeUrl(): string | null {
+  const base = process.env.CIS_PROXY_URL?.trim();
+  if (!base) return null;
+  return `${base.replace(/\/$/, '')}/fiscalize`;
+}
+
+function resolveFinaEnvForProxy(mode: 'test' | 'production'): string {
+  const env = process.env.FINA_ENV?.trim();
+  if (env === 'production' || env === 'test') return env;
+  return mode;
+}
+
+/** SOAP POST — Cloud Run proxy (Vercel) ili direktno CIS (lokalno + FINA_CA_CERT_PATH). */
+async function postSoapToCis(
+  soapXml: string,
+  cisUrl: string,
+  mode: 'test' | 'production',
+  timeoutMs: number,
+) {
+  const proxyUrl = resolveCisProxyFiscalizeUrl();
+  if (proxyUrl) {
+    console.log('[CIS] Proxy:', proxyUrl.replace(/\/fiscalize$/, ''), 'FINA_ENV:', resolveFinaEnvForProxy(mode));
+    return undiciFetch(proxyUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'text/xml;charset=UTF-8',
+        SOAPAction: '',
+        'x-proxy-secret': process.env.CIS_PROXY_SECRET?.trim() ?? '',
+        'x-fina-env': resolveFinaEnvForProxy(mode),
+      },
+      body: soapXml,
+      signal: AbortSignal.timeout(timeoutMs),
+    });
+  }
+
+  return undiciFetch(cisUrl, {
+    method: 'POST',
+    headers: { 'Content-Type': 'text/xml;charset=UTF-8', SOAPAction: '' },
+    body: soapXml,
+    signal: AbortSignal.timeout(timeoutMs),
+    dispatcher: getAgent(),
+  });
+}
+
 function getFinaAgent(): Agent {
   console.log('[FINA] CWD:', process.cwd());
   console.log('[FINA] ENV:', process.env.FINA_ENV ?? 'test (default)');
@@ -238,11 +282,7 @@ export async function sendRacunToCIS(
     console.log('[CIS] Potpisani XML (prvih 3000):\n', signedZahtjev.substring(0, 3000));
     console.log('=================================\n');
 
-    const response = await undiciFetch(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'text/xml;charset=UTF-8', SOAPAction: '' },
-      body: soapXml, signal: AbortSignal.timeout(15000), dispatcher: getAgent(),
-    });
+    const response = await postSoapToCis(soapXml, url, mode, 15000);
     const responseText = await response.text();
     const durationMs = Date.now() - started;
     const allErrors = parseAllErrorsFromResponse(responseText);
@@ -279,10 +319,7 @@ export async function echoCIS(): Promise<{ ok: boolean; message: string; duratio
   const body = '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:fis="http://www.apis-it.hr/fin/2012/types/f73"><soapenv:Body><fis:EchoRequest>Test</fis:EchoRequest></soapenv:Body></soapenv:Envelope>';
   const started = Date.now();
   try {
-    const response = await undiciFetch(url, {
-      method: 'POST', headers: { 'Content-Type': 'text/xml;charset=UTF-8', SOAPAction: '' },
-      body, signal: AbortSignal.timeout(10000), dispatcher: getAgent(),
-    });
+    const response = await postSoapToCis(body, url, 'test', 10000);
     const text = await response.text();
     const durationMs = Date.now() - started;
     if (!response.ok) return { ok: false, message: 'HTTP ' + response.status, durationMs };
