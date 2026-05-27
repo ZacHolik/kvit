@@ -1,10 +1,14 @@
+import { writeFileSync } from 'fs';
+import { tmpdir } from 'os';
+import { join } from 'path';
+
 import express from 'express';
 import { Agent, fetch } from 'undici';
 
 const app = express();
 app.use(express.text({ type: '*/*', limit: '10mb' }));
 
-const FINA_RDC_2020_CERT = `-----BEGIN CERTIFICATE-----
+const CA_CERT = `-----BEGIN CERTIFICATE-----
 MIIHOzCCBSOgAwIBAgIRAIqrCSPT6y2uAAAAAFZUvzwwDQYJKoZIhvcNAQELBQAw
 QzELMAkGA1UEBhMCSFIxHTAbBgNVBAoTFEZpbmFuY2lqc2thIGFnZW5jaWphMRUw
 EwYDVQQDEwxGaW5hIFJvb3QgQ0EwHhcNMjAxMTI1MTIzNzEwWhcNMzAxMTI1MTIz
@@ -78,10 +82,14 @@ f8MxTo7YvkP6246aBZn999yUiad42J1r6f71JMe60ulED4NLXZ//JBif0dWE6CFJ
 t9sg5w==
 -----END CERTIFICATE-----`;
 
+const caCertPath = join(tmpdir(), 'fina-ca.pem');
+writeFileSync(caCertPath, CA_CERT);
+process.env.NODE_EXTRA_CA_CERTS = caCertPath;
+
 const CIS_PROD_URL = 'https://cis.porezna-uprava.hr:8449/FiskalizacijaService';
 const CIS_TEST_URL = 'https://cistest.apis-it.hr:8449/FiskalizacijaServiceTest';
 
-const agent = new Agent({ connect: { ca: FINA_RDC_2020_CERT } });
+const agent = new Agent();
 
 const PROXY_SECRET = process.env.PROXY_SECRET;
 
