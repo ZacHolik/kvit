@@ -15,14 +15,15 @@ const CIS_TEST_URL = 'https://cistest.apis-it.hr:8449/FiskalizacijaServiceTest';
 const CIS_PROD_URL =
   'https://cis.porezna-uprava.hr:8449/FiskalizacijaService';
 
-const CIS_URL =
-  process.env.FINA_ENV === 'production' ? CIS_PROD_URL : CIS_TEST_URL;
+function cisUrlFromFinaEnv(): string {
+  return process.env.FINA_ENV === 'production' ? CIS_PROD_URL : CIS_TEST_URL;
+}
 
 export function resolveCisUrl(mode: 'test' | 'production'): string {
   const fromEnv = process.env.CIS_URL?.trim();
   if (fromEnv) return fromEnv;
   if (process.env.FINA_ENV === 'production' || process.env.FINA_ENV === 'test') {
-    return CIS_URL;
+    return cisUrlFromFinaEnv();
   }
   return mode === 'production' ? CIS_PROD_URL : CIS_TEST_URL;
 }
@@ -43,7 +44,11 @@ function getFinaAgent(): Agent {
   catch { return new Agent({}); }
 }
 
-const finaAgent = getFinaAgent();
+let _finaAgent: Agent | null = null;
+function getAgent(): Agent {
+  if (!_finaAgent) _finaAgent = getFinaAgent();
+  return _finaAgent;
+}
 
 export type CISCertificateData = { encryptedP12: string; iv: string; salt: string; p12Password?: string };
 export type CISCallMeta = { durationMs: number; requestXml: string };
@@ -177,7 +182,7 @@ export async function sendRacunToCIS(
     const response = await undiciFetch(url, {
       method: 'POST',
       headers: { 'Content-Type': 'text/xml;charset=UTF-8', SOAPAction: '' },
-      body: soapXml, signal: AbortSignal.timeout(15000), dispatcher: finaAgent,
+      body: soapXml, signal: AbortSignal.timeout(15000), dispatcher: getAgent(),
     });
     const responseText = await response.text();
     const durationMs = Date.now() - started;
@@ -217,7 +222,7 @@ export async function echoCIS(): Promise<{ ok: boolean; message: string; duratio
   try {
     const response = await undiciFetch(url, {
       method: 'POST', headers: { 'Content-Type': 'text/xml;charset=UTF-8', SOAPAction: '' },
-      body, signal: AbortSignal.timeout(10000), dispatcher: finaAgent,
+      body, signal: AbortSignal.timeout(10000), dispatcher: getAgent(),
     });
     const text = await response.text();
     const durationMs = Date.now() - started;
