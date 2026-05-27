@@ -17,6 +17,13 @@ import { createServiceRoleClient } from '@/lib/supabase/service-role';
 
 type Admin = NonNullable<ReturnType<typeof createServiceRoleClient>>;
 
+/** From adresa za pretplatničke / billing emailove (Resend). */
+export function billingResendFrom(): string {
+  return (
+    process.env.RESEND_FROM_BILLING ?? 'Kvik Naplata <pretplata@kvik.hr>'
+  );
+}
+
 export type CreateBillingRacunParams = {
   userId: string;
   stripeInvoiceId: string;

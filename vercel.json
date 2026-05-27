@@ -5,17 +5,24 @@
     {
       "path": "/api/fiscal/retry/cron",
       "schedule": "0 6 * * *"
+    },
+    {
+      "path": "/api/stripe/billing/cron",
+      "schedule": "*/5 * * * *"
     }
   ],
   "functions": {
     "src/app/api/racuni/route.ts": {
-      "maxDuration": 30
+      "maxDuration": 60
     },
     "src/app/api/fiscal/certificate/route.ts": {
-      "maxDuration": 30
+      "maxDuration": 60
     },
     "src/app/api/fiscal/certificate/validate/route.ts": {
-      "maxDuration": 30
+      "maxDuration": 60
+    },
+    "src/app/api/fiscal/retry/route.ts": {
+      "maxDuration": 60
     }
   },
   "headers": [

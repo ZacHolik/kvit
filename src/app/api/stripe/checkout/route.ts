@@ -14,7 +14,7 @@ import { getPriceId } from '@/lib/stripe/plans';
 import { createClient } from '@/lib/supabase/server';
 import { createServiceRoleClient } from '@/lib/supabase/service-role';
 
-const TALLY_FALLBACK = 'https://tally.so/r/44or65';
+const CHECKOUT_FALLBACK = '/cijene';
 
 type RequestBody = {
   plan?: 'monthly' | 'yearly';
@@ -24,7 +24,7 @@ type RequestBody = {
 export async function POST(request: Request) {
   // Graceful fallback: redirect to Tally if Stripe not configured
   if (!process.env.STRIPE_SECRET_KEY) {
-    return NextResponse.json({ url: TALLY_FALLBACK });
+    return NextResponse.json({ url: CHECKOUT_FALLBACK });
   }
 
   const supabase = createClient();

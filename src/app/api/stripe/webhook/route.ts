@@ -16,43 +16,34 @@
 import { NextResponse } from 'next/server';
 import type Stripe from 'stripe';
 
-import { formatDatumHr, formatIznosEurHr } from '@/lib/format-hr';
-import {
-  createBillingRacunForStripe,
-  renderRacunPdfBuffer,
-} from '@/lib/stripe/billing-racun-pdf';
+import { formatIznosEurHr } from '@/lib/format-hr';
+import { enqueueBillingRacunJob } from '@/lib/stripe/process-billing-payment';
 import { PLANS } from '@/lib/stripe/plans';
 import { stripe } from '@/lib/stripe/client';
 import { createServiceRoleClient } from '@/lib/supabase/service-role';
 
 export const dynamic = 'force-dynamic';
 
-// ─── Email helper (Resend) ───────────────────────────────────────────────────
-
-type EmailAttachment = { filename: string; content: Buffer };
+// ─── Email helper (Resend) — checkout / dunning (ne billing račun) ───────────
 
 async function sendEmail(
   to: string,
   subject: string,
   html: string,
-  attachments?: EmailAttachment[],
 ) {
   const key = process.env.RESEND_API_KEY;
   if (!key || !to?.trim()) {
     return;
   }
   const payload: Record<string, unknown> = {
-    from: process.env.RESEND_FROM_EMAIL ?? 'Kvik <noreply@kvik.online>',
+    from:
+      process.env.RESEND_FROM_SUPPORT ??
+      process.env.RESEND_FROM_EMAIL ??
+      'Kvik Podrška <podrska@kvik.hr>',
     to: [to.trim()],
     subject,
     html,
   };
-  if (attachments?.length) {
-    payload.attachments = attachments.map((a) => ({
-      filename: a.filename,
-      content: a.content.toString('base64'),
-    }));
-  }
   await fetch('https://api.resend.com/emails', {
     method: 'POST',
     headers: {
@@ -61,37 +52,6 @@ async function sendEmail(
     },
     body: JSON.stringify(payload),
   }).catch((err) => console.error('Resend webhook email error', err));
-}
-
-function formatPeriod(start: number, end: number) {
-  return `${formatDatumHr(new Date(start * 1000))} – ${formatDatumHr(new Date(end * 1000))}`;
-}
-
-/** Period za email: prvo invoice polja, zatim subscription item (Stripe API v22). */
-async function getBillingPeriodLabel(
-  invoice: Stripe.Invoice,
-  subscriptionId: string | null,
-): Promise<string> {
-  let start = invoice.period_start;
-  let end = invoice.period_end;
-  if ((!start || !end) && subscriptionId) {
-    try {
-      const s = await stripe.subscriptions.retrieve(subscriptionId);
-      const it = s.items.data[0];
-      if (it?.current_period_start) {
-        start = it.current_period_start;
-      }
-      if (it?.current_period_end) {
-        end = it.current_period_end;
-      }
-    } catch {
-      /* ignore */
-    }
-  }
-  if (start && end) {
-    return formatPeriod(start, end);
-  }
-  return '';
 }
 
 async function sendWelcomeSubscriptionEmail(opts: {
@@ -269,12 +229,16 @@ async function handlePaymentSucceeded(invoice: Stripe.Invoice) {
     }
   }
 
+  const amountEur = (invoice.amount_paid ?? 0) / 100;
+  const paidTs = invoice.status_transitions?.paid_at ?? invoice.created;
+  const datumIso = new Date(paidTs * 1000).toISOString().slice(0, 10);
+
   await admin.from('billing_events').upsert(
     {
       user_id: userId,
       stripe_invoice_id: invoice.id,
       stripe_payment_intent_id: null,
-      amount_eur: (invoice.amount_paid ?? 0) / 100,
+      amount_eur: amountEur,
       interval: lineInterval,
       status: 'paid',
     },
@@ -291,80 +255,15 @@ async function handlePaymentSucceeded(invoice: Stripe.Invoice) {
     return;
   }
 
-  const emailTo = invoice.customer_email?.trim() ?? '';
-  const amountEur = (invoice.amount_paid ?? 0) / 100;
-  const paidTs = invoice.status_transitions?.paid_at ?? invoice.created;
-  const datumIso = new Date(paidTs * 1000)
-    .toISOString()
-    .slice(0, 10);
-
-  let racunId: string | null = null;
-  if (amountEur > 0) {
-    try {
-      racunId = await createBillingRacunForStripe(admin, {
-        userId,
-        stripeInvoiceId: invoice.id,
-        amountEur,
-        interval: lineInterval,
-        datum: datumIso,
-      });
-    } catch (e) {
-      console.error('billing racun create', e);
-    }
-  }
-
-  let attachments: EmailAttachment[] | undefined;
-  if (racunId && amountEur > 0) {
-    try {
-      const buf = await renderRacunPdfBuffer(admin, racunId, userId);
-      if (buf) {
-        attachments = [{ filename: `racun-${invoice.id}.pdf`, content: buf }];
-      }
-    } catch (e) {
-      console.error('pdf buffer subscription payment', e);
-    }
-  }
-
-  const periodLabel = await getBillingPeriodLabel(invoice, subId);
-
-  if (emailTo) {
-    try {
-      const { data: profile } = await admin
-        .from('profiles')
-        .select('naziv_obrta')
-        .eq('id', userId)
-        .maybeSingle();
-      const name = (profile as { naziv_obrta?: string } | null)?.naziv_obrta ?? '';
-      const amtStr = formatIznosEurHr(amountEur);
-
-      await sendEmail(
-        emailTo,
-        `Kvik — Potvrda plaćanja ${amtStr}`,
-        `
-        <p>Pozdrav${name ? ` ${name}` : ''},</p>
-        <p>Uspješno smo naplatili <strong>${amtStr}</strong>${periodLabel ? ` za period ${periodLabel}` : ''}.</p>
-        <p>${attachments?.length ? 'Račun u privitku (PDF).' : 'Račun bit će dostupan u Postavkama.'}</p>
-        <p><a href="https://kvik.online/postavke">Upravljajte pretplatom →</a></p>
-        <hr/>
-        <p style="font-size:12px;color:#999;">Kvik · <a href="https://kvik.online">kvik.online</a></p>
-      `,
-        attachments,
-      );
-    } catch (e) {
-      console.error('payment confirmation email', e);
-    }
-  }
-
-  if (racunId) {
-    try {
-      await admin
-        .from('billing_events')
-        .update({ invoice_id: racunId })
-        .eq('stripe_invoice_id', invoice.id);
-    } catch (e) {
-      console.error('billing_events invoice_id update', e);
-    }
-  }
+  await enqueueBillingRacunJob(admin, {
+    user_id: userId,
+    stripe_invoice_id: invoice.id,
+    amount_eur: amountEur,
+    interval: lineInterval,
+    datum_iso: datumIso,
+    customer_email: invoice.customer_email?.trim() ?? null,
+    stripe_subscription_id: subId,
+  });
 }
 
 async function handleChargeRefunded(charge: Stripe.Charge) {

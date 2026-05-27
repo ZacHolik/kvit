@@ -15,8 +15,7 @@ async function startCheckout(trial: boolean) {
   if (data.url) {
     window.location.href = data.url;
   } else {
-    // Fallback: Tally waitlist until Stripe is fully wired
-    window.location.href = 'https://tally.so/r/44or65';
+    window.location.href = '/cijene';
   }
 }
 
@@ -24,7 +23,6 @@ import { HARDCODED_QA } from './asistent/hardcoded-qa-data';
 import { ShareAiResponse } from './asistent/share-ai-response';
 import { KVIK_LANDING_CSS } from './kvik-landing-css';
 
-const TALLY = 'https://tally.so/r/44or65';
 const LANDING_RESPONSIVE_CSS = `
 #kvik-landing .hero{overflow-x:hidden}
 #kvik-landing .hero-left{min-width:0}
@@ -1283,14 +1281,9 @@ export default function LandingPage() {
                 <li>Vodiči i edukacija</li>
                 <li>AI asistent (3 upita/dan)</li>
               </ul>
-              <a
-                href={TALLY}
-                target='_blank'
-                rel='noopener noreferrer'
-                className='price-btn price-btn-outline'
-              >
+              <Link href='/register' className='price-btn price-btn-outline'>
                 Počni besplatno
-              </a>
+              </Link>
             </div>
 
             {/* --- Paušalist plan (featured) --- */}
@@ -1423,9 +1416,7 @@ export default function LandingPage() {
               </Link>
             </li>
             <li>
-              <a href={TALLY} target='_blank' rel='noopener noreferrer'>
-                Kontakt
-              </a>
+              <Link href='/register'>Kontakt</Link>
             </li>
           </ul>
           <div className='footer-copy'>© 2026 Kvik. Sva prava pridržana.</div>

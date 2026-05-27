@@ -461,7 +461,7 @@ export default function AsistentPage() {
                         zakonima. 5,60€/mj — zauvijek.
                       </p>
                       <a
-                        href='https://tally.so/r/44or65'
+                        href='/cijene'
                         className='font-body mt-4 inline-flex items-center justify-center rounded-xl bg-[#14b8a6] px-4 py-2.5 text-sm font-semibold text-[#042f2e] shadow-[0_8px_20px_rgba(20,184,166,0.28)] transition hover:-translate-y-0.5 hover:bg-[#2dd4bf]'
                       >
                         Zaključaj cijenu →

@@ -12,20 +12,31 @@ import { decryptCertificate } from './encryption';
 import type { CISResponse, RacunZaCIS } from './types';
 
 const CIS_TEST_URL = 'https://cistest.apis-it.hr:8449/FiskalizacijaServiceTest';
-const CIS_DEFAULT_PROD =
+const CIS_PROD_URL =
   'https://cis.porezna-uprava.hr:8449/FiskalizacijaService';
+
+const CIS_URL =
+  process.env.FINA_ENV === 'production' ? CIS_PROD_URL : CIS_TEST_URL;
 
 export function resolveCisUrl(mode: 'test' | 'production'): string {
   const fromEnv = process.env.CIS_URL?.trim();
   if (fromEnv) return fromEnv;
-  return mode === 'production' ? CIS_DEFAULT_PROD : CIS_TEST_URL;
+  if (process.env.FINA_ENV === 'production' || process.env.FINA_ENV === 'test') {
+    return CIS_URL;
+  }
+  return mode === 'production' ? CIS_PROD_URL : CIS_TEST_URL;
 }
 
 function getFinaAgent(): Agent {
   console.log('[FINA] CWD:', process.cwd());
+  console.log('[FINA] ENV:', process.env.FINA_ENV ?? 'test (default)');
   console.log('[FINA] CERT PATH:', process.env.FINA_CA_CERT_PATH ?? join(process.cwd(), 'certs', 'fina_full_chain.pem'));
-  console.log('[FINA] CERT BASE64:', process.env.FINA_CA_CERT_BASE64 ? 'SET' : 'NOT SET');
-  const b64 = process.env.FINA_CA_CERT_BASE64?.trim();
+  const caCert =
+    process.env.FINA_ENV === 'production'
+      ? process.env.FINA_CA_CERT_BASE64_PROD
+      : (process.env.FINA_CA_CERT_BASE64_TEST ?? process.env.FINA_CA_CERT_BASE64);
+  console.log('[FINA] CERT BASE64:', caCert ? 'SET' : 'NOT SET');
+  const b64 = caCert?.trim();
   if (b64) return new Agent({ connect: { ca: Buffer.from(b64, 'base64').toString('utf8') } });
   const certPath = process.env.FINA_CA_CERT_PATH?.trim() ?? join(process.cwd(), 'certs', 'fina_full_chain.pem');
   try { return new Agent({ connect: { ca: readFileSync(certPath, 'utf8') } }); }

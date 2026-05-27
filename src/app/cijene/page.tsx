@@ -13,7 +13,7 @@ async function startCheckout(trial: boolean) {
   if (data.url) {
     window.location.href = data.url;
   } else {
-    window.location.href = 'https://tally.so/r/44or65';
+    window.location.href = '/cijene';
   }
 }
 
