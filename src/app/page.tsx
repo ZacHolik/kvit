@@ -1375,11 +1375,11 @@ export default function LandingPage() {
             <div className='my-8 flex w-full flex-col items-center'>
               <div className='w-full max-w-2xl'>
                 <Image
-                  src='/images/lineup.webp'
-                  alt='Lineup'
+                  src='/images/lineup-personas.webp'
+                  alt='Policijski lineup — personas paušalista'
                   width={640}
                   height={360}
-                  className='h-auto w-full rounded-xl opacity-60'
+                  className='rounded-xl opacity-60 w-full h-auto'
                 />
               </div>
             </div>
