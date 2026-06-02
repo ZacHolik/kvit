@@ -426,13 +426,6 @@ export default function PrviKoraciNakonObrtaPage() {
           Checklista za nove paušaliste
         </Link>
       </p>
-      <p>
-        Sve ove korake možeš pratiti kroz Kvik — od KPR-a do PO-SD-a, sve automatski
-        vođeno. Kreni besplatno:{' '}
-        <Link href='/register' className='text-[#0d9488] hover:underline'>
-          Isprobaj Kvik
-        </Link>
-      </p>
     </GuideShell>
   );
 }

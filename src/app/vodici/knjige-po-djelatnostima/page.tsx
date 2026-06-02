@@ -549,11 +549,6 @@ export default function KnjigePoDjelatnostimaPage() {
 
       <h2 id='cta'>Kvik automatski vodi KPR za tebe — bez ručnog unosa, bez brige</h2>
       <p>
-        <Link href='/register' className='text-[#0d9488] hover:underline'>
-          Isprobaj Kvik besplatno
-        </Link>
-      </p>
-      <p>
         Generator KPR knjige s mogućnošću izvoza za Poreznu preko ePorezne portala
         (eporezna.gov.hr):
       </p>
@@ -565,17 +560,6 @@ export default function KnjigePoDjelatnostimaPage() {
           KPR generator
         </Link>
       </p>
-      <div className='my-6 flex flex-col gap-3 sm:flex-row sm:items-center'>
-        <Link href='/register' className='btn-cta-primary px-5 py-3 text-base'>
-          Isprobaj Kvik besplatno →
-        </Link>
-        <Link
-          href={vodiciHref('kpr-online-generator')}
-          className='inline-flex items-center justify-center rounded-lg border border-[#0d9488] px-5 py-3 font-semibold text-[#0d9488] transition hover:bg-[#0d9488]/10'
-        >
-          KPR generator
-        </Link>
-      </div>
     </GuideShell>
   );
 }

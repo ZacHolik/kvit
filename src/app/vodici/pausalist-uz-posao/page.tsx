@@ -617,13 +617,6 @@ export default function PausalistUzPosaoPage() {
           Kalkulator doprinosa
         </Link>
       </p>
-      <p>
-        Kvik automatski vodi KPR i PO-SD za tebe — fokusiraj se na posao, ne na
-        papirologiju. Kreni besplatno:{' '}
-        <Link href='/register' className='text-[#0d9488] hover:underline'>
-          Isprobaj Kvik
-        </Link>
-      </p>
     </GuideShell>
   );
 }

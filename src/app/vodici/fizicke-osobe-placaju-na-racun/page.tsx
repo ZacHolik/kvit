@@ -437,30 +437,13 @@ Napomena: Obveznik nije u sustavu PDV-a, PDV nije obračunat temeljem čl. 90. Z
 
       <h2 id='cta'>Kvik automatski fiskalizira račune prema fizičkim osobama</h2>
       <p>
-        Kvik automatski fiskalizira račune prema fizičkim osobama — bez ručnog rada:
+        Kvik automatski fiskalizira račune prema fizičkim osobama — bez ručnog rada.
       </p>
-      <p>
-        <Link href='/register' className={linkClass}>
-          Isprobaj Kvik besplatno
-        </Link>
-      </p>
-      <p>Provjeri jesi li spreman za fiskalizaciju — kviz od 30 sekundi:</p>
       <p>
         <Link href='/provjera' className={linkClass}>
           Fiskal kviz
         </Link>
       </p>
-      <div className='my-6 flex flex-col gap-3 sm:flex-row sm:items-center'>
-        <Link href='/register' className='btn-cta-primary px-5 py-3 text-base'>
-          Isprobaj Kvik besplatno →
-        </Link>
-        <Link
-          href='/provjera'
-          className='inline-flex items-center justify-center rounded-lg border border-[#0d9488] px-5 py-3 font-semibold text-[#0d9488] transition hover:bg-[#0d9488]/10'
-        >
-          Fiskal kviz
-        </Link>
-      </div>
     </GuideShell>
   );
 }

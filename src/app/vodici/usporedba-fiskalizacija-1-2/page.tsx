@@ -479,31 +479,12 @@ export default function UsporedbaFiskalizacija12Page() {
       </p>
 
       <h2 id='cta'>Spreman za F2.0?</h2>
-      <p>
-        Kvik podržava i F1.0 i F2.0 — automatska fiskalizacija bez brige:
-      </p>
-      <p>
-        <Link href='/register' className='text-[#0d9488] hover:underline'>
-          Isprobaj Kvik besplatno
-        </Link>
-      </p>
-      <p>Provjeri jesi li spreman za F2.0 — kviz od 30 sekundi:</p>
+      <p>Kvik podržava i F1.0 i F2.0 — automatska fiskalizacija bez brige.</p>
       <p>
         <Link href='/provjera' className='text-[#0d9488] hover:underline'>
           Fiskal kviz
         </Link>
       </p>
-      <div className='my-6 flex flex-col gap-3 sm:flex-row sm:items-center'>
-        <Link href='/register' className='btn-cta-primary px-5 py-3 text-base'>
-          Isprobaj Kvik besplatno →
-        </Link>
-        <Link
-          href='/provjera'
-          className='inline-flex items-center justify-center rounded-lg border border-[#0d9488] px-5 py-3 font-semibold text-[#0d9488] transition hover:bg-[#0d9488]/10'
-        >
-          Fiskal kviz
-        </Link>
-      </div>
     </GuideShell>
   );
 }

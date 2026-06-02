@@ -533,13 +533,6 @@ export default function BankovniRacunPausalistiPage() {
           Kalkulator primitaka
         </Link>
       </p>
-      <p>
-        Kvik automatski poveže sve račune s KPR-om i PO-SD obrascem — bez ručnog rada.
-        Kreni besplatno:{' '}
-        <Link href='/register' className='text-[#0d9488] hover:underline'>
-          Isprobaj Kvik
-        </Link>
-      </p>
     </GuideShell>
   );
 }

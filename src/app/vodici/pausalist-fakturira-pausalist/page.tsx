@@ -607,30 +607,13 @@ Potpis: ___________________`}
       <h2 id='cta'>Kvik automatski generira račune između paušalista</h2>
       <p>
         Kvik automatski generira sve obvezne elemente računa — uključujući OIB kupca i
-        napomenu PDV:
+        napomenu PDV.
       </p>
-      <p>
-        <Link href='/register' className={linkClass}>
-          Isprobaj Kvik besplatno
-        </Link>
-      </p>
-      <p>Generator KPR knjige s automatskim upisom svih izdanih računa:</p>
       <p>
         <Link href={vodiciHref('kpr-online-generator')} className={linkClass}>
           KPR generator
         </Link>
       </p>
-      <div className='my-6 flex flex-col gap-3 sm:flex-row sm:items-center'>
-        <Link href='/register' className='btn-cta-primary px-5 py-3 text-base'>
-          Isprobaj Kvik besplatno →
-        </Link>
-        <Link
-          href={vodiciHref('kpr-online-generator')}
-          className='inline-flex items-center justify-center rounded-lg border border-[#0d9488] px-5 py-3 font-semibold text-[#0d9488] transition hover:bg-[#0d9488]/10'
-        >
-          KPR generator
-        </Link>
-      </div>
     </GuideShell>
   );
 }

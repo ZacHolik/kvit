@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 
 import { VodiciNav } from './_components/vodici-nav';
+import VodiciFloatingWrapper from './_components/VodiciFloatingWrapper';
 
 export const metadata: Metadata = {
   title: {
@@ -20,6 +21,7 @@ export default function VodiciLayout({
     <div className='min-h-screen bg-[#0b0f0e]'>
       <VodiciNav />
       <main>{children}</main>
+      <VodiciFloatingWrapper />
       <footer className='border-t border-[#1f2a28] px-4 py-8 text-center text-sm text-[#64756f] sm:px-6'>
         <p className='font-body'>
           © {new Date().getFullYear()} Kvik ·{' '}
