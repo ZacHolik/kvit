@@ -1,6 +1,16 @@
 'use client';
 
 import { useState, useCallback } from 'react';
+import {
+  Briefcase,
+  Check,
+  Link2,
+  Mail,
+  MessageCircle,
+  Send,
+  Share,
+  Share2,
+} from 'lucide-react';
 
 type ShareBarProps = {
   url: string;
@@ -10,6 +20,13 @@ type ShareBarProps = {
 };
 
 type Channel = 'native' | 'whatsapp' | 'copy' | 'facebook' | 'x' | 'linkedin' | 'email';
+
+const ICON_SIZE = 18;
+
+const btnBase =
+  'flex h-9 w-9 shrink-0 items-center justify-center rounded-lg transition';
+const btnDark = `${btnBase} bg-gray-800 text-slate-100 hover:bg-gray-700`;
+const btnGreen = `${btnBase} bg-emerald-600 text-white hover:bg-emerald-500`;
 
 const trackShare = (channel: Channel, pageType: string, pageSlug: string) => {
   if (typeof window === 'undefined') return;
@@ -74,64 +91,79 @@ export default function ShareBar({ url, shareText, pageType, pageSlug }: ShareBa
     typeof navigator !== 'undefined' && typeof navigator.share === 'function';
 
   return (
-    <div className="flex flex-wrap items-center gap-2">
+    <div className="flex items-center gap-2">
       <span className="mr-1 text-xs text-slate-400">Podijeli:</span>
 
       {hasNativeShare && (
         <button
+          type="button"
           onClick={handleNative}
-          className="rounded-md bg-teal-600 px-3 py-1.5 text-sm text-white transition hover:bg-teal-500"
-          aria-label="Podijeli (native)"
+          className={btnGreen}
+          title="Podijeli"
+          aria-label="Podijeli"
         >
-          Podijeli
+          <Share2 size={ICON_SIZE} aria-hidden />
         </button>
       )}
 
       <button
+        type="button"
         onClick={() =>
           openChannel('whatsapp', (_link, text) => `https://wa.me/?text=${encodeURIComponent(text)}`)
         }
-        className="rounded-md bg-slate-800 px-2.5 py-1.5 text-sm text-slate-100 transition hover:bg-slate-700"
+        className={btnDark}
+        title="WhatsApp"
         aria-label="WhatsApp"
       >
-        WhatsApp
+        <MessageCircle size={ICON_SIZE} aria-hidden />
       </button>
 
       <button
+        type="button"
         onClick={handleCopy}
-        className="rounded-md bg-slate-800 px-2.5 py-1.5 text-sm text-slate-100 transition hover:bg-slate-700"
-        aria-label="Kopiraj link"
+        className={btnDark}
+        title={copied ? 'Kopirano!' : 'Kopiraj link'}
+        aria-label={copied ? 'Kopirano!' : 'Kopiraj link'}
       >
-        {copied ? 'Kopirano!' : 'Kopiraj link'}
+        {copied ? (
+          <Check size={ICON_SIZE} aria-hidden />
+        ) : (
+          <Link2 size={ICON_SIZE} aria-hidden />
+        )}
       </button>
 
       <button
+        type="button"
         onClick={() =>
           openChannel(
             'facebook',
             (link) => `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(link)}`,
           )
         }
-        className="rounded-md bg-slate-800 px-2.5 py-1.5 text-sm text-slate-100 transition hover:bg-slate-700"
+        className={btnDark}
+        title="Facebook"
         aria-label="Facebook"
       >
-        FB
+        <Share size={ICON_SIZE} aria-hidden />
       </button>
 
       <button
+        type="button"
         onClick={() =>
           openChannel(
             'x',
             (_link, text) => `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`,
           )
         }
-        className="rounded-md bg-slate-800 px-2.5 py-1.5 text-sm text-slate-100 transition hover:bg-slate-700"
+        className={btnDark}
+        title="X"
         aria-label="X"
       >
-        X
+        <Send size={ICON_SIZE} aria-hidden />
       </button>
 
       <button
+        type="button"
         onClick={() =>
           openChannel(
             'linkedin',
@@ -139,13 +171,15 @@ export default function ShareBar({ url, shareText, pageType, pageSlug }: ShareBa
               `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(link)}`,
           )
         }
-        className="rounded-md bg-slate-800 px-2.5 py-1.5 text-sm text-slate-100 transition hover:bg-slate-700"
+        className={btnDark}
+        title="LinkedIn"
         aria-label="LinkedIn"
       >
-        LinkedIn
+        <Briefcase size={ICON_SIZE} aria-hidden />
       </button>
 
       <button
+        type="button"
         onClick={() =>
           openChannel(
             'email',
@@ -153,10 +187,11 @@ export default function ShareBar({ url, shareText, pageType, pageSlug }: ShareBa
               `mailto:?subject=${encodeURIComponent('Kvik — koristan link')}&body=${encodeURIComponent(text)}`,
           )
         }
-        className="rounded-md bg-slate-800 px-2.5 py-1.5 text-sm text-slate-100 transition hover:bg-slate-700"
+        className={btnDark}
+        title="Email"
         aria-label="Email"
       >
-        Email
+        <Mail size={ICON_SIZE} aria-hidden />
       </button>
     </div>
   );
