@@ -58,6 +58,16 @@ const faq = [
     answer:
       'Ako ne izdaješ eRačun kad zakon to od tebe traži, ulaziš u rizik novčanih kazni. Za ozbiljne prekršaje u području računa i fiskalizacije Zakon o fiskalizaciji (NN 114/23) predviđa kazne u rasponu koji za neke stvari ide i do 39.810 €, dok su za račune bez propisanih podataka predviđene kazne od 1.320 € do 39.810 € (čl. 34.a). Zato je jeftinije pripremiti se unaprijed nego gasiti požar u siječnju.',
   },
+  {
+    question: 'Je li Kvik informacijski posrednik?',
+    answer:
+      'Ne. Porezna uprava je pisano potvrdila da aplikacije koje koriste certifikate samih korisnika nisu informacijski posrednici. Kvik je softversko rješenje — tvoj certifikat, tvoji računi, tvoja kontrola.',
+  },
+  {
+    question: 'Moram li koristiti AS4 protokol za eRačune?',
+    answer:
+      "Ne nužno. Zakon dopušta 'druge tehnologije i procedure' za razmjenu eRačuna (čl. 37. st. 3.). Za zaprimanje možeš koristiti besplatni MIKROeRACUN. Za izdavanje od 2027. Kvik priprema web portal dostavu koja je potvrđena kao zakonski sukladna.",
+  },
 ];
 
 const tableWrap =
@@ -71,12 +81,13 @@ export default function Fiskalizacija20Page() {
       subtitle='eRačuni, rokovi i digitalni “prometni dnevnik” — objašnjeno kao frendu, bez panike.'
       readingMinutes={14}
       metaDescription={META_DESC}
-      articleDateModified='2026-05-09'
+      articleDateModified='2026-06-02'
       toc={[
         { id: 'sto-je', label: 'Što je Fiskalizacija 2.0?' },
         { id: 'zasto', label: 'Zašto se uvodi?' },
         { id: 'f1-f2', label: 'Razlika F1.0 i F2.0' },
         { id: 'rokovi', label: 'Rokovi za paušaliste' },
+        { id: 'kvik-eracun', label: 'Kvik i eRačuni' },
         { id: 'koraci-2026', label: 'Što napraviti do 1.1.2026.' },
         { id: 'mikro', label: 'MIKROeRACUN' },
         { id: 'mikro-vs-kvik', label: 'MIKROeRACUN vs Kvik' },
@@ -178,6 +189,11 @@ export default function Fiskalizacija20Page() {
         <strong>eRačune</strong> koji se razmjenjuju kao strogo definirani XML-ovi, ne kao
         skenirani papir.
       </p>
+      <p>
+        <strong>Promjena od 1.1.2026.:</strong> svi računi prema krajnjim potrošačima moraju biti
+        fiskalizirani — uključujući <strong>transakcijske</strong> (npr. uplata na žiro-račun).
+        Ranije su se fiskalizirali uglavnom samo gotovinski; sada nema “samo pošaljem PDF na mail”.
+      </p>
       <div className={tableWrap}>
         <table className='min-w-full border-collapse text-left'>
           <thead>
@@ -224,21 +240,28 @@ export default function Fiskalizacija20Page() {
         <table className='min-w-full border-collapse text-left'>
           <thead>
             <tr className='border-b border-[#1f2a28] text-[#94a3a0]'>
+              <th className='px-3 py-2 font-medium'>Rok</th>
               <th className='px-3 py-2 font-medium'>Obveza</th>
-              <th className='px-3 py-2 font-medium'>Od kada</th>
-              <th className='px-3 py-2 font-medium'>Što to znači u kuhinji</th>
+              <th className='px-3 py-2 font-medium'>Kvik status</th>
             </tr>
           </thead>
           <tbody className='text-[#d5dfdd]'>
             <tr className='border-b border-[#1f2a28]/80'>
-              <td className='px-3 py-2'>Zaprimanje eRačuna</td>
               <td className='px-3 py-2'>1.1.2026.</td>
-              <td className='px-3 py-2'>Moraš imati aktivnu pristupnu točku i kanal (npr. posrednik ili MIKROeRACUN)</td>
+              <td className='px-3 py-2'>
+                Fiskalizacija SVIH računa (i transakcijskih) prema B2C
+              </td>
+              <td className='px-3 py-2'>✅ LIVE</td>
+            </tr>
+            <tr className='border-b border-[#1f2a28]/80'>
+              <td className='px-3 py-2'>1.1.2026.</td>
+              <td className='px-3 py-2'>Zaprimanje eRačuna od B2B partnera</td>
+              <td className='px-3 py-2'>MIKROeRACUN (besplatno)</td>
             </tr>
             <tr>
-              <td className='px-3 py-2'>Izdavanje eRačuna (B2B)</td>
               <td className='px-3 py-2'>1.1.2027.</td>
-              <td className='px-3 py-2'>Priprema za slanje strukturiranih računa firmama u sustavu</td>
+              <td className='px-3 py-2'>Izdavanje eRačuna prema B2B partnerima</td>
+              <td className='px-3 py-2'>Kvik priprema web portal</td>
             </tr>
           </tbody>
         </table>
@@ -246,6 +269,53 @@ export default function Fiskalizacija20Page() {
       <p>
         PDV obveznici imaju ranije rokove za dio obveza — to je druga priča od paušala, ali je
         dobro znati ako planiraš prijelaz s praga od 60.000 €.
+      </p>
+
+      <h2 id='kvik-eracun'>Kvik i eRačuni — što to znači za tebe</h2>
+      <p>
+        <strong>Kvik NIJE informacijski posrednik</strong> — to je potvrdila Porezna uprava pisanim
+        tumačenjem. To znači da Kvik ne mora prolaziti testiranje sukladnosti niti se upisivati na
+        posebne popise ovlaštenih posrednika.
+      </p>
+      <p>
+        Tvoj{' '}
+        <Link
+          href={vodiciHref('fina-certifikat-fiskalizacija')}
+          className='text-[#0d9488] hover:underline'
+        >
+          FINA certifikat
+        </Link>{' '}
+        koji koristiš za fiskalizaciju 1.0 koristit ćeš i za eRačune. Isti certifikat, isti Kvik —
+        samo novi format računa. Prije prvog računa provjeri i{' '}
+        <Link href='/alati/interni-akt' className='text-[#0d9488] hover:underline'>
+          interni akt
+        </Link>
+        ; aktivaciju fiskalizacije radi u{' '}
+        <Link href='/postavke/fiskalizacija' className='text-[#0d9488] hover:underline'>
+          postavkama fiskalizacije
+        </Link>
+        .
+      </p>
+      <p>
+        Za <strong>zaprimanje</strong> eRačuna (obveza od 2026.) imaš besplatnu opciju:{' '}
+        <strong>MIKROeRACUN</strong> u ePoreznoj. Porezna uprava ti je automatski pristupna točka
+        — ne trebaš ništa dodatno ugovarati niti graditi vlastitu AS4 infrastrukturu.
+      </p>
+      <p>
+        Za <strong>izdavanje</strong> eRačuna (obveza od 2027.) Kvik priprema rješenje putem web
+        portala — primatelj dobije obavijest, preuzme eRačun u UBL XML formatu, potvrdi primitak, a
+        Kvik fiskalizira obje strane. Tehnologija razmjene nije uvjetovana isključivo AS4 protokolom
+        (čl. 37. st. 3. Zakona o fiskalizaciji) — web portal je zakonski sukladna alternativa.
+      </p>
+      <p>
+        Nisi siguran jesi li spreman? Prođi{' '}
+        <Link href='/provjera' className='text-[#0d9488] hover:underline'>
+          kviz spremnosti
+        </Link>
+        .
+      </p>
+      <p className='text-sm text-[#94a3a0]'>
+        Izvor: pisano tumačenje Porezne uprave, ID upita VPS-379909-T2L6W9.
       </p>
 
       <h2 id='koraci-2026'>Što moraš napraviti do 1.1.2026.?</h2>
@@ -274,6 +344,26 @@ export default function Fiskalizacija20Page() {
         <strong>nisi PDV obveznik</strong> i <strong>nisi javni naručitelj</strong>. Za čistog
         paušalista koji nema komercijalni program često je to najjednostavniji ulaz u svijet
         strukturiranih računa — ali nije čarobni štapić za cijelo poslovanje.
+      </p>
+      <p>
+        Ako prihvatiš uvjete korištenja MIKROeRACUN-a, ne moraš poduzimati dodatne korake —
+        aplikacija se automatski potvrđuje kao pristupna točka (izvor: FAQ Porezne uprave).
+        Paušalisti koji koriste MIKROeRACUN za zaprimanje imaju pristupnu točku jer je Porezna
+        uprava njihov posrednik — ne treba im vlastita AS4 infrastruktura.
+      </p>
+      <p>
+        <strong>MIKROeRACUN</strong> omogućava <strong>izdavanje</strong> eRačuna tek od{' '}
+        <strong>1.1.2027.</strong> Ako trebaš izdavati eRačune tijekom 2026. — trebaš drugog
+        informacijskog posrednika (izvor:{' '}
+        <a
+          href='https://www.porezna-uprava.gov.hr/8190'
+          className='text-[#0d9488] hover:underline'
+          rel='noopener noreferrer'
+          target='_blank'
+        >
+          porezna-uprava.gov.hr/8190
+        </a>
+        ).
       </p>
 
       <h2 id='mikro-vs-kvik'>Prednosti i mane MIKROeRACUN vs Kvik</h2>
@@ -359,7 +449,8 @@ export default function Fiskalizacija20Page() {
       <p className='text-sm text-[#94a3a0]'>
         Zakon o fiskalizaciji (NN 133/12, 115/16, 106/18, 121/19, 114/23); Tehnička specifikacija
         eRačuna v2.5 (APIS IT, 6.10.2023.); službene stranice Porezne uprave i FINA-e (certifikat,
-        mojcert.fina.hr, MIKROeRACUN u ePoreznoj). Kvik ne zamjenjuje poreznog savjetnika — ako si
+        mojcert.fina.hr, MIKROeRACUN u ePoreznoj); pisano tumačenje Porezne uprave ID VPS-379909-T2L6W9.
+        Kvik ne zamjenjuje poreznog savjetnika — ako si
         u složenom PDV ili inozemnom scenariju, uzmi stručnjaka.
       </p>
 

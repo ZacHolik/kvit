@@ -556,6 +556,16 @@ BEZ POTVRDE: eRačuni ti NEĆE biti dostavljeni!
 Format: UBL 2.1 XML prema EU normi EN 16931 + hrvatska ekstenzija. NE PDF.
 Arhiviranje: min. 6 godina, isključivo elektronički. XML je izvornik.
 
+### KVIK I eRACUNI — SLUŽBENA POTVRDA
+
+Porezna uprava je pisano potvrdila (VPS-379909-T2L6W9) da Kvik NIJE informacijski posrednik. Kvik je softversko rješenje koje koriste obveznici u vlastite svrhe — svaki korisnik koristi VLASTITI FINA certifikat za potpisivanje i fiskalizaciju.
+
+Web portal dostava eRačuna (email obavijest + UBL 2.1 XML preuzimanje + potvrda primitka) je zakonski sukladna prema čl. 37. st. 3. Zakona.
+
+Za zaprimanje eRačuna paušalisti mogu koristiti besplatni MIKROeRACUN — Porezna uprava je automatski pristupna točka, ne treba tražiti drugu.
+
+Od 1.1.2026. fiskaliziraju se SVI računi prema krajnjim potrošačima, uključujući transakcijske (uplata na žiro-račun). To je promjena — ranije su se fiskalizirali samo gotovinski.
+
 ### KAZNE ZA FISKALIZACIJU
 
 Za obrtnike paušaliste (Zakon o fiskalizaciji, NN 114/23):
