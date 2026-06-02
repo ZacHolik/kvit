@@ -1,4 +1,6 @@
 import type { Metadata } from 'next';
+
+import { buildAlatMetadata } from '@/lib/og-metadata';
 import Link from 'next/link';
 import Script from 'next/script';
 
@@ -15,19 +17,12 @@ const TITLE = 'Checklista obveza paušalnog obrtnika 2026.';
 const DESC =
   'Checklista obveza paušalnog obrtnika: dnevne preporuke, mjesečne, kvartalne i godišnje. Gost: samo pregled. Nakon prijave: označavanje. PRO: email podsjetnici.';
 
-export const metadata: Metadata = {
-  title: TITLE,
-  description: DESC,
-  keywords: ['obveze paušalnog obrtnika checklista', 'paušalni obrt obveze', 'checklista'],
-  openGraph: {
-    title: `${TITLE} | Kvik`,
-    description: DESC,
-    url: `${getSiteUrl()}/alati/checklista`,
-    siteName: 'Kvik',
-    locale: 'hr_HR',
-    type: 'website',
-  },
-};
+export const metadata: Metadata = buildAlatMetadata(
+  'checklista',
+  TITLE,
+  DESC,
+  { keywords: ['obveze paušalnog obrtnika checklista', 'paušalni obrt obveze', 'checklista'] }
+);
 
 export default function ChecklistaPage() {
   const base = getSiteUrl();

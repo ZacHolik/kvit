@@ -1,7 +1,9 @@
 import type { Metadata } from 'next';
+
+import { buildVodicMetadata } from '@/lib/og-metadata';
 import Link from 'next/link';
 
-import { getSiteUrl, vodiciHref } from '@/lib/vodici-config';
+import { vodiciHref } from '@/lib/vodici-config';
 
 import { GuideShell } from '../_components/guide-shell';
 
@@ -10,18 +12,12 @@ const SLUG = 'fizicke-osobe-placaju-na-racun';
 const META_DESC =
   'B2C scenarij: paušalist izdaje račun fizičkoj osobi koja plaća na transakcijski račun. Fiskalizacija od 1.1.2026., JIR, ZKI i što je obvezno.';
 
-export const metadata: Metadata = {
-  title: 'Kada fizičke osobe plaćaju na račun obrta',
-  description: META_DESC,
-  openGraph: {
-    title: 'Kada fizičke osobe plaćaju na račun obrta | Kvik',
-    description: META_DESC,
-    url: `${getSiteUrl()}/vodici/${SLUG}`,
-    siteName: 'Kvik',
-    locale: 'hr_HR',
-    type: 'article',
-  },
-};
+export const metadata: Metadata = buildVodicMetadata(
+  SLUG,
+  'Kada fizičke osobe plaćaju na račun obrta',
+  META_DESC,
+  'Kada fizičke osobe plaćaju na račun obrta | Kvik',
+);
 
 const faq = [
   {

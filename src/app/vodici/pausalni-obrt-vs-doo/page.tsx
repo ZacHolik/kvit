@@ -1,7 +1,9 @@
 import type { Metadata } from 'next';
+
+import { buildVodicMetadata } from '@/lib/og-metadata';
 import Link from 'next/link';
 
-import { getSiteUrl, vodiciHref } from '@/lib/vodici-config';
+import { vodiciHref } from '@/lib/vodici-config';
 
 import { GuideShell } from '../_components/guide-shell';
 
@@ -10,18 +12,12 @@ const SLUG = 'pausalni-obrt-vs-doo';
 const META_DESC =
   'Usporedba paušalnog obrta i d.o.o.: troškovi, odgovornost, porezi i kada je pravo vrijeme za promjenu.';
 
-export const metadata: Metadata = {
-  title: 'Paušalni obrt vs d.o.o.',
-  description: META_DESC,
-  openGraph: {
-    title: 'Paušalni obrt vs d.o.o. | Kvik',
-    description: META_DESC,
-    url: `${getSiteUrl()}/vodici/${SLUG}`,
-    siteName: 'Kvik',
-    locale: 'hr_HR',
-    type: 'article',
-  },
-};
+export const metadata: Metadata = buildVodicMetadata(
+  SLUG,
+  'Paušalni obrt vs d.o.o.',
+  META_DESC,
+  'Paušalni obrt vs d.o.o. | Kvik',
+);
 
 const faq = [
   {

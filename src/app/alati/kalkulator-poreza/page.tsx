@@ -1,4 +1,6 @@
 import type { Metadata } from 'next';
+
+import { buildAlatMetadata } from '@/lib/og-metadata';
 import Link from 'next/link';
 import Script from 'next/script';
 
@@ -17,25 +19,17 @@ const TITLE = 'Kalkulator poreza 2026 za paušalce | Kvik';
 const DESC =
   'Izračunaj paušalni porez za 2026. godinu. Unesi godišnji prihod i odmah vidi porezni razred, kvartalnu i godišnju obvezu.';
 
-export const metadata: Metadata = {
-  title: TITLE,
-  description: DESC,
-  keywords: [
+export const metadata: Metadata = buildAlatMetadata(
+  'kalkulator-poreza',
+  TITLE,
+  DESC,
+  { keywords: [
     'kalkulator paušalnog poreza 2026',
     'paušalni porez',
     'porezni razred',
     'kalkulator poreza paušalac',
-  ],
-  alternates: { canonical: 'https://kvik.online/alati/kalkulator-poreza' },
-  openGraph: {
-    title: TITLE,
-    description: DESC,
-    url: `${getSiteUrl()}/alati/kalkulator-poreza`,
-    siteName: 'Kvik',
-    locale: 'hr_HR',
-    type: 'website',
-  },
-};
+  ] }
+);
 
 const FAQ = [
   {

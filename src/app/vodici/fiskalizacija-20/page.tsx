@@ -1,7 +1,9 @@
 import type { Metadata } from 'next';
+
+import { buildVodicMetadata } from '@/lib/og-metadata';
 import Link from 'next/link';
 
-import { getSiteUrl, vodiciHref } from '@/lib/vodici-config';
+import { vodiciHref } from '@/lib/vodici-config';
 
 import { GuideShell } from '../_components/guide-shell';
 
@@ -10,27 +12,12 @@ const SLUG = 'fiskalizacija-20';
 const META_DESC =
   'Sve o eRačunima, rokovima i obvezama za paušalne obrtnike — praktični vodič bez birokracije.';
 
-export const metadata: Metadata = {
-  title: 'Fiskalizacija 2.0 za paušaliste — što se mijenja i do kad?',
-  description: META_DESC,
-  keywords: [
-    'fiskalizacija 2.0',
-    'paušalni obrt',
-    'eRačun',
-    '2026',
-    '2027',
-    'MIKROeRACUN',
-    'informacijski posrednik',
-  ],
-  openGraph: {
-    title: 'Fiskalizacija 2.0 za paušaliste | Kvik',
-    description: META_DESC,
-    url: `${getSiteUrl()}/vodici/${SLUG}`,
-    siteName: 'Kvik',
-    locale: 'hr_HR',
-    type: 'article',
-  },
-};
+export const metadata: Metadata = buildVodicMetadata(
+  SLUG,
+  'Fiskalizacija 2.0 za paušaliste — što se mijenja i do kad?',
+  META_DESC,
+  'Fiskalizacija 2.0 za paušaliste | Kvik',
+);
 
 const faq = [
   {

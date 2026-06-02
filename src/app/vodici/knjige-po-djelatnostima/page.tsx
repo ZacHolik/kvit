@@ -1,7 +1,9 @@
 import type { Metadata } from 'next';
+
+import { buildVodicMetadata } from '@/lib/og-metadata';
 import Link from 'next/link';
 
-import { getSiteUrl, vodiciHref } from '@/lib/vodici-config';
+import { vodiciHref } from '@/lib/vodici-config';
 
 import { GuideShell } from '../_components/guide-shell';
 
@@ -10,18 +12,12 @@ const SLUG = 'knjige-po-djelatnostima';
 const META_DESC =
   'KPR za sve + dodatne knjige za ugostiteljstvo, trgovinu, turizam, OPG, graditeljstvo, frizere, prijevoditelje i taxi. Koje su obvezne, koje preporučene.';
 
-export const metadata: Metadata = {
-  title: 'Koje knjige mora voditi paušalist po djelatnostima',
-  description: META_DESC,
-  openGraph: {
-    title: 'Koje knjige mora voditi paušalist po djelatnostima | Kvik',
-    description: META_DESC,
-    url: `${getSiteUrl()}/vodici/${SLUG}`,
-    siteName: 'Kvik',
-    locale: 'hr_HR',
-    type: 'article',
-  },
-};
+export const metadata: Metadata = buildVodicMetadata(
+  SLUG,
+  'Koje knjige mora voditi paušalist po djelatnostima',
+  META_DESC,
+  'Koje knjige mora voditi paušalist po djelatnostima | Kvik',
+);
 
 const faq = [
   {

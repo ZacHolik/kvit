@@ -1,7 +1,9 @@
 import type { Metadata } from 'next';
+
+import { buildVodicMetadata } from '@/lib/og-metadata';
 import Link from 'next/link';
 
-import { getSiteUrl, vodiciHref } from '@/lib/vodici-config';
+import { vodiciHref } from '@/lib/vodici-config';
 
 import { GuideShell } from '../_components/guide-shell';
 
@@ -10,18 +12,12 @@ const SLUG = 'rokovi-placanja';
 const META_DESC =
   'Rokovi plaćanja paušalni obrt 2026.: doprinosi do 15. u mjesecu, porez 31.3./30.6./30.9./31.12., PO-SD do 15.1., HOK nakon 2+ godine obrta — cheat sheet.';
 
-export const metadata: Metadata = {
-  title: 'Rokovi plaćanja paušalni obrt 2026',
-  description: META_DESC,
-  openGraph: {
-    title: 'Rokovi plaćanja paušalni obrt 2026 | Kvik',
-    description: META_DESC,
-    url: `${getSiteUrl()}/vodici/${SLUG}`,
-    siteName: 'Kvik',
-    locale: 'hr_HR',
-    type: 'article',
-  },
-};
+export const metadata: Metadata = buildVodicMetadata(
+  SLUG,
+  'Rokovi plaćanja paušalni obrt 2026',
+  META_DESC,
+  'Rokovi plaćanja paušalni obrt 2026 | Kvik',
+);
 
 const faq = [
   {

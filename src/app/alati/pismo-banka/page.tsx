@@ -1,4 +1,6 @@
 import type { Metadata } from 'next';
+
+import { buildAlatMetadata } from '@/lib/og-metadata';
 import Link from 'next/link';
 import Script from 'next/script';
 
@@ -16,26 +18,17 @@ const TITLE = 'Generator pisma za otvaranje bankovnog računa | Kvik';
 const DESC =
   'Automatski generiraj profesionalno pismo za otvaranje poslovnog računa u banci. Povlači podatke iz Kvik registracije — brzo i bez greške.';
 
-export const metadata: Metadata = {
-  title: TITLE,
-  description: DESC,
-  keywords: [
+export const metadata: Metadata = buildAlatMetadata(
+  'pismo-banka',
+  TITLE,
+  DESC,
+  { keywords: [
     'pismo banka obrt',
     'otvaranje poslovnog računa',
     'paušalni obrt banka',
     'generator pisma banka',
-  ],
-  alternates: { canonical: 'https://kvik.online/alati/pismo-banka' },
-  openGraph: {
-    title: 'Generator pisma za banku | Kvik',
-    description:
-      'Brzo generiraj pismo za otvaranje računa — povlači podatke iz tvog Kvik profila.',
-    url: `${getSiteUrl()}/alati/pismo-banka`,
-    siteName: 'Kvik',
-    locale: 'hr_HR',
-    type: 'website',
-  },
-};
+  ] }
+);
 
 export default function PismoBankaPage() {
   const base = getSiteUrl();

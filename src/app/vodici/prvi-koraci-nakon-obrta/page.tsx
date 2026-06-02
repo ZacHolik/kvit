@@ -1,7 +1,9 @@
 import type { Metadata } from 'next';
+
+import { buildVodicMetadata } from '@/lib/og-metadata';
 import Link from 'next/link';
 
-import { getSiteUrl, vodiciHref } from '@/lib/vodici-config';
+import { vodiciHref } from '@/lib/vodici-config';
 
 import { GuideShell } from '../_components/guide-shell';
 
@@ -10,18 +12,12 @@ const SLUG = 'prvi-koraci-nakon-obrta';
 const META_DESC =
   'Checklista prvih 30 dana: RPO obrazac, banka, doprinosi, fiskalizacija i što moraš napraviti odmah nakon upisa u obrtni registar.';
 
-export const metadata: Metadata = {
-  title: 'Prvi koraci nakon dobivanja obrtnice',
-  description: META_DESC,
-  openGraph: {
-    title: 'Prvi koraci nakon dobivanja obrtnice | Kvik',
-    description: META_DESC,
-    url: `${getSiteUrl()}/vodici/${SLUG}`,
-    siteName: 'Kvik',
-    locale: 'hr_HR',
-    type: 'article',
-  },
-};
+export const metadata: Metadata = buildVodicMetadata(
+  SLUG,
+  'Prvi koraci nakon dobivanja obrtnice',
+  META_DESC,
+  'Prvi koraci nakon dobivanja obrtnice | Kvik',
+);
 
 const faq = [
   {

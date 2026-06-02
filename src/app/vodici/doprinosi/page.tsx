@@ -1,7 +1,10 @@
 import type { Metadata } from 'next';
+
+import { buildVodicMetadata } from '@/lib/og-metadata';
 import Link from 'next/link';
 
-import { getSiteUrl, vodiciHref } from '@/lib/vodici-config';
+import InlineCTA from '@/components/cta/InlineCTA';
+import { vodiciHref } from '@/lib/vodici-config';
 
 import { GuideShell } from '../_components/guide-shell';
 
@@ -10,18 +13,12 @@ const SLUG = 'doprinosi';
 const META_DESC =
   'Doprinosi paušalni obrt iznos 2026.: mirovinsko 1. i 2. stup, zdravstveno, ukupno 290,98 €, rok do 15. u mjesecu, IBAN i posljedice kašnjenja.';
 
-export const metadata: Metadata = {
-  title: 'Doprinosi paušalni obrt iznos',
-  description: META_DESC,
-  openGraph: {
-    title: 'Doprinosi paušalni obrt iznos | Kvik',
-    description: META_DESC,
-    url: `${getSiteUrl()}/vodici/${SLUG}`,
-    siteName: 'Kvik',
-    locale: 'hr_HR',
-    type: 'article',
-  },
-};
+export const metadata: Metadata = buildVodicMetadata(
+  SLUG,
+  'Doprinosi paušalni obrt iznos',
+  META_DESC,
+  'Doprinosi paušalni obrt iznos | Kvik',
+);
 
 const faq = [
   {
@@ -136,6 +133,8 @@ export default function DoprinosiPage() {
         ide renta, a doprinosi do 15., možeš si složiti jednostavan kalendar. Alati poput
         Kvika mogu poslati podsjetnik prije roka.
       </p>
+
+      <InlineCTA tema="doprinosi" pageSlug="doprinosi" />
 
       <h2 id='rokovi'>Rokovi plaćanja</h2>
       <p>

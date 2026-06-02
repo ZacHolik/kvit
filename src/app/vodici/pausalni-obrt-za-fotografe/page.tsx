@@ -1,7 +1,9 @@
 import type { Metadata } from 'next';
+
+import { buildVodicMetadata } from '@/lib/og-metadata';
 import Link from 'next/link';
 
-import { getSiteUrl, vodiciHref } from '@/lib/vodici-config';
+import { vodiciHref } from '@/lib/vodici-config';
 
 import { GuideShell } from '../_components/guide-shell';
 
@@ -10,18 +12,12 @@ const SLUG = 'pausalni-obrt-za-fotografe';
 const META_DESC =
   'Fotografi i snimatelji: paušalni obrt, autorski ugovori, oprema kao trošak i fiskalizacija.';
 
-export const metadata: Metadata = {
-  title: 'Paušalni obrt za fotografe',
-  description: META_DESC,
-  openGraph: {
-    title: 'Paušalni obrt za fotografe | Kvik',
-    description: META_DESC,
-    url: `${getSiteUrl()}/vodici/${SLUG}`,
-    siteName: 'Kvik',
-    locale: 'hr_HR',
-    type: 'article',
-  },
-};
+export const metadata: Metadata = buildVodicMetadata(
+  SLUG,
+  'Paušalni obrt za fotografe',
+  META_DESC,
+  'Paušalni obrt za fotografe | Kvik',
+);
 
 const faq = [
   {

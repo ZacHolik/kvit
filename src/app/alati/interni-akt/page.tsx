@@ -1,4 +1,6 @@
 import type { Metadata } from 'next';
+
+import { buildAlatMetadata } from '@/lib/og-metadata';
 import Link from 'next/link';
 import Script from 'next/script';
 
@@ -16,25 +18,17 @@ const TITLE = 'Generator internog akta za paušalce 2026 | Kvik';
 const DESC =
   'Uredi interni akt paušalnog obrta online i preuzmi PDF. Besplatno za goste; prijavljeni korisnici dobiju automatsko popunjavanje iz profila.';
 
-export const metadata: Metadata = {
-  title: TITLE,
-  description: DESC,
-  keywords: [
+export const metadata: Metadata = buildAlatMetadata(
+  'interni-akt',
+  TITLE,
+  DESC,
+  { keywords: [
     'interni akt paušalni obrt',
     'interni akt obrt',
     'predložak internog akta',
     'interni akt 2026',
-  ],
-  alternates: { canonical: 'https://kvik.online/alati/interni-akt' },
-  openGraph: {
-    title: TITLE,
-    description: DESC,
-    url: `${getSiteUrl()}/alati/interni-akt`,
-    siteName: 'Kvik',
-    locale: 'hr_HR',
-    type: 'website',
-  },
-};
+  ] }
+);
 
 export default function InterniAktPage() {
   const base = getSiteUrl();

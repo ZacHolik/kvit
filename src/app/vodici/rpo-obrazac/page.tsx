@@ -1,7 +1,9 @@
 import type { Metadata } from 'next';
+
+import { buildVodicMetadata } from '@/lib/og-metadata';
 import Link from 'next/link';
 
-import { getSiteUrl, vodiciHref } from '@/lib/vodici-config';
+import { vodiciHref } from '@/lib/vodici-config';
 
 import { GuideShell } from '../_components/guide-shell';
 
@@ -10,18 +12,12 @@ const SLUG = 'rpo-obrazac';
 const META_DESC =
   'Što je RPO obrazac, tko ga mora predati, rokovi i kako ga predati putem ePorezne korak po korak.';
 
-export const metadata: Metadata = {
-  title: 'RPO obrazac – kako ispuniti i predati online 2026.',
-  description: META_DESC,
-  openGraph: {
-    title: 'RPO obrazac – kako ispuniti i predati online 2026. | Kvik',
-    description: META_DESC,
-    url: `${getSiteUrl()}/vodici/${SLUG}`,
-    siteName: 'Kvik',
-    locale: 'hr_HR',
-    type: 'article',
-  },
-};
+export const metadata: Metadata = buildVodicMetadata(
+  SLUG,
+  'RPO obrazac – kako ispuniti i predati online 2026.',
+  META_DESC,
+  'RPO obrazac – kako ispuniti i predati online 2026. | Kvik',
+);
 
 const faq = [
   {

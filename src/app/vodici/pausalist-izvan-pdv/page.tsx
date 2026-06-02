@@ -1,7 +1,9 @@
 import type { Metadata } from 'next';
+
+import { buildVodicMetadata } from '@/lib/og-metadata';
 import Link from 'next/link';
 
-import { getSiteUrl, vodiciHref } from '@/lib/vodici-config';
+import { vodiciHref } from '@/lib/vodici-config';
 
 import { GuideShell } from '../_components/guide-shell';
 
@@ -10,18 +12,12 @@ const SLUG = 'pausalist-izvan-pdv';
 const META_DESC =
   'Što znači biti paušalist izvan PDV-a: obveze zaprimanja eRačuna od 1.1.2026., obveze izdavanja od 1.1.2027., napomena na računima i prag 60.000 €.';
 
-export const metadata: Metadata = {
-  title: 'Paušalist izvan PDV sustava',
-  description: META_DESC,
-  openGraph: {
-    title: 'Paušalist izvan PDV sustava | Kvik',
-    description: META_DESC,
-    url: `${getSiteUrl()}/vodici/${SLUG}`,
-    siteName: 'Kvik',
-    locale: 'hr_HR',
-    type: 'article',
-  },
-};
+export const metadata: Metadata = buildVodicMetadata(
+  SLUG,
+  'Paušalist izvan PDV sustava',
+  META_DESC,
+  'Paušalist izvan PDV sustava | Kvik',
+);
 
 const faq = [
   {

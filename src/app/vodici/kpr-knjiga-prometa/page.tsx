@@ -1,7 +1,9 @@
 import type { Metadata } from 'next';
+
+import { buildVodicMetadata } from '@/lib/og-metadata';
 import Link from 'next/link';
 
-import { getSiteUrl, vodiciHref } from '@/lib/vodici-config';
+import { vodiciHref } from '@/lib/vodici-config';
 
 import { GuideShell } from '../_components/guide-shell';
 
@@ -10,18 +12,12 @@ const SLUG = 'kpr-knjiga-prometa';
 const META_DESC =
   'KPR knjiga prometa paušalisti: što se upisuje, gotovina i bezgotovina, rokovi, veza s PO-SD-om, digitalno vođenje i ispravljanje grešaka. Vodič 2026.';
 
-export const metadata: Metadata = {
-  title: 'KPR knjiga prometa paušalisti',
-  description: META_DESC,
-  openGraph: {
-    title: 'KPR knjiga prometa paušalisti | Kvik',
-    description: META_DESC,
-    url: `${getSiteUrl()}/vodici/${SLUG}`,
-    siteName: 'Kvik',
-    locale: 'hr_HR',
-    type: 'article',
-  },
-};
+export const metadata: Metadata = buildVodicMetadata(
+  SLUG,
+  'KPR knjiga prometa paušalisti',
+  META_DESC,
+  'KPR knjiga prometa paušalisti | Kvik',
+);
 
 const faq = [
   {

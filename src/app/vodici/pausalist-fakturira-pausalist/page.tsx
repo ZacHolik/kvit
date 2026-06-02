@@ -1,7 +1,9 @@
 import type { Metadata } from 'next';
+
+import { buildVodicMetadata } from '@/lib/og-metadata';
 import Link from 'next/link';
 
-import { getSiteUrl, vodiciHref } from '@/lib/vodici-config';
+import { vodiciHref } from '@/lib/vodici-config';
 
 import { GuideShell } from '../_components/guide-shell';
 
@@ -10,19 +12,12 @@ const SLUG = 'pausalist-fakturira-pausalist';
 const META_DESC =
   'Vodič za izdavanje računa između dva paušalna obrta: B2B pravila, fiskalizacija, eRačuni, obvezni elementi i KPR evidentiranje.';
 
-export const metadata: Metadata = {
-  title: 'Kako paušalac fakturira paušalcu',
-  description: META_DESC,
-  openGraph: {
-    title: 'Kako paušalac fakturira paušalcu | Kvik',
-    description:
-      'Kompletna procedura izdavanja računa između paušalista — B2B transakcije, rokovi, eRačuni i česte greške.',
-    url: `${getSiteUrl()}/vodici/${SLUG}`,
-    siteName: 'Kvik',
-    locale: 'hr_HR',
-    type: 'article',
-  },
-};
+export const metadata: Metadata = buildVodicMetadata(
+  SLUG,
+  'Kako paušalac fakturira paušalcu',
+  META_DESC,
+  'Kako paušalac fakturira paušalcu | Kvik',
+);
 
 const faq = [
   {

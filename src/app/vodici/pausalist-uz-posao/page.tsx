@@ -1,7 +1,10 @@
 import type { Metadata } from 'next';
+
+import { buildVodicMetadata } from '@/lib/og-metadata';
 import Link from 'next/link';
 
-import { getSiteUrl, vodiciHref } from '@/lib/vodici-config';
+import InlineCTA from '@/components/cta/InlineCTA';
+import { vodiciHref } from '@/lib/vodici-config';
 
 import { GuideShell } from '../_components/guide-shell';
 
@@ -10,18 +13,12 @@ const SLUG = 'pausalist-uz-posao';
 const META_DESC =
   'Kompletna procedura od e-Obrtnice do plaćanja doprinosa za paušaliste koji već imaju stalno zaposlenje. Rok 8 dana, duplo osiguranje i pravo na odmor.';
 
-export const metadata: Metadata = {
-  title: 'Paušalni obrt uz redovno zaposlenje 9-5',
-  description: META_DESC,
-  openGraph: {
-    title: 'Paušalni obrt uz redovno zaposlenje 9-5 | Kvik',
-    description: META_DESC,
-    url: `${getSiteUrl()}/vodici/${SLUG}`,
-    siteName: 'Kvik',
-    locale: 'hr_HR',
-    type: 'article',
-  },
-};
+export const metadata: Metadata = buildVodicMetadata(
+  SLUG,
+  'Paušalni obrt uz redovno zaposlenje 9-5',
+  META_DESC,
+  'Paušalni obrt uz redovno zaposlenje 9-5 | Kvik',
+);
 
 const faq = [
   {
@@ -236,6 +233,8 @@ export default function PausalistUzPosaoPage() {
         Više o doprinosima uz zaposlenje →{' '}
         <Link href={vodiciHref('doprinosi-uz-posao')}>Doprinosi uz posao</Link>
       </p>
+
+      <InlineCTA tema="doprinosi" pageSlug="pausalist-uz-posao" />
 
       <h3>KORAK 4: HZZO — duplo osiguranje (zdravstveno)</h3>
       <p>

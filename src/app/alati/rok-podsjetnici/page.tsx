@@ -1,4 +1,6 @@
 import type { Metadata } from 'next';
+
+import { buildAlatMetadata } from '@/lib/og-metadata';
 import Link from 'next/link';
 import Script from 'next/script';
 
@@ -15,19 +17,12 @@ const TITLE = 'Rok podsjetnici — zakoniti rokovi za paušalni obrt';
 const DESC =
   'Pregled tipičnih mjesečnih, kvartalnih i godišnjih rokova za paušalnog obrtnika. Gost: pregled. PRO: push i email obavijesti (uskoro u Kviku).';
 
-export const metadata: Metadata = {
-  title: TITLE,
-  description: DESC,
-  keywords: ['rokovi paušalni obrt', 'podsjetnici porez', 'obveze obrt'],
-  openGraph: {
-    title: `${TITLE} | Kvik`,
-    description: DESC,
-    url: `${getSiteUrl()}/alati/rok-podsjetnici`,
-    siteName: 'Kvik',
-    locale: 'hr_HR',
-    type: 'website',
-  },
-};
+export const metadata: Metadata = buildAlatMetadata(
+  'rok-podsjetnici',
+  TITLE,
+  DESC,
+  { keywords: ['rokovi paušalni obrt', 'podsjetnici porez', 'obveze obrt'] }
+);
 
 export default function RokPodsjetniciPage() {
   const base = getSiteUrl();

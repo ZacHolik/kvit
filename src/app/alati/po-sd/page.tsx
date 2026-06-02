@@ -1,5 +1,7 @@
 import type { Metadata } from 'next';
 
+import { buildAlatMetadata } from '@/lib/og-metadata';
+
 import PageTopBar from '@/components/cta/PageTopBar';
 import BottomCTA from '@/components/cta/BottomCTA';
 
@@ -8,10 +10,11 @@ import { PoweredByKvikBadge } from '../_components/powered-by-kvik-badge';
 
 import { PoSdTool } from './po-sd-tool';
 
-export const metadata: Metadata = {
-  title: 'PO-SD Generator 2026 — Besplatni kalkulator za paušalce | Kvik',
-  description:
-    'Besplatni online PO-SD generator za hrvatske paušalne obrtnike. Izračunaj razred poreza i pripremi PO-SD obrazac za 2026. Bez registracije.',
+const PO_SD_TITLE = 'PO-SD Generator 2026 — Besplatni kalkulator za paušalce | Kvik';
+const PO_SD_DESC =
+  'Besplatni online PO-SD generator za hrvatske paušalne obrtnike. Izračunaj razred poreza i pripremi PO-SD obrazac za 2026. Bez registracije.';
+
+export const metadata: Metadata = buildAlatMetadata('po-sd', PO_SD_TITLE, PO_SD_DESC, {
   keywords: [
     'PO-SD',
     'paušalni obrt',
@@ -20,17 +23,7 @@ export const metadata: Metadata = {
     'paušalac porez',
     'PO-SD generator',
   ],
-  alternates: { canonical: 'https://kvik.online/alati/po-sd' },
-  openGraph: {
-    title: 'PO-SD Generator 2026 — Besplatni kalkulator za paušalce',
-    description:
-      'Izračunaj razred poreza i pripremi PO-SD obrazac za 2026. Bez registracije.',
-    url: 'https://kvik.online/alati/po-sd',
-    siteName: 'Kvik',
-    locale: 'hr_HR',
-    type: 'website',
-  },
-};
+});
 
 export default function PoSdPublicPage() {
   return (

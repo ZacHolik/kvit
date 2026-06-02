@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import Script from 'next/script';
 
+import { buildPublicPageMetadata } from '@/lib/og-metadata';
 import { getSiteUrl } from '@/lib/vodici-config';
 
 import { jsonLdSafe } from './_components/json-ld';
@@ -9,24 +10,20 @@ import { jsonLdSafe } from './_components/json-ld';
 const META_DESC =
   'Alati za paušalne obrtnike: kalkulator paušalnog poreza 2026, PDV prag kalkulator, interni akt, checklista, plaćanje doprinosa, rokovi i PRO izjave. FREE, FREEMIUM i PRO oznake.';
 
-export const metadata: Metadata = {
+export const metadata: Metadata = buildPublicPageMetadata({
   title: 'Alati za paušalne obrtnike — FREE, FREEMIUM i PRO',
   description: META_DESC,
+  path: '/alati',
+  pageLabel: 'Alati za paušalne obrtnike',
+  type: 'website',
+  ogTitle: 'Alati za paušalne obrtnike | Kvik',
   keywords: [
     'kalkulator paušalnog poreza 2026',
     'PDV prag kalkulator',
     'interni akt paušalni obrt',
     'alati obrt',
   ],
-  openGraph: {
-    title: 'Alati za paušalne obrtnike | Kvik',
-    description: META_DESC,
-    url: `${getSiteUrl()}/alati`,
-    siteName: 'Kvik',
-    locale: 'hr_HR',
-    type: 'website',
-  },
-};
+});
 
 type PlanBadge = 'FREE' | 'FREEMIUM' | 'PRO';
 

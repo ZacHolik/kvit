@@ -1,7 +1,9 @@
 import type { Metadata } from 'next';
+
+import { buildVodicMetadata } from '@/lib/og-metadata';
 import Link from 'next/link';
 
-import { getSiteUrl, vodiciHref } from '@/lib/vodici-config';
+import { vodiciHref } from '@/lib/vodici-config';
 
 import { GuideShell } from '../_components/guide-shell';
 
@@ -10,18 +12,12 @@ const SLUG = 'rad-s-pola-radnog-vremena-pausalni-obrt';
 const META_DESC =
   'Kako koristiti rad s polovicom radnog vremena kao paušalist: rodiljni dopust, bolovanje, mirovanje obrta, HZZO procedura i doprinosi — sve na jednom mjestu.';
 
-export const metadata: Metadata = {
-  title: 'Rad s pola radnog vremena uz paušalni obrt – vodič 2026.',
-  description: META_DESC,
-  openGraph: {
-    title: 'Rad s pola radnog vremena uz paušalni obrt – vodič 2026. | Kvik',
-    description: META_DESC,
-    url: `${getSiteUrl()}/vodici/${SLUG}`,
-    siteName: 'Kvik',
-    locale: 'hr_HR',
-    type: 'article',
-  },
-};
+export const metadata: Metadata = buildVodicMetadata(
+  SLUG,
+  'Rad s pola radnog vremena uz paušalni obrt – vodič 2026.',
+  META_DESC,
+  'Rad s pola radnog vremena uz paušalni obrt – vodič 2026. | Kvik',
+);
 
 const faq = [
   {

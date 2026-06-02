@@ -1,7 +1,9 @@
 import type { Metadata } from 'next';
+
+import { buildVodicMetadata } from '@/lib/og-metadata';
 import Link from 'next/link';
 
-import { getSiteUrl, vodiciHref } from '@/lib/vodici-config';
+import { vodiciHref } from '@/lib/vodici-config';
 
 import { GuideShell } from '../_components/guide-shell';
 
@@ -10,18 +12,12 @@ const SLUG = 'izdavanje-racuna';
 const META_DESC =
   'Izdavanje računa paušalni obrt: obvezni elementi, format broja 1-2026, PDV čl. 90, IBAN, fiskalizacija i eRačun. Praktičan vodič za 2026.';
 
-export const metadata: Metadata = {
-  title: 'Izdavanje računa paušalni obrt',
-  description: META_DESC,
-  openGraph: {
-    title: 'Izdavanje računa paušalni obrt | Kvik',
-    description: META_DESC,
-    url: `${getSiteUrl()}/vodici/${SLUG}`,
-    siteName: 'Kvik',
-    locale: 'hr_HR',
-    type: 'article',
-  },
-};
+export const metadata: Metadata = buildVodicMetadata(
+  SLUG,
+  'Izdavanje računa paušalni obrt',
+  META_DESC,
+  'Izdavanje računa paušalni obrt | Kvik',
+);
 
 const faq = [
   {

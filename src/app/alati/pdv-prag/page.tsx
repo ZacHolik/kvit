@@ -1,4 +1,6 @@
 import type { Metadata } from 'next';
+
+import { buildAlatMetadata } from '@/lib/og-metadata';
 import Link from 'next/link';
 import Script from 'next/script';
 
@@ -16,25 +18,17 @@ const TITLE = 'Kalkulator PDV praga 2026 — paušalni obrt | Kvik';
 const DESC =
   'Provjeri koliko si blizu PDV praga od 60.000€. Unesi dosadašnje prihode i vidi upozorenje na vrijeme.';
 
-export const metadata: Metadata = {
-  title: TITLE,
-  description: DESC,
-  keywords: [
+export const metadata: Metadata = buildAlatMetadata(
+  'pdv-prag',
+  TITLE,
+  DESC,
+  { keywords: [
     'PDV prag kalkulator',
     'PDV prag paušalni obrt',
     'PDV prag 60000',
     'paušalni obrt PDV',
-  ],
-  alternates: { canonical: 'https://kvik.online/alati/pdv-prag' },
-  openGraph: {
-    title: TITLE,
-    description: DESC,
-    url: `${getSiteUrl()}/alati/pdv-prag`,
-    siteName: 'Kvik',
-    locale: 'hr_HR',
-    type: 'website',
-  },
-};
+  ] }
+);
 
 export default function PdvPragPage() {
   const base = getSiteUrl();

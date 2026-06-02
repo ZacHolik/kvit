@@ -1,7 +1,10 @@
 import type { Metadata } from 'next';
+
+import { buildVodicMetadata } from '@/lib/og-metadata';
 import Link from 'next/link';
 
-import { getSiteUrl, vodiciHref } from '@/lib/vodici-config';
+import InlineCTA from '@/components/cta/InlineCTA';
+import { vodiciHref } from '@/lib/vodici-config';
 
 import { GuideShell } from '../_components/guide-shell';
 
@@ -10,19 +13,12 @@ const SLUG = 'fina-certifikat-fiskalizacija';
 const META_DESC =
   'Kako nabaviti FINA certifikat za fiskalizaciju, koliko košta i kako ga uploadati u Kvik.';
 
-export const metadata: Metadata = {
-  title: 'FINA certifikat za fiskalizaciju — korak po korak',
-  description: META_DESC,
-  keywords: ['FINA certifikat', 'fiskalizacija', 'paušalni obrt', 'mojcert.fina.hr', '.p12'],
-  openGraph: {
-    title: 'FINA certifikat za fiskalizaciju | Kvik',
-    description: META_DESC,
-    url: `${getSiteUrl()}/vodici/${SLUG}`,
-    siteName: 'Kvik',
-    locale: 'hr_HR',
-    type: 'article',
-  },
-};
+export const metadata: Metadata = buildVodicMetadata(
+  SLUG,
+  'FINA certifikat za fiskalizaciju — korak po korak',
+  META_DESC,
+  'FINA certifikat za fiskalizaciju | Kvik',
+);
 
 const faq = [
   {
@@ -132,6 +128,8 @@ export default function FinaCertifikatFiskalizacijaPage() {
         </Link>
         .
       </p>
+
+      <InlineCTA tema="interni-akt" pageSlug="fina-certifikat-fiskalizacija" />
 
       <h2 id='sto-je'>Što je FINA certifikat za fiskalizaciju?</h2>
       <p>

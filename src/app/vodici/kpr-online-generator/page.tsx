@@ -1,7 +1,9 @@
 import type { Metadata } from 'next';
+
+import { buildVodicMetadata } from '@/lib/og-metadata';
 import Link from 'next/link';
 
-import { getSiteUrl, vodiciHref } from '@/lib/vodici-config';
+import { vodiciHref } from '@/lib/vodici-config';
 
 import { GuideShell } from '../_components/guide-shell';
 
@@ -10,18 +12,12 @@ const SLUG = 'kpr-online-generator';
 const META_DESC =
   'KPR online paušalni obrt: što se upisuje, gotovina vs bezgotovina, greške i veza s PO-SD-om — praktičan pregled za paušaliste.';
 
-export const metadata: Metadata = {
-  title: 'KPR online paušalni obrt',
-  description: META_DESC,
-  openGraph: {
-    title: 'KPR online paušalni obrt | Kvik',
-    description: META_DESC,
-    url: `${getSiteUrl()}/vodici/${SLUG}`,
-    siteName: 'Kvik',
-    locale: 'hr_HR',
-    type: 'article',
-  },
-};
+export const metadata: Metadata = buildVodicMetadata(
+  SLUG,
+  'KPR online paušalni obrt',
+  META_DESC,
+  'KPR online paušalni obrt | Kvik',
+);
 
 const faq = [
   {

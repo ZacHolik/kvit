@@ -1,7 +1,9 @@
 import type { Metadata } from 'next';
+
+import { buildVodicMetadata } from '@/lib/og-metadata';
 import Link from 'next/link';
 
-import { getSiteUrl, vodiciHref } from '@/lib/vodici-config';
+import { vodiciHref } from '@/lib/vodici-config';
 
 import { GuideShell } from '../_components/guide-shell';
 
@@ -10,18 +12,12 @@ const SLUG = 'turisticka-clanarina';
 const META_DESC =
   'Koji paušalni obrtnici moraju plaćati turističku članarinu, iznosi za 2026. i kako ispuniti TZ1 obrazac.';
 
-export const metadata: Metadata = {
-  title: 'Turistička članarina – tko plaća i koliko 2026.',
-  description: META_DESC,
-  openGraph: {
-    title: 'Turistička članarina – tko plaća i koliko 2026. | Kvik',
-    description: META_DESC,
-    url: `${getSiteUrl()}/vodici/${SLUG}`,
-    siteName: 'Kvik',
-    locale: 'hr_HR',
-    type: 'article',
-  },
-};
+export const metadata: Metadata = buildVodicMetadata(
+  SLUG,
+  'Turistička članarina – tko plaća i koliko 2026.',
+  META_DESC,
+  'Turistička članarina – tko plaća i koliko 2026. | Kvik',
+);
 
 const faq = [
   {

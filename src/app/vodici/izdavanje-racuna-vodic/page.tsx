@@ -1,7 +1,9 @@
 import type { Metadata } from 'next';
+
+import { buildVodicMetadata } from '@/lib/og-metadata';
 import Link from 'next/link';
 
-import { getSiteUrl, vodiciHref } from '@/lib/vodici-config';
+import { vodiciHref } from '@/lib/vodici-config';
 
 import { GuideShell } from '../_components/guide-shell';
 
@@ -10,18 +12,12 @@ const SLUG = 'izdavanje-racuna-vodic';
 const META_DESC =
   'Kompletan vodič za izdavanje računa: interni akt, numeracija, obvezni elementi, fiskalizacija i čuvanje.';
 
-export const metadata: Metadata = {
-  title: 'Vodič za izdavanje računa – paušalni obrt 2026.',
-  description: META_DESC,
-  openGraph: {
-    title: 'Vodič za izdavanje računa – paušalni obrt 2026. | Kvik',
-    description: META_DESC,
-    url: `${getSiteUrl()}/vodici/${SLUG}`,
-    siteName: 'Kvik',
-    locale: 'hr_HR',
-    type: 'article',
-  },
-};
+export const metadata: Metadata = buildVodicMetadata(
+  SLUG,
+  'Vodič za izdavanje računa – paušalni obrt 2026.',
+  META_DESC,
+  'Vodič za izdavanje računa – paušalni obrt 2026. | Kvik',
+);
 
 const faq = [
   {

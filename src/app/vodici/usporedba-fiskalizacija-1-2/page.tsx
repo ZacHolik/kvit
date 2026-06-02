@@ -1,7 +1,9 @@
 import type { Metadata } from 'next';
+
+import { buildVodicMetadata } from '@/lib/og-metadata';
 import Link from 'next/link';
 
-import { getSiteUrl, vodiciHref } from '@/lib/vodici-config';
+import { vodiciHref } from '@/lib/vodici-config';
 
 import { GuideShell } from '../_components/guide-shell';
 
@@ -10,18 +12,12 @@ const SLUG = 'usporedba-fiskalizacija-1-2';
 const META_DESC =
   'Side-by-side tablica: tko mora, certifikat, cijena, rokovi, eRačuni, JIR, poslovni prostor. Fiskalizacija 1.0 (gotovina) vs 2.0 (B2B/B2G).';
 
-export const metadata: Metadata = {
-  title: 'Usporedba Fiskalizacija 1.0 vs 2.0',
-  description: META_DESC,
-  openGraph: {
-    title: 'Usporedba Fiskalizacija 1.0 vs 2.0 | Kvik',
-    description: META_DESC,
-    url: `${getSiteUrl()}/vodici/${SLUG}`,
-    siteName: 'Kvik',
-    locale: 'hr_HR',
-    type: 'article',
-  },
-};
+export const metadata: Metadata = buildVodicMetadata(
+  SLUG,
+  'Usporedba Fiskalizacija 1.0 vs 2.0',
+  META_DESC,
+  'Usporedba Fiskalizacija 1.0 vs 2.0 | Kvik',
+);
 
 const faq = [
   {

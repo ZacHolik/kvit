@@ -1,4 +1,6 @@
 import type { Metadata } from 'next';
+
+import { buildAlatMetadata } from '@/lib/og-metadata';
 import Link from 'next/link';
 import Script from 'next/script';
 
@@ -17,26 +19,18 @@ const TITLE = 'Kalkulator doprinosa 2026 + barkod uplate | Kvik';
 const DESC =
   'Unesi OIB, općinu i razred: prikažemo uplatne podatke i PDF417 barkod (HUB-3). Besplatni alat za paušalne obrtnike.';
 
-export const metadata: Metadata = {
-  title: TITLE,
-  description: DESC,
-  keywords: [
+export const metadata: Metadata = buildAlatMetadata(
+  'placanje-doprinosa',
+  TITLE,
+  DESC,
+  { keywords: [
     'plaćanje doprinosa',
     'uplatnica doprinosa',
     '2D barkod uplatnica',
     'kalkulator doprinosa 2026',
     'doprinosi paušalni obrt',
-  ],
-  alternates: { canonical: 'https://kvik.online/alati/placanje-doprinosa' },
-  openGraph: {
-    title: TITLE,
-    description: DESC,
-    url: `${getSiteUrl()}/alati/placanje-doprinosa`,
-    siteName: 'Kvik',
-    locale: 'hr_HR',
-    type: 'website',
-  },
-};
+  ] }
+);
 
 export default function PlacanjeDoprinosaPage({
   searchParams,

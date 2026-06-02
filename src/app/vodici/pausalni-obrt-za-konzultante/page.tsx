@@ -1,7 +1,9 @@
 import type { Metadata } from 'next';
+
+import { buildVodicMetadata } from '@/lib/og-metadata';
 import Link from 'next/link';
 
-import { getSiteUrl, vodiciHref } from '@/lib/vodici-config';
+import { vodiciHref } from '@/lib/vodici-config';
 
 import { GuideShell } from '../_components/guide-shell';
 
@@ -10,18 +12,12 @@ const SLUG = 'pausalni-obrt-za-konzultante';
 const META_DESC =
   'Paušalni obrt za konzultante i dizajnere 2026.: EU klijenti, PDV ID, platforme poput Upworka, prikriveni radni odnos i limit 60.000 €.';
 
-export const metadata: Metadata = {
-  title: 'Paušalni obrt za konzultante',
-  description: META_DESC,
-  openGraph: {
-    title: 'Paušalni obrt za konzultante | Kvik',
-    description: META_DESC,
-    url: `${getSiteUrl()}/vodici/${SLUG}`,
-    siteName: 'Kvik',
-    locale: 'hr_HR',
-    type: 'article',
-  },
-};
+export const metadata: Metadata = buildVodicMetadata(
+  SLUG,
+  'Paušalni obrt za konzultante',
+  META_DESC,
+  'Paušalni obrt za konzultante | Kvik',
+);
 
 const faq = [
   {

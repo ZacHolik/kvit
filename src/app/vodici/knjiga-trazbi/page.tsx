@@ -1,7 +1,9 @@
 import type { Metadata } from 'next';
+
+import { buildVodicMetadata } from '@/lib/og-metadata';
 import Link from 'next/link';
 
-import { getSiteUrl, vodiciHref } from '@/lib/vodici-config';
+import { vodiciHref } from '@/lib/vodici-config';
 
 import { GuideShell } from '../_components/guide-shell';
 
@@ -10,18 +12,12 @@ const SLUG = 'knjiga-trazbi';
 const META_DESC =
   'Knjiga tražbina paušalni obrt: razlika od KPR-a, tko vodi evidenciju nenaplaćenih računa i veza s PO-SD-om (naplaćeno vs izdano).';
 
-export const metadata: Metadata = {
-  title: 'Knjiga tražbina paušalni obrt',
-  description: META_DESC,
-  openGraph: {
-    title: 'Knjiga tražbina paušalni obrt | Kvik',
-    description: META_DESC,
-    url: `${getSiteUrl()}/vodici/${SLUG}`,
-    siteName: 'Kvik',
-    locale: 'hr_HR',
-    type: 'article',
-  },
-};
+export const metadata: Metadata = buildVodicMetadata(
+  SLUG,
+  'Knjiga tražbina paušalni obrt',
+  META_DESC,
+  'Knjiga tražbina paušalni obrt | Kvik',
+);
 
 const faq = [
   {

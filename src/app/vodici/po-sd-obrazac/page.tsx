@@ -1,7 +1,10 @@
 import type { Metadata } from 'next';
+
+import { buildVodicMetadata } from '@/lib/og-metadata';
 import Link from 'next/link';
 
-import { getSiteUrl, vodiciHref } from '@/lib/vodici-config';
+import InlineCTA from '@/components/cta/InlineCTA';
+import { vodiciHref } from '@/lib/vodici-config';
 
 import { GuideShell } from '../_components/guide-shell';
 
@@ -10,18 +13,12 @@ const SLUG = 'po-sd-obrazac';
 const META_DESC =
   'PO-SD obrazac kako ispuniti: rok 15. siječnja, ePorezna, razredi paušalnog poreza 2026., česte greške i što ako kasniš. Vodič za paušaliste.';
 
-export const metadata: Metadata = {
-  title: 'PO-SD obrazac kako ispuniti',
-  description: META_DESC,
-  openGraph: {
-    title: 'PO-SD obrazac kako ispuniti | Kvik',
-    description: META_DESC,
-    url: `${getSiteUrl()}/vodici/${SLUG}`,
-    siteName: 'Kvik',
-    locale: 'hr_HR',
-    type: 'article',
-  },
-};
+export const metadata: Metadata = buildVodicMetadata(
+  SLUG,
+  'PO-SD obrazac kako ispuniti',
+  META_DESC,
+  'PO-SD obrazac kako ispuniti | Kvik',
+);
 
 const faq = [
   {
@@ -163,6 +160,8 @@ export default function PoSdObrazacPage() {
         ručno ključne zbrojeve. Automatizacija pomaže, ali
         odgovornost za točnost ostaje na tebi kao poreznom obvezniku.
       </p>
+
+      <InlineCTA tema="po-sd" pageSlug="po-sd-obrazac" />
 
       <h2 id='eporezna'>Predaja putem ePorezne</h2>
       <p>
