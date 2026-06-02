@@ -1,7 +1,9 @@
 import type { Metadata } from 'next';
 
+import PageTopBar from '@/components/cta/PageTopBar';
+import BottomCTA from '@/components/cta/BottomCTA';
+
 import { AlatiBreadcrumb } from '../_components/alati-breadcrumb';
-import { CtaRegister } from '../_components/cta-register';
 import { PoweredByKvikBadge } from '../_components/powered-by-kvik-badge';
 
 import { PoSdTool } from './po-sd-tool';
@@ -46,13 +48,14 @@ export default function PoSdPublicPage() {
           PO-SD Generator 2026
         </h1>
       </header>
-      <PoSdTool />
-      <CtaRegister
-        title='Kvik automatski popunjava PO-SD iz tvojih računa.'
-        body='Bez ručnog unosa — svi primitci iz KPR-a idu ravno u obrazac.'
-        buttonLabel='Registriraj se besplatno →'
-        utmSrc='po-sd'
+      <PageTopBar
+        pageType='alat'
+        pageSlug='po-sd'
+        pageUrl='https://kvik.online/alati/po-sd'
+        ctaHrefOverride='/alati/po-sd'
       />
+      <PoSdTool />
+      <BottomCTA pageType='alat' pageSlug='po-sd' />
       <PoweredByKvikBadge />
     </article>
   );

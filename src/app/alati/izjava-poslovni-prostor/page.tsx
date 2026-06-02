@@ -2,6 +2,8 @@ import type { Metadata } from 'next';
 import Script from 'next/script';
 
 import { getSiteUrl } from '@/lib/vodici-config';
+import PageTopBar from '@/components/cta/PageTopBar';
+import BottomCTA from '@/components/cta/BottomCTA';
 
 import { AlatiBreadcrumb } from '../_components/alati-breadcrumb';
 import { jsonLdSafe } from '../_components/json-ld';
@@ -62,7 +64,14 @@ export default function IzjavaPoslovniProstorPage() {
           </h1>
           <p className='font-body mt-4 text-lg text-[#b9c7c4]'>{DESC}</p>
         </header>
+        <PageTopBar
+          pageType='alat'
+          pageSlug='izjava-poslovni-prostor'
+          pageUrl={pageUrl}
+          ctaHrefOverride='/alati/izjava-poslovni-prostor'
+        />
         <IzjavaPoslovniProstorTool />
+        <BottomCTA pageType='alat' pageSlug='izjava-poslovni-prostor' />
       </article>
     </>
   );

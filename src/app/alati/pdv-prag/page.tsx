@@ -3,9 +3,10 @@ import Link from 'next/link';
 import Script from 'next/script';
 
 import { getSiteUrl } from '@/lib/vodici-config';
+import PageTopBar from '@/components/cta/PageTopBar';
+import BottomCTA from '@/components/cta/BottomCTA';
 
 import { AlatiBreadcrumb } from '../_components/alati-breadcrumb';
-import { CtaRegister } from '../_components/cta-register';
 import { PoweredByKvikBadge } from '../_components/powered-by-kvik-badge';
 import { jsonLdSafe } from '../_components/json-ld';
 
@@ -75,6 +76,13 @@ export default function PdvPragPage() {
           <p className='font-body mt-4 text-lg text-[#b9c7c4]'>{DESC}</p>
         </header>
 
+        <PageTopBar
+          pageType='alat'
+          pageSlug='pdv-prag'
+          pageUrl={pageUrl}
+          ctaHrefOverride='/alati/pdv-prag'
+        />
+
         <PdvPragCalculator />
 
         <section className='mt-10 font-body text-sm text-[#94a3a0]'>
@@ -98,12 +106,7 @@ export default function PdvPragPage() {
           </ul>
         </section>
 
-        <CtaRegister
-          title='Kvik ti pokazuje PDV prag u realnom vremenu na dashboardu — uvijek znaš gdje si.'
-          body='Prati primitke i prag bez ručnog proračuna u tablicama.'
-          buttonLabel='Isprobaj besplatno →'
-          utmSrc='pdv-prag'
-        />
+        <BottomCTA pageType='alat' pageSlug='pdv-prag' />
         <PoweredByKvikBadge />
       </article>
     </>

@@ -2,6 +2,8 @@ import type { Metadata } from 'next';
 
 import { VodiciNav } from '../vodici/_components/vodici-nav';
 
+import AlatiFloatingWrapper from './_components/AlatiFloatingWrapper';
+
 export const metadata: Metadata = {
   title: {
     default: 'Alati | Kvik',
@@ -16,6 +18,7 @@ export default function AlatiLayout({ children }: { children: React.ReactNode })
     <div className='min-h-screen bg-[#0b0f0e]'>
       <VodiciNav />
       <main>{children}</main>
+      <AlatiFloatingWrapper />
       <footer className='border-t border-[#1f2a28] px-4 py-8 text-center text-sm text-[#64756f] sm:px-6'>
         <p className='font-body'>
           © {new Date().getFullYear()} Kvik ·{' '}

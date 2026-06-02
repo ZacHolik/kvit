@@ -3,9 +3,10 @@ import Link from 'next/link';
 import Script from 'next/script';
 
 import { getSiteUrl } from '@/lib/vodici-config';
+import PageTopBar from '@/components/cta/PageTopBar';
+import BottomCTA from '@/components/cta/BottomCTA';
 
 import { AlatiBreadcrumb } from '../_components/alati-breadcrumb';
-import { CtaRegister } from '../_components/cta-register';
 import { jsonLdSafe } from '../_components/json-ld';
 
 import { RokPodsjetniciClient } from './rok-podsjetnici-client';
@@ -64,6 +65,12 @@ export default function RokPodsjetniciPage() {
           </h1>
           <p className='font-body mt-4 text-lg text-[#b9c7c4]'>{DESC}</p>
         </header>
+        <PageTopBar
+          pageType='alat'
+          pageSlug='rok-podsjetnici'
+          pageUrl={pageUrl}
+          ctaHrefOverride='/alati/rok-podsjetnici'
+        />
         <RokPodsjetniciClient />
         <section className='mt-10 font-body text-sm text-[#94a3a0]'>
           <h2 className='font-heading text-base font-semibold text-[#e2e8e7]'>Povezano</h2>
@@ -75,11 +82,7 @@ export default function RokPodsjetniciPage() {
             </li>
           </ul>
         </section>
-        <CtaRegister
-          title='Želiš rokove na dashboardu i u mobitelu?'
-          body='Kvik povezuje KPR, račune i podsjetnike na jednom mjestu.'
-          buttonLabel='Registriraj se →'
-        />
+        <BottomCTA pageType='alat' pageSlug='rok-podsjetnici' />
       </article>
     </>
   );

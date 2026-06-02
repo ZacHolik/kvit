@@ -3,9 +3,10 @@ import Link from 'next/link';
 import Script from 'next/script';
 
 import { getSiteUrl } from '@/lib/vodici-config';
+import PageTopBar from '@/components/cta/PageTopBar';
+import BottomCTA from '@/components/cta/BottomCTA';
 
 import { AlatiBreadcrumb } from '../_components/alati-breadcrumb';
-import { CtaRegister } from '../_components/cta-register';
 import { PoweredByKvikBadge } from '../_components/powered-by-kvik-badge';
 import { ToolRefTracker } from '../_components/tool-ref-tracker';
 import { jsonLdSafe } from '../_components/json-ld';
@@ -128,6 +129,13 @@ export default function KalkulatorPorezaPage({
           <p className='font-body mt-4 text-lg text-[#b9c7c4]'>{DESC}</p>
         </header>
 
+        <PageTopBar
+          pageType='alat'
+          pageSlug='kalkulator-poreza'
+          pageUrl={pageUrl}
+          ctaHrefOverride='/alati/kalkulator-poreza'
+        />
+
         <ToolRefTracker code={refParam} />
         <PausalTaxCalculator toolReferralParam={refParam} />
 
@@ -149,12 +157,7 @@ export default function KalkulatorPorezaPage({
           </ul>
         </section>
 
-        <CtaRegister
-          title='Kvik prati tvoj porezni razred automatski.'
-          body='KPR, PO-SD i porezni razred na jednom mjestu — bez Excela.'
-          buttonLabel='Isprobaj besplatno →'
-          utmSrc='kalkulator'
-        />
+        <BottomCTA pageType='alat' pageSlug='kalkulator-poreza' />
         <PoweredByKvikBadge />
       </article>
     </>
