@@ -1,7 +1,11 @@
 import type { Metadata } from 'next';
+
+import { buildAlatMetadata } from '@/lib/og-metadata';
 import Script from 'next/script';
 
 import { getSiteUrl } from '@/lib/vodici-config';
+import PageTopBar from '@/components/cta/PageTopBar';
+import BottomCTA from '@/components/cta/BottomCTA';
 
 import { AlatiBreadcrumb } from '../_components/alati-breadcrumb';
 import { jsonLdSafe } from '../_components/json-ld';
@@ -12,19 +16,12 @@ const TITLE = 'Izjava o suglasnosti za tuđi poslovni prostor (PDF)';
 const DESC =
   'Generator PDF izjave za paušalni obrt koji koristi tuđi poslovni prostor. Alat je dostupan pretplatnicima Paušalist PRO.';
 
-export const metadata: Metadata = {
-  title: TITLE,
-  description: DESC,
-  keywords: ['izjava poslovni prostor', 'tuđi poslovni prostor obrt', 'suglasnost'],
-  openGraph: {
-    title: `${TITLE} | Kvik`,
-    description: DESC,
-    url: `${getSiteUrl()}/alati/izjava-poslovni-prostor`,
-    siteName: 'Kvik',
-    locale: 'hr_HR',
-    type: 'website',
-  },
-};
+export const metadata: Metadata = buildAlatMetadata(
+  'izjava-poslovni-prostor',
+  TITLE,
+  DESC,
+  { keywords: ['izjava poslovni prostor', 'tuđi poslovni prostor obrt', 'suglasnost'] }
+);
 
 export default function IzjavaPoslovniProstorPage() {
   const base = getSiteUrl();
@@ -62,7 +59,14 @@ export default function IzjavaPoslovniProstorPage() {
           </h1>
           <p className='font-body mt-4 text-lg text-[#b9c7c4]'>{DESC}</p>
         </header>
+        <PageTopBar
+          pageType='alat'
+          pageSlug='izjava-poslovni-prostor'
+          pageUrl={pageUrl}
+          ctaHrefOverride='/alati/izjava-poslovni-prostor'
+        />
         <IzjavaPoslovniProstorTool />
+        <BottomCTA pageType='alat' pageSlug='izjava-poslovni-prostor' />
       </article>
     </>
   );

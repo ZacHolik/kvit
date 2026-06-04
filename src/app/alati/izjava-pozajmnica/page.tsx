@@ -1,7 +1,11 @@
 import type { Metadata } from 'next';
+
+import { buildAlatMetadata } from '@/lib/og-metadata';
 import Script from 'next/script';
 
 import { getSiteUrl } from '@/lib/vodici-config';
+import PageTopBar from '@/components/cta/PageTopBar';
+import BottomCTA from '@/components/cta/BottomCTA';
 
 import { AlatiBreadcrumb } from '../_components/alati-breadcrumb';
 import { jsonLdSafe } from '../_components/json-ld';
@@ -12,19 +16,12 @@ const TITLE = 'Izjava o pozajmici vlasnika — PDF za obrt';
 const DESC =
   'Predložak PDF izjave o pozajmici imovine vlasnika za potrebe paušalnog obrta. Dostupno isključivo pretplatnicima Paušalist PRO.';
 
-export const metadata: Metadata = {
-  title: TITLE,
-  description: DESC,
-  keywords: ['izjava pozajmnica', 'pozajmica vlasnika obrt', 'paušalni obrt izjava'],
-  openGraph: {
-    title: `${TITLE} | Kvik`,
-    description: DESC,
-    url: `${getSiteUrl()}/alati/izjava-pozajmnica`,
-    siteName: 'Kvik',
-    locale: 'hr_HR',
-    type: 'website',
-  },
-};
+export const metadata: Metadata = buildAlatMetadata(
+  'izjava-pozajmnica',
+  TITLE,
+  DESC,
+  { keywords: ['izjava pozajmnica', 'pozajmica vlasnika obrt', 'paušalni obrt izjava'] }
+);
 
 export default function IzjavaPozajmnicaPage() {
   const base = getSiteUrl();
@@ -62,7 +59,14 @@ export default function IzjavaPozajmnicaPage() {
           </h1>
           <p className='font-body mt-4 text-lg text-[#b9c7c4]'>{DESC}</p>
         </header>
+        <PageTopBar
+          pageType='alat'
+          pageSlug='izjava-pozajmnica'
+          pageUrl={pageUrl}
+          ctaHrefOverride='/alati/izjava-pozajmnica'
+        />
         <IzjavaPozajmnicaTool />
+        <BottomCTA pageType='alat' pageSlug='izjava-pozajmnica' />
       </article>
     </>
   );

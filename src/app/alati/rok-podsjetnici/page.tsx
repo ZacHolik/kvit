@@ -1,11 +1,14 @@
 import type { Metadata } from 'next';
+
+import { buildAlatMetadata } from '@/lib/og-metadata';
 import Link from 'next/link';
 import Script from 'next/script';
 
 import { getSiteUrl } from '@/lib/vodici-config';
+import PageTopBar from '@/components/cta/PageTopBar';
+import BottomCTA from '@/components/cta/BottomCTA';
 
 import { AlatiBreadcrumb } from '../_components/alati-breadcrumb';
-import { CtaRegister } from '../_components/cta-register';
 import { jsonLdSafe } from '../_components/json-ld';
 
 import { RokPodsjetniciClient } from './rok-podsjetnici-client';
@@ -14,19 +17,12 @@ const TITLE = 'Rok podsjetnici — zakoniti rokovi za paušalni obrt';
 const DESC =
   'Pregled tipičnih mjesečnih, kvartalnih i godišnjih rokova za paušalnog obrtnika. Gost: pregled. PRO: push i email obavijesti (uskoro u Kviku).';
 
-export const metadata: Metadata = {
-  title: TITLE,
-  description: DESC,
-  keywords: ['rokovi paušalni obrt', 'podsjetnici porez', 'obveze obrt'],
-  openGraph: {
-    title: `${TITLE} | Kvik`,
-    description: DESC,
-    url: `${getSiteUrl()}/alati/rok-podsjetnici`,
-    siteName: 'Kvik',
-    locale: 'hr_HR',
-    type: 'website',
-  },
-};
+export const metadata: Metadata = buildAlatMetadata(
+  'rok-podsjetnici',
+  TITLE,
+  DESC,
+  { keywords: ['rokovi paušalni obrt', 'podsjetnici porez', 'obveze obrt'] }
+);
 
 export default function RokPodsjetniciPage() {
   const base = getSiteUrl();
@@ -64,6 +60,12 @@ export default function RokPodsjetniciPage() {
           </h1>
           <p className='font-body mt-4 text-lg text-[#b9c7c4]'>{DESC}</p>
         </header>
+        <PageTopBar
+          pageType='alat'
+          pageSlug='rok-podsjetnici'
+          pageUrl={pageUrl}
+          ctaHrefOverride='/alati/rok-podsjetnici'
+        />
         <RokPodsjetniciClient />
         <section className='mt-10 font-body text-sm text-[#94a3a0]'>
           <h2 className='font-heading text-base font-semibold text-[#e2e8e7]'>Povezano</h2>
@@ -75,11 +77,7 @@ export default function RokPodsjetniciPage() {
             </li>
           </ul>
         </section>
-        <CtaRegister
-          title='Želiš rokove na dashboardu i u mobitelu?'
-          body='Kvik povezuje KPR, račune i podsjetnike na jednom mjestu.'
-          buttonLabel='Registriraj se →'
-        />
+        <BottomCTA pageType='alat' pageSlug='rok-podsjetnici' />
       </article>
     </>
   );

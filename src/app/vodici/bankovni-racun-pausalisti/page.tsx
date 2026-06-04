@@ -1,7 +1,9 @@
 import type { Metadata } from 'next';
+
+import { buildVodicMetadata } from '@/lib/og-metadata';
 import Link from 'next/link';
 
-import { getSiteUrl, vodiciHref } from '@/lib/vodici-config';
+import { vodiciHref } from '@/lib/vodici-config';
 
 import { GuideShell } from '../_components/guide-shell';
 
@@ -10,18 +12,12 @@ const SLUG = 'bankovni-racun-pausalisti';
 const META_DESC =
   'Moraš li odvojiti poslovni i privatni račun? Žiro vs tekući, troškovi, rizici miješanja i kako Porezna gleda na to.';
 
-export const metadata: Metadata = {
-  title: 'Bankovni račun za paušaliste: poslovni vs privatni',
-  description: META_DESC,
-  openGraph: {
-    title: 'Bankovni račun za paušaliste: poslovni vs privatni | Kvik',
-    description: META_DESC,
-    url: `${getSiteUrl()}/vodici/${SLUG}`,
-    siteName: 'Kvik',
-    locale: 'hr_HR',
-    type: 'article',
-  },
-};
+export const metadata: Metadata = buildVodicMetadata(
+  SLUG,
+  'Bankovni račun za paušaliste: poslovni vs privatni',
+  META_DESC,
+  'Bankovni račun za paušaliste: poslovni vs privatni | Kvik',
+);
 
 const faq = [
   {
@@ -531,13 +527,6 @@ export default function BankovniRacunPausalistiPage() {
         troškove:{' '}
         <Link href='/alati/kalkulator-poreza' className='text-[#0d9488] hover:underline'>
           Kalkulator primitaka
-        </Link>
-      </p>
-      <p>
-        Kvik automatski poveže sve račune s KPR-om i PO-SD obrascem — bez ručnog rada.
-        Kreni besplatno:{' '}
-        <Link href='/register' className='text-[#0d9488] hover:underline'>
-          Isprobaj Kvik
         </Link>
       </p>
     </GuideShell>

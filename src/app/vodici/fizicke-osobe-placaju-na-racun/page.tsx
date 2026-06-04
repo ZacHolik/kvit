@@ -1,7 +1,9 @@
 import type { Metadata } from 'next';
+
+import { buildVodicMetadata } from '@/lib/og-metadata';
 import Link from 'next/link';
 
-import { getSiteUrl, vodiciHref } from '@/lib/vodici-config';
+import { vodiciHref } from '@/lib/vodici-config';
 
 import { GuideShell } from '../_components/guide-shell';
 
@@ -10,18 +12,12 @@ const SLUG = 'fizicke-osobe-placaju-na-racun';
 const META_DESC =
   'B2C scenarij: paušalist izdaje račun fizičkoj osobi koja plaća na transakcijski račun. Fiskalizacija od 1.1.2026., JIR, ZKI i što je obvezno.';
 
-export const metadata: Metadata = {
-  title: 'Kada fizičke osobe plaćaju na račun obrta',
-  description: META_DESC,
-  openGraph: {
-    title: 'Kada fizičke osobe plaćaju na račun obrta | Kvik',
-    description: META_DESC,
-    url: `${getSiteUrl()}/vodici/${SLUG}`,
-    siteName: 'Kvik',
-    locale: 'hr_HR',
-    type: 'article',
-  },
-};
+export const metadata: Metadata = buildVodicMetadata(
+  SLUG,
+  'Kada fizičke osobe plaćaju na račun obrta',
+  META_DESC,
+  'Kada fizičke osobe plaćaju na račun obrta | Kvik',
+);
 
 const faq = [
   {
@@ -437,30 +433,13 @@ Napomena: Obveznik nije u sustavu PDV-a, PDV nije obračunat temeljem čl. 90. Z
 
       <h2 id='cta'>Kvik automatski fiskalizira račune prema fizičkim osobama</h2>
       <p>
-        Kvik automatski fiskalizira račune prema fizičkim osobama — bez ručnog rada:
+        Kvik automatski fiskalizira račune prema fizičkim osobama — bez ručnog rada.
       </p>
-      <p>
-        <Link href='/register' className={linkClass}>
-          Isprobaj Kvik besplatno
-        </Link>
-      </p>
-      <p>Provjeri jesi li spreman za fiskalizaciju — kviz od 30 sekundi:</p>
       <p>
         <Link href='/provjera' className={linkClass}>
           Fiskal kviz
         </Link>
       </p>
-      <div className='my-6 flex flex-col gap-3 sm:flex-row sm:items-center'>
-        <Link href='/register' className='btn-cta-primary px-5 py-3 text-base'>
-          Isprobaj Kvik besplatno →
-        </Link>
-        <Link
-          href='/provjera'
-          className='inline-flex items-center justify-center rounded-lg border border-[#0d9488] px-5 py-3 font-semibold text-[#0d9488] transition hover:bg-[#0d9488]/10'
-        >
-          Fiskal kviz
-        </Link>
-      </div>
     </GuideShell>
   );
 }

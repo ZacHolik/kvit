@@ -1,15 +1,20 @@
 import type { Metadata } from 'next';
 
+import { buildAlatMetadata } from '@/lib/og-metadata';
+
+import PageTopBar from '@/components/cta/PageTopBar';
+import BottomCTA from '@/components/cta/BottomCTA';
+
 import { AlatiBreadcrumb } from '../_components/alati-breadcrumb';
-import { CtaRegister } from '../_components/cta-register';
 import { PoweredByKvikBadge } from '../_components/powered-by-kvik-badge';
 
 import { PoSdTool } from './po-sd-tool';
 
-export const metadata: Metadata = {
-  title: 'PO-SD Generator 2026 — Besplatni kalkulator za paušalce | Kvik',
-  description:
-    'Besplatni online PO-SD generator za hrvatske paušalne obrtnike. Izračunaj razred poreza i pripremi PO-SD obrazac za 2026. Bez registracije.',
+const PO_SD_TITLE = 'PO-SD Generator 2026 — Besplatni kalkulator za paušalce | Kvik';
+const PO_SD_DESC =
+  'Besplatni online PO-SD generator za hrvatske paušalne obrtnike. Izračunaj razred poreza i pripremi PO-SD obrazac za 2026. Bez registracije.';
+
+export const metadata: Metadata = buildAlatMetadata('po-sd', PO_SD_TITLE, PO_SD_DESC, {
   keywords: [
     'PO-SD',
     'paušalni obrt',
@@ -18,17 +23,7 @@ export const metadata: Metadata = {
     'paušalac porez',
     'PO-SD generator',
   ],
-  alternates: { canonical: 'https://kvik.online/alati/po-sd' },
-  openGraph: {
-    title: 'PO-SD Generator 2026 — Besplatni kalkulator za paušalce',
-    description:
-      'Izračunaj razred poreza i pripremi PO-SD obrazac za 2026. Bez registracije.',
-    url: 'https://kvik.online/alati/po-sd',
-    siteName: 'Kvik',
-    locale: 'hr_HR',
-    type: 'website',
-  },
-};
+});
 
 export default function PoSdPublicPage() {
   return (
@@ -46,13 +41,14 @@ export default function PoSdPublicPage() {
           PO-SD Generator 2026
         </h1>
       </header>
-      <PoSdTool />
-      <CtaRegister
-        title='Kvik automatski popunjava PO-SD iz tvojih računa.'
-        body='Bez ručnog unosa — svi primitci iz KPR-a idu ravno u obrazac.'
-        buttonLabel='Registriraj se besplatno →'
-        utmSrc='po-sd'
+      <PageTopBar
+        pageType='alat'
+        pageSlug='po-sd'
+        pageUrl='https://kvik.online/alati/po-sd'
+        ctaHrefOverride='/alati/po-sd'
       />
+      <PoSdTool />
+      <BottomCTA pageType='alat' pageSlug='po-sd' />
       <PoweredByKvikBadge />
     </article>
   );

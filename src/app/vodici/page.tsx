@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import Script from 'next/script';
 
+import { buildPublicPageMetadata } from '@/lib/og-metadata';
 import {
   getSiteUrl,
   VODICI_CATEGORY_LABELS,
@@ -12,18 +13,14 @@ import {
 const DESC =
   'Besplatni vodiči za paušalne obrtnike u Hrvatskoj: osnove, djelatnosti, porezi i fiskalizacija. KPR, PO-SD, rokovi, PDV ID, doprinosi uz posao — sve na jednom mjestu.';
 
-export const metadata: Metadata = {
+export const metadata: Metadata = buildPublicPageMetadata({
   title: 'Vodiči za paušalne obrtnike',
   description: DESC,
-  openGraph: {
-    title: 'Vodiči za paušalne obrtnike | Kvik',
-    description: DESC,
-    url: `${getSiteUrl()}/vodici`,
-    siteName: 'Kvik',
-    locale: 'hr_HR',
-    type: 'website',
-  },
-};
+  path: '/vodici',
+  pageLabel: 'Vodiči za paušalne obrtnike',
+  type: 'website',
+  ogTitle: 'Vodiči za paušalne obrtnike | Kvik',
+});
 
 function byCategory(cat: VodiciCategoryId) {
   return VODICI_ENTRIES.filter((e) => e.category === cat);

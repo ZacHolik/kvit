@@ -1,7 +1,9 @@
 import type { Metadata } from 'next';
+
+import { buildVodicMetadata } from '@/lib/og-metadata';
 import Link from 'next/link';
 
-import { getSiteUrl, VODICI_ENTRIES, vodiciHref } from '@/lib/vodici-config';
+import { VODICI_ENTRIES, vodiciHref } from '@/lib/vodici-config';
 
 const RELATED_OTVARANJE = [
   'pausalni-obrt-vodic',
@@ -17,18 +19,12 @@ const SLUG = 'otvaranje-obrta';
 const META_DESC =
   'Kako otvoriti paušalni obrt u 2026.: e-Obrtnica, dokumenti, troškovi, OIB, IBAN i što odmah nakon registracije — KPR, doprinosi, računi.';
 
-export const metadata: Metadata = {
-  title: 'Kako otvoriti paušalni obrt',
-  description: META_DESC,
-  openGraph: {
-    title: 'Kako otvoriti paušalni obrt | Kvik',
-    description: META_DESC,
-    url: `${getSiteUrl()}/vodici/${SLUG}`,
-    siteName: 'Kvik',
-    locale: 'hr_HR',
-    type: 'article',
-  },
-};
+export const metadata: Metadata = buildVodicMetadata(
+  SLUG,
+  'Kako otvoriti paušalni obrt',
+  META_DESC,
+  'Kako otvoriti paušalni obrt | Kvik',
+);
 
 const faq = [
   {

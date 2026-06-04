@@ -1,11 +1,14 @@
 import type { Metadata } from 'next';
+
+import { buildAlatMetadata } from '@/lib/og-metadata';
 import Link from 'next/link';
 import Script from 'next/script';
 
 import { getSiteUrl } from '@/lib/vodici-config';
+import PageTopBar from '@/components/cta/PageTopBar';
+import BottomCTA from '@/components/cta/BottomCTA';
 
 import { AlatiBreadcrumb } from '../_components/alati-breadcrumb';
-import { CtaRegister } from '../_components/cta-register';
 import { PoweredByKvikBadge } from '../_components/powered-by-kvik-badge';
 import { jsonLdSafe } from '../_components/json-ld';
 
@@ -15,25 +18,17 @@ const TITLE = 'Generator internog akta za paušalce 2026 | Kvik';
 const DESC =
   'Uredi interni akt paušalnog obrta online i preuzmi PDF. Besplatno za goste; prijavljeni korisnici dobiju automatsko popunjavanje iz profila.';
 
-export const metadata: Metadata = {
-  title: TITLE,
-  description: DESC,
-  keywords: [
+export const metadata: Metadata = buildAlatMetadata(
+  'interni-akt',
+  TITLE,
+  DESC,
+  { keywords: [
     'interni akt paušalni obrt',
     'interni akt obrt',
     'predložak internog akta',
     'interni akt 2026',
-  ],
-  alternates: { canonical: 'https://kvik.online/alati/interni-akt' },
-  openGraph: {
-    title: TITLE,
-    description: DESC,
-    url: `${getSiteUrl()}/alati/interni-akt`,
-    siteName: 'Kvik',
-    locale: 'hr_HR',
-    type: 'website',
-  },
-};
+  ] }
+);
 
 export default function InterniAktPage() {
   const base = getSiteUrl();
@@ -71,6 +66,12 @@ export default function InterniAktPage() {
           </h1>
           <p className='font-body mt-4 text-lg text-[#b9c7c4]'>{DESC}</p>
         </header>
+        <PageTopBar
+          pageType='alat'
+          pageSlug='interni-akt'
+          pageUrl={pageUrl}
+          ctaHrefOverride='/alati/interni-akt'
+        />
         <InterniAktTool />
         <section className='mt-10 font-body text-sm text-[#94a3a0]'>
           <h2 className='font-heading text-base font-semibold text-[#e2e8e7]'>Povezano</h2>
@@ -82,12 +83,7 @@ export default function InterniAktPage() {
             </li>
           </ul>
         </section>
-        <CtaRegister
-          title='Kvik drži profil, KPR i račune na jednom mjestu.'
-          body='Manje kopiranja u obrasce — više vremena za klijente.'
-          buttonLabel='Registriraj se besplatno →'
-          utmSrc='interni-akt'
-        />
+        <BottomCTA pageType='alat' pageSlug='interni-akt' />
         <PoweredByKvikBadge />
       </article>
     </>

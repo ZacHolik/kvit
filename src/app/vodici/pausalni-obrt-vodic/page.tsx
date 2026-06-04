@@ -1,7 +1,10 @@
 import type { Metadata } from 'next';
+
+import { buildVodicMetadata } from '@/lib/og-metadata';
 import Link from 'next/link';
 
-import { getSiteUrl, vodiciHref } from '@/lib/vodici-config';
+import InlineCTA from '@/components/cta/InlineCTA';
+import { vodiciHref } from '@/lib/vodici-config';
 
 import { GuideShell } from '../_components/guide-shell';
 
@@ -10,18 +13,12 @@ const SLUG = 'pausalni-obrt-vodic';
 const META_DESC =
   'Paušalni obrt 2026: što je, tko može otvoriti, limit 60.000 €, KPR, PO-SD, doprinosi i fiskalizacija. Kompletan vodič za hrvatske paušaliste.';
 
-export const metadata: Metadata = {
-  title: 'Paušalni obrt 2026',
-  description: META_DESC,
-  openGraph: {
-    title: 'Paušalni obrt 2026 | Kvik',
-    description: META_DESC,
-    url: `${getSiteUrl()}/vodici/${SLUG}`,
-    siteName: 'Kvik',
-    locale: 'hr_HR',
-    type: 'article',
-  },
-};
+export const metadata: Metadata = buildVodicMetadata(
+  SLUG,
+  'Paušalni obrt 2026',
+  META_DESC,
+  'Paušalni obrt 2026 | Kvik',
+);
 
 const faq = [
   {
@@ -191,6 +188,8 @@ export default function PauzalniObrtVodicPage() {
         alata koji upozorava na trend primitaka. <strong>Paušalni obrt 2026.</strong>{' '}
         u praksi znači disciplina u evidenciji jednako kao i u samom radu.
       </p>
+
+      <InlineCTA tema="razred" pageSlug="pausalni-obrt-vodic" />
 
       <h2 id='obveze'>Obveze: KPR, PO-SD, doprinosi, fiskalizacija</h2>
       <p>

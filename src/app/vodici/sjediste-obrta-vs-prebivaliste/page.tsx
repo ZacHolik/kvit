@@ -1,7 +1,9 @@
 import type { Metadata } from 'next';
+
+import { buildVodicMetadata } from '@/lib/og-metadata';
 import Link from 'next/link';
 
-import { getSiteUrl, vodiciHref } from '@/lib/vodici-config';
+import { vodiciHref } from '@/lib/vodici-config';
 
 import { GuideShell } from '../_components/guide-shell';
 
@@ -12,18 +14,12 @@ const META_DESC =
 
 const PRIMARY_KEYWORD = 'sjedište obrta prebivalište paušalni obrt';
 
-export const metadata: Metadata = {
-  title: 'Sjedište obrta vs prebivalište vlasnika – što ide gdje?',
-  description: META_DESC,
-  openGraph: {
-    title: 'Sjedište obrta vs prebivalište vlasnika – što ide gdje? | Kvik',
-    description: META_DESC,
-    url: `${getSiteUrl()}/vodici/${SLUG}`,
-    siteName: 'Kvik',
-    locale: 'hr_HR',
-    type: 'article',
-  },
-};
+export const metadata: Metadata = buildVodicMetadata(
+  SLUG,
+  'Sjedište obrta vs prebivalište vlasnika – što ide gdje?',
+  META_DESC,
+  'Sjedište obrta vs prebivalište vlasnika – što ide gdje? | Kvik',
+);
 
 const faq = [
   {

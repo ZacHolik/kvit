@@ -1,7 +1,9 @@
 import type { Metadata } from 'next';
+
+import { buildVodicMetadata } from '@/lib/og-metadata';
 import Link from 'next/link';
 
-import { getSiteUrl, vodiciHref } from '@/lib/vodici-config';
+import { vodiciHref } from '@/lib/vodici-config';
 
 import { GuideShell } from '../_components/guide-shell';
 
@@ -10,18 +12,12 @@ const SLUG = 'prikriveni-radni-odnos';
 const META_DESC =
   'Što je prikriveni radni odnos, kako ga Porezna prepoznaje i kako IT freelanceri mogu smanjiti rizik.';
 
-export const metadata: Metadata = {
-  title: 'Prikriveni radni odnos paušalac',
-  description: META_DESC,
-  openGraph: {
-    title: 'Prikriveni radni odnos paušalac | Kvik',
-    description: META_DESC,
-    url: `${getSiteUrl()}/vodici/${SLUG}`,
-    siteName: 'Kvik',
-    locale: 'hr_HR',
-    type: 'article',
-  },
-};
+export const metadata: Metadata = buildVodicMetadata(
+  SLUG,
+  'Prikriveni radni odnos paušalac',
+  META_DESC,
+  'Prikriveni radni odnos paušalac | Kvik',
+);
 
 const faq = [
   {

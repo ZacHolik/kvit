@@ -1,7 +1,9 @@
 import type { Metadata } from 'next';
+
+import { buildVodicMetadata } from '@/lib/og-metadata';
 import Link from 'next/link';
 
-import { getSiteUrl, vodiciHref } from '@/lib/vodici-config';
+import { vodiciHref } from '@/lib/vodici-config';
 
 import { GuideShell } from '../_components/guide-shell';
 
@@ -10,18 +12,12 @@ const SLUG = 'knjige-po-djelatnostima';
 const META_DESC =
   'KPR za sve + dodatne knjige za ugostiteljstvo, trgovinu, turizam, OPG, graditeljstvo, frizere, prijevoditelje i taxi. Koje su obvezne, koje preporučene.';
 
-export const metadata: Metadata = {
-  title: 'Koje knjige mora voditi paušalist po djelatnostima',
-  description: META_DESC,
-  openGraph: {
-    title: 'Koje knjige mora voditi paušalist po djelatnostima | Kvik',
-    description: META_DESC,
-    url: `${getSiteUrl()}/vodici/${SLUG}`,
-    siteName: 'Kvik',
-    locale: 'hr_HR',
-    type: 'article',
-  },
-};
+export const metadata: Metadata = buildVodicMetadata(
+  SLUG,
+  'Koje knjige mora voditi paušalist po djelatnostima',
+  META_DESC,
+  'Koje knjige mora voditi paušalist po djelatnostima | Kvik',
+);
 
 const faq = [
   {
@@ -549,11 +545,6 @@ export default function KnjigePoDjelatnostimaPage() {
 
       <h2 id='cta'>Kvik automatski vodi KPR za tebe — bez ručnog unosa, bez brige</h2>
       <p>
-        <Link href='/register' className='text-[#0d9488] hover:underline'>
-          Isprobaj Kvik besplatno
-        </Link>
-      </p>
-      <p>
         Generator KPR knjige s mogućnošću izvoza za Poreznu preko ePorezne portala
         (eporezna.gov.hr):
       </p>
@@ -565,17 +556,6 @@ export default function KnjigePoDjelatnostimaPage() {
           KPR generator
         </Link>
       </p>
-      <div className='my-6 flex flex-col gap-3 sm:flex-row sm:items-center'>
-        <Link href='/register' className='btn-cta-primary px-5 py-3 text-base'>
-          Isprobaj Kvik besplatno →
-        </Link>
-        <Link
-          href={vodiciHref('kpr-online-generator')}
-          className='inline-flex items-center justify-center rounded-lg border border-[#0d9488] px-5 py-3 font-semibold text-[#0d9488] transition hover:bg-[#0d9488]/10'
-        >
-          KPR generator
-        </Link>
-      </div>
     </GuideShell>
   );
 }

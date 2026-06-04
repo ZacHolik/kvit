@@ -1,7 +1,9 @@
 import type { Metadata } from 'next';
+
+import { buildVodicMetadata } from '@/lib/og-metadata';
 import Link from 'next/link';
 
-import { getSiteUrl, vodiciHref } from '@/lib/vodici-config';
+import { vodiciHref } from '@/lib/vodici-config';
 
 import { GuideShell } from '../_components/guide-shell';
 
@@ -10,18 +12,12 @@ const SLUG = 'doprinosi-uz-posao';
 const META_DESC =
   'Doprinosi paušalni obrt uz posao 2026.: godišnje rješenje Porezne, rok 15 dana od primitka rješenja, tablica iznosa po razredu primitaka — sažetak uz službene izvore.';
 
-export const metadata: Metadata = {
-  title: 'Doprinosi paušalni obrt uz posao',
-  description: META_DESC,
-  openGraph: {
-    title: 'Doprinosi paušalni obrt uz posao | Kvik',
-    description: META_DESC,
-    url: `${getSiteUrl()}/vodici/${SLUG}`,
-    siteName: 'Kvik',
-    locale: 'hr_HR',
-    type: 'article',
-  },
-};
+export const metadata: Metadata = buildVodicMetadata(
+  SLUG,
+  'Doprinosi paušalni obrt uz posao',
+  META_DESC,
+  'Doprinosi paušalni obrt uz posao | Kvik',
+);
 
 const faq = [
   {

@@ -1,11 +1,14 @@
 import type { Metadata } from 'next';
+
+import { buildAlatMetadata } from '@/lib/og-metadata';
 import Link from 'next/link';
 import Script from 'next/script';
 
 import { getSiteUrl } from '@/lib/vodici-config';
+import PageTopBar from '@/components/cta/PageTopBar';
+import BottomCTA from '@/components/cta/BottomCTA';
 
 import { AlatiBreadcrumb } from '../_components/alati-breadcrumb';
-import { CtaRegister } from '../_components/cta-register';
 import { jsonLdSafe } from '../_components/json-ld';
 
 import { ObligationsChecklist } from './obligations-checklist';
@@ -14,19 +17,12 @@ const TITLE = 'Checklista obveza paušalnog obrtnika 2026.';
 const DESC =
   'Checklista obveza paušalnog obrtnika: dnevne preporuke, mjesečne, kvartalne i godišnje. Gost: samo pregled. Nakon prijave: označavanje. PRO: email podsjetnici.';
 
-export const metadata: Metadata = {
-  title: TITLE,
-  description: DESC,
-  keywords: ['obveze paušalnog obrtnika checklista', 'paušalni obrt obveze', 'checklista'],
-  openGraph: {
-    title: `${TITLE} | Kvik`,
-    description: DESC,
-    url: `${getSiteUrl()}/alati/checklista`,
-    siteName: 'Kvik',
-    locale: 'hr_HR',
-    type: 'website',
-  },
-};
+export const metadata: Metadata = buildAlatMetadata(
+  'checklista',
+  TITLE,
+  DESC,
+  { keywords: ['obveze paušalnog obrtnika checklista', 'paušalni obrt obveze', 'checklista'] }
+);
 
 export default function ChecklistaPage() {
   const base = getSiteUrl();
@@ -68,6 +64,13 @@ export default function ChecklistaPage() {
           <p className='font-body mt-4 text-lg text-[#b9c7c4]'>{DESC}</p>
         </header>
 
+        <PageTopBar
+          pageType='alat'
+          pageSlug='checklista'
+          pageUrl={pageUrl}
+          ctaHrefOverride='/alati/checklista'
+        />
+
         <ObligationsChecklist />
 
         <section className='mt-10 font-body text-sm text-[#94a3a0]'>
@@ -96,11 +99,7 @@ export default function ChecklistaPage() {
           </ul>
         </section>
 
-        <CtaRegister
-          title='Kvik automatski prati rokove i šalje ti podsjetnike da ništa ne zaboraviš.'
-          body='Kombiniraj ovu listu s aplikacijom — podsjetnici stižu kad treba.'
-          buttonLabel='Registriraj se besplatno →'
-        />
+        <BottomCTA pageType='alat' pageSlug='checklista' />
       </article>
     </>
   );

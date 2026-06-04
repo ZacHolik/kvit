@@ -1,7 +1,9 @@
 import type { Metadata } from 'next';
+
+import { buildVodicMetadata } from '@/lib/og-metadata';
 import Link from 'next/link';
 
-import { getSiteUrl, vodiciHref } from '@/lib/vodici-config';
+import { vodiciHref } from '@/lib/vodici-config';
 
 import { GuideShell } from '../_components/guide-shell';
 
@@ -10,18 +12,12 @@ const SLUG = 'sezonski-obrt';
 const META_DESC =
   'Sezonski paušalni obrt i mirovanje: KPR, PO-SD, doprinosi do 15. u mjesecu kad posluješ, turističke djelatnosti i planiranje limita od 60.000 €.';
 
-export const metadata: Metadata = {
-  title: 'Sezonski paušalni obrt mirovanje',
-  description: META_DESC,
-  openGraph: {
-    title: 'Sezonski paušalni obrt mirovanje | Kvik',
-    description: META_DESC,
-    url: `${getSiteUrl()}/vodici/${SLUG}`,
-    siteName: 'Kvik',
-    locale: 'hr_HR',
-    type: 'article',
-  },
-};
+export const metadata: Metadata = buildVodicMetadata(
+  SLUG,
+  'Sezonski paušalni obrt mirovanje',
+  META_DESC,
+  'Sezonski paušalni obrt mirovanje | Kvik',
+);
 
 const faq = [
   {

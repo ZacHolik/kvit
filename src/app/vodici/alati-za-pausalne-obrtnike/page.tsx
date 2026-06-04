@@ -1,7 +1,9 @@
 import type { Metadata } from 'next';
+
+import { buildVodicMetadata } from '@/lib/og-metadata';
 import Link from 'next/link';
 
-import { getSiteUrl, vodiciHref } from '@/lib/vodici-config';
+import { vodiciHref } from '@/lib/vodici-config';
 
 import { GuideShell } from '../_components/guide-shell';
 
@@ -10,18 +12,12 @@ const SLUG = 'alati-za-pausalne-obrtnike';
 const META_DESC =
   'Alati za paušalne obrtnike: zašto izolirani kalkulatori, generatori uplatnica i checkliste nisu dovoljni. Kako Kvik povezuje KPR, PDV prag, PO-SD i rokove u jedan sustav.';
 
-export const metadata: Metadata = {
-  title: 'Alati za paušalne obrtnike 2026 — zašto izolirani alati nisu dovoljni',
-  description: META_DESC,
-  openGraph: {
-    title: 'Alati za paušalne obrtnike 2026 | Kvik',
-    description: META_DESC,
-    url: `${getSiteUrl()}/vodici/${SLUG}`,
-    siteName: 'Kvik',
-    locale: 'hr_HR',
-    type: 'article',
-  },
-};
+export const metadata: Metadata = buildVodicMetadata(
+  SLUG,
+  'Alati za paušalne obrtnike 2026 — zašto izolirani alati nisu dovoljni',
+  META_DESC,
+  'Alati za paušalne obrtnike 2026 | Kvik',
+);
 
 const faq = [
   {

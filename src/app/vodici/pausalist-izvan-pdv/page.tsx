@@ -1,7 +1,9 @@
 import type { Metadata } from 'next';
+
+import { buildVodicMetadata } from '@/lib/og-metadata';
 import Link from 'next/link';
 
-import { getSiteUrl, vodiciHref } from '@/lib/vodici-config';
+import { vodiciHref } from '@/lib/vodici-config';
 
 import { GuideShell } from '../_components/guide-shell';
 
@@ -10,18 +12,12 @@ const SLUG = 'pausalist-izvan-pdv';
 const META_DESC =
   'Što znači biti paušalist izvan PDV-a: obveze zaprimanja eRačuna od 1.1.2026., obveze izdavanja od 1.1.2027., napomena na računima i prag 60.000 €.';
 
-export const metadata: Metadata = {
-  title: 'Paušalist izvan PDV sustava',
-  description: META_DESC,
-  openGraph: {
-    title: 'Paušalist izvan PDV sustava | Kvik',
-    description: META_DESC,
-    url: `${getSiteUrl()}/vodici/${SLUG}`,
-    siteName: 'Kvik',
-    locale: 'hr_HR',
-    type: 'article',
-  },
-};
+export const metadata: Metadata = buildVodicMetadata(
+  SLUG,
+  'Paušalist izvan PDV sustava',
+  META_DESC,
+  'Paušalist izvan PDV sustava | Kvik',
+);
 
 const faq = [
   {
@@ -388,30 +384,14 @@ export default function PausalistIzvanPdvPage() {
 
       <h2 id='cta'>Korisni alati</h2>
       <p>
-        Kvik automatski dodaje napomenu &quot;nije u PDV sustavu&quot; na sve račune:
-      </p>
-      <p>
-        <Link href='/register' className='text-[#0d9488] hover:underline'>
-          Isprobaj Kvik besplatno
-        </Link>
+        Kvik automatski dodaje napomenu &quot;nije u PDV sustavu&quot; na sve račune.
       </p>
       <p>Izračunaj do koliko možeš zaraditi bez ulaska u PDV:</p>
       <p>
-        <Link href='/alati/kalkulator' className='text-[#0d9488] hover:underline'>
-          Kalkulator primitaka
+        <Link href='/alati/pdv-prag' className='text-[#0d9488] hover:underline'>
+          Kalkulator PDV praga
         </Link>
       </p>
-      <div className='my-6 flex flex-col gap-3 sm:flex-row sm:items-center'>
-        <Link href='/register' className='btn-cta-primary px-5 py-3 text-base'>
-          Isprobaj Kvik besplatno →
-        </Link>
-        <Link
-          href='/alati/kalkulator'
-          className='inline-flex items-center justify-center rounded-lg border border-[#0d9488] px-5 py-3 font-semibold text-[#0d9488] transition hover:bg-[#0d9488]/10'
-        >
-          Kalkulator primitaka
-        </Link>
-      </div>
     </GuideShell>
   );
 }

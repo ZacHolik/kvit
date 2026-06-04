@@ -1,11 +1,14 @@
 import type { Metadata } from 'next';
+
+import { buildAlatMetadata } from '@/lib/og-metadata';
 import Link from 'next/link';
 import Script from 'next/script';
 
 import { getSiteUrl } from '@/lib/vodici-config';
+import PageTopBar from '@/components/cta/PageTopBar';
+import BottomCTA from '@/components/cta/BottomCTA';
 
 import { AlatiBreadcrumb } from '../_components/alati-breadcrumb';
-import { CtaRegister } from '../_components/cta-register';
 import { PoweredByKvikBadge } from '../_components/powered-by-kvik-badge';
 import { ToolRefTracker } from '../_components/tool-ref-tracker';
 import { jsonLdSafe } from '../_components/json-ld';
@@ -16,25 +19,17 @@ const TITLE = 'Kalkulator poreza 2026 za paušalce | Kvik';
 const DESC =
   'Izračunaj paušalni porez za 2026. godinu. Unesi godišnji prihod i odmah vidi porezni razred, kvartalnu i godišnju obvezu.';
 
-export const metadata: Metadata = {
-  title: TITLE,
-  description: DESC,
-  keywords: [
+export const metadata: Metadata = buildAlatMetadata(
+  'kalkulator-poreza',
+  TITLE,
+  DESC,
+  { keywords: [
     'kalkulator paušalnog poreza 2026',
     'paušalni porez',
     'porezni razred',
     'kalkulator poreza paušalac',
-  ],
-  alternates: { canonical: 'https://kvik.online/alati/kalkulator-poreza' },
-  openGraph: {
-    title: TITLE,
-    description: DESC,
-    url: `${getSiteUrl()}/alati/kalkulator-poreza`,
-    siteName: 'Kvik',
-    locale: 'hr_HR',
-    type: 'website',
-  },
-};
+  ] }
+);
 
 const FAQ = [
   {
@@ -128,6 +123,13 @@ export default function KalkulatorPorezaPage({
           <p className='font-body mt-4 text-lg text-[#b9c7c4]'>{DESC}</p>
         </header>
 
+        <PageTopBar
+          pageType='alat'
+          pageSlug='kalkulator-poreza'
+          pageUrl={pageUrl}
+          ctaHrefOverride='/alati/kalkulator-poreza'
+        />
+
         <ToolRefTracker code={refParam} />
         <PausalTaxCalculator toolReferralParam={refParam} />
 
@@ -149,12 +151,7 @@ export default function KalkulatorPorezaPage({
           </ul>
         </section>
 
-        <CtaRegister
-          title='Kvik prati tvoj porezni razred automatski.'
-          body='KPR, PO-SD i porezni razred na jednom mjestu — bez Excela.'
-          buttonLabel='Isprobaj besplatno →'
-          utmSrc='kalkulator'
-        />
+        <BottomCTA pageType='alat' pageSlug='kalkulator-poreza' />
         <PoweredByKvikBadge />
       </article>
     </>

@@ -1,11 +1,14 @@
 import type { Metadata } from 'next';
+
+import { buildAlatMetadata } from '@/lib/og-metadata';
 import Link from 'next/link';
 import Script from 'next/script';
 
 import { getSiteUrl } from '@/lib/vodici-config';
+import PageTopBar from '@/components/cta/PageTopBar';
+import BottomCTA from '@/components/cta/BottomCTA';
 
 import { AlatiBreadcrumb } from '../_components/alati-breadcrumb';
-import { CtaRegister } from '../_components/cta-register';
 import { PoweredByKvikBadge } from '../_components/powered-by-kvik-badge';
 import { ToolRefTracker } from '../_components/tool-ref-tracker';
 import { jsonLdSafe } from '../_components/json-ld';
@@ -16,26 +19,18 @@ const TITLE = 'Kalkulator doprinosa 2026 + barkod uplate | Kvik';
 const DESC =
   'Unesi OIB, općinu i razred: prikažemo uplatne podatke i PDF417 barkod (HUB-3). Besplatni alat za paušalne obrtnike.';
 
-export const metadata: Metadata = {
-  title: TITLE,
-  description: DESC,
-  keywords: [
+export const metadata: Metadata = buildAlatMetadata(
+  'placanje-doprinosa',
+  TITLE,
+  DESC,
+  { keywords: [
     'plaćanje doprinosa',
     'uplatnica doprinosa',
     '2D barkod uplatnica',
     'kalkulator doprinosa 2026',
     'doprinosi paušalni obrt',
-  ],
-  alternates: { canonical: 'https://kvik.online/alati/placanje-doprinosa' },
-  openGraph: {
-    title: TITLE,
-    description: DESC,
-    url: `${getSiteUrl()}/alati/placanje-doprinosa`,
-    siteName: 'Kvik',
-    locale: 'hr_HR',
-    type: 'website',
-  },
-};
+  ] }
+);
 
 export default function PlacanjeDoprinosaPage({
   searchParams,
@@ -82,6 +77,12 @@ export default function PlacanjeDoprinosaPage({
           </h1>
           <p className='font-body mt-4 text-lg text-[#b9c7c4]'>{DESC}</p>
         </header>
+        <PageTopBar
+          pageType='alat'
+          pageSlug='placanje-doprinosa'
+          pageUrl={pageUrl}
+          ctaHrefOverride='/alati/placanje-doprinosa'
+        />
         <ToolRefTracker code={refParam} />
         <PlacanjeDoprinosaTool toolReferralParam={refParam} />
         <section className='mt-10 font-body text-sm text-[#94a3a0]'>
@@ -95,12 +96,7 @@ export default function PlacanjeDoprinosaPage({
           </ul>
         </section>
 
-        <CtaRegister
-          title='Kvik šalje podsjetnik za doprinose 3 dana unaprijed.'
-          body='Nikad više zakašnjela uplata — automatski podsjetnici za svaki rok.'
-          buttonLabel='Isprobaj besplatno →'
-          utmSrc='doprinosi'
-        />
+        <BottomCTA pageType='alat' pageSlug='placanje-doprinosa' />
         <PoweredByKvikBadge />
       </article>
     </>

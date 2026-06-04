@@ -1,6 +1,8 @@
 import Link from 'next/link';
 import Script from 'next/script';
 
+import PageTopBar from '@/components/cta/PageTopBar';
+import BottomCTA from '@/components/cta/BottomCTA';
 import { getSiteUrl } from '@/lib/vodici-config';
 
 export type GuideTocItem = { id: string; label: string };
@@ -196,6 +198,8 @@ export function GuideShell({
           <p className='font-body mt-4 text-lg text-[#b9c7c4]'>{subtitle}</p>
         </header>
 
+        <PageTopBar pageType="vodic" pageSlug={slug} pageUrl={pageUrl} />
+
         <nav
           aria-label='Sadržaj'
           className='mb-10 rounded-2xl border border-[#1f2a28] bg-[#111716] p-5'
@@ -263,36 +267,7 @@ export function GuideShell({
           </ul>
         </section>
 
-        <div className='mt-10 grid gap-4 sm:grid-cols-2'>
-          <div className='rounded-2xl border border-[#0d9488]/40 bg-[#111716] p-6'>
-            <p className='font-heading text-lg font-semibold text-[#e2e8e7]'>
-              Isprobaj Kvik besplatno
-            </p>
-            <p className='mt-2 text-sm text-[#94a3a0]'>
-              Računi, KPR i PO-SD na jednom mjestu — bez papira.
-            </p>
-            <Link
-              href='/register'
-              className='btn-cta-primary mt-4 px-4 py-2.5 text-sm'
-            >
-              Registriraj se
-            </Link>
-          </div>
-          <div className='rounded-2xl border border-[#1f2a28] bg-[#111716] p-6'>
-            <p className='font-heading text-lg font-semibold text-[#e2e8e7]'>
-              Imaš pitanje? Pitaj AI asistenta
-            </p>
-            <p className='mt-2 text-sm text-[#94a3a0]'>
-              Unutar aplikacije Kvik AI odgovara na pitanja o paušalu.
-            </p>
-            <Link
-              href='/asistent'
-              className='mt-4 inline-flex rounded-lg border border-[#0d9488] px-4 py-2.5 text-sm font-semibold text-[#0d9488] transition hover:bg-[#0d9488]/10'
-            >
-              Otvori asistenta
-            </Link>
-          </div>
-        </div>
+        <BottomCTA pageType="vodic" pageSlug={slug} />
       </article>
     </>
   );

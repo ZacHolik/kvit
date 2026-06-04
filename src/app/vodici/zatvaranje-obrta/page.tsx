@@ -1,7 +1,9 @@
 import type { Metadata } from 'next';
+
+import { buildVodicMetadata } from '@/lib/og-metadata';
 import Link from 'next/link';
 
-import { getSiteUrl, vodiciHref } from '@/lib/vodici-config';
+import { vodiciHref } from '@/lib/vodici-config';
 
 import { GuideShell } from '../_components/guide-shell';
 
@@ -10,18 +12,12 @@ const SLUG = 'zatvaranje-obrta';
 const META_DESC =
   'Zatvaranje paušalnog obrta 2026.: e-Obrtnica, odjava HZMO-a i Porezne, žiro račun, PO-SD za nepotpunu godinu i čuvanje dokumentacije.';
 
-export const metadata: Metadata = {
-  title: 'Zatvaranje paušalnog obrta',
-  description: META_DESC,
-  openGraph: {
-    title: 'Zatvaranje paušalnog obrta | Kvik',
-    description: META_DESC,
-    url: `${getSiteUrl()}/vodici/${SLUG}`,
-    siteName: 'Kvik',
-    locale: 'hr_HR',
-    type: 'article',
-  },
-};
+export const metadata: Metadata = buildVodicMetadata(
+  SLUG,
+  'Zatvaranje paušalnog obrta',
+  META_DESC,
+  'Zatvaranje paušalnog obrta | Kvik',
+);
 
 const faq = [
   {

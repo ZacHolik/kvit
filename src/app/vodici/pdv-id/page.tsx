@@ -1,7 +1,9 @@
 import type { Metadata } from 'next';
+
+import { buildVodicMetadata } from '@/lib/og-metadata';
 import Link from 'next/link';
 
-import { getSiteUrl, vodiciHref } from '@/lib/vodici-config';
+import { vodiciHref } from '@/lib/vodici-config';
 
 import { GuideShell } from '../_components/guide-shell';
 
@@ -10,18 +12,12 @@ const SLUG = 'pdv-id';
 const META_DESC =
   'PDV ID broj paušalni obrt: što je, kada treba za EU usluge i robu, kako podnijeti P-PDV na ePoreznoj — sažetak uz službene izvore.';
 
-export const metadata: Metadata = {
-  title: 'PDV ID broj paušalni obrt',
-  description: META_DESC,
-  openGraph: {
-    title: 'PDV ID broj paušalni obrt | Kvik',
-    description: META_DESC,
-    url: `${getSiteUrl()}/vodici/${SLUG}`,
-    siteName: 'Kvik',
-    locale: 'hr_HR',
-    type: 'article',
-  },
-};
+export const metadata: Metadata = buildVodicMetadata(
+  SLUG,
+  'PDV ID broj paušalni obrt',
+  META_DESC,
+  'PDV ID broj paušalni obrt | Kvik',
+);
 
 const faq = [
   {

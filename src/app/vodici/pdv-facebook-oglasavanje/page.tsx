@@ -1,7 +1,9 @@
 import type { Metadata } from 'next';
+
+import { buildVodicMetadata } from '@/lib/og-metadata';
 import Link from 'next/link';
 
-import { getSiteUrl, vodiciHref } from '@/lib/vodici-config';
+import { vodiciHref } from '@/lib/vodici-config';
 
 import { GuideShell } from '../_components/guide-shell';
 
@@ -10,18 +12,12 @@ const SLUG = 'pdv-facebook-oglasavanje';
 const META_DESC =
   'Kako paušalni obrtnici plaćaju PDV na Facebook i Instagram oglase: reverse charge, PDV ID, ePorezna prijava i knjiženje — korak po korak.';
 
-export const metadata: Metadata = {
-  title: 'PDV za Facebook oglašavanje – vodič za paušaliste 2026.',
-  description: META_DESC,
-  openGraph: {
-    title: 'PDV za Facebook oglašavanje – vodič za paušaliste 2026. | Kvik',
-    description: META_DESC,
-    url: `${getSiteUrl()}/vodici/${SLUG}`,
-    siteName: 'Kvik',
-    locale: 'hr_HR',
-    type: 'article',
-  },
-};
+export const metadata: Metadata = buildVodicMetadata(
+  SLUG,
+  'PDV za Facebook oglašavanje – vodič za paušaliste 2026.',
+  META_DESC,
+  'PDV za Facebook oglašavanje – vodič za paušaliste 2026. | Kvik',
+);
 
 const faq = [
   {
