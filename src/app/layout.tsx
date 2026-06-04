@@ -23,8 +23,6 @@ fbq('init', '${META_PIXEL_ID}');
 fbq('track', 'PageView');
 `.trim();
 
-const metaPixelNoscript = `<img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=${META_PIXEL_ID}&ev=PageView&noscript=1" alt="" />`;
-
 const syne = Syne({
   subsets: ['latin', 'latin-ext'],
   variable: '--font-syne',
@@ -70,7 +68,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang='hr'>
-      <body className={`${syne.variable} ${dmSans.variable} antialiased`}>
+      <body
+        suppressHydrationWarning
+        className={`${syne.variable} ${dmSans.variable} antialiased`}
+      >
         {children}
         {/* Google tag (gtag.js) */}
         <Script
@@ -90,7 +91,6 @@ export default function RootLayout({
           strategy='afterInteractive'
           dangerouslySetInnerHTML={{ __html: metaPixelInline }}
         />
-        <noscript dangerouslySetInnerHTML={{ __html: metaPixelNoscript }} />
         <Analytics />
       </body>
     </html>
