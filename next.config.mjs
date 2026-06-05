@@ -1,4 +1,4 @@
-import nextPwa from 'next-pwa';
+import nextPwa from '@ducanh2912/next-pwa';
 import { withSentryConfig } from '@sentry/nextjs';
 
 const withPWA = nextPwa({
