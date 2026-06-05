@@ -16,10 +16,6 @@
     {
       "path": "/api/cron/fina-cert-check",
       "schedule": "0 8 * * *"
-    },
-    {
-      "path": "/api/cron/fina-cert-check",
-      "schedule": "0 8 * * *"
     }
   ],
   "functions": {
