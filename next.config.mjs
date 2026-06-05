@@ -1,4 +1,5 @@
 import nextPwa from 'next-pwa';
+import { withSentryConfig } from '@sentry/nextjs';
 
 const withPWA = nextPwa({
   dest: 'public',
@@ -35,4 +36,10 @@ const nextConfig = {
   },
 };
 
-export default withPWA(nextConfig);
+export default withSentryConfig(withPWA(nextConfig), {
+  org: 'kvik-tq',
+  project: 'kvik-web',
+  silent: true,
+  hideSourceMaps: true,
+  disableLogger: true,
+});
