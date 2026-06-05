@@ -44,3 +44,5 @@ next-env.d.ts
 /public/sw.js
 /public/workbox-*.js
 supabase/.temp/
+public/sw.js.map
+public/workbox-*.js.map
