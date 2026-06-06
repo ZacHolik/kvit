@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { redirect } from 'next/navigation';
 
 import { formatDatumHr, formatIznosEurHr } from '@/lib/format-hr';
+import { priceLockEnabled } from '@/lib/price-lock-feature';
 import { createClient } from '@/lib/supabase/server';
 
 import { DashboardReferralSection } from './dashboard-referral-section';
@@ -283,7 +284,7 @@ export default async function DashboardPage(props: {
           </article>
         </section>
 
-        <DashboardReferralSection />
+        {priceLockEnabled ? <DashboardReferralSection /> : null}
 
         <section className='rounded-2xl border border-[#1f2a28] bg-[#111716] p-5 sm:p-6'>
           <div className='flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center'>

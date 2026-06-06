@@ -1,6 +1,12 @@
 import Link from 'next/link';
 
+import { priceLockEnabled } from '@/lib/price-lock-feature';
+
 export function PostValueCta() {
+  if (!priceLockEnabled) {
+    return null;
+  }
+
   return (
     <div className='mt-4 rounded-xl border border-[#2a3734] bg-[#101515] p-4'>
       <p className='font-body text-sm text-[#c6d1cf]'>
