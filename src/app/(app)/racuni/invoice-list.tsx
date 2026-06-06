@@ -282,7 +282,7 @@ export function InvoiceList({
                       {racun.status === 'izdano' && !isStornoDoc ? (
                         <MarkAsPaidButton racunId={racun.id} />
                       ) : null}
-                      {racun.status === 'izdano' && !isStornoDoc ? (
+                      {!isOriginalStorniran && !isStornoDoc ? (
                         <StornoInvoiceButton
                           racunId={racun.id}
                           brojRacuna={racun.broj_racuna}

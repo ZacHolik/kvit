@@ -421,7 +421,9 @@ export default function NoviRacunPage() {
           : undefined,
         napomena: formState.napomena,
         kupac: {
-          naziv: formState.kupacNaziv,
+          naziv:
+            formState.kupacNaziv.trim() ||
+            (formState.tipRacuna !== 'R1' ? 'Gotovinski kupac' : ''),
           oib: formState.kupacOib || undefined,
           adresa: formState.kupacAdresa || undefined,
           email: formState.kupacEmail || undefined,
@@ -712,7 +714,7 @@ export default function NoviRacunPage() {
                 Kupac naziv
               </span>
               <input
-                required
+                required={formState.tipRacuna === 'R1'}
                 value={formState.kupacNaziv}
                 list='kupci-suggestions'
                 onChange={(event) => {
