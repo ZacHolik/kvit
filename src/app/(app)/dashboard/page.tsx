@@ -5,6 +5,7 @@ import { formatDatumHr, formatIznosEurHr } from '@/lib/format-hr';
 import { createClient } from '@/lib/supabase/server';
 
 import { DashboardReferralSection } from './dashboard-referral-section';
+import { DashboardUpgradeBanner } from './dashboard-upgrade-banner';
 
 const PAUSAL_LIMIT = 60000;
 export const dynamic = 'force-dynamic';
@@ -67,23 +68,34 @@ export default async function DashboardPage(props: {
     .toISOString()
     .slice(0, 10);
 
-  const [{ data: profile }, { data: yearlyKpr }, { data: invoices }] =
-    await Promise.all([
-      supabase
-        .from('profiles')
-        .select('naziv_obrta')
-        .eq('id', user.id)
-        .maybeSingle(),
-      supabase
-        .from('kpr_unosi')
-        .select('ukupno')
-        .eq('user_id', user.id)
-        .gte('datum', yearStart),
-      supabase
-        .from('racuni')
-        .select('id, datum, datum_placanja, status, ukupni_iznos, kupci(naziv)')
-        .eq('user_id', user.id),
-    ]);
+  const [
+    { data: profile },
+    { data: yearlyKpr },
+    { data: invoices },
+    { data: subscription },
+  ] = await Promise.all([
+    supabase
+      .from('profiles')
+      .select('naziv_obrta')
+      .eq('id', user.id)
+      .maybeSingle(),
+    supabase
+      .from('kpr_unosi')
+      .select('ukupno')
+      .eq('user_id', user.id)
+      .gte('datum', yearStart),
+    supabase
+      .from('racuni')
+      .select('id, datum, datum_placanja, status, ukupni_iznos, kupci(naziv)')
+      .eq('user_id', user.id),
+    supabase
+      .from('subscriptions')
+      .select('plan')
+      .eq('user_id', user.id)
+      .maybeSingle(),
+  ]);
+
+  const isFreeUser = !subscription || subscription.plan === 'free';
 
   // TODO: If KPR entries are missing (older data), consider fallback aggregation from paid invoices.
   const yearlyIncome = (yearlyKpr ?? []).reduce(
@@ -157,6 +169,8 @@ export default async function DashboardPage(props: {
             {nazivObrta}
           </h1>
         </header>
+
+        <DashboardUpgradeBanner showUpgrade={isFreeUser} />
 
         <section className='rounded-2xl border border-[#1f2a28] bg-[#111716] p-5 sm:p-6'>
           <div className='flex items-center justify-between gap-3'>

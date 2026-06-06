@@ -1009,7 +1009,7 @@ export default function PostavkePage() {
                 Nadogradite na Paušalist — 7 dana besplatno, bez kartice.
               </p>
               <Link
-                href='/#cijene'
+                href='/cijene'
                 className='inline-flex rounded-xl bg-[#0d9488] px-4 py-2 font-semibold text-white transition hover:bg-[#14b8a6]'
               >
                 Pogledaj planove →
