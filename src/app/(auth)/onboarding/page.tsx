@@ -133,7 +133,7 @@ export default function OnboardingPage() {
     }
 
     // TODO: Next step can include onboarding completeness tracking table if needed.
-    router.push(`/confirm-email?email=${encodeURIComponent(user.email ?? '')}`);
+    router.push('/dashboard');
     router.refresh();
   };
 
