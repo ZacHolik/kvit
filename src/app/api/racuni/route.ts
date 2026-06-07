@@ -47,6 +47,63 @@ type InvoicePayload = {
   };
 };
 
+async function sendFiscalConfirmEmail(opts: {
+  to: string;
+  brojRacuna: string;
+  jir: string;
+  zki: string;
+  iznos: number;
+}) {
+  const key = process.env.RESEND_API_KEY;
+  if (!key || !opts.to?.trim()) return;
+  await fetch('https://api.resend.com/emails', {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${key}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      from:
+        process.env.RESEND_FROM_EMAIL ??
+        'Kvik <noreply@kvik.online>',
+      to: [opts.to.trim()],
+      subject: `✓ Račun ${opts.brojRacuna} fiskaliziran`,
+      html: `
+        <div style="font-family:sans-serif;max-width:520px;margin:0 auto;color:#1a1a1a">
+          <h2 style="color:#0d9488">Račun fiskaliziran</h2>
+          <p>Račun <strong>${opts.brojRacuna}</strong> uspješno je fiskaliziran
+          i poslan na Poreznu upravu.</p>
+          <table style="width:100%;border-collapse:collapse;margin:16px 0">
+            <tr>
+              <td style="padding:8px 0;color:#666;width:40%">JIR</td>
+              <td style="padding:8px 0;font-family:monospace;font-size:13px">
+                ${opts.jir}
+              </td>
+            </tr>
+            <tr>
+              <td style="padding:8px 0;color:#666">ZKI</td>
+              <td style="padding:8px 0;font-family:monospace;font-size:13px">
+                ${opts.zki}
+              </td>
+            </tr>
+            <tr>
+              <td style="padding:8px 0;color:#666">Iznos</td>
+              <td style="padding:8px 0;font-weight:bold">
+                ${opts.iznos.toFixed(2).replace('.', ',')} EUR
+              </td>
+            </tr>
+          </table>
+          <p style="color:#666;font-size:13px">
+            JIR i ZKI su tiskani i na PDF-u računa.<br>
+            Ako imaš pitanja, piši na
+            <a href="mailto:podrska@kvik.hr">podrska@kvik.hr</a>.
+          </p>
+        </div>
+      `,
+    }),
+  }).catch((err) => console.error('Fiscal confirm email error', err));
+}
+
 async function upsertCatalogItem(
   supabase: ReturnType<typeof createClient>,
   userId: string,
@@ -285,6 +342,14 @@ export async function POST(request: Request) {
         })
         .eq('id', racun.id)
         .eq('user_id', user.id);
+
+      void sendFiscalConfirmEmail({
+        to: user.email ?? '',
+        brojRacuna: racun.broj_racuna,
+        jir: fiscalResult.jir ?? '',
+        zki: fiscalResult.zki ?? '',
+        iznos: ukupno,
+      });
     } else {
       await supabase
         .from('racuni')
