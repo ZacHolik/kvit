@@ -18,7 +18,7 @@ function buildEmailRedirectTo(): string {
   const origin =
     process.env.NEXT_PUBLIC_APP_URL?.replace(/\/$/, '') ||
     window.location.origin;
-  const next = encodeURIComponent('/confirm-email?verified=1');
+  const next = encodeURIComponent('/dashboard');
   return `${origin}/auth/callback?next=${next}`;
 }
 
