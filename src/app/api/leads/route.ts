@@ -14,7 +14,45 @@ import {
   createUnsubscribeToken,
   unsubscribeUrl,
 } from '@/lib/leads-unsubscribe';
+import { PoSdDocument } from '@/lib/pdf/po-sd-document';
+import { renderPdfToBuffer } from '@/lib/pdf/render-pdf-buffer';
 import { createServiceRoleClient } from '@/lib/supabase/service-role';
+
+function numField(payload: Record<string, unknown>, key: string): number {
+  const v = payload[key];
+  if (typeof v === 'number' && Number.isFinite(v)) return v;
+  const n = Number(v);
+  return Number.isFinite(n) ? n : 0;
+}
+
+function poSdDocFromPayload(payload: Record<string, unknown>) {
+  const godina = numField(payload, 'godina');
+  if (!godina) return null;
+
+  const gotovina = numField(payload, 'gotovina');
+  const bezgotovinsko = numField(payload, 'bezgotovinsko');
+  const ukupno = numField(payload, 'ukupno') || gotovina + bezgotovinsko;
+  const razredLabel =
+    typeof payload.razred === 'string' && payload.razred.trim()
+      ? payload.razred
+      : '—';
+  const porezKvartalno = numField(payload, 'porezKvartalno');
+  const porezGodisnje =
+    numField(payload, 'porezGodisnje') || porezKvartalno * 4;
+
+  return PoSdDocument({
+    godina,
+    nazivObrta: '—',
+    oib: '—',
+    adresa: null,
+    gotovina,
+    bezgotovinsko,
+    ukupnoPrimici: ukupno,
+    razredLabel,
+    porezKvartalno,
+    porezGodisnje,
+  });
+}
 
 const leadSchema = z.object({
   email: z.string().email(),
@@ -105,6 +143,24 @@ export async function POST(request: Request) {
 
   const resendKey = process.env.RESEND_API_KEY;
   if (resendKey) {
+    let attachments: { filename: string; content: string }[] | undefined;
+    if (parsed.data.result_payload) {
+      try {
+        const doc = poSdDocFromPayload(parsed.data.result_payload);
+        if (doc) {
+          const pdfBuffer = await renderPdfToBuffer(doc);
+          attachments = [
+            {
+              filename: 'kvik-po-sd-rezultat.pdf',
+              content: pdfBuffer.toString('base64'),
+            },
+          ];
+        }
+      } catch (err) {
+        console.error('leads PO-SD PDF error', err);
+      }
+    }
+
     await fetch('https://api.resend.com/emails', {
       method: 'POST',
       headers: {
@@ -125,7 +181,7 @@ export async function POST(request: Request) {
             <p style="margin:0 0 8px;font-size:12px;color:#94a3a0;letter-spacing:0.08em;text-transform:uppercase">Kvik</p>
             <h1 style="margin:0 0 16px;font-size:22px;color:#0d9488">Tvoj PO-SD rezultat je ovdje</h1>
             <p style="margin:0 0 16px;font-size:15px;line-height:1.6;color:#b9c7c4">
-              Hvala na povjerenju! Spremili smo tvoju email adresu — možeš nastaviti s PO-SD alatom
+              Hvala na povjerenju! U prilogu je PDF s tvojim PO-SD rezultatom — možeš nastaviti s alatom
               ili isprobati AI asistenta za paušalce.
             </p>
             <p style="margin:0 0 24px">
@@ -141,6 +197,7 @@ export async function POST(request: Request) {
             </p>
           </div>
         `,
+        ...(attachments ? { attachments } : {}),
       }),
     }).catch((err) => {
       console.error('Resend error (leads)', err);
