@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect } from 'react';
 import Link from 'next/link';
 import ShareBar from '@/components/ShareBar';
 import { useCtaVariant } from '@/hooks/useCtaVariant';
@@ -31,6 +32,15 @@ export default function PageTopBar({
   const randomVariant = useCtaVariant(pageType === 'vodic' ? 'top-vodic' : 'top-alat', ['A', 'B']);
   const variant = forceVariant ?? randomVariant;
   const { trackCtaClick } = useCtaTracking();
+
+  useEffect(() => {
+    if (
+      typeof window !== 'undefined' &&
+      !sessionStorage.getItem('kvik_landing_page')
+    ) {
+      sessionStorage.setItem('kvik_landing_page', window.location.pathname);
+    }
+  }, []);
 
   const source = pageType === 'vodic' ? TOP_VODIC : TOP_ALAT;
   // C nije definiran za TOP — ako je forceVariant 'C' (greška), fallback na A.

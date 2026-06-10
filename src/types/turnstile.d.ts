@@ -2,6 +2,7 @@ export {};
 
 declare global {
   interface Window {
+    gtag?: (...args: unknown[]) => void;
     turnstile?: {
       render: (
         container: HTMLElement | string,
