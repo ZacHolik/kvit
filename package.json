@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "test:smoke": "playwright test tests/smoke.spec.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.86.1",
@@ -36,6 +37,7 @@
     "xmlbuilder2": "^4.0.3"
   },
   "devDependencies": {
+    "@playwright/test": "^1.60.0",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
