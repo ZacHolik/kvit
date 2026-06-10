@@ -20,6 +20,17 @@ const leadSchema = z.object({
   email: z.string().email(),
   consent: z.literal(true),
   website: z.string().optional(),
+  source_tool: z.string().min(1),
+  persona_hint: z.string().optional(),
+  result_payload: z.record(z.string(), z.unknown()).optional(),
+  consent_text: z.string().optional(),
+  utm_source: z.string().optional(),
+  utm_medium: z.string().optional(),
+  utm_campaign: z.string().optional(),
+  utm_content: z.string().optional(),
+  referrer: z.string().optional(),
+  landing_page: z.string().optional(),
+  cta_variant: z.string().optional(),
 });
 
 export async function POST(request: Request) {
@@ -55,8 +66,20 @@ export async function POST(request: Request) {
     .upsert(
       {
         email: normalizedEmail,
+        source_tool: parsed.data.source_tool,
+        persona_hint: parsed.data.persona_hint ?? null,
+        result_payload: parsed.data.result_payload ?? null,
         consent: true,
+        consent_text: parsed.data.consent_text ?? null,
+        consent_at: new Date().toISOString(),
         consent_ip: ip,
+        utm_source: parsed.data.utm_source ?? null,
+        utm_medium: parsed.data.utm_medium ?? null,
+        utm_campaign: parsed.data.utm_campaign ?? null,
+        utm_content: parsed.data.utm_content ?? null,
+        referrer: parsed.data.referrer ?? null,
+        landing_page: parsed.data.landing_page ?? null,
+        cta_variant: parsed.data.cta_variant ?? null,
         unsubscribed_at: null,
       },
       { onConflict: 'email' },
