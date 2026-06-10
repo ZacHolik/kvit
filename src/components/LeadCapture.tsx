@@ -136,7 +136,7 @@ export default function LeadCapture({
         <span>
           {CONSENT_TEXT}{' '}
           <a
-            href='/privatnost'
+            href='/privacy'
             className='text-[#0d9488] underline'
             target='_blank'
           >
