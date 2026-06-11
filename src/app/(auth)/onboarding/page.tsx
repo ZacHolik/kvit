@@ -133,7 +133,7 @@ export default function OnboardingPage() {
     }
 
     // TODO: Next step can include onboarding completeness tracking table if needed.
-    router.push(`/confirm-email?email=${encodeURIComponent(user.email ?? '')}`);
+    router.push('/dashboard');
     router.refresh();
   };
 
@@ -312,6 +312,16 @@ export default function OnboardingPage() {
                   : 'Završi onboarding'}
             </button>
           </div>
+
+          {step === TOTAL_STEPS ? (
+            <p className='font-body mt-3 text-sm text-[#94a3a0]'>
+              Za potpuni PO-SD obrazac, popuni podatke o obrtu u{' '}
+              <a href='/postavke' className='text-[#0d9488] underline'>
+                Postavkama
+              </a>{' '}
+              — traje 2 minute.
+            </p>
+          ) : null}
         </form>
       </section>
     </main>

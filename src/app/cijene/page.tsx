@@ -1,9 +1,27 @@
 'use client';
 
+import { createBrowserClient } from '@supabase/ssr';
 import Link from 'next/link';
 import { useState } from 'react';
 
 async function startCheckout(trial: boolean) {
+  const supabase = createBrowserClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+  );
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+
+  if (!session) {
+    sessionStorage.setItem(
+      'kvik_checkout_intent',
+      JSON.stringify({ plan: 'pausalist', trial }),
+    );
+    window.location.href = '/register';
+    return;
+  }
+
   const res = await fetch('/api/stripe/checkout', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -12,8 +30,6 @@ async function startCheckout(trial: boolean) {
   const data = (await res.json()) as { url?: string; error?: string };
   if (data.url) {
     window.location.href = data.url;
-  } else {
-    window.location.href = '/cijene';
   }
 }
 

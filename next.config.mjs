@@ -1,4 +1,5 @@
-import nextPwa from 'next-pwa';
+import nextPwa from '@ducanh2912/next-pwa';
+import { withSentryConfig } from '@sentry/nextjs';
 
 const withPWA = nextPwa({
   dest: 'public',
@@ -11,6 +12,9 @@ const withPWA = nextPwa({
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  experimental: {
+    instrumentationHook: true,
+  },
   reactStrictMode: true,
   poweredByHeader: false,
   compress: true,
@@ -35,4 +39,10 @@ const nextConfig = {
   },
 };
 
-export default withPWA(nextConfig);
+export default withSentryConfig(withPWA(nextConfig), {
+  org: 'kvik-tq',
+  project: 'kvik-web',
+  silent: true,
+  hideSourceMaps: true,
+  disableLogger: true,
+});

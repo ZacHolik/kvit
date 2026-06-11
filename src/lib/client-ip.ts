@@ -1,7 +1,7 @@
-import type { NextRequest } from 'next/server';
-
 /** Client IP for rate limiting (Vercel / proxies). */
-export function getClientIpFromRequest(request: NextRequest): string {
+export function getClientIpFromRequest(
+  request: Request & { ip?: string },
+): string {
   const xff = request.headers.get('x-forwarded-for');
   if (xff) {
     const first = xff.split(',')[0]?.trim();

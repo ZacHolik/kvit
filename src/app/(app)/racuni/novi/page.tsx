@@ -120,9 +120,9 @@ export default function NoviRacunPage() {
     brojRacuna: '',
     datum: new Date().toISOString().slice(0, 10),
     datumPlacanja: '',
-    nacinPlacanja: 'ziro',
+    nacinPlacanja: 'gotovina',
     status: 'izdano',
-    tipRacuna: 'R1',
+    tipRacuna: 'R2',
     dodajBarkodPlacanja: true,
     recurring: false,
     recurringInterval: 'mjesecno',
@@ -163,6 +163,20 @@ export default function NoviRacunPage() {
       ukupno: Math.max(meduzbroj - popustIznos + dostavaIznos, 0),
     };
   }, [formState.dodajDostavu, formState.dostavaIznos, formState.popustRacun, items]);
+
+  useEffect(() => {
+    const isGotovinski = formState.nacinPlacanja === 'gotovina';
+    const isPlaceno = formState.status === 'placeno';
+    if (isGotovinski && isPlaceno) {
+      const danas = new Date().toISOString().slice(0, 10);
+      setFormState((prev) => ({
+        ...prev,
+        datumDospijeca: danas,
+        datumPlacanja: danas,
+        rokPlacanja: 'Odmah',
+      }));
+    }
+  }, [formState.nacinPlacanja, formState.status]);
 
   useEffect(() => {
     let cancelled = false;
@@ -421,7 +435,9 @@ export default function NoviRacunPage() {
           : undefined,
         napomena: formState.napomena,
         kupac: {
-          naziv: formState.kupacNaziv,
+          naziv:
+            formState.kupacNaziv.trim() ||
+            (formState.tipRacuna !== 'R1' ? 'Gotovinski kupac' : ''),
           oib: formState.kupacOib || undefined,
           adresa: formState.kupacAdresa || undefined,
           email: formState.kupacEmail || undefined,
@@ -712,7 +728,7 @@ export default function NoviRacunPage() {
                 Kupac naziv
               </span>
               <input
-                required
+                required={formState.tipRacuna === 'R1'}
                 value={formState.kupacNaziv}
                 list='kupci-suggestions'
                 onChange={(event) => {

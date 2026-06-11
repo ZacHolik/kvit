@@ -5,6 +5,8 @@ import { useMemo, useState } from 'react';
 import { getPausalRazred2026 } from '@/lib/pausal-tax';
 import { formatIznosEurHr } from '@/lib/format-hr';
 
+import LeadCapture from '@/components/LeadCapture';
+
 import { PostValueCta } from '../_components/post-value-cta';
 import { PoweredByKvikBadge } from '../_components/powered-by-kvik-badge';
 import { ShareResult } from '../_components/share-result';
@@ -155,41 +157,59 @@ export function PoSdTool() {
       </section>
 
       {generated ? (
-        <section className='rounded-2xl border border-[#0d9488]/35 bg-[#111716] p-5 sm:p-6'>
-          <h3 className='font-heading text-lg text-[#e2e8e7]'>Rezultat</h3>
-          <dl className='mt-4 space-y-2 text-sm text-[#b9c7c4]'>
-            <div className='flex justify-between gap-4'>
-              <dt>Godina</dt>
-              <dd>{godina}</dd>
-            </div>
-            <div className='flex justify-between gap-4'>
-              <dt>Ukupno primitci</dt>
-              <dd className='font-semibold text-[#e2e8e7]'>{formatIznosEurHr(ukupno)}</dd>
-            </div>
-            <div className='flex justify-between gap-4'>
-              <dt>Razred</dt>
-              <dd>{razred?.label ?? '—'}</dd>
-            </div>
-            <div className='flex justify-between gap-4'>
-              <dt>Porez mjesečno (procjena)</dt>
-              <dd>{formatIznosEurHr(porezMjesecno)}</dd>
-            </div>
-            <div className='flex justify-between gap-4'>
-              <dt>Porez kvartalno (procjena)</dt>
-              <dd>{formatIznosEurHr(porezKvartalno)}</dd>
-            </div>
-            <div className='flex justify-between gap-4'>
-              <dt>Porez godišnje (procjena)</dt>
-              <dd>{formatIznosEurHr(porezGodisnje)}</dd>
-            </div>
-          </dl>
-          <PoweredByKvikBadge />
-          <ShareResult
-            pageTitle='PO-SD generator'
-            pageUrl='https://kvik.online/alati/po-sd'
+        <>
+          <section className='rounded-2xl border border-[#0d9488]/35 bg-[#111716] p-5 sm:p-6'>
+            <h3 className='font-heading text-lg text-[#e2e8e7]'>Rezultat</h3>
+            <dl className='mt-4 space-y-2 text-sm text-[#b9c7c4]'>
+              <div className='flex justify-between gap-4'>
+                <dt>Godina</dt>
+                <dd>{godina}</dd>
+              </div>
+              <div className='flex justify-between gap-4'>
+                <dt>Ukupno primitci</dt>
+                <dd className='font-semibold text-[#e2e8e7]'>
+                  {formatIznosEurHr(ukupno)}
+                </dd>
+              </div>
+              <div className='flex justify-between gap-4'>
+                <dt>Razred</dt>
+                <dd>{razred?.label ?? '—'}</dd>
+              </div>
+              <div className='flex justify-between gap-4'>
+                <dt>Porez mjesečno (procjena)</dt>
+                <dd>{formatIznosEurHr(porezMjesecno)}</dd>
+              </div>
+              <div className='flex justify-between gap-4'>
+                <dt>Porez kvartalno (procjena)</dt>
+                <dd>{formatIznosEurHr(porezKvartalno)}</dd>
+              </div>
+              <div className='flex justify-between gap-4'>
+                <dt>Porez godišnje (procjena)</dt>
+                <dd>{formatIznosEurHr(porezGodisnje)}</dd>
+              </div>
+            </dl>
+            <PoweredByKvikBadge />
+            <ShareResult
+              pageTitle='PO-SD generator'
+              pageUrl='https://kvik.online/alati/po-sd'
+            />
+            <PostValueCta />
+          </section>
+          <LeadCapture
+            sourceTool='po-sd'
+            personaHint='uplaseni-pocetnik'
+            resultPayload={{
+              godina,
+              gotovina,
+              bezgotovinsko,
+              ukupno,
+              razred: razred?.label ?? null,
+              porezMjesecno,
+              porezKvartalno,
+              porezGodisnje,
+            }}
           />
-          <PostValueCta />
-        </section>
+        </>
       ) : null}
     </div>
   );

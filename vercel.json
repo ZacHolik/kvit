@@ -1,7 +1,10 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": "nextjs",
-  "regions": ["fra1"],  "crons": [
+  "regions": [
+    "fra1"
+  ],
+  "crons": [
     {
       "path": "/api/fiscal/retry/cron",
       "schedule": "0 6 * * *"
@@ -9,6 +12,10 @@
     {
       "path": "/api/stripe/billing/cron",
       "schedule": "0 6 * * *"
+    },
+    {
+      "path": "/api/cron/fina-cert-check",
+      "schedule": "0 8 * * *"
     }
   ],
   "functions": {

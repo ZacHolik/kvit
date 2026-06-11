@@ -3,8 +3,10 @@
 import Link from 'next/link';
 import { FormEvent, useCallback, useEffect, useMemo, useState } from 'react';
 
+import { PriceLockBanner } from '@/components/price-lock-banner';
 import { formatDatumHr, formatIznosEurHr } from '@/lib/format-hr';
 import { OPCINE, type Opcina } from '@/lib/opcine';
+import { priceLockEnabled } from '@/lib/price-lock-feature';
 import { createClient } from '@/lib/supabase/client';
 
 type ProfileForm = {
@@ -531,11 +533,8 @@ export default function PostavkePage() {
           </h1>
         </header>
 
-        {priceLockBanner.locked ? (
-          <section className='rounded-2xl border border-[#0d9488]/35 bg-[#0d9488]/10 p-4 font-body text-sm text-[#b9c7c4]'>
-            ✅ Cijena zaključana — {priceLockBanner.amount ?? 5.6}€/mj zauvijek (early
-            adopter referral).
-          </section>
+        {priceLockEnabled && priceLockBanner.locked ? (
+          <PriceLockBanner amount={priceLockBanner.amount} />
         ) : null}
 
         {toast ? (
@@ -1009,7 +1008,7 @@ export default function PostavkePage() {
                 Nadogradite na Paušalist — 7 dana besplatno, bez kartice.
               </p>
               <Link
-                href='/#cijene'
+                href='/cijene'
                 className='inline-flex rounded-xl bg-[#0d9488] px-4 py-2 font-semibold text-white transition hover:bg-[#14b8a6]'
               >
                 Pogledaj planove →
