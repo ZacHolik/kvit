@@ -66,6 +66,7 @@ const HOWTO_SLUGS = new Set<string>([
   'kpr-online-generator',
   'zatvaranje-obrta',
   'sezonski-obrt',
+  'storno-racuna',
 ]);
 
 // Keyword fallback ako slug nije eksplicitno mapiran.

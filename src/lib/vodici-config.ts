@@ -24,6 +24,7 @@ export function getSiteUrl(): string {
 
 export type VodiciCategoryId =
   | 'osnove'
+  | 'racuni'
   | 'djelatnosti'
   | 'porezi'
   | 'fiskalizacija';
@@ -40,6 +41,7 @@ export type VodiciEntry = {
 
 export const VODICI_CATEGORY_LABELS: Record<VodiciCategoryId, string> = {
   osnove: 'Osnove',
+  racuni: 'Računi',
   djelatnosti: 'Po djelatnostima',
   porezi: 'Porezi',
   fiskalizacija: 'Fiskalizacija',
@@ -203,6 +205,16 @@ export const VODICI_ENTRIES: VodiciEntry[] = [
     readingMinutes: 11,
     category: 'osnove',
     primaryKeyword: 'izdavanje računa paušalni obrt',
+  },
+  {
+    slug: 'storno-racuna',
+    title: 'Storno računa paušalni obrt: kako ispraviti pogrešan račun',
+    shortTitle: 'Storno računa',
+    description:
+      'Izdao si račun s pogrešnim iznosom ili podacima? Vodič objašnjava što je storno, kada ga koristiš i korak-po-korak kako ga provesti u 2026. — bez tehničkog žargona.',
+    readingMinutes: 6,
+    category: 'racuni',
+    primaryKeyword: 'storno računa paušalni obrt',
   },
   {
     slug: 'sjediste-obrta-vs-prebivaliste',

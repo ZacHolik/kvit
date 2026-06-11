@@ -43,7 +43,12 @@ export const TOP_ALAT = {
 // =====================================================
 // SREDINA (InlineCTA) — kontekstualni po temi
 // =====================================================
-export type InlineTema = 'po-sd' | 'razred' | 'doprinosi' | 'interni-akt';
+export type InlineTema =
+  | 'po-sd'
+  | 'razred'
+  | 'doprinosi'
+  | 'interni-akt'
+  | 'inline_storno_register';
 
 export const INLINE: Record<InlineTema, { text: string; button: string; href: string }> = {
   'po-sd': {
@@ -69,6 +74,11 @@ export const INLINE: Record<InlineTema, { text: string; button: string; href: st
       'Interni akt možeš generirati u Kviku — bez Word predloška, bez pogađanja što staviti.',
     button: 'Generiraj interni akt',
     href: '/alati/interni-akt',
+  },
+  inline_storno_register: {
+    text: 'Kvik automatski kreira storno račun i fiskalizira ga za tebe.',
+    button: 'Isprobaj besplatno',
+    href: '/register',
   },
 };
 

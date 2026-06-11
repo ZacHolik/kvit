@@ -154,6 +154,10 @@ export default function IzdavanjeRacunaPage() {
         vrijeme je za <Link href='/register'>digitalno rješenje</Link> poput Kvika.
       </p>
       <p>
+        Pogrešan iznos na već izdanom računu? Saznaj kako provesti{' '}
+        <Link href={vodiciHref('storno-racuna')}>storno računa paušalni obrt</Link>.
+      </p>
+      <p>
         Za nabavu i upload certifikata koristi vodič{' '}
         <Link href={vodiciHref('fina-certifikat-fiskalizacija')}>
           FINA certifikat za fiskalizaciju
