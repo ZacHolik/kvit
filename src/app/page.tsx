@@ -319,20 +319,20 @@ const HERO_CTA_CARDS = [
   {
     href: '/alati/kalkulator-poreza',
     icon: '🧮',
-    title: 'Izračunaj porez 2026',
-    sub: 'Koliko ćeš platiti poreza ove godine?',
+    title: 'Klikni i odmah vidi',
+    sub: 'Koliko ćeš platiti poreza',
   },
   {
     href: '/alati/po-sd',
     icon: '📄',
-    title: 'Generiraj PO-SD',
-    sub: 'Procijeni razred i pripremi PO-SD obrazac.',
+    title: 'Dobij PO-SD odmah',
+    sub: 'Kvik to radi automatski.',
   },
   {
     href: '/asistent',
     icon: '🤖',
     title: 'Pitaj AI asistenta',
-    sub: 'Odgovori na porezna pitanja odmah.',
+    sub: 'Dobij savjet odmah.',
   },
 ] as const;
 
@@ -898,13 +898,14 @@ export default function LandingPage() {
               <span className='badge-dot' />
             </div>
             <h1>
-              Kvik vodi računa o zakonima.<br />Ti samo vodi obrt.
+              Kvik se brine za papirologiju.
+              <br />
+              Ti samo radi ono u čemu si najbolji.
             </h1>
             <div className='hero-sub-block'>
               <p className='hero-sub'>
-                Hitro izračunaj svoju trenutnu poreznu obvezu, kreiraj si PO-SD ili
-                saznaj sve o fiskalizaciji od AI asistenta. Klikni na donje gumbe i
-                isprobaj odmah!
+                Klizni prstom i vidi koliko poreza ćeš platiti, dobij PO-SD odmah, i
+                saznaj sve o fiskalizaciji bez muke.
               </p>
               <div className='hero-sub-cue' aria-hidden='true'>
                 <svg
