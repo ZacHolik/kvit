@@ -16,6 +16,8 @@ export type HowToStep = { name: string; text: string };
 type GuideShellProps = {
   slug: string;
   title: string;
+  /** Kratki naslov u breadcrumbu; default = title */
+  breadcrumbTitle?: string;
   subtitle: string;
   readingMinutes: number;
   metaDescription: string;
@@ -35,6 +37,7 @@ function jsonLdSafe(obj: unknown): string {
 export function GuideShell({
   slug,
   title,
+  breadcrumbTitle,
   subtitle,
   readingMinutes,
   metaDescription,
@@ -49,6 +52,7 @@ export function GuideShell({
   const pageUrl = `${base}/vodici/${slug}`;
   const published = '2026-04-11';
   const modified = articleDateModified ?? '2026-04-11';
+  const breadcrumbLabel = breadcrumbTitle ?? title;
 
   const breadcrumbLd = {
     '@context': 'https://schema.org',
@@ -70,7 +74,7 @@ export function GuideShell({
       {
         '@type': 'ListItem',
         position: 3,
-        name: title,
+        name: breadcrumbLabel,
         item: pageUrl,
       },
     ],
@@ -178,7 +182,7 @@ export function GuideShell({
               </Link>
             </li>
             <li aria-hidden='true'>/</li>
-            <li className='text-[#d5dfdd]'>{title}</li>
+            <li className='text-[#d5dfdd]'>{breadcrumbLabel}</li>
           </ol>
         </nav>
 

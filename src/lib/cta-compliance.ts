@@ -26,6 +26,7 @@ const COMPLIANCE_SLUGS = new Set<string>([
   'doprinosi-obveza',
   'doprinosi',
   'doprinosi-uz-posao',
+  'povrat-preplacenih-doprinosa',
   'kazne',
   'porezne-obveze',
   'porez-na-dohodak',

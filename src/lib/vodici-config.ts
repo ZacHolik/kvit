@@ -314,6 +314,16 @@ export const VODICI_ENTRIES: VodiciEntry[] = [
     primaryKeyword: 'doprinosi paušalni obrt iznos',
   },
   {
+    slug: 'povrat-preplacenih-doprinosa',
+    title: 'Povrat preplaćenih doprinosa paušalni obrt: korak-po-korak vodič',
+    shortTitle: 'Povrat preplaćenih doprinosa',
+    description:
+      'Plaćaš previše doprinosa? Vodič objašnjava kako provjeriti preplatu na ePoreznoj i korak-po-korak zatražiti povrat ili preknjiženje. Bez odlaska u poreznu.',
+    readingMinutes: 5,
+    category: 'porezi',
+    primaryKeyword: 'povrat preplaćenih doprinosa paušalni obrt',
+  },
+  {
     slug: 'porez-na-dohodak',
     title: 'Porez na dohodak u paušalnom obrtu 2026.',
     shortTitle: 'Porez na dohodak',

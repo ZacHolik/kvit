@@ -172,6 +172,14 @@ export default function DoprinosiPage() {
         <Link href={vodiciHref('doprinosi-uz-posao')}>doprinosi uz zaposlenje</Link>.
       </p>
       <p>
+        Ako si promijenio status (zaposlio se uz obrt), možda imaš preplatu — saznaj
+        kako zatražiti{' '}
+        <Link href={vodiciHref('povrat-preplacenih-doprinosa')}>
+          povrat preplaćenih doprinosa
+        </Link>
+        .
+      </p>
+      <p>
         Ako koristiš posebna prava kroz HZZO (npr. rad s polovicom radnog vremena), iznosi
         i osnova doprinosa mogu se razlikovati od standardnog modela. Za taj slučaj pogledaj{' '}
         <Link href={vodiciHref('rad-s-pola-radnog-vremena-pausalni-obrt')}>
