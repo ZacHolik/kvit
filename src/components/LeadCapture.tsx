@@ -65,6 +65,14 @@ export default function LeadCapture({
 
     if (res.ok) {
       setStatus('success');
+      if (typeof window !== 'undefined' && window.fbq) {
+        window.fbq('track', 'Lead', {
+          content_name: 'Vodič Kvik - Prikriveni Rad',
+          status: 'Uspješno',
+          cta_variant: ctaVariant ?? null,
+          persona_hint: personaHint ?? null,
+        });
+      }
       if (typeof window !== 'undefined' && window.gtag) {
         window.gtag('event', 'lead_captured', {
           source_tool: sourceTool,
