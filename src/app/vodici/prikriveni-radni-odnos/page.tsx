@@ -107,6 +107,32 @@ export default function PrikriveniRadniOdnosPage() {
         zapravo trajna.
       </p>
 
+      <div className='my-8 rounded-2xl border border-[#0d9488]/40 bg-[#111716] p-6'>
+        <p className='font-heading text-lg font-semibold text-[#e2e8e7]'>
+          Brza procjena rizika
+        </p>
+        <p className='mt-3 text-sm font-medium text-[#94a3a0]'>Odgovori iskreno:</p>
+        <ul className='mt-3 list-disc space-y-2 pl-5 text-sm text-[#d5dfdd]'>
+          <li>Više od 80% prihoda dolazi od jednog klijenta?</li>
+          <li>Koristiš laptop ili opremu klijenta?</li>
+          <li>Klijent određuje tvoje radno vrijeme?</li>
+          <li>Koristiš email adresu klijenta?</li>
+        </ul>
+        <div className='mt-5 rounded-xl border border-amber-500/30 bg-amber-500/5 p-4'>
+          <p className='text-sm font-medium text-[#e2e8e7]'>
+            Ako si odgovorio &quot;da&quot; na dva ili više pitanja:
+          </p>
+          <p className='mt-2 text-sm leading-relaxed text-[#d5dfdd]'>
+            ⚠️ Postoji povećan rizik da Porezna suradnju ocijeni kao prikriveni
+            radni odnos.
+          </p>
+          <p className='mt-2 text-sm leading-relaxed text-[#b9c7c4]'>
+            To ne znači automatski prekršaj, ali znači da bi trebao pregledati
+            ugovor, način rada i dokumentaciju kojom dokazuješ samostalnost.
+          </p>
+        </div>
+      </div>
+
       <h2 id='zakon'>Što je prikriveni radni odnos po zakonu</h2>
       <p>
         Zakonodavstvo štiti osobe koje rade za tuđi račun: ako ispunjavaju
@@ -136,32 +162,6 @@ export default function PrikriveniRadniOdnosPage() {
         tržišta uz punu podređenost, to je dodatni signal. Zato dokumentiraj
         vrijednost koju donosiš izvan &quot;satnice&quot;.
       </p>
-
-      <div className='my-8 rounded-2xl border border-[#0d9488]/40 bg-[#111716] p-6'>
-        <p className='font-heading text-lg font-semibold text-[#e2e8e7]'>
-          Brza procjena rizika
-        </p>
-        <p className='mt-3 text-sm font-medium text-[#94a3a0]'>Odgovori iskreno:</p>
-        <ul className='mt-3 list-disc space-y-2 pl-5 text-sm text-[#d5dfdd]'>
-          <li>Više od 80% prihoda dolazi od jednog klijenta?</li>
-          <li>Koristiš laptop ili opremu klijenta?</li>
-          <li>Klijent određuje tvoje radno vrijeme?</li>
-          <li>Koristiš email adresu klijenta?</li>
-        </ul>
-        <div className='mt-5 rounded-xl border border-amber-500/30 bg-amber-500/5 p-4'>
-          <p className='text-sm font-medium text-[#e2e8e7]'>
-            Ako si odgovorio &quot;da&quot; na dva ili više pitanja:
-          </p>
-          <p className='mt-2 text-sm leading-relaxed text-[#d5dfdd]'>
-            ⚠️ Postoji povećan rizik da Porezna suradnju ocijeni kao prikriveni
-            radni odnos.
-          </p>
-          <p className='mt-2 text-sm leading-relaxed text-[#b9c7c4]'>
-            To ne znači automatski prekršaj, ali znači da bi trebao pregledati
-            ugovor, način rada i dokumentaciju kojom dokazuješ samostalnost.
-          </p>
-        </div>
-      </div>
 
       <h2 id='kriteriji'>Kriteriji: jedan klijent, radno vrijeme, oprema</h2>
       <p>
