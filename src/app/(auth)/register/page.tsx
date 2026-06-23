@@ -179,6 +179,12 @@ export default function RegisterPage() {
       window.turnstile.reset(turnstileWidgetIdRef.current);
     }
     setTurnstileToken('');
+    if (typeof window !== 'undefined' && window.fbq) {
+      window.fbq('track', 'CompleteRegistration', {
+        registration_method: 'email',
+        user_type: 'pausalist',
+      });
+    }
     setRegisteredEmail(email.trim());
   };
 
