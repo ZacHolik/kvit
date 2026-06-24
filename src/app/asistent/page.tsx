@@ -6,6 +6,7 @@ import type { Components } from 'react-markdown';
 import ReactMarkdown from 'react-markdown';
 
 import { priceLockEnabled } from '@/lib/price-lock-feature';
+import { sendCapiEvent } from '@/lib/meta-capi';
 import { createClient } from '@/lib/supabase/client';
 
 import { HARDCODED_QA } from './hardcoded-qa-data';
@@ -208,6 +209,18 @@ export default function AsistentPage() {
 
   const sendMessage = async (text: string) => {
     const cleanText = text.trim();
+    if (cleanText) {
+      const eventId = crypto.randomUUID();
+      if (typeof window !== 'undefined' && window.fbq) {
+        window.fbq(
+          'trackCustom',
+          'AIQuestion',
+          { content_category: 'asistent' },
+          { eventID: eventId },
+        );
+      }
+      void sendCapiEvent({ event_name: 'AIQuestion', event_id: eventId });
+    }
     if (!cleanText || isLoading) {
       return;
     }
