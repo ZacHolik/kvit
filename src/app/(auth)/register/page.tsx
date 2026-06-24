@@ -3,6 +3,8 @@
 import Link from 'next/link';
 import { FormEvent, useEffect, useRef, useState } from 'react';
 
+import { sendCapiEvent } from '@/lib/meta-capi';
+
 const turnstileSiteKey =
   typeof process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY === 'string'
     ? process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY.trim()
@@ -179,12 +181,19 @@ export default function RegisterPage() {
       window.turnstile.reset(turnstileWidgetIdRef.current);
     }
     setTurnstileToken('');
+    const eventId = crypto.randomUUID();
     if (typeof window !== 'undefined' && window.fbq) {
-      window.fbq('track', 'CompleteRegistration', {
-        registration_method: 'email',
-        user_type: 'pausalist',
-      });
+      window.fbq(
+        'track',
+        'CompleteRegistration',
+        {
+          registration_method: 'email',
+          user_type: 'pausalist',
+        },
+        { eventID: eventId },
+      );
     }
+    void sendCapiEvent({ event_name: 'CompleteRegistration', event_id: eventId });
     setRegisteredEmail(email.trim());
   };
 

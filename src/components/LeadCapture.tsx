@@ -1,4 +1,5 @@
 'use client';
+import { sendCapiEvent } from '@/lib/meta-capi';
 
 import { useState, useCallback } from 'react';
 import { useSearchParams } from 'next/navigation';
@@ -65,14 +66,22 @@ export default function LeadCapture({
 
     if (res.ok) {
       setStatus('success');
+      const eventId = crypto.randomUUID();
       if (typeof window !== 'undefined' && window.fbq) {
-        window.fbq('track', 'Lead', {
-          content_name: 'Vodič Kvik - Prikriveni Rad',
-          status: 'Uspješno',
-          cta_variant: ctaVariant ?? null,
-          persona_hint: personaHint ?? null,
-        });
+        window.fbq(
+          'track',
+          'Lead',
+          {
+            content_name: 'Vodič Kvik - Prikriveni Rad',
+            status: 'Uspješno',
+            cta_variant: ctaVariant ?? null,
+            persona_hint: personaHint ?? null,
+            event_id: eventId,
+          },
+          { eventID: eventId },
+        );
       }
+      void sendCapiEvent({ event_name: 'Lead', event_id: eventId });
       if (typeof window !== 'undefined' && window.gtag) {
         window.gtag('event', 'lead_captured', {
           source_tool: sourceTool,
