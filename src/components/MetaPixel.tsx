@@ -4,22 +4,24 @@ import { useEffect } from 'react';
 import { usePathname, useSearchParams } from 'next/navigation';
 import Script from 'next/script';
 
-const META_PIXEL_ID = '110959382772503';
+const PIXEL_ID = process.env.NEXT_PUBLIC_META_PIXEL_ID;
 
 export default function MetaPixel() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
   useEffect(() => {
-    if (typeof window !== 'undefined' && window.fbq) {
+    if (typeof window !== 'undefined' && window.fbq && PIXEL_ID) {
       window.fbq('track', 'PageView');
     }
   }, [pathname, searchParams]);
 
+  if (!PIXEL_ID) return null;
+
   return (
     <Script
-      id='meta-pixel'
-      strategy='afterInteractive'
+      id="meta-pixel"
+      strategy="afterInteractive"
       dangerouslySetInnerHTML={{
         __html: `
           !function(f,b,e,v,n,t,s)
@@ -30,7 +32,7 @@ export default function MetaPixel() {
           t.src=v;s=b.getElementsByTagName(e)[0];
           s.parentNode.insertBefore(t,s)}(window, document,'script',
           'https://connect.facebook.net/en_US/fbevents.js');
-          fbq('init', '${META_PIXEL_ID}');
+          fbq('init', '${PIXEL_ID}');
           fbq('track', 'PageView');
         `,
       }}
