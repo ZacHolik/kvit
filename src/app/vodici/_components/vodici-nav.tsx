@@ -1,6 +1,23 @@
+'use client';
+
 import Link from 'next/link';
 
+import { sendCapiEvent } from '@/lib/meta-capi';
+
 export function VodiciNav() {
+  const handleRegisterClick = () => {
+    const eventId = crypto.randomUUID();
+    if (typeof window !== 'undefined' && window.fbq) {
+      window.fbq(
+        'track',
+        'InitiateCheckout',
+        { content_category: '/register', page_slug: 'nav' },
+        { eventID: eventId },
+      );
+    }
+    void sendCapiEvent({ event_name: 'InitiateCheckout', event_id: eventId });
+  };
+
   return (
     <header className='sticky top-0 z-50 border-b border-[#1f2a28] bg-[#0b0f0e]/95 backdrop-blur-sm'>
       <nav className='mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-3 px-4 py-3 sm:px-6 lg:px-8'>
@@ -34,7 +51,11 @@ export function VodiciNav() {
           >
             Imam Kvik!
           </Link>
-          <Link href='/register' className='btn-cta-primary px-3 py-2 text-sm'>
+          <Link
+            href='/register'
+            className='btn-cta-primary px-3 py-2 text-sm'
+            onClick={handleRegisterClick}
+          >
             Priključujem se!
           </Link>
         </div>
