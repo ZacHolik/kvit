@@ -867,7 +867,7 @@ export default function LandingPage() {
               <Link href='/alati'>Alati</Link>
             </li>
             <li>
-              <Link href='/fiskalizacija'>Fiskalizacija</Link>
+              <Link href='/vodici/fiskalizacija-20'>Fiskalizacija</Link>
             </li>
             <li>
               <Link href='/cijene'>Cijene</Link>

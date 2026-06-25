@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import ShareBar from '@/components/ShareBar';
 import { useCtaVariant } from '@/hooks/useCtaVariant';
@@ -32,6 +32,11 @@ export default function PageTopBar({
   const randomVariant = useCtaVariant(pageType === 'vodic' ? 'top-vodic' : 'top-alat', ['A', 'B']);
   const variant = forceVariant ?? randomVariant;
   const { trackCtaClick } = useCtaTracking();
+  const [currentUrl, setCurrentUrl] = useState('');
+
+  useEffect(() => {
+    setCurrentUrl(window.location.href);
+  }, []);
 
   useEffect(() => {
     if (
@@ -50,9 +55,8 @@ export default function PageTopBar({
   const resolvedShareText = shareText ?? defaultShareText(pageType);
   const url =
     pageUrl ??
-    (typeof window !== 'undefined'
-      ? window.location.href
-      : `https://kvik.online/${pageType === 'vodic' ? 'vodici' : 'alati'}/${pageSlug}`);
+    (currentUrl ||
+      `https://kvik.online/${pageType === 'vodic' ? 'vodici' : 'alati'}/${pageSlug}`);
 
   return (
     <div
