@@ -4,7 +4,6 @@ import { Suspense } from 'react';
 
 import ShareBar from '@/components/ShareBar';
 import LeadCapture from '@/components/LeadCapture';
-import BottomCTA from '@/components/cta/BottomCTA';
 import { getSiteUrl } from '@/lib/vodici-config';
 
 export type GuideTocItem = { id: string; label: string };
@@ -314,7 +313,49 @@ export function GuideShell({
           </ul>
         </section>
 
-        <BottomCTA pageType="vodic" pageSlug={slug} />
+        {/* Stripe CTA — podnožje */}
+        <div
+          className="mt-14 rounded-2xl border-[1.5px] border-[#d97706] p-6 text-center"
+          style={{ background: 'rgba(217,119,6,0.04)' }}
+        >
+          <p className="text-lg font-medium text-[#e2e8e7] leading-relaxed mb-2">
+            Ako si ovo dočitao, znaš više od prosječnog paušalista.
+          </p>
+          <p className="text-sm text-[#94a3a0] leading-relaxed mb-5">
+            Sad imaš i alat koji to primjenjuje umjesto tebe — svaki rok,
+            svaki obrazac, svako porezno pitanje.
+          </p>
+          <Link
+            href="/cijene"
+            className="inline-block rounded-xl px-8 py-3 text-sm font-semibold text-white transition hover:brightness-110"
+            style={{ backgroundColor: '#d97706' }}
+          >
+            Aktiviraj Kvik →
+          </Link>
+        </div>
+
+        {/* Share — podnožje */}
+        <div className="mt-8 flex items-center justify-center gap-2 flex-wrap">
+          <span className="text-sm text-[#94a3a0] mr-1">Podijeli ovaj članak:</span>
+          <ShareBar
+            url={pageUrl}
+            shareText={`Koristan vodič za paušaliste: {url}`}
+            pageType="vodic"
+            pageSlug={slug}
+          />
+        </div>
+
+        {/* Email capture — podnožje */}
+        <div className="mt-8">
+          <Suspense fallback={null}>
+            <LeadCapture
+              sourceTool={`vodic-${slug}`}
+              personaHint="citac-vodica"
+              headlineOverride="📩 Primi ovaj skraćeni vodič kao PDF na email"
+              subtitleOverride="Dobivaš skraćenu verziju ovog vodiča s najvažnijim točkama i aktivnim linkovima — za čitanje kad imaš vremena."
+            />
+          </Suspense>
+        </div>
       </article>
     </>
   );

@@ -106,7 +106,7 @@ export default function ShareBar({ url, shareText, pageType, pageSlug }: ShareBa
 
   return (
     <div className="flex items-center gap-2">
-      <span className="mr-1 text-xs text-slate-400">Podijeli:</span>
+      {/* Label dolazi iz parent komponente */}
 
       {hasNativeShare && (
         <button
