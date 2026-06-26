@@ -1,7 +1,9 @@
 import Link from 'next/link';
 import Script from 'next/script';
+import { Suspense } from 'react';
 
-import PageTopBar from '@/components/cta/PageTopBar';
+import ShareBar from '@/components/ShareBar';
+import LeadCapture from '@/components/LeadCapture';
 import BottomCTA from '@/components/cta/BottomCTA';
 import { getSiteUrl } from '@/lib/vodici-config';
 
@@ -202,7 +204,48 @@ export function GuideShell({
           <p className='font-body mt-4 text-lg text-[#b9c7c4]'>{subtitle}</p>
         </header>
 
-        <PageTopBar pageType="vodic" pageSlug={slug} pageUrl={pageUrl} />
+        {/* Share */}
+        <div className="my-6 flex items-center gap-2 flex-wrap">
+          <span className="text-sm text-[#94a3a0] mr-1">Podijeli ovaj članak:</span>
+          <ShareBar
+            url={pageUrl}
+            shareText={`Koristan vodič za paušaliste: {url}`}
+            pageType="vodic"
+            pageSlug={slug}
+          />
+        </div>
+
+        {/* Stripe CTA */}
+        <div
+          className="my-6 rounded-2xl border-[1.5px] border-[#d97706] p-6 text-center"
+          style={{ background: 'rgba(217,119,6,0.04)' }}
+        >
+          <p className="text-xs font-medium uppercase tracking-widest text-[#d97706] mb-2">
+            Pretplati se na Kvik.online aplikaciju
+          </p>
+          <p className="text-base text-[#e2e8e7] leading-relaxed mb-4">
+            Knjigovodstvo za paušaliste, bez stresa, bez knjigovođe.
+            <br className="hidden sm:inline" />
+            Uvijek i svugdje s tobom na tvome mobitelu.
+          </p>
+          <Link
+            href="/cijene"
+            className="inline-block rounded-xl px-8 py-3 text-sm font-semibold text-white transition hover:brightness-110"
+            style={{ backgroundColor: '#d97706' }}
+          >
+            Probaj 7 dana besplatno →
+          </Link>
+        </div>
+
+        {/* Email capture */}
+        <Suspense fallback={null}>
+          <LeadCapture
+            sourceTool={`vodic-${slug}`}
+            personaHint="citac-vodica"
+            headlineOverride="📩 Primi ovaj skraćeni vodič kao PDF na email"
+            subtitleOverride="Dobivaš skraćenu verziju ovog vodiča s najvažnijim točkama i aktivnim linkovima — za čitanje kad imaš vremena."
+          />
+        </Suspense>
 
         <nav
           aria-label='Sadržaj'

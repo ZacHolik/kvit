@@ -14,12 +14,16 @@ type Props = {
   sourceTool: string;
   personaHint?: string;
   resultPayload?: Record<string, unknown>;
+  headlineOverride?: string;
+  subtitleOverride?: string;
 };
 
 export default function LeadCapture({
   sourceTool,
   personaHint,
   resultPayload,
+  headlineOverride,
+  subtitleOverride,
 }: Props) {
   const [email, setEmail] = useState('');
   const [consent, setConsent] = useState(false);
@@ -116,11 +120,11 @@ export default function LeadCapture({
   return (
     <div className='mt-6 rounded-2xl border border-[#1f2a28] bg-[#111716] p-5'>
       <h3 className='mb-1 font-heading text-base font-semibold text-[#e2e8e7]'>
-        📩 Pošalji mi PO-SD na email
+        {headlineOverride ?? '📩 Pošalji mi PO-SD na email'}
       </h3>
       <p className='mb-4 text-sm text-[#94a3a0]'>
-        Dobit ćeš rezultat kao PDF u inbox — korisno za arhivu i podsjetnik na
-        rokove.
+        {subtitleOverride ??
+          'Dobit ćeš rezultat kao PDF u inbox — korisno za arhivu i podsjetnik na rokove.'}
       </p>
 
       <input

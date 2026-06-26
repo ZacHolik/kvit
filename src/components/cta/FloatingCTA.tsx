@@ -34,6 +34,15 @@ export default function FloatingCTA({
 
   const { trackCtaClick } = useCtaTracking();
 
+  useEffect(() => {
+    if (
+      typeof window !== 'undefined' &&
+      !sessionStorage.getItem('kvik_landing_page')
+    ) {
+      sessionStorage.setItem('kvik_landing_page', window.location.pathname);
+    }
+  }, []);
+
   const [visible, setVisible] = useState<boolean>(!!forceVisible);
   const [dismissed, setDismissed] = useState(false);
 
