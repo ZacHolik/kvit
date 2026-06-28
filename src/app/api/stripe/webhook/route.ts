@@ -409,6 +409,90 @@ async function handleSubscriptionDeleted(sub: Stripe.Subscription) {
   }).eq('stripe_subscription_id', sub.id);
 }
 
+async function handleCheckoutExpired(session: Stripe.Checkout.Session) {
+  const admin = createServiceRoleClient();
+  if (!admin) {
+    return;
+  }
+
+  const email = session.customer_details?.email || session.customer_email;
+  if (!email) {
+    return;
+  }
+
+  const normalizedEmail = email.trim().toLowerCase();
+
+  const { data: existingLead } = await admin
+    .from('leads')
+    .select('converted_to_paid_at, unsubscribed_at')
+    .eq('email', normalizedEmail)
+    .maybeSingle();
+
+  if (existingLead?.converted_to_paid_at || existingLead?.unsubscribed_at) {
+    return;
+  }
+
+  const { error } = await admin.from('leads').upsert(
+    {
+      email: normalizedEmail,
+      source_tool: 'abandoned_checkout',
+      utm_source: 'stripe',
+      utm_medium: 'checkout',
+      utm_campaign: 'recovery',
+      consent: true,
+      consent_text: 'Stripe checkout initiated',
+      consent_at: new Date().toISOString(),
+      landing_page: '/register',
+    },
+    { onConflict: 'email' },
+  );
+
+  if (error) {
+    console.error('Abandoned checkout lead save failed:', error);
+  }
+
+  const resendKey = process.env.RESEND_API_KEY;
+  if (resendKey) {
+    await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${resendKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        from:
+          process.env.RESEND_FROM_SUPPORT ?? 'Kvik <podrska@kvik.online>',
+        reply_to: 'podrska@kvik.hr',
+        to: [normalizedEmail],
+        subject: 'Nisi dovršio — Kvik te čeka',
+        html: `
+          <div style="font-family:sans-serif;max-width:520px;margin:0 auto;color:#1a1a1a">
+            <p>Bok,</p>
+            <p>Primijetili smo da si krenuo s aktivacijom Kvika, ali nisi dovršio.</p>
+            <p>Razumijemo — možda ti je nešto iskočilo, ili si htio još razmisliti.</p>
+            <p>Ako želiš nastaviti:</p>
+            <p style="margin:24px 0">
+              <a href="https://kvik.online/register"
+                style="display:inline-block;background:#0d9488;color:#fff;
+                padding:12px 24px;border-radius:8px;text-decoration:none;
+                font-weight:600">
+                Nastavi aktivaciju →
+              </a>
+            </p>
+            <p>Ako imaš pitanja, samo odgovori na ovaj mail.</p>
+            <p>— Kvik tim</p>
+            <hr style="border:none;border-top:1px solid #eee;margin:24px 0"/>
+            <p style="color:#999;font-size:12px">
+              Ovu poruku si primio jer si započeo aktivaciju na kvik.online.
+              Nećemo ti više slati o ovome.
+            </p>
+          </div>
+        `,
+      }),
+    }).catch((err) => console.error('Recovery email error:', err));
+  }
+}
+
 // ─── Main handler ─────────────────────────────────────────────────────────────
 
 export async function POST(request: Request) {
@@ -453,6 +537,9 @@ export async function POST(request: Request) {
         break;
       case 'charge.refunded':
         await handleChargeRefunded(event.data.object as Stripe.Charge);
+        break;
+      case 'checkout.session.expired':
+        await handleCheckoutExpired(event.data.object as Stripe.Checkout.Session);
         break;
       default:
         break;
