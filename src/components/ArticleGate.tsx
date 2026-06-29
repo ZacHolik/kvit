@@ -21,12 +21,15 @@ const CONSENT_TEXT =
 type ArticleGateProps = {
   children: React.ReactNode;
   slug: string;
+  /** Prikazuje se samo nakon otključavanja (npr. sredinski CTA). */
+  unlockedExtra?: React.ReactNode;
   previewChars?: number;
 };
 
 export default function ArticleGate({
   children,
   slug,
+  unlockedExtra,
 }: ArticleGateProps) {
   const [unlocked, setUnlocked] = useState(false);
   const [mounted, setMounted] = useState(false);
@@ -106,7 +109,14 @@ export default function ArticleGate({
   if (!mounted) return <>{children}</>;
 
   // Otključano — prikaži sve
-  if (unlocked) return <>{children}</>;
+  if (unlocked) {
+    return (
+      <>
+        {children}
+        {unlockedExtra}
+      </>
+    );
+  }
 
   // Locked — prikaži preview + gate
   return (
