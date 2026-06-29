@@ -159,6 +159,20 @@ export async function POST(request: NextRequest) {
   }
 
   const newUserId = signUpData.user?.id;
+  const registeredEmail = email.toLowerCase().trim();
+
+  // Poveži lead s novim korisnikom ako email postoji u leads tablici
+  if (admin && newUserId) {
+    await admin
+      .from('leads')
+      .update({
+        converted_to_user_id: newUserId,
+        converted_at: new Date().toISOString(),
+      })
+      .eq('email', registeredEmail)
+      .is('converted_to_user_id', null);
+  }
+
   if (admin && newUserId) {
     if (shareAnswerId) {
       const { error: refError } = await admin.from('referrals').insert({

@@ -156,10 +156,22 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
     { onConflict: 'user_id' },
   );
 
-  const to =
+  // Poveži lead s plaćanjem
+  const paidEmail =
     session.customer_details?.email?.trim() ??
     session.customer_email?.trim() ??
     '';
+  if (admin && paidEmail) {
+    await admin
+      .from('leads')
+      .update({
+        converted_to_paid_at: new Date().toISOString(),
+      })
+      .eq('email', paidEmail.toLowerCase())
+      .is('converted_to_paid_at', null);
+  }
+
+  const to = paidEmail;
   const { data: profil } =
     (await admin
       ?.from('profiles')
