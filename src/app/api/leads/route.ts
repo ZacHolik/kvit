@@ -141,6 +141,12 @@ export async function POST(request: Request) {
   const from =
     process.env.RESEND_FROM_EMAIL ?? 'Kvik <noreply@kvik.online>';
 
+  if (parsed.data.source_tool === 'article_gate') {
+    // Za article_gate leade ne šaljemo mail odmah
+    // Nurture sekvenca će ih obuhvatiti (Sprint C)
+    return NextResponse.json({ ok: true });
+  }
+
   const resendKey = process.env.RESEND_API_KEY;
   if (resendKey) {
     let attachments: { filename: string; content: string }[] | undefined;
