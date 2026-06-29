@@ -4,6 +4,7 @@ import { Suspense } from 'react';
 
 import ShareBar from '@/components/ShareBar';
 import LeadCapture from '@/components/LeadCapture';
+import ArticleGate from '@/components/ArticleGate';
 import { getSiteUrl } from '@/lib/vodici-config';
 
 export type GuideTocItem = { id: string; label: string };
@@ -29,6 +30,7 @@ type GuideShellProps = {
   faq: GuideFaqItem[];
   related: GuideRelated[];
   howTo?: { name: string; description: string; steps: HowToStep[] };
+  gated?: boolean;
 };
 
 function jsonLdSafe(obj: unknown): string {
@@ -48,6 +50,7 @@ export function GuideShell({
   faq,
   related,
   howTo,
+  gated = true,
 }: GuideShellProps) {
   const base = getSiteUrl();
   const pageUrl = `${base}/vodici/${slug}`;
@@ -214,28 +217,6 @@ export function GuideShell({
           />
         </div>
 
-        {/* Stripe CTA */}
-        <div
-          className="my-6 rounded-2xl border-[1.5px] border-[#d97706] p-6 text-center"
-          style={{ background: 'rgba(217,119,6,0.04)' }}
-        >
-          <p className="text-xs font-medium uppercase tracking-widest text-[#d97706] mb-2">
-            Pretplati se na Kvik.online aplikaciju
-          </p>
-          <p className="text-base text-[#e2e8e7] leading-relaxed mb-4">
-            Knjigovodstvo za paušaliste, bez stresa, bez knjigovođe.
-            <br className="hidden sm:inline" />
-            Uvijek i svugdje s tobom na tvome mobitelu.
-          </p>
-          <Link
-            href="/cijene"
-            className="inline-block rounded-xl px-8 py-3 text-sm font-semibold text-white transition hover:brightness-110"
-            style={{ backgroundColor: '#d97706' }}
-          >
-            Probaj 7 dana besplatno →
-          </Link>
-        </div>
-
         {/* Email capture */}
         <Suspense fallback={null}>
           <LeadCapture
@@ -269,7 +250,39 @@ export function GuideShell({
           </ol>
         </nav>
 
-        <div className='guide-prose font-body text-[#d5dfdd]'>{children}</div>
+        {gated ? (
+          <Suspense
+            fallback={
+              <div className='guide-prose font-body text-[#d5dfdd]'>{children}</div>
+            }
+          >
+            <ArticleGate slug={slug}>
+              <div className='guide-prose font-body text-[#d5dfdd]'>{children}</div>
+            </ArticleGate>
+          </Suspense>
+        ) : (
+          <div className='guide-prose font-body text-[#d5dfdd]'>{children}</div>
+        )}
+
+        {readingMinutes >= 8 && (
+          <div className="my-14 rounded-2xl border border-[#1f2a28] bg-[#111716] p-6 text-center">
+            <p className="text-base text-[#e2e8e7] leading-relaxed mb-1 font-medium">
+              Kvik aplikacija za džepno knjigovodstvo za paušaliste pomaže ti s
+              rokovima, obrascima i poreznim pitanjima.
+            </p>
+            <p className="text-sm text-[#94a3a0] leading-relaxed mb-5">
+              Provjeri kako je jednostavno izdavati račune u pokretu dok aplikacija
+              automatski popunjava KPR. Džepno knjigovodstvo za paušaliste — uvijek
+              uz tebe, na tvome mobitelu.
+            </p>
+            <Link
+              href="/register"
+              className="inline-block rounded-xl bg-[#0d9488] px-8 py-3 text-sm font-semibold text-white transition hover:bg-[#14b8a6]"
+            >
+              Saznaj više →
+            </Link>
+          </div>
+        )}
 
         <section
           id='faq'
@@ -313,24 +326,21 @@ export function GuideShell({
           </ul>
         </section>
 
-        {/* Stripe CTA — podnožje */}
-        <div
-          className="mt-14 rounded-2xl border-[1.5px] border-[#d97706] p-6 text-center"
-          style={{ background: 'rgba(217,119,6,0.04)' }}
-        >
-          <p className="text-lg font-medium text-[#e2e8e7] leading-relaxed mb-2">
-            Ako si ovo dočitao, znaš više od prosječnog paušalista.
+        <div className="mt-14 rounded-2xl border border-[#1f2a28] bg-[#111716] p-6 text-center">
+          <p className="text-base text-[#e2e8e7] leading-relaxed mb-1 font-medium">
+            Kvik aplikacija za džepno knjigovodstvo za paušaliste pomaže ti s
+            rokovima, obrascima i poreznim pitanjima.
           </p>
           <p className="text-sm text-[#94a3a0] leading-relaxed mb-5">
-            Sad imaš i alat koji to primjenjuje umjesto tebe — svaki rok,
-            svaki obrazac, svako porezno pitanje.
+            Provjeri kako je jednostavno izdavati račune u pokretu dok aplikacija
+            automatski popunjava KPR. Džepno knjigovodstvo za paušaliste — uvijek
+            uz tebe, na tvome mobitelu.
           </p>
           <Link
-            href="/cijene"
-            className="inline-block rounded-xl px-8 py-3 text-sm font-semibold text-white transition hover:brightness-110"
-            style={{ backgroundColor: '#d97706' }}
+            href="/register"
+            className="inline-block rounded-xl bg-[#0d9488] px-8 py-3 text-sm font-semibold text-white transition hover:bg-[#14b8a6]"
           >
-            Aktiviraj Kvik →
+            Saznaj više →
           </Link>
         </div>
 
