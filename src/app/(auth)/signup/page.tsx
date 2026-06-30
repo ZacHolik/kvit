@@ -1,244 +1,404 @@
 'use client';
 
 import Link from 'next/link';
-import { useState } from 'react';
+import { FormEvent, useEffect, useRef, useState } from 'react';
 
-async function startAnonymousCheckout() {
-  const leadEmail =
-    typeof window !== 'undefined'
-      ? sessionStorage.getItem('kvik_lead_email') ?? undefined
-      : undefined;
+import { sendCapiEvent } from '@/lib/meta-capi';
 
-  const res = await fetch('/api/stripe/checkout-anonymous', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ plan: 'monthly', lead_email: leadEmail }),
-  });
-  const data = (await res.json()) as { url?: string };
-  if (data.url) {
-    window.location.href = data.url;
+const turnstileSiteKey =
+  typeof process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY === 'string'
+    ? process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY.trim()
+    : '';
+
+const UUID_RE =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+
+function buildEmailRedirectTo(): string {
+  if (typeof window === 'undefined') {
+    return '';
   }
+  const origin =
+    process.env.NEXT_PUBLIC_APP_URL?.replace(/\/$/, '') ||
+    window.location.origin;
+  const next = encodeURIComponent('/dashboard');
+  return `${origin}/auth/callback?next=${next}`;
 }
 
-export default function RegisterLandingPage() {
-  const [loading, setLoading] = useState(false);
+function readShareAnswerIdFromUrl(): string | undefined {
+  if (typeof window === 'undefined') {
+    return undefined;
+  }
+  const raw = new URLSearchParams(window.location.search).get('share')?.trim() ?? '';
+  if (raw && UUID_RE.test(raw)) {
+    return raw;
+  }
+  return undefined;
+}
 
-  const handleCta = async () => {
-    setLoading(true);
-    await startAnonymousCheckout();
+const REF_CODE_RE = /^[a-z0-9]{6}$/;
+
+function readReferralFriendCodeFromUrl(): string | undefined {
+  if (typeof window === 'undefined') {
+    return undefined;
+  }
+  const raw =
+    new URLSearchParams(window.location.search).get('ref')?.trim().toLowerCase() ?? '';
+  if (raw && REF_CODE_RE.test(raw)) {
+    return raw;
+  }
+  return undefined;
+}
+
+function readRegistrationSourceFromUrl(): string | undefined {
+  if (typeof window === 'undefined') {
+    return undefined;
+  }
+  const src = new URLSearchParams(window.location.search).get('src')?.trim().toLowerCase() ?? '';
+  if (!src) return undefined;
+  // legacy: 'gate' → 'tool_gate'; all other values passed through as-is
+  return src === 'gate' ? 'tool_gate' : src;
+}
+
+function readUtmSourceFromUrl(): string | undefined {
+  if (typeof window === 'undefined') {
+    return undefined;
+  }
+  const utm = new URLSearchParams(window.location.search).get('utm_source')?.trim().toLowerCase() ?? '';
+  return utm || undefined;
+}
+
+export default function RegisterPage() {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [acceptedLegalTerms, setAcceptedLegalTerms] = useState(false);
+  /** Honeypot — ostaje prazno; botovi ga često popune. */
+  const [kvikHpConfirm, setKvikHpConfirm] = useState('');
+  const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [registeredEmail, setRegisteredEmail] = useState<string | null>(null);
+  const [turnstileToken, setTurnstileToken] = useState('');
+  const turnstileContainerRef = useRef<HTMLDivElement | null>(null);
+  const turnstileWidgetIdRef = useRef<string | null>(null);
+
+  useEffect(() => {
+    if (!turnstileSiteKey || !turnstileContainerRef.current) {
+      return;
+    }
+    const container = turnstileContainerRef.current;
+    const script = document.createElement('script');
+    script.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js';
+    script.async = true;
+    script.defer = true;
+    script.onload = () => {
+      if (!window.turnstile || !container) {
+        return;
+      }
+      turnstileWidgetIdRef.current = window.turnstile.render(container, {
+        sitekey: turnstileSiteKey,
+        callback: (token: string) => setTurnstileToken(token),
+        'expired-callback': () => setTurnstileToken(''),
+        'error-callback': () => setTurnstileToken(''),
+      });
+    };
+    document.body.appendChild(script);
+    return () => {
+      if (window.turnstile && turnstileWidgetIdRef.current) {
+        window.turnstile.remove(turnstileWidgetIdRef.current);
+        turnstileWidgetIdRef.current = null;
+      }
+      script.remove();
+    };
+  }, []);
+
+  const handleRegister = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setError('');
+
+    if (password !== confirmPassword) {
+      setError('Lozinke se ne podudaraju.');
+      return;
+    }
+
+    if (!acceptedLegalTerms) {
+      setError(
+        'Za registraciju je potrebno prihvatiti uvjete i politiku privatnosti.',
+      );
+      return;
+    }
+
+    if (turnstileSiteKey && !turnstileToken.trim()) {
+      setError('Potvrdi da nisi robot (Turnstile).');
+      return;
+    }
+
+    setIsLoading(true);
+    let response: Response;
+    try {
+      response = await fetch('/api/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: email.trim(),
+          password,
+          emailRedirectTo: buildEmailRedirectTo(),
+          kvit_hp_confirm: kvikHpConfirm,
+          turnstileToken: turnstileSiteKey ? turnstileToken : undefined,
+          shareAnswerId: readShareAnswerIdFromUrl(),
+          referralFriendCode: readReferralFriendCodeFromUrl(),
+          registrationSource: readRegistrationSourceFromUrl(),
+          utmSource: readUtmSourceFromUrl(),
+        }),
+      });
+    } catch {
+      setIsLoading(false);
+      setError('Mrežna greška. Pokušaj ponovno.');
+      return;
+    }
+
+    const payload = (await response.json().catch(() => ({}))) as {
+      error?: string;
+      ok?: boolean;
+    };
+
+    setIsLoading(false);
+
+    if (!response.ok) {
+      setError(
+        payload.error ||
+          (response.status === 429
+            ? 'Previše pokušaja. Pokušaj kasnije.'
+            : 'Registracija nije uspjela.'),
+      );
+      if (window.turnstile && turnstileWidgetIdRef.current) {
+        window.turnstile.reset(turnstileWidgetIdRef.current);
+      }
+      setTurnstileToken('');
+      return;
+    }
+
+    if (window.turnstile && turnstileWidgetIdRef.current) {
+      window.turnstile.reset(turnstileWidgetIdRef.current);
+    }
+    setTurnstileToken('');
+    const eventId = crypto.randomUUID();
+    if (typeof window !== 'undefined' && window.fbq) {
+      window.fbq(
+        'track',
+        'CompleteRegistration',
+        {
+          registration_method: 'email',
+          user_type: 'pausalist',
+        },
+        { eventID: eventId },
+      );
+    }
+    void sendCapiEvent({ event_name: 'CompleteRegistration', event_id: eventId });
+    setRegisteredEmail(email.trim());
   };
 
-  return (
-    <main className='bg-[#0A0A0A] text-white'>
-      <section className='flex min-h-screen items-center px-6 py-20'>
-        <div className='mx-auto max-w-2xl'>
-          <p className='text-xl leading-relaxed text-[#e2e8e7] sm:text-2xl'>
-            Tri je ujutro.
+  if (registeredEmail) {
+    return (
+      <main className='flex min-h-screen items-center justify-center bg-[#0b0f0e] px-4 py-10'>
+        <section className='w-full max-w-md rounded-2xl border border-[#1f2a28] bg-[#111716] p-6 shadow-xl shadow-black/25 sm:p-8'>
+          <p className='font-body text-sm text-[#94a3a0]'>Još jedan korak</p>
+          <h1 className='font-heading mt-2 text-2xl text-[#e2e8e7] sm:text-3xl'>
+            Provjeri email!
+          </h1>
+          <p className='font-body mt-6 text-base leading-relaxed text-[#d5dfdd]'>
+            Poslali smo ti link za potvrdu na{' '}
+            <span className='font-semibold break-all text-[#0d9488]'>
+              {registeredEmail}
+            </span>
+            .
           </p>
-          <p className='mt-6 text-xl leading-relaxed text-[#e2e8e7] sm:text-2xl'>
-            Ne spavaš jer si upravo pročitao da moraš &ldquo;fiskalizirati svaki
-            račun&rdquo; — a nisi siguran što to uopće znači.
+          <p className='font-body mt-4 text-sm text-[#94a3a0]'>
+            Ne vidiš poruku? Provjeri spam ili Promocije.
           </p>
-          <p className='mt-6 text-lg leading-relaxed text-[#94a3a0]'>
-            U mobitelu imaš otvorena četiri taba. Forum iz 2019. kaže jedno. Članak
-            iz 2024. kaže drugo. Porezna stranica se učitava sporo i piše jezikom
-            koji kao da nije hrvatski.
-          </p>
-          <p className='mt-6 text-lg leading-relaxed text-[#94a3a0]'>
-            Tipkao si &ldquo;moram li fiskalizirati račun ako sam paušalist&rdquo; i
-            sad znaš manje nego prije nego si počeo čitati.
-          </p>
-        </div>
-      </section>
-
-      <section className='bg-white px-6 py-20 text-black'>
-        <div className='mx-auto max-w-2xl text-center'>
-          <h2 className='mb-6 text-3xl font-bold sm:text-4xl'>
-            Nisi glup. I nisi lijen.
-          </h2>
-          <p className='mb-4 text-lg leading-relaxed'>
-            Otvorio si obrt jer znaš svoj posao. Fotografiraš, kodiraš, šišaš,
-            prevodiš, gradiš, savjetuješ, pišeš, montiraš, dizajniraš.
-          </p>
-          <p className='mb-4 text-lg leading-relaxed'>
-            Ali uz taj posao stigao je i drugi, nevidljivi: KPR. PO-SD. ZKI. JIR.
-            Interni akt. Fiskalizacija.
-          </p>
-          <p className='mb-4 text-lg leading-relaxed'>
-            Nitko ti ih nije objasnio jer se pretpostavlja da ih već znaš.
-          </p>
-          <p className='mb-6 text-xl font-semibold'>
-            Ne znaš ih. Ni 90 od 100 paušalista ih ne zna.
-          </p>
-          <p className='text-lg italic leading-relaxed text-gray-600'>
-            A ispod svega stoji strah koji ne kažeš nikome: Što ako negdje
-            pogriješim — a ne saznam dok ne stigne kazna?
-          </p>
-        </div>
-      </section>
-
-      <section className='bg-[#F5F5F5] px-6 py-20 text-black'>
-        <div className='mx-auto max-w-2xl'>
-          <h2 className='mb-8 text-center text-2xl font-bold sm:text-3xl'>
-            Znam gdje si jer svaki paušalist prođe isto.
-          </h2>
-          <p className='mb-6 text-lg'>
-            Otvoriš obrt. Bude ti uzbudljivo tri dana. Onda shvatiš da imaš
-            dvadeset pitanja i nijedan jasan odgovor:
-          </p>
-          <div className='mb-6 space-y-3'>
-            {[
-              'Trebam li certifikat od FINA-e ili ne?',
-              'Kako da vodim Knjigu prometa kad ne znam što je KPR?',
-              'PO-SD — do kad se predaje? Kako izgleda?',
-              'Što ako mi klijent plati na račun — moram li to fiskalizirati?',
-              'Kolika je kazna ako nešto krivo ispunim?',
-            ].map((q) => (
-              <div key={q} className='rounded-xl bg-white p-4 text-base'>
-                {q}
-              </div>
-            ))}
-          </div>
-          <p className='mb-4 text-lg'>
-            Guglаš. Nađeš deset izvora. Sedam se međusobno protivriječi.
-          </p>
-          <p className='mb-6 text-lg'>
-            Pošalješ mail računovođi. Odgovori za pet dana. Naplati sat vremena.
-          </p>
-          <p className='text-xl font-semibold'>
-            To nije tvoj problem. To je problem alata koji nisi imao.
-          </p>
-        </div>
-      </section>
-
-      <section className='bg-white px-6 py-20 text-black'>
-        <div className='mx-auto max-w-2xl'>
-          <p className='mb-4 text-lg leading-relaxed'>
-            Kvik je aplikacija koja postoji jer nijedna druga ne gleda isključivo
-            na tebe — paušalista.
-          </p>
-          <p className='mb-10 text-lg leading-relaxed'>
-            Ne na d.o.o. Ne na računovođu. Ne na &ldquo;sve poduzetnike.&rdquo;
-            Samo na tebe. I svaki dio Kvika radi jednu stvar: makne ti ono od
-            čega te hvata grč u želucu.
-          </p>
-
-          <div className='space-y-8'>
-            <div>
-              <p className='mb-1 text-lg font-bold'>Onaj google u tri ujutro?</p>
-              <p className='text-gray-700'>
-                Kvik ima AI asistenta koji odgovara na porezna pitanja u sekundi —
-                ne za tjedan dana. Pitaj ga &ldquo;moram li fiskalizirati ovaj
-                račun&rdquo; u tri ujutro i dobit ćeš jasan odgovor na hrvatskom,
-                odmah. Nitko drugi na tržištu ovo nema. Doslovno nitko.
-              </p>
-            </div>
-            <div>
-              <p className='mb-1 text-lg font-bold'>
-                Knjiga prometa koju &ldquo;vodiš&rdquo; u Excelu — ili je uopće ne
-                vodiš?
-              </p>
-              <p className='text-gray-700'>
-                Svaki račun koji izdaš u Kviku automatski završi u KPR-u. Bez
-                tablice. Bez ručnog unosa. Bez greške koju bi primijetio tek kad
-                bude kasno.
-              </p>
-            </div>
-            <div>
-              <p className='mb-1 text-lg font-bold'>
-                PO-SD za koji jednom godišnje platiš računovođi?
-              </p>
-              <p className='text-gray-700'>
-                U Kviku ga ispuniš sam, za 2 minute. Aplikacija već zna tvoje
-                brojke jer ih je pratila cijelu godinu.
-              </p>
-            </div>
-            <div>
-              <p className='mb-1 text-lg font-bold'>
-                &ldquo;Jesam li dobro fiskalizirao?&rdquo;
-              </p>
-              <p className='text-gray-700'>
-                Automatski. Svaki račun zakonski ispravan pred Poreznom. Ne moraš
-                ni razmišljati o tome — radi u pozadini.
-              </p>
-            </div>
-            <div>
-              <p className='mb-1 text-lg font-bold'>Rokovi koje zaboraviš?</p>
-              <p className='text-gray-700'>
-                Kvik te podsjeća prije nego prođe rok. Ne nakon.
-              </p>
-            </div>
-          </div>
-
-          <div className='mt-12 text-center'>
+          <div className='mt-8 flex flex-col gap-3 sm:flex-row'>
+            <Link
+              href='/login'
+              className='font-body inline-flex justify-center rounded-xl bg-[#0d9488] px-5 py-3 text-center font-semibold text-white transition hover:bg-[#14b8a6]'
+            >
+              Na prijavu
+            </Link>
             <button
               type='button'
-              onClick={() => void handleCta()}
-              disabled={loading}
-              className='inline-block rounded-lg bg-orange-500 px-8 py-4 text-lg font-semibold text-white transition hover:bg-orange-600 disabled:opacity-60'
+              className='font-body inline-flex justify-center rounded-xl border border-[#2a3734] px-5 py-3 text-center text-[#d5dfdd] transition hover:border-[#0d9488]'
+              onClick={() => {
+                setRegisteredEmail(null);
+                setEmail('');
+                setPassword('');
+                setConfirmPassword('');
+                setAcceptedLegalTerms(false);
+                setKvikHpConfirm('');
+              }}
             >
-              {loading ? 'Otvaram plaćanje...' : 'Pretplati se za 7€/mj →'}
+              Drugi email
             </button>
           </div>
-        </div>
-      </section>
 
-      <section className='bg-[#F5F5F5] px-6 py-20 text-black'>
-        <div className='mx-auto max-w-2xl'>
-          <p className='mb-4 text-lg leading-relaxed'>
-            Parra PO-SD generator uvodi tek u prosincu 2026. Kvik ga ima danas.
-          </p>
-          <p className='mb-4 text-lg leading-relaxed'>
-            Solo je dobar alat, ali cilja na sve — d.o.o., obrte, udruge, trgovce.
-            Kvik je napravljen samo za paušaliste. Svaki ekran, svako pitanje
-            AI-ja, svaki vodič — samo za tebe.
-          </p>
-          <p className='text-lg leading-relaxed'>
-            I jedini smo koji imaju AI asistenta za porezna pitanja. Ne chatbot
-            koji te šalje na FAQ stranicu — nego asistenta koji razumije tvoje
-            pitanje i odgovara u sekundi.
-          </p>
-        </div>
-      </section>
+          <div className='mt-8 border-t border-[#1f2a28] pt-6 text-center'>
+            <p className='text-sm text-[#94a3a0]'>
+              Već imaš Kvik račun? Nismo ti poslali novi link.
+            </p>
+            <div className='mt-4 flex flex-col justify-center gap-3 sm:flex-row'>
+              <Link
+                href='/login'
+                className='inline-flex items-center justify-center rounded-xl border border-[#0d9488] px-5 py-2.5 text-sm font-semibold text-[#0d9488] transition-colors hover:bg-[#0d9488] hover:text-white'
+              >
+                Prijavi se
+              </Link>
+              <Link
+                href='/login'
+                className='inline-flex items-center justify-center px-5 py-2.5 text-sm text-[#94a3a0] underline underline-offset-4 hover:text-[#e2e8e7]'
+              >
+                Zaboravljena lozinka?
+              </Link>
+            </div>
+          </div>
+        </section>
+      </main>
+    );
+  }
 
-      <section className='bg-white px-6 py-20 text-black'>
-        <div className='mx-auto max-w-lg text-center'>
-          <h2 className='mb-4 text-2xl font-bold'>30 dana. Bez rizika.</h2>
-          <p className='mb-2 text-lg text-gray-700'>
-            Ako u prvih 30 dana ne smatraš da Kvik vrijedi 7€ — vraćamo ti novac.
-            Jedan mail. Bez forme. Bez pitanja zašto.
-          </p>
-        </div>
-      </section>
+  return (
+    <main className='flex min-h-screen items-center justify-center bg-[#0b0f0e] px-4 py-10'>
+      <section className='w-full max-w-md rounded-2xl border border-[#1f2a28] bg-[#111716] p-6 shadow-xl shadow-black/25 sm:p-8'>
+        <p className='font-body text-sm text-[#94a3a0]'>Kreiraj Kvik račun</p>
+        <h1 className='font-heading mt-2 text-3xl text-[#e2e8e7]'>
+          Registracija
+        </h1>
 
-      <section className='bg-orange-500 px-6 py-24 text-center text-white'>
-        <div className='mx-auto max-w-xl'>
-          <p className='mb-2 text-2xl font-semibold leading-relaxed'>
-            Ne moraš sve znati.
-          </p>
-          <p className='mb-2 text-2xl font-semibold leading-relaxed'>
-            Ne moraš postati stručnjak za porezno pravo.
-          </p>
-          <p className='mb-10 text-2xl font-semibold leading-relaxed'>
-            Ne moraš u tri ujutro čitati forume.
-          </p>
-          <p className='mb-10 text-xl'>Moraš samo imati nešto što zna umjesto tebe.</p>
-          <button
-            type='button'
-            onClick={() => void handleCta()}
-            disabled={loading}
-            className='inline-block rounded-lg bg-white px-10 py-5 text-xl font-bold text-orange-600 transition hover:bg-gray-100 disabled:opacity-60'
+        <form className='mt-8 space-y-4' onSubmit={handleRegister}>
+          {/*
+            Honeypot: skriveno polje koje ljudi ne vide; botovi ga često popune.
+            Ne uklanjati — zaštita od jednostavnih skripti.
+          */}
+          <div
+            className='absolute -left-[9999px] h-px w-px overflow-hidden opacity-0'
+            aria-hidden='true'
           >
-            {loading ? 'Otvaram plaćanje...' : 'Pretplati se za 7€/mj →'}
-          </button>
-        </div>
-      </section>
+            <label className='font-body text-xs text-[#64748b]'>
+              Tvrtka (ne ispunjavati)
+              <input
+                type='text'
+                tabIndex={-1}
+                autoComplete='off'
+                value={kvikHpConfirm}
+                onChange={(event) => setKvikHpConfirm(event.target.value)}
+                className='mt-1 block'
+              />
+            </label>
+          </div>
 
-      <div className='bg-white py-6 text-center text-sm text-gray-500'>
-        <Link href='/signup' className='underline'>
-          Već imaš lozinku? Prijavi se
-        </Link>
-      </div>
+          <label className='block'>
+            <span className='font-body mb-2 block text-sm text-[#b9c7c4]'>
+              Email
+            </span>
+            <input
+              required
+              type='email'
+              value={email}
+              onChange={(event) => setEmail(event.target.value)}
+              className='font-body w-full rounded-xl border border-[#2a3734] bg-[#0b0f0e] px-4 py-3 text-[#e2e8e7] outline-none transition focus:border-[#0d9488]'
+              placeholder='ime@obrt.hr'
+            />
+          </label>
+
+          <label className='block'>
+            <span className='font-body mb-2 block text-sm text-[#b9c7c4]'>
+              Lozinka
+            </span>
+            <input
+              required
+              minLength={8}
+              type='password'
+              value={password}
+              onChange={(event) => setPassword(event.target.value)}
+              className='font-body w-full rounded-xl border border-[#2a3734] bg-[#0b0f0e] px-4 py-3 text-[#e2e8e7] outline-none transition focus:border-[#0d9488]'
+              placeholder='Min. 8 znakova'
+            />
+          </label>
+
+          <label className='block'>
+            <span className='font-body mb-2 block text-sm text-[#b9c7c4]'>
+              Ponovi lozinku
+            </span>
+            <input
+              required
+              minLength={8}
+              type='password'
+              value={confirmPassword}
+              onChange={(event) => setConfirmPassword(event.target.value)}
+              className='font-body w-full rounded-xl border border-[#2a3734] bg-[#0b0f0e] px-4 py-3 text-[#e2e8e7] outline-none transition focus:border-[#0d9488]'
+              placeholder='Ponovi lozinku'
+            />
+          </label>
+
+          {/*
+            Cloudflare Turnstile (opcionalno): postavi NEXT_PUBLIC_TURNSTILE_SITE_KEY
+            i TURNSTILE_SECRET_KEY u .env — inače se widget ne prikazuje.
+          */}
+          {turnstileSiteKey ? (
+            <div className='flex justify-center pt-1'>
+              <div ref={turnstileContainerRef} />
+            </div>
+          ) : null}
+
+          <label className='font-body flex gap-3 rounded-xl border border-[#2a3734] bg-[#0b0f0e] p-4 text-sm leading-relaxed text-[#d5dfdd]'>
+            <input
+              required
+              type='checkbox'
+              checked={acceptedLegalTerms}
+              onChange={(event) => setAcceptedLegalTerms(event.target.checked)}
+              className='mt-1 h-4 w-4 rounded border-[#2a3734] accent-[#0d9488]'
+            />
+            <span>
+              Prihvaćam{' '}
+              <Link
+                href='/uvjeti'
+                className='font-semibold text-[#5eead4] hover:underline'
+                target='_blank'
+                rel='noopener noreferrer'
+              >
+                Uvjete korištenja
+              </Link>{' '}
+              i{' '}
+              <Link
+                href='/privacy'
+                className='font-semibold text-[#5eead4] hover:underline'
+                target='_blank'
+                rel='noopener noreferrer'
+              >
+                Politiku privatnosti
+              </Link>
+              .
+            </span>
+          </label>
+
+          {error ? (
+            <p className='font-body rounded-lg border border-red-500/30 bg-red-500/10 p-3 text-sm text-red-200'>
+              {error}
+            </p>
+          ) : null}
+
+          <button
+            type='submit'
+            disabled={isLoading}
+            className='font-body mt-2 w-full rounded-xl bg-[#0d9488] px-4 py-3 font-semibold text-white transition hover:bg-[#14b8a6] disabled:cursor-not-allowed disabled:opacity-70'
+          >
+            {isLoading ? 'Kreiram račun...' : 'Registriraj se'}
+          </button>
+        </form>
+
+        <p className='font-body mt-6 text-sm text-[#94a3a0]'>
+          Već imaš račun?{' '}
+          <Link href='/login' className='font-semibold text-[#0d9488]'>
+            Prijavi se
+          </Link>
+        </p>
+      </section>
     </main>
   );
 }
