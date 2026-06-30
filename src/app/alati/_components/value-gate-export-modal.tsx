@@ -44,8 +44,8 @@ export function ValueGateExportModal({
 
   const registerHref =
     code.length === 6
-      ? `/register?ref=${encodeURIComponent(code)}&src=gate`
-      : '/register?src=gate';
+      ? `/signup?ref=${encodeURIComponent(code)}&src=gate`
+      : '/signup?src=gate';
 
   return (
     <div className='fixed inset-0 z-50 flex items-center justify-center bg-black/75 px-4'>

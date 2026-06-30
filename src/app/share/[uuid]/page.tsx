@@ -129,7 +129,7 @@ export default async function ShareAnswerPage({
             Imaš vlastito porezno pitanje?
           </p>
           <Link
-            href={user ? '/asistent' : `/register?share=${uuid}`}
+            href={user ? '/asistent' : `/signup?share=${uuid}`}
             className='font-body mt-6 inline-flex rounded-xl bg-[#0d9488] px-6 py-3 text-sm font-semibold text-white transition hover:bg-[#14b8a6]'
           >
             Pitaj Kvik AI besplatno →

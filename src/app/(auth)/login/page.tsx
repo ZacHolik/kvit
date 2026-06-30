@@ -123,7 +123,7 @@ export default function LoginPage() {
 
         <p className='font-body mt-6 text-sm text-[#94a3a0]'>
           Nemaš račun?{' '}
-          <Link href='/register' className='font-semibold text-[#0d9488]'>
+          <Link href='/signup' className='font-semibold text-[#0d9488]'>
             Registriraj se
           </Link>
         </p>

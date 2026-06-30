@@ -82,7 +82,7 @@ export default async function ReferralLandingPage({
           <li>PO-SD generator s 7 razreda</li>
         </ul>
         <Link
-          href={`/register?ref=${code}`}
+          href={`/signup?ref=${code}`}
           className='font-body mt-10 inline-flex rounded-xl bg-[#0d9488] px-6 py-3 text-sm font-semibold text-white transition hover:bg-[#14b8a6]'
         >
           Isprobaj besplatno →

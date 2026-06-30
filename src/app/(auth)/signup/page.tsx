@@ -235,7 +235,7 @@ export default function RegisterLandingPage() {
       </section>
 
       <div className='bg-white py-6 text-center text-sm text-gray-500'>
-        <Link href='/login' className='underline'>
+        <Link href='/signup' className='underline'>
           Već imaš lozinku? Prijavi se
         </Link>
       </div>

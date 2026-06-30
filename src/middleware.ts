@@ -11,6 +11,8 @@ import { createServiceRoleClient } from '@/lib/supabase/service-role';
 const AUTH_PUBLIC_PREFIXES = [
   '/login',
   '/register',
+  '/signup',
+  '/dobrodosli',
   '/reset-lozinke',
   '/nova-lozinke',
   '/onboarding',
