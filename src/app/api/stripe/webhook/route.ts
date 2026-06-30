@@ -105,6 +105,117 @@ async function resolveUserId(
 // ─── Event handlers ───────────────────────────────────────────────────────────
 
 async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
+  const isAnonymousSignup = session.metadata?.anonymous_signup === 'true';
+
+  if (isAnonymousSignup) {
+    const email = session.customer_details?.email || session.customer_email;
+
+    if (!email) {
+      console.error('Anonymous checkout completed but no email found', session.id);
+      return;
+    }
+
+    const normalizedEmail = email.toLowerCase().trim();
+    const admin = createServiceRoleClient();
+
+    if (!admin) {
+      console.error('No admin client for anonymous account creation');
+      return;
+    }
+
+    const { data: existingUsers } = await admin.auth.admin.listUsers();
+    const existingUser = existingUsers?.users?.find(
+      (u) => u.email?.toLowerCase() === normalizedEmail,
+    );
+
+    let userId: string;
+
+    if (existingUser) {
+      userId = existingUser.id;
+    } else {
+      const { data: newUser, error: createError } = await admin.auth.admin.createUser({
+        email: normalizedEmail,
+        email_confirm: true,
+      });
+
+      if (createError || !newUser.user) {
+        console.error('Failed to create user from anonymous checkout:', createError);
+        return;
+      }
+
+      userId = newUser.user.id;
+
+      await admin.auth.admin
+        .generateLink({
+          type: 'recovery',
+          email: normalizedEmail,
+        })
+        .then(async ({ data: linkData }) => {
+          if (linkData?.properties?.action_link) {
+            const resendKey = process.env.RESEND_API_KEY;
+            if (resendKey) {
+              await fetch('https://api.resend.com/emails', {
+                method: 'POST',
+                headers: {
+                  Authorization: `Bearer ${resendKey}`,
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                  from: process.env.RESEND_FROM_EMAIL ?? 'Kvik <noreply@kvik.online>',
+                  to: [normalizedEmail],
+                  subject: 'Dobrodošao u Kvik — postavi lozinku',
+                  html: `
+                <div style="font-family:sans-serif;max-width:520px;margin:0 auto">
+                  <h2 style="color:#0d9488">Plaćanje uspješno!</h2>
+                  <p>Tvoj Kvik account je spreman. Postavi lozinku da pristupiš aplikaciji:</p>
+                  <p style="margin:24px 0">
+                    <a href="${linkData.properties.action_link}"
+                      style="display:inline-block;background:#0d9488;color:#fff;
+                      padding:12px 24px;border-radius:8px;text-decoration:none;
+                      font-weight:600">
+                      Postavi lozinku →
+                    </a>
+                  </p>
+                </div>
+              `,
+                }),
+              }).catch((err) => console.error('Welcome email error:', err));
+            }
+          }
+        });
+    }
+
+    await admin
+      .from('leads')
+      .update({
+        converted_to_user_id: userId,
+        converted_at: new Date().toISOString(),
+        converted_to_paid_at: new Date().toISOString(),
+      })
+      .eq('email', normalizedEmail);
+
+    const stripeCustomerId = session.customer as string;
+    const subId =
+      typeof session.subscription === 'string'
+        ? session.subscription
+        : session.subscription?.id;
+    if (subId) {
+      const sub = await stripe.subscriptions.retrieve(subId);
+      await admin.from('subscriptions').upsert(
+        {
+          user_id: userId,
+          stripe_customer_id: stripeCustomerId,
+          stripe_subscription_id: subId,
+          plan: 'pausalist',
+          status: sub.status,
+        },
+        { onConflict: 'user_id' },
+      );
+    }
+
+    return;
+  }
+
   const admin = createServiceRoleClient();
   const userId =
     session.metadata?.user_id ??
