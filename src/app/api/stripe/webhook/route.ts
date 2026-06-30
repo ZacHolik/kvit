@@ -102,6 +102,66 @@ async function resolveUserId(
   return (data as { user_id?: string } | null)?.user_id ?? null;
 }
 
+async function findUserByEmail(
+  admin: AdminClient,
+  email: string,
+): Promise<{ id: string } | null> {
+  if (!admin) return null;
+  let page = 1;
+  const perPage = 200;
+  for (let i = 0; i < 10; i++) {
+    const { data, error } = await admin.auth.admin.listUsers({ page, perPage });
+    if (error || !data?.users?.length) break;
+    const match = data.users.find((u) => u.email?.toLowerCase() === email);
+    if (match) return { id: match.id };
+    if (data.users.length < perPage) break;
+    page++;
+  }
+  return null;
+}
+
+async function sendPasswordSetupEmail(
+  admin: AdminClient,
+  email: string,
+): Promise<void> {
+  if (!admin) return;
+  const { data: linkData } = await admin.auth.admin.generateLink({
+    type: 'recovery',
+    email,
+  });
+  if (!linkData?.properties?.action_link) return;
+
+  const resendKey = process.env.RESEND_API_KEY;
+  if (!resendKey) return;
+
+  await fetch('https://api.resend.com/emails', {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${resendKey}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      from: process.env.RESEND_FROM_EMAIL ?? 'Kvik <noreply@kvik.online>',
+      to: [email],
+      subject: 'Dobrodošao u Kvik — postavi lozinku',
+      html: `
+        <div style="font-family:sans-serif;max-width:520px;margin:0 auto">
+          <h2 style="color:#0d9488">Plaćanje uspješno!</h2>
+          <p>Tvoj Kvik account je spreman. Postavi lozinku da pristupiš aplikaciji:</p>
+          <p style="margin:24px 0">
+            <a href="${linkData.properties.action_link}"
+              style="display:inline-block;background:#0d9488;color:#fff;
+              padding:12px 24px;border-radius:8px;text-decoration:none;
+              font-weight:600">
+              Postavi lozinku →
+            </a>
+          </p>
+        </div>
+      `,
+    }),
+  }).catch((err) => console.error('Welcome email error:', err));
+}
+
 // ─── Event handlers ───────────────────────────────────────────────────────────
 
 async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
@@ -123,10 +183,7 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
       return;
     }
 
-    const { data: existingUsers } = await admin.auth.admin.listUsers();
-    const existingUser = existingUsers?.users?.find(
-      (u) => u.email?.toLowerCase() === normalizedEmail,
-    );
+    const existingUser = await findUserByEmail(admin, normalizedEmail);
 
     let userId: string;
 
@@ -144,46 +201,9 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
       }
 
       userId = newUser.user.id;
-
-      await admin.auth.admin
-        .generateLink({
-          type: 'recovery',
-          email: normalizedEmail,
-        })
-        .then(async ({ data: linkData }) => {
-          if (linkData?.properties?.action_link) {
-            const resendKey = process.env.RESEND_API_KEY;
-            if (resendKey) {
-              await fetch('https://api.resend.com/emails', {
-                method: 'POST',
-                headers: {
-                  Authorization: `Bearer ${resendKey}`,
-                  'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                  from: process.env.RESEND_FROM_EMAIL ?? 'Kvik <noreply@kvik.online>',
-                  to: [normalizedEmail],
-                  subject: 'Dobrodošao u Kvik — postavi lozinku',
-                  html: `
-                <div style="font-family:sans-serif;max-width:520px;margin:0 auto">
-                  <h2 style="color:#0d9488">Plaćanje uspješno!</h2>
-                  <p>Tvoj Kvik account je spreman. Postavi lozinku da pristupiš aplikaciji:</p>
-                  <p style="margin:24px 0">
-                    <a href="${linkData.properties.action_link}"
-                      style="display:inline-block;background:#0d9488;color:#fff;
-                      padding:12px 24px;border-radius:8px;text-decoration:none;
-                      font-weight:600">
-                      Postavi lozinku →
-                    </a>
-                  </p>
-                </div>
-              `,
-                }),
-              }).catch((err) => console.error('Welcome email error:', err));
-            }
-          }
-        });
     }
+
+    await sendPasswordSetupEmail(admin, normalizedEmail);
 
     await admin
       .from('leads')
