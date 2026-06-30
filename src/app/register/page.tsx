@@ -217,11 +217,11 @@ export default function RegisterLandingPage() {
           </div>
 
           <div className='space-y-4 text-center text-lg leading-relaxed text-muted'>
-            <p>Guglaš. Nađeš deset izvora. Sedam se međusobno protivriječi.</p>
+            <p>Guglaš. Nađeš deset izvora. Sedam je proturječnih.</p>
             <p>Pošalješ mail računovođi. Odgovori za pet dana. Naplati sat vremena.</p>
           </div>
           <p className='font-display mt-8 text-center text-xl font-bold text-white md:text-2xl'>
-            To nije tvoj problem. To je problem alata koji nisi imao.
+            To nije tvoj problem. To je problem alata kojeg nisi imao.
           </p>
         </div>
       </section>
@@ -340,7 +340,7 @@ export default function RegisterLandingPage() {
             Ne moraš u tri ujutro čitati forume.
           </p>
           <p className='mb-10 text-xl text-muted md:text-2xl'>
-            Moraš samo imati nešto što zna umjesto tebe.
+            Moraš samo imati nešto što zna papirologiju bolje od tebe.
           </p>
           <CtaButton
             loading={loading}
