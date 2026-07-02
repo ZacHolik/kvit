@@ -757,7 +757,6 @@ function PhoneMockupScreen({
 // ─────────────────────────────────────────────────────────────────────────────
 
 export default function LandingPage() {
-  const [yearly, setYearly] = useState(false);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   const [cardBlend, setCardBlend] = useState<CardBlend>({
     from: 0,
@@ -1185,9 +1184,6 @@ export default function LandingPage() {
                             <p className='text-sm leading-relaxed text-[#c8d3d1]'>
                               Ovakve odgovore i sređene knjigovodstvene papire za
                               paušalce možeš imati svaki dan.
-                              <br />
-                              Iskoristi promociju! Uhvati cijenu za KVIK 5,60€/mj —
-                              zauvijek.
                             </p>
                             <a
                               href='https://kvik.online/register'
@@ -1249,44 +1245,7 @@ export default function LandingPage() {
             Ne naplaćujemo po prometu. Plaćaš isti iznos, zaradiš li 1.000€ ili
             59.000€ godišnje.
           </p>
-          <div className='pricing-toggle'>
-            <span>Mjesečno</span>
-            <button
-              type='button'
-              className={`toggle-track ${yearly ? '' : 'off'}`}
-              onClick={() => setYearly((y) => !y)}
-              aria-label='Prebaci između mjesečne i godišnje pretplate'
-            >
-              <span className='toggle-thumb' />
-            </button>
-            <span>Godišnje</span>
-            <span className='save-tag' style={{ opacity: yearly ? 1 : 0 }}>
-              Uštedi 20%
-            </span>
-          </div>
           <div className='pricing-grid pricing-grid--twocols'>
-            {/* --- Besplatni plan --- */}
-            <div className='price-card'>
-              <div className='price-tier'>Za početak</div>
-              <div className='price-name'>Besplatno</div>
-              <div className='price-amount'>
-                <sup />
-                0€<sub>/mj</sub>
-              </div>
-              <div className='price-desc'>Za one koji tek počinju</div>
-              <ul className='price-features'>
-                <li>Do 3 računa mjesečno</li>
-                <li>Osnovni KPR</li>
-                <li>PO-SD generator</li>
-                <li>Kalkulator poreza</li>
-                <li>Vodiči i edukacija</li>
-                <li>AI asistent (3 upita/dan)</li>
-              </ul>
-              <Link href='/register' className='price-btn price-btn-outline'>
-                Počni besplatno
-              </Link>
-            </div>
-
             {/* --- Paušalist plan (featured) --- */}
             <div className='price-card featured'>
               <div className='popular-tag'>Najpopularnije</div>
@@ -1294,14 +1253,9 @@ export default function LandingPage() {
               <div className='price-name'>Paušalist</div>
               <div className='price-amount'>
                 <sup />
-                {yearly ? '5.60€' : '7€'}
+                7€
                 <sub>/mj</sub>
               </div>
-              {yearly ? (
-                <div className='price-desc'>
-                  Early adopter cijena — zaključana zauvijek
-                </div>
-              ) : null}
               <div className='price-desc'>Za aktivne obrtnike</div>
               <ul className='price-features'>
                 <li>Neograničeni računi</li>
@@ -1320,25 +1274,6 @@ export default function LandingPage() {
               </button>
             </div>
           </div>
-
-          <p
-            className='section-sub'
-            style={{ marginTop: '2rem', textAlign: 'center' }}
-          >
-            Trebaš F2.0 eRačune, portal za računovođu ili API?
-            <br />
-            <Link
-              href='/pro-uskoro'
-              style={{
-                color: 'var(--teal3)',
-                fontWeight: 600,
-                textDecoration: 'underline',
-                textUnderlineOffset: '4px',
-              }}
-            >
-              Pridruži se PRO waitlisti →
-            </Link>
-          </p>
         </section>
 
         <section className='section' id='faq'>
