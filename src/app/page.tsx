@@ -4,21 +4,6 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
-// --- Pricing checkout handler (used in the #cijene section) ---
-async function startCheckout(trial: boolean) {
-  const res = await fetch('/api/stripe/checkout', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ plan: 'pausalist', trial }),
-  });
-  const data = (await res.json()) as { url?: string; error?: string };
-  if (data.url) {
-    window.location.href = data.url;
-  } else {
-    window.location.href = '/cijene';
-  }
-}
-
 import { HARDCODED_QA } from './asistent/hardcoded-qa-data';
 import { ShareAiResponse } from './asistent/share-ai-response';
 import { KVIK_LANDING_CSS } from './kvik-landing-css';
@@ -1265,13 +1250,12 @@ export default function LandingPage() {
                 <li>Podsjetnici na rokove</li>
                 <li>eRačuni — zaprimanje besplatno</li>
               </ul>
-              <button
-                type='button'
+              <Link
+                href='/register'
                 className='price-btn price-btn-primary'
-                onClick={() => void startCheckout(true)}
               >
                 Pretplati se za 7€/mj →
-              </button>
+              </Link>
             </div>
           </div>
         </section>
