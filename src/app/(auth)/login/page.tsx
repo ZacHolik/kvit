@@ -107,9 +107,17 @@ export default function LoginPage() {
           </p>
 
           {error ? (
-            <p className='font-body rounded-lg border border-red-500/30 bg-red-500/10 p-3 text-sm text-red-200'>
-              {error}
-            </p>
+            <div>
+              <p className='font-body rounded-lg border border-red-500/30 bg-red-500/10 p-3 text-sm text-red-200'>
+                {error}
+              </p>
+              <p className='mt-2 text-xs leading-relaxed text-[#64756f]'>
+                Tek se priključuješ Kviku?{' '}
+                <Link href='/register' className='text-[#0d9488] underline'>
+                  Počni ovdje →
+                </Link>
+              </p>
+            </div>
           ) : null}
 
           <button
