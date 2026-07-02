@@ -1316,7 +1316,7 @@ export default function LandingPage() {
                 className='price-btn price-btn-primary'
                 onClick={() => void startCheckout(true)}
               >
-                Isprobaj 7 dana besplatno →
+                Pretplati se za 7€/mj →
               </button>
             </div>
           </div>

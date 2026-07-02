@@ -124,12 +124,9 @@ export function ShareAiResponse({
           ti biti ta osoba.
         </p>
       ) : (
-        <>
-          <p className='font-body text-xs text-[#94a3a0]'>Ovaj odgovor je besplatan.</p>
-          <p className='font-body mt-1 text-sm text-[#b9c7c4]'>
-            Imaš prijatelja koji se muči s porezom?
-          </p>
-        </>
+        <p className='font-body text-sm text-[#b9c7c4]'>
+          Imaš prijatelja koji se muči s porezom?
+        </p>
       )}
       <div className='mt-4 flex flex-wrap gap-2'>
         <button

@@ -39,9 +39,9 @@ export function VodiciNav() {
             </Link>
           </li>
           <li>
-            <a href='/#cijene' className='transition hover:text-[#0d9488]'>
+            <Link href='/cijene' className='transition hover:text-[#0d9488]'>
               Cijene
-            </a>
+            </Link>
           </li>
         </ul>
         <div className='flex flex-wrap items-center gap-3 sm:gap-4'>
