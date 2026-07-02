@@ -195,24 +195,13 @@ export default function AlatiIndexPage() {
           ))}
         </ul>
 
-        <div className='mt-14 rounded-2xl border border-[#0d9488]/30 bg-[#111716] p-8 text-center'>
-          <p className='font-heading text-xl font-semibold text-[#e2e8e7]'>
-            Isprobaj Kvik besplatno
-          </p>
-          <p className='font-body mx-auto mt-2 max-w-lg text-sm text-[#94a3a0]'>
-            Automatski prati razrede, rokove i PDV prag — manje brige oko papira.
-          </p>
-          <div className='mt-5 flex flex-wrap justify-center gap-3'>
-            <Link href='/register' className='btn-cta-primary px-6 py-3 text-base'>
-              Registriraj se
-            </Link>
-            <a
-              href='/#cijene'
-              className='inline-flex rounded-lg border border-[#0d9488]/60 px-6 py-3 font-semibold text-[#d5dfdd] transition hover:border-[#0d9488] hover:bg-[#0d9488]/10'
-            >
-              Paušalist PRO
-            </a>
-          </div>
+        <div className='mt-12 text-center'>
+          <Link
+            href='/register'
+            className='inline-block rounded-xl bg-[#0d9488] px-8 py-4 text-base font-semibold text-white transition hover:bg-[#14b8a6]'
+          >
+            Pretplati se za 7€/mj →
+          </Link>
         </div>
       </div>
     </>

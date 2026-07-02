@@ -55,7 +55,7 @@ function RegisterCtaBlock({ className = 'mt-14' }: { className?: string }) {
         className="inline-block rounded-xl px-8 py-3 text-sm font-semibold text-white transition hover:brightness-110"
         style={{ backgroundColor: '#d97706' }}
       >
-        Saznaj više →
+        Pretplati se za 7€/mj →
       </Link>
     </div>
   );

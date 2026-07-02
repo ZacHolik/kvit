@@ -107,49 +107,8 @@ export default function CijenePage() {
           )}
         </div>
 
-        {/* Plan kartice */}
-        <div className='mx-auto grid max-w-4xl gap-6 sm:grid-cols-2'>
-          {/* Besplatno */}
-          <div className='flex flex-col rounded-2xl border border-[#1f2a28] bg-[#111716] p-6'>
-            <div className='mb-4 flex items-start justify-between'>
-              <div>
-                <p className='text-xs font-medium uppercase tracking-widest text-[#94a3a0]'>
-                  Za početak
-                </p>
-                <p className='mt-1 text-xl font-bold text-[#e2e8e7]'>Besplatno</p>
-              </div>
-              <span className='inline-block rounded-md bg-emerald-500/15 px-2 py-1 text-xs font-semibold text-emerald-400'>
-                0€ AKTIVACIJA
-              </span>
-            </div>
-            <div className='mb-1'>
-              <span className='text-4xl font-bold text-[#e2e8e7]'>0€</span>
-              <span className='ml-1 text-sm text-[#94a3a0]'>/mj</span>
-            </div>
-            <p className='mb-6 text-sm text-[#94a3a0]'>Za one koji tek počinju</p>
-            <ul className='mb-8 flex-1 space-y-2.5 text-sm text-[#b9c7c4]'>
-              {[
-                'Do 3 računa mjesečno',
-                'Osnovni KPR',
-                'PO-SD generator',
-                'Kalkulator poreza',
-                'Vodiči i edukacija',
-                'AI asistent (3 upita/dan)',
-              ].map((f) => (
-                <li key={f} className='flex items-start gap-2'>
-                  <span className='mt-0.5 text-emerald-400'>✓</span>
-                  {f}
-                </li>
-              ))}
-            </ul>
-            <Link
-              href='/register'
-              className='block rounded-xl border border-[#2a3734] py-3 text-center text-sm font-semibold text-[#e2e8e7] transition hover:border-[#0d9488] hover:text-[#0d9488]'
-            >
-              Počni besplatno
-            </Link>
-          </div>
-
+        {/* Plan kartica */}
+        <div className='mx-auto max-w-md'>
           {/* Paušalist (featured) */}
           <div className='relative flex flex-col rounded-2xl border border-[#0d9488] bg-[#111716] p-6 shadow-[0_0_32px_rgba(13,148,136,0.18)]'>
             <div className='absolute -top-3 left-1/2 -translate-x-1/2'>

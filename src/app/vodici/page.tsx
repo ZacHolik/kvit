@@ -119,16 +119,12 @@ export default function VodiciIndexPage() {
           </section>
         ))}
 
-        <div className='mt-14 rounded-2xl border border-[#0d9488]/30 bg-[#111716] p-8 text-center'>
-          <p className='font-heading text-xl font-semibold text-[#e2e8e7]'>
-            Isprobaj Kvik besplatno
-          </p>
-          <p className='font-body mx-auto mt-2 max-w-lg text-sm text-[#94a3a0]'>
-            Automatski KPR, PDF računi i PO-SD — manje papira, više vremena za
-            posao.
-          </p>
-          <Link href='/register' className='btn-cta-primary mt-5 px-6 py-3 text-base'>
-            Registriraj se
+        <div className='mt-12 text-center'>
+          <Link
+            href='/register'
+            className='inline-block rounded-xl bg-[#0d9488] px-8 py-4 text-base font-semibold text-white transition hover:bg-[#14b8a6]'
+          >
+            Pretplati se za 7€/mj →
           </Link>
         </div>
       </div>
