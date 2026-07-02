@@ -1,37 +1,7 @@
 'use client';
 
-import { createBrowserClient } from '@supabase/ssr';
 import Link from 'next/link';
 import { useState } from 'react';
-
-async function startCheckout(trial: boolean) {
-  const supabase = createBrowserClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-  );
-  const {
-    data: { session },
-  } = await supabase.auth.getSession();
-
-  if (!session) {
-    sessionStorage.setItem(
-      'kvik_checkout_intent',
-      JSON.stringify({ plan: 'pausalist', trial }),
-    );
-    window.location.href = '/register';
-    return;
-  }
-
-  const res = await fetch('/api/stripe/checkout', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ plan: 'pausalist', trial }),
-  });
-  const data = (await res.json()) as { url?: string; error?: string };
-  if (data.url) {
-    window.location.href = data.url;
-  }
-}
 
 const FAQ_ITEMS = [
   {
@@ -53,7 +23,6 @@ const FAQ_ITEMS = [
 ];
 
 export default function CijenePage() {
-  const [yearly, setYearly] = useState(false);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   return (
     <main className='min-h-screen bg-[#0b0f0e] px-4 py-16 text-[#e2e8e7] sm:px-6 lg:px-8'>
@@ -76,37 +45,6 @@ export default function CijenePage() {
           </p>
         </div>
 
-        {/* Toggle */}
-        <div className='mb-10 flex items-center justify-center gap-3'>
-          <span
-            className={`text-sm font-medium ${!yearly ? 'text-[#e2e8e7]' : 'text-[#94a3a0]'}`}
-          >
-            Mjesečno
-          </span>
-          <button
-            type='button'
-            onClick={() => setYearly((y) => !y)}
-            aria-label='Prebaci između mjesečne i godišnje pretplate'
-            className='relative inline-flex h-6 w-11 items-center rounded-full transition-colors'
-            style={{ background: yearly ? '#0d9488' : '#2a3734' }}
-          >
-            <span
-              className='inline-block h-4 w-4 transform rounded-full bg-white transition-transform'
-              style={{ transform: yearly ? 'translateX(1.375rem)' : 'translateX(0.25rem)' }}
-            />
-          </button>
-          <span
-            className={`text-sm font-medium ${yearly ? 'text-[#e2e8e7]' : 'text-[#94a3a0]'}`}
-          >
-            Godišnje
-          </span>
-          {yearly && (
-            <span className='rounded-full bg-[#0d9488]/20 px-2.5 py-0.5 text-xs font-semibold text-[#14b8a6]'>
-              Uštedi 20%
-            </span>
-          )}
-        </div>
-
         {/* Plan kartica */}
         <div className='mx-auto max-w-md'>
           {/* Paušalist (featured) */}
@@ -123,16 +61,9 @@ export default function CijenePage() {
               <p className='mt-1 text-xl font-bold text-[#e2e8e7]'>Paušalist</p>
             </div>
             <div className='mb-1'>
-              <span className='text-4xl font-bold text-[#e2e8e7]'>
-                {yearly ? '5,60€' : '7€'}
-              </span>
+              <span className='text-4xl font-bold text-[#e2e8e7]'>7€</span>
               <span className='ml-1 text-sm text-[#94a3a0]'>/mj</span>
             </div>
-            {yearly && (
-              <p className='mb-1 text-xs font-medium text-[#14b8a6]'>
-                Early adopter cijena — zaključana zauvijek
-              </p>
-            )}
             <p className='mb-6 text-sm text-[#94a3a0]'>Za aktivne obrtnike</p>
             <ul className='mb-8 flex-1 space-y-2.5 text-sm text-[#b9c7c4]'>
               {[
@@ -149,25 +80,14 @@ export default function CijenePage() {
                 </li>
               ))}
             </ul>
-            <button
-              type='button'
-              onClick={() => void startCheckout(true)}
+            <Link
+              href='/register'
               className='block w-full rounded-xl bg-[#0d9488] py-3 text-center text-sm font-semibold text-white transition hover:bg-[#14b8a6]'
             >
-              Isprobaj 7 dana besplatno →
-            </button>
+              Pretplati se za 7€/mj →
+            </Link>
           </div>
         </div>
-
-        <p className='mx-auto mt-8 max-w-2xl text-center text-sm text-[#94a3a0]'>
-          Trebaš PRO plan (F2.0 eRačuni, portal za računovođu, API)?{' '}
-          <Link
-            href='/pro-uskoro'
-            className='font-semibold text-[#0d9488] underline underline-offset-4 hover:text-[#14b8a6]'
-          >
-            Pridruži se waitlisti →
-          </Link>
-        </p>
 
         {/* Zašto Kvik */}
         <section className='mt-16 max-w-3xl mx-auto'>
