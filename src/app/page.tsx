@@ -56,7 +56,7 @@ const LANDING_RESPONSIVE_CSS = `
     padding-left:0;
   }
 }
-/* Imam Kvik! — outline gumb na svim breakpointima (mobil override ispod) */
+/* Prijavi se — outline gumb na svim breakpointima (mobil override ispod) */
 #kvik-landing .nav-actions{
   gap:1rem;
 }
@@ -881,10 +881,10 @@ export default function LandingPage() {
               href='/login'
               className='nav-login-text sm:!inline-flex sm:!items-center sm:!justify-center sm:!box-border sm:!px-4 sm:!py-2 sm:!border sm:!border-solid sm:!border-[#94a3a0] sm:!rounded-lg sm:!bg-transparent sm:!text-[#94a3a0] sm:!text-sm sm:!font-medium sm:!no-underline sm:!whitespace-nowrap sm:transition-colors sm:hover:!border-[#c5d0ce] sm:hover:!bg-[rgba(148,163,160,0.08)] sm:hover:!text-[#e2e8e7]'
             >
-              Imam Kvik!
+              Prijavi se
             </Link>
             <Link href='/register' className='nav-cta'>
-              Priključujem se!
+              Pretplati se
             </Link>
           </div>
         </nav>

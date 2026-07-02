@@ -49,14 +49,14 @@ export function VodiciNav() {
             href='/login'
             className='rounded-lg border border-[#0d9488]/60 px-4 py-2.5 text-sm font-medium text-[#d5dfdd] transition hover:border-[#0d9488] hover:bg-[#0d9488]/10'
           >
-            Imam Kvik!
+            Prijavi se
           </Link>
           <Link
             href='/register'
             className='btn-cta-primary px-3 py-2 text-sm'
             onClick={handleRegisterClick}
           >
-            Priključujem se!
+            Pretplati se
           </Link>
         </div>
       </nav>
