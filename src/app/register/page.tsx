@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 
 async function startAnonymousCheckout() {
   const leadEmail =
@@ -80,7 +80,7 @@ function CtaButton({
   );
 }
 
-export default function RegisterLandingPage() {
+function RegisterContent() {
   const [loading, setLoading] = useState(false);
   const [navShadow, setNavShadow] = useState(false);
 
@@ -364,5 +364,13 @@ export default function RegisterLandingPage() {
         </div>
       </footer>
     </div>
+  );
+}
+
+export default function RegisterPage() {
+  return (
+    <Suspense fallback={<div className='min-h-screen bg-bg' />}>
+      <RegisterContent />
+    </Suspense>
   );
 }
