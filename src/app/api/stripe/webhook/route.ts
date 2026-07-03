@@ -22,6 +22,7 @@ import { PLANS } from '@/lib/stripe/plans';
 import { stripe } from '@/lib/stripe/client';
 import { createServiceRoleClient } from '@/lib/supabase/service-role';
 
+export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
 // ─── Email helper (Resend) — checkout / dunning (ne billing račun) ───────────
@@ -646,6 +647,12 @@ export async function POST(request: Request) {
   }
 
   const rawBody = await request.text();
+  console.log({
+    bodyLength: rawBody.length,
+    sig: request.headers.get('stripe-signature')?.slice(0, 30),
+    secretPrefix: process.env.STRIPE_WEBHOOK_SECRET?.slice(0, 12),
+    secretLength: process.env.STRIPE_WEBHOOK_SECRET?.length,
+  });
   const signature = request.headers.get('stripe-signature');
   if (!signature) {
     return NextResponse.json({ error: 'Missing stripe-signature' }, { status: 400 });
