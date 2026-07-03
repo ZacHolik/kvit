@@ -12,7 +12,9 @@ function safeNextPath(raw: string | null): string {
 
 /**
  * Supabase Auth (email potvrda / PKCE) — zamjena `code` za sesiju i redirect.
+ * Bez `code` → /auth/confirm (hash / magic link token u browseru).
  * U Supabase Dashboard dodaj Redirect URL: {NEXT_PUBLIC_APP_URL}/auth/callback
+ * i {NEXT_PUBLIC_APP_URL}/auth/confirm
  */
 export async function GET(request: NextRequest) {
   const requestUrl = new URL(request.url);
@@ -20,9 +22,12 @@ export async function GET(request: NextRequest) {
   const nextPath = safeNextPath(requestUrl.searchParams.get('next'));
 
   if (!code) {
-    return NextResponse.redirect(
-      new URL('/login?error=missing_code', requestUrl.origin),
-    );
+    const confirmUrl = new URL('/auth/confirm', requestUrl.origin);
+    const next = requestUrl.searchParams.get('next');
+    if (next) {
+      confirmUrl.searchParams.set('next', next);
+    }
+    return NextResponse.redirect(confirmUrl);
   }
 
   const redirectUrl = new URL(nextPath, requestUrl.origin);
