@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { FormEvent, useEffect, useState } from 'react';
 
 import { createClient } from '@/lib/supabase/client';
@@ -8,13 +9,13 @@ import { createClient } from '@/lib/supabase/client';
 type RecoveryState = 'loading' | 'ready' | 'expired';
 
 export default function NovaLozinkePage() {
+  const router = useRouter();
   const supabase = createClient();
   const [recoveryState, setRecoveryState] = useState<RecoveryState>('loading');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [saved, setSaved] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -74,28 +75,8 @@ export default function NovaLozinkePage() {
       return;
     }
 
-    await supabase.auth.signOut();
-    setSaved(true);
+    router.replace('/dashboard');
   };
-
-  if (saved) {
-    return (
-      <main className='flex min-h-screen items-center justify-center bg-[#0b0f0e] px-4 py-10'>
-        <section className='w-full max-w-md rounded-2xl border border-[#1f2a28] bg-[#111716] p-6 shadow-xl shadow-black/25 sm:p-8'>
-          <p className='font-body text-sm text-[#94a3a0]'>Reset lozinke</p>
-          <h1 className='font-heading mt-2 text-2xl text-[#e2e8e7] sm:text-3xl'>
-            Lozinka je promijenjena.
-          </h1>
-          <Link
-            href='/login'
-            className='font-body mt-8 inline-flex w-full justify-center rounded-xl bg-[#0d9488] px-5 py-3 font-semibold text-white transition hover:bg-[#14b8a6]'
-          >
-            Prijavi se
-          </Link>
-        </section>
-      </main>
-    );
-  }
 
   if (recoveryState === 'loading') {
     return (
