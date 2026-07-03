@@ -130,7 +130,7 @@ async function sendPasswordSetupEmail(
     type: 'magiclink',
     email,
     options: {
-      redirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/signup`,
+      redirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/auth/confirm`,
     },
   });
   if (!linkData?.properties?.action_link) return;
