@@ -127,10 +127,10 @@ async function sendPasswordSetupEmail(
 ): Promise<void> {
   if (!admin) return;
   const { data: linkData } = await admin.auth.admin.generateLink({
-    type: 'magiclink',
+    type: 'recovery',
     email,
     options: {
-      redirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/auth/confirm`,
+      redirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/auth/callback?next=${encodeURIComponent('/nova-lozinke')}`,
     },
   });
   if (!linkData?.properties?.action_link) return;
@@ -157,7 +157,7 @@ async function sendPasswordSetupEmail(
               style="display:inline-block;background:#0d9488;color:#fff;
               padding:12px 24px;border-radius:8px;text-decoration:none;
               font-weight:600">
-              Nastavi →
+              Postavi lozinku →
             </a>
           </p>
         </div>
