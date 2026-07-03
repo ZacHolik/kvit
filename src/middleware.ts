@@ -18,6 +18,7 @@ const AUTH_PUBLIC_PREFIXES = [
   '/onboarding',
   '/confirm-email',
   '/auth/callback',
+  '/auth/confirm',
 ] as const;
 
 /**
@@ -95,7 +96,7 @@ export async function middleware(request: NextRequest) {
     const dest = request.nextUrl.clone();
     dest.pathname = '/auth/callback';
     if (!dest.searchParams.get('next')) {
-      dest.searchParams.set('next', '/confirm-email?verified=1');
+      dest.searchParams.set('next', '/dashboard');
     }
     return NextResponse.redirect(dest);
   }

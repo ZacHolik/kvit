@@ -3,7 +3,7 @@ import { NextResponse, type NextRequest } from 'next/server';
 
 /** Samo relativne putanje na isti origin (bez open-redirect). */
 function safeNextPath(raw: string | null): string {
-  const fallback = '/confirm-email?verified=1';
+  const fallback = '/dashboard';
   if (!raw || !raw.startsWith('/') || raw.startsWith('//')) {
     return fallback;
   }
