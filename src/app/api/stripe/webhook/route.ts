@@ -130,7 +130,7 @@ async function sendPasswordSetupEmail(
     type: 'recovery',
     email,
     options: {
-      redirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/auth/callback?next=${encodeURIComponent('/nova-lozinke')}`,
+      redirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/nova-lozinke`,
     },
   });
   if (!linkData?.properties?.action_link) return;

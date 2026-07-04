@@ -9,10 +9,16 @@ function AuthConfirmContent() {
   const searchParams = useSearchParams();
   const handled = useRef(false);
   const rawNext = searchParams.get('next');
+  const hashType =
+    typeof window !== 'undefined'
+      ? new URLSearchParams(window.location.hash.replace(/^#/, '')).get('type')
+      : null;
   const nextPath =
     rawNext?.startsWith('/') && !rawNext.startsWith('//')
       ? rawNext
-      : '/dashboard';
+      : hashType === 'recovery'
+        ? '/nova-lozinke'
+        : '/dashboard';
 
   useEffect(() => {
     const code = searchParams.get('code');
@@ -60,7 +66,8 @@ function AuthConfirmContent() {
         session &&
         (event === 'SIGNED_IN' ||
           event === 'TOKEN_REFRESHED' ||
-          event === 'INITIAL_SESSION')
+          event === 'INITIAL_SESSION' ||
+          event === 'PASSWORD_RECOVERY')
       ) {
         goDashboard();
       }

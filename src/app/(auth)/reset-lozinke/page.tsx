@@ -9,8 +9,7 @@ function buildPasswordResetRedirectTo(): string {
   const origin =
     process.env.NEXT_PUBLIC_APP_URL?.replace(/\/$/, '') ||
     (typeof window !== 'undefined' ? window.location.origin : '');
-  const next = encodeURIComponent('/nova-lozinke');
-  return `${origin}/auth/callback?next=${next}`;
+  return `${origin}/nova-lozinke`;
 }
 
 export default function ResetLozinkePage() {

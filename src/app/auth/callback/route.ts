@@ -22,12 +22,33 @@ export async function GET(request: NextRequest) {
   const nextPath = safeNextPath(requestUrl.searchParams.get('next'));
 
   if (!code) {
-    const confirmUrl = new URL('/auth/confirm', requestUrl.origin);
-    const next = requestUrl.searchParams.get('next');
-    if (next) {
-      confirmUrl.searchParams.set('next', next);
-    }
-    return NextResponse.redirect(confirmUrl);
+    // Hash (#access_token) nikad ne stigne na server — client handoff bez gubitka hash-a.
+    const html = `<!DOCTYPE html>
+<html lang="hr">
+<head><meta charset="utf-8"/><title>Preusmjeravanje…</title></head>
+<body>
+<script>
+(function () {
+  var search = window.location.search || '';
+  var hash = window.location.hash || '';
+  var next = new URLSearchParams(search).get('next');
+  var dest;
+  if (hash && next && next.charAt(0) === '/' && next.indexOf('//') !== 0) {
+    dest = next + hash;
+  } else {
+    dest = '/auth/confirm' + search + hash;
+  }
+  window.location.replace(dest);
+})();
+</script>
+<p style="font-family:sans-serif;color:#94a3a0;text-align:center;margin-top:2rem">
+  Prijava u tijeku…
+</p>
+</body>
+</html>`;
+    return new NextResponse(html, {
+      headers: { 'Content-Type': 'text/html; charset=utf-8' },
+    });
   }
 
   const redirectUrl = new URL(nextPath, requestUrl.origin);
