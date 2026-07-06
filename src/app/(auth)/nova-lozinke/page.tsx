@@ -1,33 +1,37 @@
 'use client';
 
 import Link from 'next/link';
-import { FormEvent, useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { FormEvent, useEffect, useRef, useState } from 'react';
 
 import { createClient } from '@/lib/supabase/client';
 
 type RecoveryState = 'loading' | 'ready' | 'expired';
 
+const HASH_WAIT_MS = 8000;
+
 export default function NovaLozinkePage() {
+  const router = useRouter();
   const supabase = createClient();
   const [recoveryState, setRecoveryState] = useState<RecoveryState>('loading');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [saved, setSaved] = useState(false);
+  const settled = useRef(false);
 
   useEffect(() => {
     let cancelled = false;
 
-    const refreshSession = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (cancelled) {
+    const settle = (state: RecoveryState) => {
+      if (cancelled || settled.current) {
         return;
       }
-      setRecoveryState(session ? 'ready' : 'expired');
+      if (state !== 'loading') {
+        settled.current = true;
+      }
+      setRecoveryState(state);
     };
-
-    void refreshSession();
 
     const {
       data: { subscription },
@@ -35,14 +39,31 @@ export default function NovaLozinkePage() {
       if (cancelled) {
         return;
       }
-      if (event === 'PASSWORD_RECOVERY' || session) {
-        setRecoveryState(session ? 'ready' : 'expired');
+      if (
+        session &&
+        (event === 'PASSWORD_RECOVERY' ||
+          event === 'SIGNED_IN' ||
+          event === 'INITIAL_SESSION' ||
+          event === 'TOKEN_REFRESHED')
+      ) {
+        settle('ready');
       }
     });
+
+    const timeout = window.setTimeout(async () => {
+      if (cancelled || settled.current) {
+        return;
+      }
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+      settle(session ? 'ready' : 'expired');
+    }, HASH_WAIT_MS);
 
     return () => {
       cancelled = true;
       subscription.unsubscribe();
+      window.clearTimeout(timeout);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps -- createClient() je stabilan za auth listener
   }, []);
@@ -68,34 +89,12 @@ export default function NovaLozinkePage() {
     setIsLoading(false);
 
     if (updateError) {
-      setError(
-        'Link za reset je istekao ili nije valjan. Zatraži novi.',
-      );
+      setError('Link za reset je istekao ili nije valjan. Zatraži novi.');
       return;
     }
 
-    await supabase.auth.signOut();
-    setSaved(true);
+    router.replace('/dashboard');
   };
-
-  if (saved) {
-    return (
-      <main className='flex min-h-screen items-center justify-center bg-[#0b0f0e] px-4 py-10'>
-        <section className='w-full max-w-md rounded-2xl border border-[#1f2a28] bg-[#111716] p-6 shadow-xl shadow-black/25 sm:p-8'>
-          <p className='font-body text-sm text-[#94a3a0]'>Reset lozinke</p>
-          <h1 className='font-heading mt-2 text-2xl text-[#e2e8e7] sm:text-3xl'>
-            Lozinka je promijenjena.
-          </h1>
-          <Link
-            href='/login'
-            className='font-body mt-8 inline-flex w-full justify-center rounded-xl bg-[#0d9488] px-5 py-3 font-semibold text-white transition hover:bg-[#14b8a6]'
-          >
-            Prijavi se
-          </Link>
-        </section>
-      </main>
-    );
-  }
 
   if (recoveryState === 'loading') {
     return (
@@ -111,12 +110,13 @@ export default function NovaLozinkePage() {
     return (
       <main className='flex min-h-screen items-center justify-center bg-[#0b0f0e] px-4 py-10'>
         <section className='w-full max-w-md rounded-2xl border border-[#1f2a28] bg-[#111716] p-6 shadow-xl shadow-black/25 sm:p-8'>
-          <p className='font-body text-sm text-[#94a3a0]'>Reset lozinke</p>
+          <p className='font-body text-sm text-[#94a3a0]'>Postavljanje lozinke</p>
           <h1 className='font-heading mt-2 text-2xl text-[#e2e8e7] sm:text-3xl'>
             Link nije valjan
           </h1>
           <p className='font-body mt-6 text-base leading-relaxed text-[#d5dfdd]'>
-            Link za reset je istekao ili nije valjan. Zatraži novi.
+            Link je istekao ili nije valjan. Zatraži novi mail s linkom za
+            postavljanje lozinke.
           </p>
           <Link
             href='/reset-lozinke'
@@ -132,13 +132,18 @@ export default function NovaLozinkePage() {
   return (
     <main className='flex min-h-screen items-center justify-center bg-[#0b0f0e] px-4 py-10'>
       <section className='w-full max-w-md rounded-2xl border border-[#1f2a28] bg-[#111716] p-6 shadow-xl shadow-black/25 sm:p-8'>
-        <p className='font-body text-sm text-[#94a3a0]'>Nova lozinka</p>
-        <h1 className='font-heading mt-2 text-3xl text-[#e2e8e7]'>Postavi novu lozinku</h1>
+        <p className='font-body text-sm text-[#94a3a0]'>Dobrodošao u Kvik</p>
+        <h1 className='font-heading mt-2 text-3xl text-[#e2e8e7]'>
+          Postavi lozinku
+        </h1>
+        <p className='font-body mt-3 text-sm text-[#94a3a0]'>
+          Odaberi lozinku za svoj račun — koristit ćeš je za prijavu.
+        </p>
 
         <form className='mt-8 space-y-4' onSubmit={handleSubmit}>
           <label className='block'>
             <span className='font-body mb-2 block text-sm text-[#b9c7c4]'>
-              Nova lozinka
+              Lozinka
             </span>
             <input
               required
@@ -185,7 +190,7 @@ export default function NovaLozinkePage() {
             disabled={isLoading}
             className='font-body mt-2 w-full rounded-xl bg-[#0d9488] px-4 py-3 font-semibold text-white transition hover:bg-[#14b8a6] disabled:cursor-not-allowed disabled:opacity-70'
           >
-            {isLoading ? 'Spremam...' : 'Spremi lozinku'}
+            {isLoading ? 'Spremam...' : 'Spremi lozinku i nastavi'}
           </button>
         </form>
       </section>

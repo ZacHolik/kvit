@@ -12,7 +12,7 @@ test('hero gumbi ne crashaju', async ({ page }) => {
 
 test('Stripe checkout otvara se s /cijene', async ({ page }) => {
   await page.goto(`${BASE}/cijene`);
-  const gumb = page.getByText('Isprobaj 7 dana besplatno');
+  const gumb = page.getByText('Pretplati se za 7€/mj');
   await expect(gumb).toBeVisible();
   const [popup] = await Promise.all([
     page.waitForURL('**/checkout.stripe.com/**', { timeout: 10000 })
@@ -28,7 +28,8 @@ test('Stripe checkout otvara se s /cijene', async ({ page }) => {
 
 test('/register se otvara', async ({ page }) => {
   await page.goto(`${BASE}/register`);
-  await expect(page.locator('input[type="email"]')).toBeVisible();
+  await expect(page.getByText('Pretplati se za 7€/mj').first()).toBeVisible();
+  await expect(page.locator('body')).not.toContainText('Application error');
 });
 
 test('/alati/kalkulator-poreza vraća rezultat', async ({ page }) => {
