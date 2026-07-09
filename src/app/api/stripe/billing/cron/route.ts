@@ -6,6 +6,22 @@ import {
 } from '@/lib/stripe/process-billing-payment';
 import { createServiceRoleClient } from '@/lib/supabase/service-role';
 
+const MAX_BILLING_ATTEMPTS = 5;
+
+async function sendSlackAlert(message: string) {
+  const url = process.env.SLACK_WEBHOOK_URL;
+  if (!url) {
+    console.error('SLACK_WEBHOOK_URL nije postavljen:', message);
+    return;
+  }
+
+  await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ text: message }),
+  }).catch((err) => console.error('Slack webhook error', err));
+}
+
 /**
  * GET — Vercel Cron: obrada billing_racun_queue (račun + PDF + email).
  * Zaštita: Authorization: Bearer <CRON_SECRET>
@@ -37,7 +53,7 @@ export async function GET(request: Request) {
   const { data: jobs, error } = await admin
     .from('billing_racun_queue')
     .select(
-      'id, user_id, stripe_invoice_id, amount_eur, interval, datum_iso, customer_email, stripe_subscription_id',
+      'id, user_id, stripe_invoice_id, amount_eur, interval, datum_iso, customer_email, stripe_subscription_id, attempt_count',
     )
     .eq('status', 'pending')
     .order('created_at', { ascending: true })
@@ -51,6 +67,13 @@ export async function GET(request: Request) {
   for (const row of jobs ?? []) {
     const r = await processBillingRacunJob(admin, row as BillingQueueRow);
     results.push({ id: row.id as string, ok: r.ok, message: r.message });
+
+    if (!r.ok && r.exhausted) {
+      const contact = row.customer_email || row.stripe_invoice_id;
+      await sendSlackAlert(
+        `🔴 Kvik billing: račun za ${contact} nije generiran nakon ${MAX_BILLING_ATTEMPTS} pokušaja. Ručna intervencija potrebna. Queue ID: ${row.id}`,
+      );
+    }
   }
 
   return NextResponse.json({ processed: results.length, results });

@@ -83,12 +83,15 @@ export type BillingQueueRow = {
   datum_iso: string;
   customer_email: string | null;
   stripe_subscription_id: string | null;
+  attempt_count?: number;
 };
+
+const MAX_BILLING_ATTEMPTS = 5;
 
 export async function processBillingRacunJob(
   admin: Admin,
   job: BillingQueueRow,
-): Promise<{ ok: boolean; message: string }> {
+): Promise<{ ok: boolean; message: string; exhausted?: boolean }> {
   const userId = job.user_id;
   const amountEur = Number(job.amount_eur);
   const lineInterval = job.interval;
@@ -185,18 +188,38 @@ export async function processBillingRacunJob(
   }
 
   const ok = Boolean(racunId) || amountEur <= 0;
+
+  if (ok) {
+    await admin
+      .from('billing_racun_queue')
+      .update({
+        status: 'completed',
+        completed_at: new Date().toISOString(),
+        error_message: null,
+      })
+      .eq('id', job.id);
+
+    return { ok: true, message: 'Obrada završena.' };
+  }
+
+  const nextAttempt = (job.attempt_count ?? 0) + 1;
+  const exhausted = nextAttempt >= MAX_BILLING_ATTEMPTS;
+
   await admin
     .from('billing_racun_queue')
     .update({
-      status: ok ? 'completed' : 'failed',
-      completed_at: new Date().toISOString(),
-      error_message: ok ? null : 'Kreiranje računa nije uspjelo.',
+      status: exhausted ? 'permanently_failed' : 'pending',
+      attempt_count: nextAttempt,
+      completed_at: exhausted ? new Date().toISOString() : null,
+      error_message: 'Kreiranje računa nije uspjelo.',
     })
     .eq('id', job.id);
 
-  return ok
-    ? { ok: true, message: 'Obrada završena.' }
-    : { ok: false, message: 'Kreiranje računa nije uspjelo.' };
+  return {
+    ok: false,
+    message: 'Kreiranje računa nije uspjelo.',
+    exhausted,
+  };
 }
 
 export async function enqueueBillingRacunJob(
@@ -209,7 +232,7 @@ export async function enqueueBillingRacunJob(
     .eq('stripe_invoice_id', row.stripe_invoice_id)
     .maybeSingle();
 
-  if (existing?.status === 'completed') {
+  if (existing?.status === 'completed' || existing?.status === 'permanently_failed') {
     return;
   }
 
