@@ -207,6 +207,16 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
       userId = newUser.user.id;
     }
 
+    const subscriptionId =
+      typeof session.subscription === 'string'
+        ? session.subscription
+        : session.subscription?.id;
+    if (subscriptionId) {
+      await stripe.subscriptions.update(subscriptionId, {
+        metadata: { user_id: userId },
+      });
+    }
+
     await sendPasswordSetupEmail(admin, normalizedEmail);
 
     await admin
@@ -362,7 +372,7 @@ async function handlePaymentSucceeded(invoice: Stripe.Invoice) {
 
   if (!userId) {
     console.error('webhook invoice.payment_succeeded: no user_id', invoice.id);
-    return;
+    throw new Error('user_id not resolved for invoice ' + invoice.id);
   }
 
   let lineInterval: 'month' | 'year' | null = null;
@@ -699,6 +709,12 @@ export async function POST(request: Request) {
     }
   } catch (err) {
     console.error(`Webhook handler error [${event.type}]`, err);
+    if (
+      event.type === 'checkout.session.completed' ||
+      event.type === 'invoice.payment_succeeded'
+    ) {
+      return NextResponse.json({ error: 'Handler failed' }, { status: 500 });
+    }
   }
 
   return NextResponse.json({ received: true });
