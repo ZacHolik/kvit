@@ -9,6 +9,7 @@ import { opisAutomatskogKprUnosaZaRacun } from '@/lib/kpr-export';
 import {
   formatBrojRacunaZaPdf,
   InvoiceDocument,
+  type InvoiceProfilPdf,
 } from '@/lib/pdf/invoice-document';
 import { normalizeHub3PozivNaBroj } from '@/lib/alati/hub3-eur';
 import { buildInvoicePaymentHub3Block } from '@/lib/pdf/build-invoice-payment-hub3';
@@ -41,6 +42,19 @@ function planOpis(interval: 'month' | 'year' | null): string {
     return 'Kvik Paušalist — Mjesečno';
   }
   return 'Kvik Paušalist — Probno';
+}
+
+/** Model A: izdavatelj pretplatničkog računa — samo Kvik env, ne profiles kupca. */
+function billingIssuerProfil(): InvoiceProfilPdf {
+  return {
+    nazivObrta: process.env.KVIK_BILLING_NAZIV?.trim() ?? 'Kvik',
+    oib: process.env.KVIK_BILLING_OIB?.trim() ?? '',
+    adresa: process.env.KVIK_BILLING_ADRESA?.trim() || null,
+    ulica: null,
+    postanskiBroj: null,
+    grad: null,
+    iban: null,
+  };
 }
 
 /**
@@ -156,28 +170,21 @@ export async function createBillingRacunForStripe(
   return racunId;
 }
 
-/** Isti layout kao GET /api/racuni/[id]/pdf — za Resend privitak. */
+/** Model A verified: no customer profile data used — issuer from env, B2C kupac bez statutarnih podataka. */
 export async function renderRacunPdfBuffer(
   admin: Admin,
   racunId: string,
   userId: string,
 ): Promise<Buffer | null> {
   try {
-    const [{ data: racun, error }, { data: profil }] = await Promise.all([
-      admin
-        .from('racuni')
-        .select(
-          'id, broj_racuna, datum, datum_placanja, nacin_placanja, status, tip_racuna, tip_dokumenta, popust_racun, rok_placanja, datum_dospijeca, dostava_iznos, dostava_opis, ukupni_iznos, napomena, barkod_enabled, zki, jir, fiskalizirano_at, kupci(naziv, oib, adresa, email)',
-        )
-        .eq('id', racunId)
-        .eq('user_id', userId)
-        .single(),
-      admin
-        .from('profiles')
-        .select('naziv_obrta, oib, adresa, ulica, postanski_broj, grad, iban')
-        .eq('id', userId)
-        .maybeSingle(),
-    ]);
+    const { data: racun, error } = await admin
+      .from('racuni')
+      .select(
+        'id, broj_racuna, datum, datum_placanja, nacin_placanja, status, tip_racuna, tip_dokumenta, popust_racun, rok_placanja, datum_dospijeca, dostava_iznos, dostava_opis, ukupni_iznos, napomena, barkod_enabled, zki, jir, fiskalizirano_at',
+      )
+      .eq('id', racunId)
+      .eq('user_id', userId)
+      .single();
 
     if (error || !racun) {
       return null;
@@ -188,14 +195,8 @@ export async function renderRacunPdfBuffer(
       .select('opis, kolicina, jedinicna_cijena, popust, ukupno')
       .eq('racun_id', racun.id);
 
-    const kupac = racun.kupci as {
-      naziv?: string | null;
-      oib?: string | null;
-      adresa?: string | null;
-      email?: string | null;
-    } | null;
-
-    const iban = profil?.iban?.replace(/\s/g, '').trim() ?? '';
+    const profil = billingIssuerProfil();
+    const iban = profil.iban?.replace(/\s/g, '').trim() ?? '';
     const ukupnoNum = Number(racun.ukupni_iznos);
     const shouldRenderBarcode =
       racun.barkod_enabled === true &&
@@ -208,11 +209,11 @@ export async function renderRacunPdfBuffer(
       ? await buildInvoicePaymentHub3Block(
           {
             iznosEur: ukupnoNum,
-            platiteljIme: kupac?.naziv ?? '',
-            platiteljAdresa1: kupac?.adresa ?? '',
+            platiteljIme: 'Krajnji potrošač',
+            platiteljAdresa1: '',
             platiteljAdresa2: '',
-            primateljIme: profil?.naziv_obrta ?? '',
-            primateljAdresa1: profil?.adresa ?? '',
+            primateljIme: profil.nazivObrta,
+            primateljAdresa1: profil.adresa ?? '',
             primateljAdresa2: '',
             iban,
             model: 'HR00',
@@ -269,19 +270,11 @@ export async function renderRacunPdfBuffer(
       dostavaOpis: racun.dostava_opis,
       dostavaIznos: Number(racun.dostava_iznos ?? 0),
       napomena: racun.napomena,
-      kupacNaziv: kupac?.naziv ?? '',
-      kupacOib: kupac?.oib ?? null,
-      kupacAdresa: kupac?.adresa ?? null,
-      kupacEmail: kupac?.email ?? null,
-      profil: {
-        nazivObrta: profil?.naziv_obrta ?? '',
-        oib: profil?.oib ?? '',
-        adresa: profil?.adresa ?? null,
-        ulica: profil?.ulica ?? null,
-        postanskiBroj: profil?.postanski_broj ?? null,
-        grad: profil?.grad ?? null,
-        iban: profil?.iban ?? null,
-      },
+      kupacNaziv: 'Krajnji potrošač',
+      kupacOib: null,
+      kupacAdresa: null,
+      kupacEmail: null,
+      profil,
       paymentBarcode,
       stavke: stavkeZaPdf,
       zki: racun.zki ?? null,

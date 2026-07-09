@@ -5,6 +5,7 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
 
 import { formatDatumHr, formatIznosEurHr } from '@/lib/format-hr';
+import { fiscalizeRacunWithClient } from '@/lib/fiscalization/fiscalize';
 import { stripe } from '@/lib/stripe/client';
 import {
   billingResendFrom,
@@ -88,6 +89,50 @@ export type BillingQueueRow = {
 
 const MAX_BILLING_ATTEMPTS = 5;
 
+async function tryFiscalizeBillingRacun(
+  admin: Admin,
+  racunId: string,
+  brojRacuna: string,
+  ukupniIznos: number,
+): Promise<boolean> {
+  const kvikOib = process.env.KVIK_BILLING_OIB?.trim();
+  const fiscalUserId = process.env.KVIK_BILLING_FISCAL_USER_ID?.trim();
+  if (!kvikOib || !fiscalUserId) {
+    return false;
+  }
+
+  const result = await fiscalizeRacunWithClient(admin, {
+    racunId,
+    userId: fiscalUserId,
+    oib: kvikOib,
+    brojRacuna,
+    ukupniIznos,
+    nacinPlacanja: 'kartica',
+  });
+
+  if (result.success) {
+    await admin
+      .from('racuni')
+      .update({
+        zki: result.zki,
+        jir: result.jir,
+        fiskalizirano_at: new Date().toISOString(),
+        fiskalizacija_error: null,
+      })
+      .eq('id', racunId);
+    return true;
+  }
+
+  console.error('billing fiscalization failed', result.error);
+  await admin
+    .from('racuni')
+    .update({
+      fiskalizacija_error: result.error ?? 'Nepoznata greška',
+    })
+    .eq('id', racunId);
+  return false;
+}
+
 export async function processBillingRacunJob(
   admin: Admin,
   job: BillingQueueRow,
@@ -128,6 +173,23 @@ export async function processBillingRacunJob(
     }
   }
 
+  if (racunId && amountEur > 0) {
+    const { data: racunRow } = await admin
+      .from('racuni')
+      .select('broj_racuna, ukupni_iznos')
+      .eq('id', racunId)
+      .maybeSingle();
+
+    if (racunRow?.broj_racuna) {
+      await tryFiscalizeBillingRacun(
+        admin,
+        racunId,
+        racunRow.broj_racuna as string,
+        Number(racunRow.ukupni_iznos),
+      );
+    }
+  }
+
   let attachments: EmailAttachment[] | undefined;
   if (racunId && amountEur > 0) {
     try {
@@ -150,21 +212,15 @@ export async function processBillingRacunJob(
 
   if (emailTo) {
     try {
-      const { data: profile } = await admin
-        .from('profiles')
-        .select('naziv_obrta')
-        .eq('id', userId)
-        .maybeSingle();
-      const name = (profile as { naziv_obrta?: string } | null)?.naziv_obrta ?? '';
       const amtStr = formatIznosEurHr(amountEur);
 
       await sendBillingEmail(
         emailTo,
-        `Kvik — Potvrda plaćanja ${amtStr}`,
+        'Vaš račun za Kvik pretplatu',
         `
-        <p>Pozdrav${name ? ` ${name}` : ''},</p>
-        <p>Uspješno smo naplatili <strong>${amtStr}</strong>${periodLabel ? ` za period ${periodLabel}` : ''}.</p>
-        <p>${attachments?.length ? 'Račun u privitku (PDF).' : 'Račun bit će dostupan u Postavkama.'}</p>
+        <p>Pozdrav,</p>
+        <p>U prilogu je račun za tvoju Kvik pretplatu (<strong>${amtStr}</strong>${periodLabel ? `, period ${periodLabel}` : ''}).</p>
+        <p>${attachments?.length ? 'PDF račun je u privitku.' : 'Račun bit će dostupan u Postavkama.'}</p>
         <p><a href="https://kvik.online/postavke">Upravljajte pretplatom →</a></p>
         <hr/>
         <p style="font-size:12px;color:#999;">Kvik · <a href="https://kvik.online">kvik.online</a></p>
