@@ -14,6 +14,10 @@
       "schedule": "0 6 * * *"
     },
     {
+      "path": "/api/cron/billing-reconciliation",
+      "schedule": "0 7 * * *"
+    },
+    {
       "path": "/api/cron/fina-cert-check",
       "schedule": "0 8 * * *"
     }
