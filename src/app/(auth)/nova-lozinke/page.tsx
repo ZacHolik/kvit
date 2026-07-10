@@ -119,7 +119,7 @@ export default function NovaLozinkePage() {
             postavljanje lozinke.
           </p>
           <Link
-            href='/reset-lozinke'
+            href='/postavi-lozinku-resend'
             className='font-body mt-8 inline-flex w-full justify-center rounded-xl bg-[#0d9488] px-5 py-3 font-semibold text-white transition hover:bg-[#14b8a6]'
           >
             Zatraži novi link
@@ -177,7 +177,7 @@ export default function NovaLozinkePage() {
               {error.includes('istekao') ? (
                 <>
                   {' '}
-                  <Link href='/reset-lozinke' className='font-semibold underline'>
+                  <Link href='/postavi-lozinku-resend' className='font-semibold underline'>
                     Zatraži novi
                   </Link>
                 </>

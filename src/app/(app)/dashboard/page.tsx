@@ -91,12 +91,16 @@ export default async function DashboardPage(props: {
       .eq('user_id', user.id),
     supabase
       .from('subscriptions')
-      .select('plan')
+      .select('plan, status')
       .eq('user_id', user.id)
       .maybeSingle(),
   ]);
 
-  const isFreeUser = !subscription || subscription.plan === 'free';
+  const showUpgradeBanner =
+    subscription?.status !== 'active' &&
+    (!subscription ||
+      subscription.plan === 'free' ||
+      subscription.status === 'inactive');
 
   // TODO: If KPR entries are missing (older data), consider fallback aggregation from paid invoices.
   const yearlyIncome = (yearlyKpr ?? []).reduce(
@@ -171,7 +175,7 @@ export default async function DashboardPage(props: {
           </h1>
         </header>
 
-        <DashboardUpgradeBanner showUpgrade={isFreeUser} />
+        <DashboardUpgradeBanner showUpgrade={showUpgradeBanner} />
 
         <section className='rounded-2xl border border-[#1f2a28] bg-[#111716] p-5 sm:p-6'>
           <div className='flex items-center justify-between gap-3'>
