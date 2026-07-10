@@ -125,22 +125,17 @@ async function sendPasswordSetupEmail(
   admin: AdminClient,
   email: string,
   userId: string,
+  isExistingUser: boolean,
 ): Promise<void> {
   if (!admin) return;
 
-  const { data: userData, error: userError } =
-    await admin.auth.admin.getUserById(userId);
-  if (
-    !userError &&
-    userData?.user?.identities?.some(
-      (identity) =>
-        identity.provider === 'email' &&
-        (identity.identity_data as { email_verified?: boolean })
-          ?.email_verified === true,
-    )
-  ) {
-    console.log('User already has password, skipping setup email');
-    return;
+  if (isExistingUser) {
+    const { data: userData, error: userError } =
+      await admin.auth.admin.getUserById(userId);
+    if (!userError && userData?.user?.last_sign_in_at) {
+      console.log('User already has password, skipping setup email');
+      return;
+    }
   }
 
   const appUrl =
@@ -209,9 +204,11 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
     const existingUser = await findUserByEmail(admin, normalizedEmail);
 
     let userId: string;
+    let isExistingUser: boolean;
 
     if (existingUser) {
       userId = existingUser.id;
+      isExistingUser = true;
     } else {
       const { data: newUser, error: createError } = await admin.auth.admin.createUser({
         email: normalizedEmail,
@@ -224,6 +221,7 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
       }
 
       userId = newUser.user.id;
+      isExistingUser = false;
     }
 
     const subscriptionId =
@@ -236,7 +234,7 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
       });
     }
 
-    await sendPasswordSetupEmail(admin, normalizedEmail, userId);
+    await sendPasswordSetupEmail(admin, normalizedEmail, userId, isExistingUser);
 
     await admin
       .from('leads')
