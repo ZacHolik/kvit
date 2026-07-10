@@ -14,6 +14,7 @@ const AUTH_PUBLIC_PREFIXES = [
   '/signup',
   '/dobrodosli',
   '/reset-lozinke',
+  '/postavi-lozinku-resend',
   '/nova-lozinke',
   '/onboarding',
   '/confirm-email',

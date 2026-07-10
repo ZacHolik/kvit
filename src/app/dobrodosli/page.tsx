@@ -1,3 +1,5 @@
+import Link from 'next/link';
+
 export default function DobrodosliPage() {
   return (
     <main className='flex min-h-screen items-center justify-center bg-[#0b0f0e] px-4 text-center'>
@@ -10,6 +12,14 @@ export default function DobrodosliPage() {
         </p>
         <p className='text-sm text-[#64756f]'>
           Provjeri inbox (i spam folder) — link je aktivan 1 sat.
+        </p>
+        <p className='mt-6'>
+          <Link
+            href='/postavi-lozinku-resend'
+            className='text-sm text-[#0d9488] underline underline-offset-4 hover:text-[#14b8a6]'
+          >
+            Nisi dobio mail? Zatraži novi link →
+          </Link>
         </p>
       </div>
     </main>
