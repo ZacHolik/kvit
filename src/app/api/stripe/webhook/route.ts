@@ -124,16 +124,35 @@ async function findUserByEmail(
 async function sendPasswordSetupEmail(
   admin: AdminClient,
   email: string,
+  userId: string,
 ): Promise<void> {
   if (!admin) return;
-  const { data: linkData } = await admin.auth.admin.generateLink({
+
+  const { data: userData, error: userError } =
+    await admin.auth.admin.getUserById(userId);
+  if (
+    !userError &&
+    userData?.user?.identities?.some(
+      (identity) =>
+        identity.provider === 'email' &&
+        (identity.identity_data as { email_verified?: boolean })
+          ?.email_verified === true,
+    )
+  ) {
+    console.log('User already has password, skipping setup email');
+    return;
+  }
+
+  const appUrl =
+    process.env.NEXT_PUBLIC_APP_URL?.replace(/\/$/, '') ?? 'https://kvik.online';
+  const { data, error } = await admin.auth.admin.generateLink({
     type: 'recovery',
     email,
     options: {
-      redirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/nova-lozinke`,
+      redirectTo: `${appUrl}/auth/callback?next=/nova-lozinke`,
     },
   });
-  if (!linkData?.properties?.action_link) return;
+  if (error || !data?.properties?.action_link) return;
 
   const resendKey = process.env.RESEND_API_KEY;
   if (!resendKey) return;
@@ -153,7 +172,7 @@ async function sendPasswordSetupEmail(
           <h2 style="color:#0d9488">Plaćanje uspješno!</h2>
           <p>Tvoj Kvik account je spreman. Postavi lozinku da pristupiš aplikaciji:</p>
           <p style="margin:24px 0">
-            <a href="${linkData.properties.action_link}"
+            <a href="${data.properties.action_link}"
               style="display:inline-block;background:#0d9488;color:#fff;
               padding:12px 24px;border-radius:8px;text-decoration:none;
               font-weight:600">
@@ -217,7 +236,7 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
       });
     }
 
-    await sendPasswordSetupEmail(admin, normalizedEmail);
+    await sendPasswordSetupEmail(admin, normalizedEmail, userId);
 
     await admin
       .from('leads')
