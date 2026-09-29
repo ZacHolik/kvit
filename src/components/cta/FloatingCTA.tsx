@@ -23,11 +23,11 @@ type FloatingCTAProps = {
 const DISMISS_KEY = 'kvik_floating_cta_dismissed';
 const SCROLL_THRESHOLD = 0.3; // 30%
 
-function floatingRegisterButtonLabel(): string {
+function floatingRegisterButtonLabel(fallbackLabel: string): string {
   if (isPromoActive()) {
     return `${PRICING.promo.code}: prva godina za ${eur(PRICING.promo.annualAmount)} →`;
   }
-  return 'Pretplati se →';
+  return fallbackLabel;
 }
 
 export default function FloatingCTA({
@@ -89,7 +89,7 @@ export default function FloatingCTA({
   const copy = FLOATING[effectiveVariant as 'A' | 'B'] ?? FLOATING.A;
   const isRegisterCta = copy.href === '/register';
   const registerButtonLabel = isRegisterCta
-    ? floatingRegisterButtonLabel()
+    ? floatingRegisterButtonLabel(copy.button)
     : copy.button;
 
   const handleDismiss = () => {
