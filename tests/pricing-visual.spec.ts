@@ -29,7 +29,7 @@ test.describe('pricing visual proof (production)', () => {
       });
       const page = await context.newPage();
       await page.goto('/cijene');
-      const pricing = page.locator('main .max-w-md').first();
+      const pricing = page.locator('main .max-w-5xl').locator('> div').nth(2);
       await expect(pricing.getByRole('button', { name: /Godišnje/i })).toHaveClass(/bg-\[#0d9488\]/);
       await pricing.screenshot({ path: path.join(OUT, `cijene-${width}.png`) });
       await context.close();
