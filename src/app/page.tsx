@@ -4,7 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
-import { PRICING } from '@/config/pricing';
+import HomePricingSection from '@/components/pricing/HomePricingSection';
 
 import { HARDCODED_QA } from './asistent/hardcoded-qa-data';
 import { ShareAiResponse } from './asistent/share-ai-response';
@@ -1232,34 +1232,8 @@ export default function LandingPage() {
             Ne naplaćujemo po prometu. Plaćaš isti iznos, zaradiš li 1.000€ ili
             59.000€ godišnje.
           </p>
-          <div className='pricing-grid pricing-grid--twocols'>
-            {/* --- Paušalist plan (featured) --- */}
-            <div className='price-card featured'>
-              <div className='popular-tag'>Najpopularnije</div>
-              <div className='price-tier'>Najpopularnije</div>
-              <div className='price-name'>Paušalist</div>
-              <div className='price-amount'>
-                <sup />
-                {PRICING.monthly.amount}
-                {'\u00A0'}€
-                <sub>/mj</sub>
-              </div>
-              <div className='price-desc'>Za aktivne obrtnike</div>
-              <ul className='price-features'>
-                <li>Neograničeni računi</li>
-                <li>Automatski KPR i PO-SD</li>
-                <li>Računi se fiskaliziraju automatski</li>
-                <li>AI asistent neograničeno</li>
-                <li>Podsjetnici na rokove</li>
-                <li>eRačuni — zaprimanje besplatno</li>
-              </ul>
-              <Link
-                href='/register'
-                className='price-btn price-btn-primary'
-              >
-                Pretplati se →
-              </Link>
-            </div>
+          <div className='mx-auto max-w-md'>
+            <HomePricingSection />
           </div>
         </section>
 
