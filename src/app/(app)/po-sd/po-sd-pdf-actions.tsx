@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
 import { ValueGateExportModal } from '@/app/alati/_components/value-gate-export-modal';
+import { pausalistUpgradeLinkLabel } from '@/config/pricing';
 
 const PO_SD_PATH = '/po-sd';
 
@@ -116,7 +117,7 @@ export function PoSdPdfActions({ year }: Props) {
             <p className='font-body mt-4 text-sm text-[#94a3a0]'>
               Ili:{' '}
               <a href='/#cijene' className='font-semibold text-[#5eead4] underline'>
-                nadogradi na PRO za 12€/mj
+                {pausalistUpgradeLinkLabel()}
               </a>
             </p>
           </div>

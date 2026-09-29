@@ -51,7 +51,7 @@ export function DashboardReferralSection() {
   const code = summary?.code ?? '';
   const link = code ? `${SHARE_ORIGIN}/r/${code}` : '';
   const filled = Math.min(summary?.activatedFriendCount ?? 0, 3);
-  const shareText = `Koristim Kvik za paušalni obrt — AI mi odgovara na porezna pitanja, a KPR se vodi sam. Isprobaj besplatno: ${link}`;
+  const shareText = `Koristim Kvik za paušalni obrt — AI mi odgovara na porezna pitanja, a KPR se vodi sam. Pretplati se: ${link}`;
 
   const onCopy = useCallback(async () => {
     if (!link) {
@@ -76,7 +76,7 @@ export function DashboardReferralSection() {
     <>
       <section className='rounded-2xl border border-[#1f2a28] bg-[#111716] p-5 sm:p-6'>
         <h2 className='font-heading text-xl text-[#e2e8e7]'>
-          🔒 Zaključaj 5,60€/mj — zauvijek
+          🔒 Zaključaj early adopter cijenu — zauvijek
         </h2>
         <p className='font-body mt-2 text-sm text-[#b9c7c4]'>
           Dovedi 3 prijatelja koji koriste Kvik → zadrži early adopter cijenu i nakon isteka

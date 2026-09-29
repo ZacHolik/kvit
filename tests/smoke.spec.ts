@@ -12,7 +12,7 @@ test('hero gumbi ne crashaju', async ({ page }) => {
 
 test('Stripe checkout otvara se s /cijene', async ({ page }) => {
   await page.goto(`${BASE}/cijene`);
-  const gumb = page.getByText('Pretplati se za 15 €/mj');
+  const gumb = page.getByText(/Pretplati se za 144/);
   await expect(gumb).toBeVisible();
   const [popup] = await Promise.all([
     page.waitForURL('**/checkout.stripe.com/**', { timeout: 10000 })
@@ -28,7 +28,7 @@ test('Stripe checkout otvara se s /cijene', async ({ page }) => {
 
 test('/register se otvara', async ({ page }) => {
   await page.goto(`${BASE}/register`);
-  await expect(page.getByText('Pretplati se za 7€/mj').first()).toBeVisible();
+  await expect(page.getByText(/Pretplati se za 15|Pretplati se za 144/).first()).toBeVisible();
   await expect(page.locator('body')).not.toContainText('Application error');
 });
 

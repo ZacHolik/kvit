@@ -124,7 +124,7 @@ export default function VodiciIndexPage() {
             href='/register'
             className='inline-block rounded-xl bg-[#0d9488] px-8 py-4 text-base font-semibold text-white transition hover:bg-[#14b8a6]'
           >
-            Pretplati se za 7€/mj →
+            Pretplati se →
           </Link>
         </div>
       </div>

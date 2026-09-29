@@ -7,6 +7,7 @@ import { PriceLockBanner } from '@/components/price-lock-banner';
 import { formatDatumHr, formatIznosEurHr } from '@/lib/format-hr';
 import { OPCINE, type Opcina } from '@/lib/opcine';
 import { priceLockEnabled } from '@/lib/price-lock-feature';
+import { subscriptionPlanIntervalLabel } from '@/lib/subscription-plan-label';
 import { createClient } from '@/lib/supabase/client';
 
 type ProfileForm = {
@@ -950,7 +951,11 @@ export default function PostavkePage() {
                 <p>
                   Plan:{' '}
                   <span className='text-[#e2e8e7]'>
-                    {sub.interval === 'year' ? 'Godišnji (5,60€/mj)' : 'Mjesečni (7€/mj)'}
+                    {subscriptionPlanIntervalLabel(
+                      sub.interval,
+                      billingEvents[0]?.amount_eur ??
+                        (priceLockBanner.locked ? priceLockBanner.amount : null),
+                    )}
                   </span>
                 </p>
               )}

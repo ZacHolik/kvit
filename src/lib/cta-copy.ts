@@ -77,7 +77,7 @@ export const INLINE: Record<InlineTema, { text: string; button: string; href: st
   },
   inline_storno_register: {
     text: 'Kvik automatski kreira storno račun i fiskalizira ga za tebe.',
-    button: 'Isprobaj besplatno',
+    button: 'Pretplati se →',
     href: '/register',
   },
 };

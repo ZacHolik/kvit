@@ -9,6 +9,7 @@
 
 import { NextResponse } from 'next/server';
 
+import { checkoutSessionPromoFields } from '@/lib/stripe/checkout-session-extras';
 import { stripe } from '@/lib/stripe/client';
 import { getPriceId } from '@/lib/stripe/plans';
 import { createClient } from '@/lib/supabase/server';
@@ -97,7 +98,7 @@ export async function POST(request: Request) {
     },
     success_url: `${appUrl}/postavke?checkout=success`,
     cancel_url: `${appUrl}/#cijene`,
-    allow_promotion_codes: true,
+    ...checkoutSessionPromoFields(interval),
     locale: 'hr',
     metadata: { user_id: user.id },
   });

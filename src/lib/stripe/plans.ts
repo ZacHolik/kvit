@@ -4,12 +4,13 @@
  * Stripe Price ID-jevi dolaze iz env varijabli — ne hardkodiramo ih jer se
  * razlikuju između test i prod modova.
  *
- * STRIPE_PRICE_MONTHLY = 15,00 EUR / month
- * STRIPE_PRICE_YEARLY = 144,00 EUR / year (= 12,00 EUR/mj)
+ * Iznosi za prikaz: @/config/pricing (PRICING).
  *
  * Usage:
  *   import { PLANS, getPriceId } from '@/lib/stripe/plans'
  */
+
+import { PRICING } from '@/config/pricing';
 
 export type PlanId = 'free' | 'pausalist';
 export type BillingInterval = 'month' | 'year';
@@ -44,9 +45,9 @@ export const PLANS: Record<PlanId, Plan> = {
   pausalist: {
     id: 'pausalist',
     name: 'Pausalist',
-    displayPriceMonthly: 15.0,
-    displayPriceYearly: 144.0,
-    displayPriceYearlyPerMonth: 12.0,
+    displayPriceMonthly: PRICING.monthly.amount,
+    displayPriceYearly: PRICING.annual.amount,
+    displayPriceYearlyPerMonth: PRICING.annual.perMonth,
     currency: 'EUR',
     features: [
       'Sve iz besplatnog plana',

@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useMemo, useState } from 'react';
 
 import { ShareResult } from '@/app/alati/_components/share-result';
+import { eur, PRICING } from '@/config/pricing';
 
 type Q = {
   id: string;
@@ -66,7 +67,7 @@ const QUESTIONS: Q[] = [
     id: 'q5',
     prompt: 'Je li MIKROeRACUN plaćena usluga Porezne?',
     choices: [
-      { id: 'a', label: 'Da, 7 € mjesečno' },
+      { id: 'a', label: `Da, ${eur(PRICING.monthly.amount)} mjesečno` },
       { id: 'b', label: 'Ne — besplatna aplikacija za one koji ispunjavaju uvjete' },
       { id: 'c', label: 'Plaća se jednokratno 39,82 €' },
     ],

@@ -3,7 +3,10 @@
 import Link from 'next/link';
 import { Suspense, useEffect, useState } from 'react';
 
-async function startAnonymousCheckout() {
+import PricingPlanSelector from '@/components/pricing/PricingPlanSelector';
+import type { BillingPlan } from '@/config/pricing';
+
+async function startAnonymousCheckout(plan: BillingPlan) {
   const leadEmail =
     typeof window !== 'undefined'
       ? sessionStorage.getItem('kvik_lead_email') ?? undefined
@@ -12,7 +15,7 @@ async function startAnonymousCheckout() {
   const res = await fetch('/api/stripe/checkout-anonymous', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ plan: 'monthly', lead_email: leadEmail }),
+    body: JSON.stringify({ plan, lead_email: leadEmail }),
   });
   const data = (await res.json()) as { url?: string };
   if (data.url) {
@@ -54,14 +57,6 @@ const FEATURES = [
   },
 ];
 
-const PRICING_ITEMS = [
-  'AI porezni asistent — odgovori u sekundi',
-  'Automatski KPR iz svakog računa',
-  'PO-SD generator u 2 minute',
-  'Automatska fiskalizacija',
-  'Podsjetnici prije roka, ne nakon',
-];
-
 function CtaButton({
   loading,
   onClick,
@@ -91,9 +86,13 @@ function RegisterContent() {
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  const handleCta = () => {
+  const scrollToPricing = () => {
+    document.getElementById('pricing')?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  const handleCheckout = (plan: BillingPlan) => {
     setLoading(true);
-    void startAnonymousCheckout();
+    void startAnonymousCheckout(plan);
   };
 
   return (
@@ -109,10 +108,10 @@ function RegisterContent() {
           </Link>
           <CtaButton
             loading={loading}
-            onClick={handleCta}
+            onClick={scrollToPricing}
             className={`${ctaBase} rounded-lg px-5 py-2.5 text-sm font-semibold`}
           >
-            Pretplati se — 7€/mj
+            Pretplati se →
           </CtaButton>
         </div>
       </nav>
@@ -136,12 +135,11 @@ function RegisterContent() {
           </p>
           <CtaButton
             loading={loading}
-            onClick={handleCta}
+            onClick={scrollToPricing}
             className={`${ctaBase} mb-4 inline-block rounded-xl px-8 py-4 text-base`}
           >
-            Pretplati se za 7€/mj →
+            Pretplati se →
           </CtaButton>
-          <p className='text-sm text-mutedDim'>30 dana bez rizika. Otkaži kad god želiš.</p>
         </div>
       </section>
 
@@ -258,10 +256,10 @@ function RegisterContent() {
           <div className='mt-14 text-center'>
             <CtaButton
               loading={loading}
-              onClick={handleCta}
+              onClick={scrollToPricing}
               className={`${ctaBase} inline-block rounded-xl px-10 py-4 text-base md:text-lg`}
             >
-              Pretplati se za 7€/mj →
+              Pretplati se →
             </CtaButton>
           </div>
         </div>
@@ -269,62 +267,12 @@ function RegisterContent() {
 
       <section id='pricing' className='border-t border-tealBorder'>
         <div className='mx-auto max-w-md px-6 py-16 md:py-20'>
-          <div className='rounded-2xl border border-tealBorder bg-tealSofter p-8 text-center md:p-10'>
-            <p className='font-display mb-1 text-lg font-bold text-teal'>Kvik Paušalist</p>
-            <p className='mb-6 text-sm text-mutedDim'>Mjesečna pretplata</p>
-
-            <div className='mb-6 flex items-baseline justify-center gap-2'>
-              <span className='font-display text-5xl font-bold text-white'>7€</span>
-              <span className='text-mutedDim'>/mj</span>
-            </div>
-
-            <div className='mb-8 space-y-3 border-t border-tealBorder pt-6 text-left'>
-              {PRICING_ITEMS.map((item) => (
-                <div key={item} className='flex gap-3'>
-                  <span className='shrink-0 font-bold text-success'>✓</span>
-                  <span className='text-sm text-muted'>{item}</span>
-                </div>
-              ))}
-            </div>
-
-            <CtaButton
-              loading={loading}
-              onClick={handleCta}
-              className={`${ctaBase} mb-4 block w-full rounded-xl px-6 py-4 text-center`}
-            >
-              Pretplati se za 7€/mj →
-            </CtaButton>
-            <p className='text-xs text-mutedDim'>30 dana bez rizika. Otkaži kad god želiš.</p>
-          </div>
-        </div>
-      </section>
-
-      <section className='border-t border-tealBorder'>
-        <div className='mx-auto max-w-xl px-6 py-16 text-center'>
-          <div className='mb-5 inline-flex h-12 w-12 items-center justify-center rounded-full bg-teal'>
-            <svg
-              xmlns='http://www.w3.org/2000/svg'
-              className='h-6 w-6 text-white'
-              fill='none'
-              viewBox='0 0 24 24'
-              stroke='currentColor'
-              strokeWidth={2.5}
-              aria-hidden='true'
-            >
-              <path
-                strokeLinecap='round'
-                strokeLinejoin='round'
-                d='M9 12l2 2 4-4M12 2l8 4v6c0 5-3.5 9.5-8 10-4.5-.5-8-5-8-10V6l8-4z'
-              />
-            </svg>
-          </div>
-          <h2 className='font-display mb-4 text-2xl font-bold text-white md:text-3xl'>
-            30 dana. Bez rizika.
-          </h2>
-          <p className='text-lg leading-relaxed text-muted'>
-            Ako u prvih 30 dana ne smatraš da Kvik vrijedi 7€ — vraćamo ti novac.
-            Jedan mail. Bez forme. Bez pitanja zašto.
-          </p>
+          <PricingPlanSelector
+            theme='register'
+            defaultInterval='yearly'
+            checkoutLoading={loading}
+            onCheckout={handleCheckout}
+          />
         </div>
       </section>
 
@@ -344,10 +292,10 @@ function RegisterContent() {
           </p>
           <CtaButton
             loading={loading}
-            onClick={handleCta}
+            onClick={scrollToPricing}
             className={`${ctaBase} inline-block rounded-xl px-10 py-4 text-base md:text-lg`}
           >
-            Pretplati se za 7€/mj →
+            Pretplati se →
           </CtaButton>
         </div>
       </section>

@@ -2,6 +2,8 @@
 
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
+
+import { PRICING, PROMO_ORANGE, eur, isPromoActive } from '@/config/pricing';
 import { useCtaVariant } from '@/hooks/useCtaVariant';
 import { useCtaTracking } from '@/hooks/useCtaTracking';
 import { FLOATING, type CtaVariant } from '@/lib/cta-copy';
@@ -20,6 +22,13 @@ type FloatingCTAProps = {
 
 const DISMISS_KEY = 'kvik_floating_cta_dismissed';
 const SCROLL_THRESHOLD = 0.3; // 30%
+
+function floatingRegisterButtonLabel(): string {
+  if (isPromoActive()) {
+    return `${PRICING.promo.code}: prva godina za ${eur(PRICING.promo.annualAmount)} →`;
+  }
+  return 'Pretplati se →';
+}
 
 export default function FloatingCTA({
   pageType,
@@ -78,6 +87,10 @@ export default function FloatingCTA({
 
   // FLOATING ima samo A i B (ne C).
   const copy = FLOATING[effectiveVariant as 'A' | 'B'] ?? FLOATING.A;
+  const isRegisterCta = copy.href === '/register';
+  const registerButtonLabel = isRegisterCta
+    ? floatingRegisterButtonLabel()
+    : copy.button;
 
   const handleDismiss = () => {
     setDismissed(true);
@@ -90,14 +103,14 @@ export default function FloatingCTA({
 
   return (
     <div
-      className="fixed bottom-0 left-0 right-0 z-40 border-t border-slate-700 bg-slate-950/95 backdrop-blur supports-[backdrop-filter]:bg-slate-950/80"
-      data-cta-position="floating"
+      className='fixed bottom-0 left-0 right-0 z-40 border-t border-slate-700 bg-slate-950/95 backdrop-blur supports-[backdrop-filter]:bg-slate-950/80'
+      data-cta-position='floating'
       data-cta-variant={effectiveVariant}
-      role="region"
-      aria-label="Brza akcija"
+      role='region'
+      aria-label='Brza akcija'
     >
-      <div className="mx-auto flex max-w-5xl items-center gap-3 px-4 py-3">
-        <p className="min-w-0 flex-1 truncate text-sm text-slate-200">{copy.text}</p>
+      <div className='mx-auto flex max-w-5xl items-center gap-3 px-4 py-3'>
+        <p className='min-w-0 flex-1 truncate text-sm text-slate-200'>{copy.text}</p>
 
         <Link
           href={copy.href}
@@ -110,29 +123,37 @@ export default function FloatingCTA({
               cta_href: copy.href,
             })
           }
-          className="inline-flex flex-shrink-0 items-center gap-2 rounded-md bg-teal-600 px-3 py-1.5 text-sm font-medium text-white transition hover:bg-teal-500"
+          className={`inline-flex flex-shrink-0 items-center gap-2 rounded-md px-3 py-1.5 text-sm font-medium text-white transition ${
+            isRegisterCta && isPromoActive()
+              ? ''
+              : 'bg-teal-600 hover:bg-teal-500'
+          }`}
+          style={
+            isRegisterCta && isPromoActive()
+              ? { backgroundColor: PROMO_ORANGE }
+              : undefined
+          }
         >
-          {copy.button}
-          <span aria-hidden>→</span>
+          {registerButtonLabel}
         </Link>
 
         <button
           onClick={handleDismiss}
-          aria-label="Zatvori"
-          className="flex-shrink-0 rounded-md p-1.5 text-slate-400 transition hover:bg-slate-800 hover:text-slate-200"
+          aria-label='Zatvori'
+          className='flex-shrink-0 rounded-md p-1.5 text-slate-400 transition hover:bg-slate-800 hover:text-slate-200'
         >
           <svg
-            width="16"
-            height="16"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
+            width='16'
+            height='16'
+            viewBox='0 0 24 24'
+            fill='none'
+            stroke='currentColor'
+            strokeWidth='2'
+            strokeLinecap='round'
+            strokeLinejoin='round'
           >
-            <line x1="18" y1="6" x2="6" y2="18" />
-            <line x1="6" y1="6" x2="18" y2="18" />
+            <line x1='18' y1='6' x2='6' y2='18' />
+            <line x1='6' y1='6' x2='18' y2='18' />
           </svg>
         </button>
       </div>

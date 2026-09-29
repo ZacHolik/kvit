@@ -4,6 +4,7 @@ import { Suspense } from 'react';
 
 import ShareBar from '@/components/ShareBar';
 import ArticleGate from '@/components/ArticleGate';
+import GuideRegisterCta from '@/components/pricing/GuideRegisterCta';
 import { getSiteUrl } from '@/lib/vodici-config';
 
 export type GuideTocItem = { id: string; label: string };
@@ -34,31 +35,6 @@ type GuideShellProps = {
 
 function jsonLdSafe(obj: unknown): string {
   return JSON.stringify(obj).replace(/</g, '\\u003c');
-}
-
-function RegisterCtaBlock({ className = 'mt-14' }: { className?: string }) {
-  return (
-    <div
-      className={`${className} rounded-2xl border border-[#1f2a28] bg-[#111716] p-6 text-center`}
-    >
-      <p className="text-base text-[#e2e8e7] leading-relaxed mb-1 font-medium">
-        Kvik aplikacija za džepno knjigovodstvo za paušaliste pomaže ti s rokovima,
-        obrascima i poreznim pitanjima.
-      </p>
-      <p className="text-sm text-[#94a3a0] leading-relaxed mb-5">
-        Provjeri kako je jednostavno izdavati račune u pokretu dok aplikacija
-        automatski popunjava KPR. Džepno knjigovodstvo za paušaliste — uvijek uz
-        tebe, na tvome mobitelu.
-      </p>
-      <Link
-        href="/register"
-        className="inline-block rounded-xl px-8 py-3 text-sm font-semibold text-white transition hover:brightness-110"
-        style={{ backgroundColor: '#d97706' }}
-      >
-        Pretplati se za 7€/mj →
-      </Link>
-    </div>
-  );
 }
 
 export function GuideShell({
@@ -273,7 +249,7 @@ export function GuideShell({
             <ArticleGate
               slug={slug}
               unlockedExtra={
-                readingMinutes >= 8 ? <RegisterCtaBlock className="my-14" /> : undefined
+                readingMinutes >= 8 ? <GuideRegisterCta className="my-14" /> : undefined
               }
             >
               <div className='guide-prose font-body text-[#d5dfdd]'>{children}</div>
@@ -282,7 +258,7 @@ export function GuideShell({
         ) : (
           <>
             <div className='guide-prose font-body text-[#d5dfdd]'>{children}</div>
-            {readingMinutes >= 8 && <RegisterCtaBlock className="my-14" />}
+            {readingMinutes >= 8 && <GuideRegisterCta className="my-14" />}
           </>
         )}
 
@@ -328,7 +304,7 @@ export function GuideShell({
           </ul>
         </section>
 
-        <RegisterCtaBlock />
+        <GuideRegisterCta />
 
         {/* Share — podnožje */}
         <div className="mt-8 flex items-center justify-center gap-2 flex-wrap">

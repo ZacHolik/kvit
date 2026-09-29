@@ -4,6 +4,8 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
+import { PRICING } from '@/config/pricing';
+
 import { HARDCODED_QA } from './asistent/hardcoded-qa-data';
 import { ShareAiResponse } from './asistent/share-ai-response';
 import { KVIK_LANDING_CSS } from './kvik-landing-css';
@@ -1238,14 +1240,15 @@ export default function LandingPage() {
               <div className='price-name'>Paušalist</div>
               <div className='price-amount'>
                 <sup />
-                7€
+                {PRICING.monthly.amount}
+                {'\u00A0'}€
                 <sub>/mj</sub>
               </div>
               <div className='price-desc'>Za aktivne obrtnike</div>
               <ul className='price-features'>
                 <li>Neograničeni računi</li>
                 <li>Automatski KPR i PO-SD</li>
-                <li>Fiskalizacija 1.0 (2.0 dolazi Q4 2026.)</li>
+                <li>Računi se fiskaliziraju automatski</li>
                 <li>AI asistent neograničeno</li>
                 <li>Podsjetnici na rokove</li>
                 <li>eRačuni — zaprimanje besplatno</li>
@@ -1254,7 +1257,7 @@ export default function LandingPage() {
                 href='/register'
                 className='price-btn price-btn-primary'
               >
-                Pretplati se za 7€/mj →
+                Pretplati se →
               </Link>
             </div>
           </div>
@@ -1313,7 +1316,7 @@ export default function LandingPage() {
                 padding: '1rem 2.5rem',
               }}
             >
-              Isprobaj besplatno
+              Pretplati se →
             </Link>
           </div>
         </div>

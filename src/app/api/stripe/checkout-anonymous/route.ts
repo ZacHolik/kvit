@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 
+import { checkoutSessionPromoFields } from '@/lib/stripe/checkout-session-extras';
 import { stripe } from '@/lib/stripe/client';
 import { getPriceId } from '@/lib/stripe/plans';
 
@@ -26,7 +27,7 @@ export async function POST(request: Request) {
     },
     success_url: `${appUrl}/dobrodosli?session_id={CHECKOUT_SESSION_ID}`,
     cancel_url: `${appUrl}/register`,
-    allow_promotion_codes: true,
+    ...checkoutSessionPromoFields(interval),
     locale: 'hr',
     metadata: { anonymous_signup: 'true' },
   });

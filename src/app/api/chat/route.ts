@@ -1,6 +1,8 @@
 import Anthropic from '@anthropic-ai/sdk';
 import { NextResponse } from 'next/server';
 
+import { kvikPricingAssistantSnippet } from '@/config/pricing';
+
 /** Sažeta interna knowledge base (Kvik vodiči/alati); bez vanjskih konkurentnih portala. */
 const SYSTEM_PROMPT = `Ti si Kvik AI asistent za hrvatske paušalne obrtnike.
 
@@ -637,7 +639,7 @@ export async function POST(request: Request) {
 
     const stream = await anthropic.messages.create({
       model: 'claude-sonnet-4-5',
-      system: SYSTEM_PROMPT,
+      system: `${SYSTEM_PROMPT}\n\n${kvikPricingAssistantSnippet()}`,
       max_tokens: 1200,
       stream: true,
       messages: anthropicMessages.map((message) => ({

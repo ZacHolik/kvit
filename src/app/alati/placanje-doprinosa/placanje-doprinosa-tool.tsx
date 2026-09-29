@@ -5,6 +5,7 @@ import { createElement, useCallback, useEffect, useMemo, useRef, useState } from
 
 import { ValueGateExportModal } from '@/app/alati/_components/value-gate-export-modal';
 import { ShareResult } from '@/app/alati/_components/share-result';
+import { pausalistUpgradeLinkLabel } from '@/config/pricing';
 import { PostValueCta } from '@/app/alati/_components/post-value-cta';
 import { PoweredByKvikBadge } from '@/app/alati/_components/powered-by-kvik-badge';
 
@@ -349,7 +350,7 @@ export function PlacanjeDoprinosaTool(props?: { toolReferralParam?: string | nul
               <p className='font-body mt-4 text-sm text-[#94a3a0]'>
                 Ili:{' '}
                 <a href='/#cijene' className='font-semibold text-[#5eead4] underline'>
-                  nadogradi na PRO za 12€/mj
+                  {pausalistUpgradeLinkLabel()}
                 </a>
               </p>
             </div>

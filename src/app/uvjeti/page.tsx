@@ -1,6 +1,8 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 
+import { PRICING, eur, isPromoActive } from '@/config/pricing';
+
 export const metadata: Metadata = {
   title: 'Uvjeti korištenja | Kvik',
   description:
@@ -216,8 +218,12 @@ export default function TermsPage() {
                   <strong>Free plan:</strong> do 3 računa mjesečno, besplatno.
                 </li>
                 <li>
-                  <strong>Paušalist:</strong> 5,60 €/mj kod godišnje naplate ili
-                  7,00 €/mj kod mjesečne naplate.
+                  <strong>Paušalist:</strong> {eur(PRICING.annual.perMonth)}/mj kod
+                  godišnje naplate ({eur(PRICING.annual.amount)}/god) ili{' '}
+                  {eur(PRICING.monthly.amount)}/mj kod mjesečne naplate.
+                  {isPromoActive()
+                    ? ` Promocija ${PRICING.promo.code}: prva godina ${eur(PRICING.promo.annualAmount)} (vrijedi do ${PRICING.promo.endsLabel})`
+                    : ''}
                 </li>
                 <li>
                   <strong>Paušalist PRO:</strong> 9,99 €/mj.

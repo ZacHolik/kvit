@@ -3,6 +3,7 @@ import type { Metadata } from 'next';
 import { buildVodicMetadata } from '@/lib/og-metadata';
 import Link from 'next/link';
 
+import { eur, PRICING } from '@/config/pricing';
 import { vodiciHref } from '@/lib/vodici-config';
 
 import { GuideShell } from '../_components/guide-shell';
@@ -359,7 +360,7 @@ export default function Fiskalizacija20Page() {
         zaprimanje i osnovno slanje. Mana je što je to specijalizirani kanal: ne vodi ti KPR,
         ne šalje marketing račune klijentima, ne povezuje PO-SD, ne drži interni akt i ne
         podsjeća te na doprinose. <strong>Kvik</strong> je plaćena usluga (npr. oko{' '}
-        <strong>7 € / mj</strong>) koja spaja račune, fiskalizaciju 1.0 i pripremu za 2.0, KPR i
+        <strong>{eur(PRICING.monthly.amount)} / mj</strong>) koja spaja račune, fiskalizaciju 1.0 i pripremu za 2.0, KPR i
         administraciju obrta na jednom mjestu — plaćaš praktičnost, ne “državni minimum”.
       </p>
       <p>
@@ -413,7 +414,7 @@ export default function Fiskalizacija20Page() {
         </a>{' '}
         i portalu <strong>mojcert.fina.hr</strong>. <strong>Demo certifikat</strong> je besplatan
         za testiranje. <strong>MIKROeRACUN</strong> je <strong>0 €</strong>.{' '}
-        <strong>Kvik</strong> košta reda veličine <strong>7 € / mj</strong> i uključuje poslovni
+        <strong>Kvik</strong> košta reda veličine <strong>{eur(PRICING.monthly.amount)} / mj</strong> i uključuje poslovni
         dio koji državna aplikacija ne pokriva.
       </p>
       <p>

@@ -7,6 +7,7 @@ import ReactMarkdown from 'react-markdown';
 
 import { priceLockEnabled } from '@/lib/price-lock-feature';
 import { sendCapiEvent } from '@/lib/meta-capi';
+import { paidPlanTeaserShort } from '@/config/pricing';
 import { createClient } from '@/lib/supabase/client';
 
 import { HARDCODED_QA } from './hardcoded-qa-data';
@@ -235,7 +236,7 @@ export default function AsistentPage() {
       const used = readGuestQuestionCount();
       if (used >= 3) {
         setError(
-          'Iskoristio si 3 besplatna pitanja danas. Uhvati neograničen pristup savjetniku za 5,60€/mj. Bonus: Knjigovodstveni servis za paušalce za cijenu dvije kave u kafiću!!',
+          `Iskoristio si 3 besplatna pitanja danas. ${paidPlanTeaserShort()}`,
         );
         return;
       }
@@ -472,7 +473,7 @@ export default function AsistentPage() {
                     <div className='mt-4 rounded-2xl border border-[#2a3734] bg-gradient-to-br from-[#101515] to-[#0b0f0e] p-4'>
                       <p className='font-body text-sm leading-relaxed text-[#c8d3d1]'>
                         Ovakve odgovore možeš imati svaki dan — bez kopanja po
-                        zakonima. 5,60€/mj — zauvijek.
+                        zakonima. {paidPlanTeaserShort()}
                       </p>
                       <a
                         href='/cijene'
@@ -525,8 +526,7 @@ export default function AsistentPage() {
               <div className='rounded-xl border border-amber-500/30 bg-amber-500/10 p-4 text-center'>
                 <p className='font-body text-sm text-amber-100'>
                   Iskoristio si 3 besplatna pitanja danas. Uhvati neograničen
-                  pristup savjetniku za 5,60€/mj. Bonus: Knjigovodstveni servis za
-                  paušalce za cijenu dvije kave u kafiću!!
+                  {paidPlanTeaserShort()}
                 </p>
                 <Link
                   href='/registracija'

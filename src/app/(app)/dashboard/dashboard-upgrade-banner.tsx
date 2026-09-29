@@ -1,22 +1,11 @@
 'use client';
 
+import Link from 'next/link';
 import { useEffect } from 'react';
 
 type Props = {
   showUpgrade: boolean;
 };
-
-async function startCheckout(trial: boolean) {
-  const res = await fetch('/api/stripe/checkout', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ plan: 'pausalist', trial }),
-  });
-  const data = (await res.json()) as { url?: string; error?: string };
-  if (data.url) {
-    window.location.href = data.url;
-  }
-}
 
 /** P1-1/P1-4: checkout intent nakon registracije + upgrade CTA za free korisnike. */
 export function DashboardUpgradeBanner({ showUpgrade }: Props) {
@@ -48,13 +37,12 @@ export function DashboardUpgradeBanner({ showUpgrade }: Props) {
         <p className='font-body text-sm text-[#e2e8e7]'>
           Otključaj neograničene račune i fiskalizaciju →
         </p>
-        <button
-          type='button'
-          onClick={() => void startCheckout(true)}
+        <Link
+          href='/register'
           className='font-body shrink-0 rounded-xl bg-[#0d9488] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#14b8a6]'
         >
-          Isprobaj 7 dana besplatno
-        </button>
+          Pretplati se →
+        </Link>
       </div>
     </section>
   );

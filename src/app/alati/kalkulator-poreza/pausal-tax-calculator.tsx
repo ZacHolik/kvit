@@ -13,6 +13,7 @@ import {
 import { ValueGateExportModal } from '@/app/alati/_components/value-gate-export-modal';
 import { ShareResult } from '@/app/alati/_components/share-result';
 import { PostValueCta } from '@/app/alati/_components/post-value-cta';
+import { pausalistUpgradeLinkLabel } from '@/config/pricing';
 import { PoweredByKvikBadge } from '@/app/alati/_components/powered-by-kvik-badge';
 import { useAlatiSession, useKprYearTotal } from '@/hooks/use-alati-session';
 
@@ -411,7 +412,7 @@ export function PausalTaxCalculator(props?: { toolReferralParam?: string | null 
                 <p className='font-body mt-4 text-sm text-[#94a3a0]'>
                   Ili:{' '}
                   <a href='/#cijene' className='font-semibold text-[#5eead4] underline'>
-                    nadogradi na PRO za 12€/mj
+                    {pausalistUpgradeLinkLabel()}
                   </a>
                 </p>
               </div>
