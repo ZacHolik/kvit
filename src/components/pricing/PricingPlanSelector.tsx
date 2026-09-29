@@ -197,6 +197,13 @@ export default function PricingPlanSelector({
         >
           {checkoutLoading ? 'Otvaram plaćanje...' : ctaLabel}
         </button>
+        <p
+          className={`mt-3 text-xs leading-relaxed ${
+            isCijene ? 'text-[#94a3a0]' : 'text-mutedDim'
+          }`}
+        >
+          30 dana bez rizika: ako ti Kvik ne odgovara, vraćamo cijeli iznos.
+        </p>
       </div>
     </div>
   );

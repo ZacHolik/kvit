@@ -447,7 +447,8 @@ export default function Fiskalizacija20Page() {
           Kvik automatski rješava fiskalizaciju 1.0 i priprema te za 2.0
         </p>
         <p className='mt-2 text-sm leading-relaxed text-[#b9c7c4]'>
-          Gosti: besplatna registracija na <strong>https://kvik.online/register</strong>. Ako
+          Novi korisnici: registracija i pretplata na{' '}
+          <strong>https://kvik.online/register</strong>. Ako
           već imaš račun, u aplikaciji otvori{' '}
           <strong>https://kvik.online/postavke/fiskalizacija</strong> i dovrši čarobnjak za upload
           .p12 certifikata.

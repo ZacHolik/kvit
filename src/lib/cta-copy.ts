@@ -93,7 +93,7 @@ export const FLOATING = {
   },
   B: {
     text: 'Sve što čitaš — Kvik to radi umjesto tebe.',
-    button: 'Isprobaj',
+    button: 'Saznaj više →',
     href: '/register',
   },
 } as const;

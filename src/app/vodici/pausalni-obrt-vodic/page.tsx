@@ -248,8 +248,8 @@ export default function PauzalniObrtVodicPage() {
         .
       </p>
       <p>
-        Za praktičan rad od računa do KPR-a i PO-SD-a isprobaj{' '}
-        <Link href='/register'>Kvik besplatno</Link>, a dodatna pitanja možeš postaviti
+        Za praktičan rad od računa do KPR-a i PO-SD-a pogledaj{' '}
+        <Link href='/register'>Kvik</Link>, a dodatna pitanja možeš postaviti
         i <Link href='/asistent'>AI asistentu u aplikaciji</Link>.
       </p>
     </GuideShell>

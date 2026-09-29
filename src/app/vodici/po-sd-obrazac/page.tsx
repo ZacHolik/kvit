@@ -173,7 +173,7 @@ export default function PoSdObrazacPage() {
       <p>
         Kvik kao aplikacija cilja olakšati dio posla prikupljanjem primitaka kroz godinu
         tako da kasnije imaš manje ručnog prepisivanja u PO-SD — pogledaj{' '}
-        <Link href='/register'>besplatnu registraciju</Link> ako želiš cjelinu na jednom
+        <Link href='/register'>registraciju na Kvik</Link> ako želiš cjelinu na jednom
         mjestu.
       </p>
 

@@ -211,7 +211,7 @@ export default function SjedisteObrtaVsPrebivalistePage() {
       </p>
       <p>
         Ako još nemaš račun u aplikaciji, kreni od{' '}
-        <Link href='/register'>besplatne registracije</Link> i odmah postavi adrese
+        <Link href='/register'>registracije na Kvik</Link> i odmah postavi adrese
         odvojeno. Tako će račun povlačiti sjedište obrta, PO-SD podaci prebivalište
         vlasnika, a fiskalizacija adresu poslovnog prostora. To nije samo urednost u
         profilu; to je razlika između dokumenta koji je točan za svoju svrhu i dokumenta

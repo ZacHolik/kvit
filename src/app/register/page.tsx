@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { Suspense, useEffect, useState } from 'react';
 
 import PricingPlanSelector from '@/components/pricing/PricingPlanSelector';
-import { eur, PRICING, type BillingPlan } from '@/config/pricing';
+import type { BillingPlan } from '@/config/pricing';
 
 async function startAnonymousCheckout(plan: BillingPlan) {
   const leadEmail =
@@ -299,8 +299,8 @@ function RegisterContent() {
             30 dana. Bez rizika.
           </h2>
           <p className='text-lg leading-relaxed text-muted'>
-            Ako u prvih 30 dana ne smatraš da Kvik vrijedi {eur(PRICING.monthly.amount)} — vraćamo
-            ti novac. Jedan mail. Bez forme. Bez pitanja zašto.
+            Ako u prvih 30 dana ne smatraš da Kvik vrijedi svoje — vraćamo ti cijeli iznos. Jedan
+            mail. Bez forme. Bez pitanja zašto.
           </p>
         </div>
       </section>

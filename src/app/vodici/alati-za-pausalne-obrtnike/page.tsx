@@ -43,7 +43,7 @@ const faq = [
   {
     question: 'Treba li mi kreditna kartica za registraciju?',
     answer:
-      'Ne. Registracija je besplatna i traje oko 2 minute — uneseš naziv obrta, OIB i okvirni godišnji prihod, i sustav odmah zna koji si razred, koliko kvartalno plaćaš i kada su ti rokovi.',
+      'Ne moraš unositi karticu na samom startu — detalje o pretplati vidiš pri registraciji. Unos traje oko 2 minute: naziv obrta, OIB i okvirni godišnji prihod, i sustav odmah zna koji si razred, koliko kvartalno plaćaš i kada su ti rokovi.',
   },
 ];
 

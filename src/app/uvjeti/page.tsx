@@ -9,7 +9,7 @@ export const metadata: Metadata = {
     'Uvjeti korištenja Kvik aplikacije: korisnički račun, dopuštena upotreba, pretplate, fiskalizacija, odgovornost i raskid.',
 };
 
-const updatedAt = '27. travnja 2026.';
+const updatedAt = '29. rujna 2026.';
 const contactEmail = 'support@kvik.online';
 
 const toc = [
@@ -226,17 +226,15 @@ export default function TermsPage() {
                     : ''}
                 </li>
                 <li>
-                  <strong>Paušalist PRO:</strong> 9,99 €/mj.
-                </li>
-                <li>
                   Pretplata se može otkazati bez ugovorne obveze. Otkazivanje
                   vrijedi od kraja već plaćenog obračunskog razdoblja, osim ako
                   nije drugačije navedeno u korisničkom sučelju.
                 </li>
                 <li>
-                  Korisnik ima pravo zatražiti povrat sredstava u roku od 14
-                  dana od kupnje, osim u mjeri u kojoj primjenjivi propisi ili
-                  izričito započeta digitalna usluga dopuštaju drugačiji režim.
+                  Korisnik može u roku od 30 dana od prve uplate zatražiti povrat
+                  e-mailom na podrska@kvik.hr. Kvik tada vraća cijeli uplaćeni
+                  iznos, bez traženja obrazloženja. Ovime se ne ograničavaju prava
+                  korisnika prema propisima o zaštiti potrošača.
                 </li>
               </ul>
               <p className='font-body mt-4 text-sm leading-relaxed text-[#94a3a0]'>
