@@ -4,6 +4,9 @@
  * Stripe Price ID-jevi dolaze iz env varijabli — ne hardkodiramo ih jer se
  * razlikuju između test i prod modova.
  *
+ * STRIPE_PRICE_MONTHLY = 15,00 EUR / month
+ * STRIPE_PRICE_YEARLY = 144,00 EUR / year (= 12,00 EUR/mj)
+ *
  * Usage:
  *   import { PLANS, getPriceId } from '@/lib/stripe/plans'
  */
@@ -41,9 +44,9 @@ export const PLANS: Record<PlanId, Plan> = {
   pausalist: {
     id: 'pausalist',
     name: 'Pausalist',
-    displayPriceMonthly: 7.0,
-    displayPriceYearly: 67.2,
-    displayPriceYearlyPerMonth: 5.6,
+    displayPriceMonthly: 15.0,
+    displayPriceYearly: 144.0,
+    displayPriceYearlyPerMonth: 12.0,
     currency: 'EUR',
     features: [
       'Sve iz besplatnog plana',
