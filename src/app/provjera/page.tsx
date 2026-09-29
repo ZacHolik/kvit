@@ -59,7 +59,7 @@ export default function ProvjeraPage() {
 
         <p className='mt-12 text-center text-sm text-[#64748b]'>
           <Link href='/register' className='text-[#0d9488] hover:underline'>
-            Probaj Kvik besplatno
+            Pretplati se →
           </Link>
           {' · '}
           <Link href='/vodici' className='text-[#0d9488] hover:underline'>

@@ -454,7 +454,7 @@ export default function Fiskalizacija20Page() {
         </p>
         <div className='mt-4 flex flex-wrap gap-3'>
           <Link href='/register' className='btn-cta-primary inline-flex px-4 py-2.5 text-sm'>
-            Probaj besplatno →
+            Pretplati se →
           </Link>
           <Link
             href='/postavke/fiskalizacija'

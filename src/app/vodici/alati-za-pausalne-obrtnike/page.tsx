@@ -61,7 +61,7 @@ export default function AlatiZaPausalneObrtnikePage() {
         { id: 'primjeri', label: 'Konkretni primjeri „prije i poslije"' },
         { id: 'pregled', label: 'Pregled Kvik alata' },
         { id: 'kada-prijaviti', label: 'Kada se prijaviti — i što dobiješ' },
-        { id: 'cta', label: 'Isprobaj besplatno' },
+        { id: 'cta', label: 'Pretplati se' },
       ]}
       faq={faq}
       related={[
@@ -356,7 +356,7 @@ export default function AlatiZaPausalneObrtnikePage() {
         </li>
       </ul>
 
-      <h2 id='cta'>Isprobaj besplatno — bez kreditne kartice</h2>
+      <h2 id='cta'>Pretplati se na Kvik Paušalist</h2>
       <p>
         Registracija traje 2 minute. Uneseš naziv obrta, OIB i okvirni godišnji
         prihod — i sustav odmah zna koji si razred, koliko plaćaš i kada su ti
@@ -367,7 +367,7 @@ export default function AlatiZaPausalneObrtnikePage() {
           href='/register'
           className='btn-cta-primary px-5 py-3 text-base'
         >
-          Registriraj se besplatno →
+          Pretplati se →
         </Link>
         <Link
           href='/alati'

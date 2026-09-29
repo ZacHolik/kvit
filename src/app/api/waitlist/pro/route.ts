@@ -8,6 +8,8 @@
 
 import { NextResponse } from 'next/server';
 
+import { eur, PRICING } from '@/config/pricing';
+
 import { createServiceRoleClient } from '@/lib/supabase/service-role';
 
 type Body = { email?: string };
@@ -49,8 +51,7 @@ export async function POST(request: Request) {
         html: `
           <p>Hvala!</p>
           <p>Obavijestit ćemo vas čim Kvik PRO bude dostupan.</p>
-          <p>U međuvremenu isprobajte <strong>Paušalist plan</strong> — 
-             7 dana besplatno, bez kartice.</p>
+          <p>U međuvremenu pogledajte <strong>Paušalist plan</strong> — od ${eur(PRICING.monthly.amount)}/mj.</p>
           <p><a href="https://kvik.online/#cijene">Pogledaj planove →</a></p>
           <hr />
           <p style="font-size:12px;color:#999;">

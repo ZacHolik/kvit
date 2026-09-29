@@ -7,6 +7,7 @@ import { PriceLockBanner } from '@/components/price-lock-banner';
 import { formatDatumHr, formatIznosEurHr } from '@/lib/format-hr';
 import { OPCINE, type Opcina } from '@/lib/opcine';
 import { priceLockEnabled } from '@/lib/price-lock-feature';
+import { eur, PRICING } from '@/config/pricing';
 import { subscriptionPlanIntervalLabel } from '@/lib/subscription-plan-label';
 import { createClient } from '@/lib/supabase/client';
 
@@ -1010,7 +1011,7 @@ export default function PostavkePage() {
                 <span>Besplatni plan</span>
               </div>
               <p className='text-[#94a3a0]'>
-                Nadogradite na Paušalist — 7 dana besplatno, bez kartice.
+                Nadogradite na Paušalist — od {eur(PRICING.monthly.amount)}/mj.
               </p>
               <Link
                 href='/cijene'
