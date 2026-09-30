@@ -11,13 +11,39 @@ export const PRICING = {
   },
 } as const;
 
+export const PARTNER_OFFER = {
+  version: 'PR01',
+  discount: 84,
+  firstYear: PRICING.annual.amount - 84,
+  firstYearPerMonth: (PRICING.annual.amount - 84) / 12,
+  commissionNew: 30,
+  commissionRenewal: 30,
+  guaranteeDays: 30,
+  minPayout: 60,
+  statementDay: 5,
+  payoutDay: 15,
+  endsAt: '2026-12-31T23:59:59+01:00',
+  endsLabel: '31. 12. 2026.',
+} as const;
+
+export const isPartnerOfferActive = (now = new Date()) =>
+  now.getTime() <= new Date(PARTNER_OFFER.endsAt).getTime();
+
 export const PROMO_ORANGE = '#d97706';
 
 export const isPromoActive = (now: Date = new Date()) =>
   now.getTime() <= new Date(PRICING.promo.endsAt).getTime();
 
-/** „15 €": nerazdvojni razmak da se iznos ne lomi u dva reda */
-export const eur = (n: number) => `${n}\u00A0€`;
+/** „15 €" / „1.125 €" — tisuće točkom; nerazdvojni razmak prije € */
+export const eur = (n: number) => {
+  const sign = n < 0 ? '-' : '';
+  const abs = Math.abs(n);
+  const body =
+    abs >= 1000
+      ? String(abs).replace(/\B(?=(\d{3})+(?!\d))/g, '.')
+      : String(abs);
+  return `${sign}${body}\u00A0€`;
+};
 
 export type BillingPlan = 'monthly' | 'yearly';
 

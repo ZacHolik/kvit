@@ -9,14 +9,16 @@ const PIXEL_ID = process.env.NEXT_PUBLIC_META_PIXEL_ID;
 export default function MetaPixel() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const isPartnerPage = pathname?.startsWith('/partnerstva');
 
   useEffect(() => {
+    if (isPartnerPage) return;
     if (typeof window !== 'undefined' && window.fbq && PIXEL_ID) {
       window.fbq('track', 'PageView');
     }
-  }, [pathname, searchParams]);
+  }, [pathname, searchParams, isPartnerPage]);
 
-  if (!PIXEL_ID) return null;
+  if (!PIXEL_ID || isPartnerPage) return null;
 
   return (
     <Script

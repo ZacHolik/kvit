@@ -32,6 +32,10 @@ const nextConfig = {
         source: '/alati/po-sd',
         headers: [{ key: 'Cache-Control', value: 'no-store, must-revalidate' }],
       },
+      {
+        source: '/partnerstva/:path*',
+        headers: [{ key: 'X-Robots-Tag', value: 'noindex, nofollow' }],
+      },
     ];
   },
   images: {

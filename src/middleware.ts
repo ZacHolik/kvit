@@ -6,6 +6,7 @@ import {
   REGISTRATION_ATTEMPTS_PER_HOUR,
   countRegistrationAttemptsInWindow,
 } from '@/lib/registration-rate-limit';
+import { canonicalPartnerCode } from '@/content/partnerstva';
 import { createServiceRoleClient } from '@/lib/supabase/service-role';
 
 const AUTH_PUBLIC_PREFIXES = [
@@ -30,6 +31,7 @@ const AUTH_PUBLIC_PREFIXES = [
 const PUBLIC_PATH_RULES: ReadonlyArray<(pathname: string) => boolean> = [
   (p) => p === '/',
   (p) => p === '/cijene',
+  (p) => p === '/partnerstva' || p.startsWith('/partnerstva/'),
   (p) => p === '/pro-uskoro',
   (p) => p === '/vodici' || p.startsWith('/vodici/'),
   (p) => p === '/alati' || p.startsWith('/alati/'),
@@ -82,6 +84,17 @@ export async function middleware(request: NextRequest) {
   /** Statičke datoteke iz public/images (npr. lineup.webp) — bez auth redirecta. */
   if (pathname.startsWith('/images/')) {
     return NextResponse.next();
+  }
+
+  const partnerSegment = /^\/partnerstva\/([^/]+)\/?$/.exec(pathname);
+  if (partnerSegment) {
+    const raw = partnerSegment[1];
+    const canonical = canonicalPartnerCode(raw);
+    if (canonical && raw !== canonical) {
+      const dest = request.nextUrl.clone();
+      dest.pathname = `/partnerstva/${canonical}`;
+      return NextResponse.redirect(dest, 308);
+    }
   }
 
   /** /provjera: bez Supabase getUser (brži cold start na edgeu). */

@@ -2,12 +2,20 @@
  * Šalje event na /api/capi (server-side Meta CAPI)
  * Poziva se nakon browser fbq() poziva za deduplikaciju.
  */
+function isPartnerPath(): boolean {
+  return (
+    typeof window !== 'undefined' &&
+    window.location.pathname.startsWith('/partnerstva')
+  );
+}
+
 export async function sendCapiEvent(params: {
   event_name: string;
   event_id: string;
   email?: string;
   custom_data?: Record<string, unknown>;
 }) {
+  if (isPartnerPath()) return;
   try {
     await fetch('/api/capi', {
       method: 'POST',
